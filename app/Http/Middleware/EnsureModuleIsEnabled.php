@@ -22,3 +22,4 @@ class EnsureModuleIsEnabled
         return $next($request);
     }
 }
+

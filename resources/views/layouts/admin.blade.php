@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" data-theme="{{ $currentTheme['slug'] ?? 'aether-dark' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,6 +7,24 @@
 
     <title>AetherCP Administration - {{ $title ?? 'Dashboard' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Dynamic Theme Styling & CSS Injection -->
+    <style>
+        :root {
+            --color-theme-primary: {{ $currentTheme['colors']['primary'] ?? '#06b6d4' }};
+            --color-theme-accent: {{ $currentTheme['colors']['accent'] ?? '#3b82f6' }};
+            --color-theme-bg: {{ $currentTheme['colors']['background'] ?? '#070a13' }};
+            --color-theme-surface: {{ $currentTheme['colors']['surface'] ?? '#0f172a' }};
+        }
+        html, body {
+            background-color: var(--color-theme-bg) !important;
+            color: #e2e8f0 !important;
+        }
+    </style>
+
+    @if(!empty($currentTheme['has_css']) && !empty($currentTheme['slug']))
+        <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => $currentTheme['slug'], 'path' => 'theme.css']) }}">
+    @endif
 </head>
 <body class="bg-[#070a13] text-slate-200 min-h-screen flex flex-col font-sans antialiased">
     <!-- Top Admin Bar -->
