@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<div class="ro-layout-3col">
     <!-- ======================================================================
-         LEFT SIDEBAR (Col span 3 on desktop)
+         LEFT SIDEBAR (Col 1 on desktop)
          - Account Box / Panel
          - Server Status Panel (Login, Char, Map, Players)
          - Server Information & Rates Panel
          ====================================================================== -->
-    <aside class="lg:col-span-3 space-y-5">
+    <aside class="ro-col-left">
         <!-- 1. Account Box -->
         <div class="ro-panel">
             <div class="ro-panel-header">
@@ -187,12 +187,12 @@
     </aside>
 
     <!-- ======================================================================
-         CENTER CONTENT (Col span 6 on desktop)
+         CENTER CONTENT (Col 2 on desktop)
          - Medieval Welcome Banner
          - Latest Chronicle / News & Announcements
          - Featured Portals & Game Guides
          ====================================================================== -->
-    <section class="lg:col-span-6 space-y-6">
+    <section class="ro-col-center">
         <!-- 1. Medieval Welcome Banner -->
         <div class="ro-panel">
             <div class="p-6 sm:p-8 bg-gradient-to-b from-[#FCF7ED] to-[#F5EBD5] border-b-2 border-[#8C6A2D]">
@@ -220,7 +220,7 @@
             </div>
 
             <!-- Quick Rates Strip inside banner -->
-            <div class="grid grid-cols-4 divide-x divide-[#DECBB1] bg-[#EBDDBF] text-center py-2.5 text-xs">
+            <div class="ro-rates-strip text-xs">
                 <div>
                     <span class="block text-[10px] text-[#77644E] font-bold uppercase">Base</span>
                     <strong class="text-sm font-bold text-[#3A2A1C]">{{ config('aether.rates.base') }}</strong>
@@ -318,12 +318,12 @@
     </section>
 
     <!-- ======================================================================
-         RIGHT SIDEBAR (Col span 3 on desktop)
+         RIGHT SIDEBAR (Col 3 on desktop)
          - Hall of Fame (Top 5 Adventurers)
          - Community & Discord
          - Downloads & Support
          ====================================================================== -->
-    <aside class="lg:col-span-3 space-y-5">
+    <aside class="ro-col-right">
         <!-- 1. Top Adventurers (Hall of Fame) -->
         <div class="ro-panel">
             <div class="ro-panel-header justify-between">

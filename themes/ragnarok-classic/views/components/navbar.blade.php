@@ -72,8 +72,8 @@
                     </a>
                 @endauth
 
-                <!-- Mobile Hamburger Button -->
-                <button @click="mobileOpen = !mobileOpen" class="md:hidden ro-btn-wood py-1.5 px-2.5">
+                <!-- Mobile Hamburger Button (Only on Mobile) -->
+                <button @click="mobileOpen = !mobileOpen" class="ro-mobile-only ro-btn-wood py-1.5 px-2.5">
                     <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -84,7 +84,7 @@
     <div class="ro-navbar">
         <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
             <!-- Desktop Links -->
-            <div class="hidden md:flex items-center flex-wrap">
+            <div class="ro-desktop-only items-center flex-wrap">
                 <a href="{{ route('home') }}" class="ro-nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
                     <i data-lucide="home" class="w-3.5 h-3.5"></i>
                     <span>Home</span>
@@ -124,8 +124,8 @@
             </div>
         </div>
 
-        <!-- Mobile Drawer Navigation -->
-        <div x-show="mobileOpen" x-transition class="md:hidden bg-[#2D1D13] border-t border-[#65482D] py-2 px-4 space-y-1">
+        <!-- Mobile Drawer Navigation (Only on Mobile) -->
+        <div x-show="mobileOpen" x-transition class="ro-mobile-only flex-col bg-[#2D1D13] border-t border-[#65482D] py-2 px-4 space-y-1">
             <a href="{{ route('home') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">Home</a>
             <a href="{{ route('news.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">News & Updates</a>
             <a href="{{ route('downloads.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">Game Client Downloads</a>

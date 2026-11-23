@@ -14,10 +14,10 @@
     <!-- Ragnarok Classic Theme Stylesheet -->
     <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => 'ragnarok-classic', 'path' => 'theme.css']) }}">
 </head>
-<body class="min-h-screen flex flex-col font-sans antialiased text-[#3A2A1C] bg-[#E9D8B5]">
+<body class="min-h-screen flex flex-col font-sans antialiased text-[#3A2A1C]">
     <!-- Top Retro MMORPG Status Bar -->
     <header class="ro-header-banner z-20">
-        <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between text-xs gap-3">
+        <div class="ro-container py-2 flex flex-wrap items-center justify-between text-xs gap-3">
             <!-- Left: Server Rates & Episode -->
             <div class="flex items-center space-x-4 text-[#F8EBD2]">
                 <span class="flex items-center gap-1.5 font-bold">
@@ -96,7 +96,7 @@
     @endif
 
     <!-- Main Content Stage -->
-    <main class="flex-1 max-w-7xl mx-auto px-4 py-6 w-full">
+    <main class="flex-1 ro-container py-6">
         @yield('content')
     </main>
 
