@@ -91,9 +91,13 @@
                         <i data-lucide="newspaper" class="w-4 h-4"></i>
                         <span>News & Articles</span>
                     </a>
-                    <a href="{{ route('admin.donations') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.donations*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                    <a href="{{ route('admin.donations') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ (request()->routeIs('admin.donations') && !request()->routeIs('admin.donations.packages*')) ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                         <i data-lucide="credit-card" class="w-4 h-4"></i>
                         <span>Donation Approvals</span>
+                    </a>
+                    <a href="{{ route('admin.donations.packages') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.donations.packages*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                        <i data-lucide="gift" class="w-4 h-4"></i>
+                        <span>Packages & Rewards</span>
                     </a>
                 </div>
             </div>

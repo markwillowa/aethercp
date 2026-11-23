@@ -145,6 +145,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Donations
     Route::get('/donations', [AdminController::class, 'donations'])->name('donations');
     Route::post('/donations/{id}/status', [AdminController::class, 'updateDonationStatus'])->name('donations.status');
+    Route::get('/donations/packages', [AdminController::class, 'donationPackages'])->name('donations.packages');
+    Route::post('/donations/packages', [AdminController::class, 'storeDonationPackage'])->name('donations.packages.store');
+    Route::put('/donations/packages/{id}', [AdminController::class, 'updateDonationPackage'])->name('donations.packages.update');
+    Route::delete('/donations/packages/{id}', [AdminController::class, 'deleteDonationPackage'])->name('donations.packages.delete');
+    Route::post('/donations/packages/{id}/toggle', [AdminController::class, 'toggleDonationPackage'])->name('donations.packages.toggle');
+    Route::post('/donations/settings', [AdminController::class, 'updateDonationSettings'])->name('donations.settings.update');
 
     // Modules & Themes
     Route::get('/modules', [AdminController::class, 'modules'])->name('modules');

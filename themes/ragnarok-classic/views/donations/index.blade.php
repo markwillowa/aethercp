@@ -28,6 +28,16 @@
                 </div>
             @endif
         </div>
+
+        @if(!empty($donationSettings['instructions']))
+            <div class="mt-4 pt-3 border-t border-[#DECBB1] text-xs text-[#5C4228] leading-relaxed flex items-start gap-2.5 bg-[#F5EBD5] p-3 rounded border border-[#DECBB1]">
+                <i data-lucide="scroll" class="w-4 h-4 text-[#8C6A2D] shrink-0 mt-0.5"></i>
+                <div>
+                    <strong class="block text-[#3A2A1C] font-serif font-bold mb-0.5">Donation Notice & Guidelines:</strong>
+                    <p class="whitespace-pre-line">{{ $donationSettings['instructions'] }}</p>
+                </div>
+            </div>
+        @endif
     </div>
 
     <!-- Package Tiers Grid -->
@@ -132,6 +142,16 @@
                     If you contributed using alternative payment channels (Bank Transfer, G-Cash, Crypto) or made an offline PayPal transfer,
                     please record your transaction reference number below for Game Master audit and crediting.
                 </p>
+
+                @if(!empty($donationSettings['payment_details']))
+                    <div class="bg-[#F5EBD5] border border-[#C8A66A] p-3 rounded text-xs text-[#5C4228] space-y-1">
+                        <strong class="font-serif font-bold text-[#3A2A1C] flex items-center gap-1.5">
+                            <i data-lucide="wallet" class="w-3.5 h-3.5 text-[#8C6A2D]"></i>
+                            <span>Manual Payment Instructions &amp; Bank / E-Wallet Info:</span>
+                        </strong>
+                        <div class="whitespace-pre-line text-[11px] leading-relaxed">{{ $donationSettings['payment_details'] }}</div>
+                    </div>
+                @endif
 
                 <form method="POST" action="{{ route('donations.submit') }}" class="space-y-4">
                     @csrf
@@ -268,6 +288,23 @@
             </div>
         @endif
     @endauth
+
+    @if(!empty($donationSettings['kafra_guide']))
+        <div class="ro-panel p-5 bg-[#FCF7ED] border border-[#DECBB1] shadow-md space-y-2">
+            <div class="flex items-center gap-2">
+                <i data-lucide="package-check" class="w-4 h-4 text-[#2E7D32]"></i>
+                <h3 class="text-xs font-bold font-serif uppercase tracking-wider text-[#3A2A1C]">Kafra Storage Delivery &amp; Reward Instructions</h3>
+            </div>
+            <p class="text-xs text-[#5C4228] whitespace-pre-line leading-relaxed">{{ $donationSettings['kafra_guide'] }}</p>
+        </div>
+    @endif
+
+    @if(!empty($donationSettings['terms']))
+        <div class="p-4 bg-[#F5EBD5] border border-[#DECBB1] rounded text-[11px] text-[#77644E] space-y-1">
+            <strong class="font-serif font-bold text-[#3A2A1C] uppercase tracking-wider text-[10px] block">Rune-Midgard Support Terms &amp; Policy:</strong>
+            <p class="whitespace-pre-line leading-relaxed">{{ $donationSettings['terms'] }}</p>
+        </div>
+    @endif
 </div>
 
 <script>

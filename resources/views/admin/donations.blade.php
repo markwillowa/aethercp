@@ -7,6 +7,18 @@
         <p class="text-xs text-slate-400 mt-1">Review player donation submissions, PayPal IPN payments, and in-game reward fulfillment.</p>
     </div>
 
+    <!-- Top Sub-Navigation Tabs -->
+    <div class="flex items-center gap-2 border-b border-slate-800 pb-2 text-xs font-semibold">
+        <a href="{{ route('admin.donations') }}" class="px-3 py-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1.5">
+            <i data-lucide="list-checks" class="w-3.5 h-3.5"></i>
+            <span>Approvals &amp; Transactions</span>
+        </a>
+        <a href="{{ route('admin.donations.packages') }}" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 transition-colors flex items-center gap-1.5">
+            <i data-lucide="gift" class="w-3.5 h-3.5"></i>
+            <span>Packages, In-Game Rewards &amp; Instructions</span>
+        </a>
+    </div>
+
     @if(session('success'))
         <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
             <i data-lucide="check-circle" class="w-4 h-4 shrink-0"></i>

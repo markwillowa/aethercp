@@ -30,7 +30,14 @@ class DonationController extends Controller
             'currency' => SiteSetting::get('paypal_currency', 'USD'),
         ];
 
-        return view('donations.index', compact('packages', 'userDonations', 'paypalConfig'));
+        $donationSettings = [
+            'instructions' => SiteSetting::get('donation_instructions', ''),
+            'payment_details' => SiteSetting::get('donation_payment_details', ''),
+            'kafra_guide' => SiteSetting::get('donation_kafra_guide', ''),
+            'terms' => SiteSetting::get('donation_terms', ''),
+        ];
+
+        return view('donations.index', compact('packages', 'userDonations', 'paypalConfig', 'donationSettings'));
     }
 
     public function submitManual(Request $request)

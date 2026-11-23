@@ -304,4 +304,107 @@ class DonationTest extends TestCase
         $this->assertNotNull($items);
         $this->assertEquals(15, $items->amount);
     }
+
+    public function test_admin_can_view_donation_packages_and_rewards_customizer(): void
+    {
+        $response = $this->actingAs($this->admin)->get('/admin/donations/packages');
+        $response->assertStatus(200);
+        $response->assertSeeText('Donation Packages & Reward Customizer');
+        $response->assertSeeText('Valkyrie Grace Tier');
+        $response->assertSeeText('Bonus In-Game Item Reward');
+    }
+
+    public function test_admin_can_create_donation_package_with_item_rewards(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/donations/packages', [
+            'name' => 'Solar God Pack',
+            'description' => 'Crown yourself with the Helm of the Sun.',
+            'price' => 50.00,
+            'currency' => 'USD',
+            'points' => 5000,
+            'bonus_points' => 1000,
+            'item_id' => 2220,
+            'item_amount' => 1,
+            'item_name' => 'Helm of Sun God',
+            'is_popular' => 1,
+            'is_active' => 1,
+            'sort_order' => 5,
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('donation_packages', [
+            'name' => 'Solar God Pack',
+            'price' => 50.00,
+            'points' => 5000,
+            'bonus_points' => 1000,
+            'item_id' => 2220,
+            'item_amount' => 1,
+            'item_name' => 'Helm of Sun God',
+            'is_popular' => true,
+        ]);
+    }
+
+    public function test_admin_can_update_existing_donation_package(): void
+    {
+        $response = $this->actingAs($this->admin)->put("/admin/donations/packages/{$this->package->id}", [
+            'name' => 'Valkyrie Grace Deluxe',
+            'description' => 'Updated tier description with extra berries.',
+            'price' => 30.00,
+            'currency' => 'USD',
+            'points' => 3000,
+            'bonus_points' => 700,
+            'item_id' => 607,
+            'item_amount' => 25,
+            'item_name' => 'Yggdrasil Berry',
+            'is_popular' => 1,
+            'is_active' => 1,
+            'sort_order' => 1,
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $this->package->refresh();
+        $this->assertEquals('Valkyrie Grace Deluxe', $this->package->name);
+        $this->assertEquals(30.00, (float) $this->package->price);
+        $this->assertEquals(25, $this->package->item_amount);
+    }
+
+    public function test_admin_can_delete_and_toggle_package(): void
+    {
+        // Toggle
+        $this->actingAs($this->admin)->post("/admin/donations/packages/{$this->package->id}/toggle")->assertRedirect();
+        $this->package->refresh();
+        $this->assertFalse((bool) $this->package->is_active);
+
+        // Delete
+        $this->actingAs($this->admin)->delete("/admin/donations/packages/{$this->package->id}")->assertRedirect();
+        $this->assertDatabaseMissing('donation_packages', ['id' => $this->package->id]);
+    }
+
+    public function test_admin_can_save_donation_guidelines_and_instructions(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/donations/settings', [
+            'donation_instructions' => 'Special promo: 2x Cash Points this weekend only!',
+            'donation_payment_details' => 'GCash: 0917-000-0000 | Bank: BDO 1234567890',
+            'donation_kafra_guide' => 'Speak with the Prontera Central Kafra employee to retrieve your storage rewards.',
+            'donation_terms' => 'All donations are final and voluntary gifts.',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $this->assertEquals('Special promo: 2x Cash Points this weekend only!', SiteSetting::get('donation_instructions'));
+        $this->assertEquals('GCash: 0917-000-0000 | Bank: BDO 1234567890', SiteSetting::get('donation_payment_details'));
+        $this->assertEquals('Speak with the Prontera Central Kafra employee to retrieve your storage rewards.', SiteSetting::get('donation_kafra_guide'));
+        $this->assertEquals('All donations are final and voluntary gifts.', SiteSetting::get('donation_terms'));
+
+        // Public page reflects the custom guidelines and instructions
+        $pub = $this->get('/donations');
+        $pub->assertStatus(200);
+        $pub->assertSeeText('Special promo: 2x Cash Points this weekend only!');
+        $pub->assertSeeText('Speak with the Prontera Central Kafra employee to retrieve your storage rewards.');
+    }
 }

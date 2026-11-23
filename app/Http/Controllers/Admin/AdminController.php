@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\News;
 use App\Models\Download;
 use App\Models\Donation;
+use App\Models\DonationPackage;
 use App\Models\ActivityLog;
 use App\Models\SiteSetting;
 use Illuminate\Http\Request;
@@ -373,5 +374,142 @@ class AdminController extends Controller
                 @unlink($tempFile);
             }
         }
+    }
+
+    public function donationPackages()
+    {
+        $packages = DonationPackage::orderBy('sort_order', 'asc')->get();
+        $instructions = SiteSetting::get('donation_instructions', '');
+        $paymentDetails = SiteSetting::get('donation_payment_details', '');
+        $kafraGuide = SiteSetting::get('donation_kafra_guide', '');
+        $terms = SiteSetting::get('donation_terms', '');
+
+        return view('admin.donation_packages', compact('packages', 'instructions', 'paymentDetails', 'kafraGuide', 'terms'));
+    }
+
+    public function storeDonationPackage(Request $request, \App\Contracts\Repositories\ItemRepositoryInterface $itemRepo)
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string|max:500',
+            'price' => 'required|numeric|min:0.01',
+            'currency' => 'required|string|max:10',
+            'points' => 'required|integer|min:0',
+            'bonus_points' => 'nullable|integer|min:0',
+            'item_id' => 'nullable|integer|min:1',
+            'item_amount' => 'nullable|integer|min:0',
+            'item_name' => 'nullable|string|max:100',
+            'sort_order' => 'nullable|integer',
+        ]);
+
+        $itemId = $request->input('item_id');
+        $itemName = $request->input('item_name');
+
+        if ($itemId && empty($itemName)) {
+            $item = $itemRepo->findById((int) $itemId);
+            $itemName = $item ? ($item->name_english ?: $item->name_aegis) : "Reward Item #{$itemId}";
+        }
+
+        $package = DonationPackage::create([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'price' => $request->input('price'),
+            'currency' => strtoupper($request->input('currency', 'USD')),
+            'points' => (int) $request->input('points'),
+            'bonus_points' => (int) $request->input('bonus_points', 0),
+            'item_id' => $itemId ?: null,
+            'item_amount' => (int) $request->input('item_amount', 0),
+            'item_name' => $itemName ?: null,
+            'is_popular' => (bool) $request->input('is_popular', false),
+            'is_active' => (bool) $request->input('is_active', true),
+            'sort_order' => (int) $request->input('sort_order', 0),
+        ]);
+
+        ActivityLog::log('admin.package_create', "Created donation package [{$package->name}] (#{$package->id})");
+
+        return back()->with('success', "Donation package '{$package->name}' created successfully.");
+    }
+
+    public function updateDonationPackage(Request $request, int $id, \App\Contracts\Repositories\ItemRepositoryInterface $itemRepo)
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string|max:500',
+            'price' => 'required|numeric|min:0.01',
+            'currency' => 'required|string|max:10',
+            'points' => 'required|integer|min:0',
+            'bonus_points' => 'nullable|integer|min:0',
+            'item_id' => 'nullable|integer|min:1',
+            'item_amount' => 'nullable|integer|min:0',
+            'item_name' => 'nullable|string|max:100',
+            'sort_order' => 'nullable|integer',
+        ]);
+
+        $package = DonationPackage::findOrFail($id);
+        $itemId = $request->input('item_id');
+        $itemName = $request->input('item_name');
+
+        if ($itemId && empty($itemName)) {
+            $item = $itemRepo->findById((int) $itemId);
+            $itemName = $item ? ($item->name_english ?: $item->name_aegis) : "Reward Item #{$itemId}";
+        }
+
+        $package->update([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'price' => $request->input('price'),
+            'currency' => strtoupper($request->input('currency', 'USD')),
+            'points' => (int) $request->input('points'),
+            'bonus_points' => (int) $request->input('bonus_points', 0),
+            'item_id' => $itemId ?: null,
+            'item_amount' => (int) $request->input('item_amount', 0),
+            'item_name' => $itemName ?: null,
+            'is_popular' => (bool) $request->input('is_popular', false),
+            'is_active' => (bool) $request->input('is_active', true),
+            'sort_order' => (int) $request->input('sort_order', 0),
+        ]);
+
+        ActivityLog::log('admin.package_update', "Updated donation package [{$package->name}] (#{$package->id})");
+
+        return back()->with('success', "Donation package '{$package->name}' updated successfully.");
+    }
+
+    public function deleteDonationPackage(int $id)
+    {
+        $package = DonationPackage::findOrFail($id);
+        $name = $package->name;
+        $package->delete();
+
+        ActivityLog::log('admin.package_delete', "Deleted donation package [{$name}] (#{$id})");
+
+        return back()->with('success', "Donation package '{$name}' deleted successfully.");
+    }
+
+    public function toggleDonationPackage(int $id)
+    {
+        $package = DonationPackage::findOrFail($id);
+        $package->is_active = !$package->is_active;
+        $package->save();
+
+        ActivityLog::log('admin.package_toggle', "Toggled status for package [{$package->name}] to " . ($package->is_active ? 'active' : 'inactive'));
+
+        return back()->with('success', "Package '{$package->name}' status updated.");
+    }
+
+    public function updateDonationSettings(Request $request)
+    {
+        $instructions = $request->input('donation_instructions', '');
+        $paymentDetails = $request->input('donation_payment_details', '');
+        $kafraGuide = $request->input('donation_kafra_guide', '');
+        $terms = $request->input('donation_terms', '');
+
+        SiteSetting::set('donation_instructions', $instructions, 'donations');
+        SiteSetting::set('donation_payment_details', $paymentDetails, 'donations');
+        SiteSetting::set('donation_kafra_guide', $kafraGuide, 'donations');
+        SiteSetting::set('donation_terms', $terms, 'donations');
+
+        ActivityLog::log('admin.donation_settings', "Updated donation guidelines, instructions, and Kafra delivery details.");
+
+        return back()->with('success', 'Donation instructions and reward guidelines saved successfully.');
     }
 }

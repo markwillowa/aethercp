@@ -7,6 +7,16 @@
         <p class="text-xs text-slate-400 mt-1">Support server hosting, anti-cheat licenses, and hardware upgrades with instant automatic delivery.</p>
     </div>
 
+    @if(!empty($donationSettings['instructions']))
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-md text-xs text-slate-300 leading-relaxed flex items-start gap-3">
+            <i data-lucide="info" class="w-5 h-5 text-cyan-400 shrink-0 mt-0.5"></i>
+            <div>
+                <strong class="block text-white font-bold mb-0.5">Donation Notice & Guidelines</strong>
+                <p class="text-slate-300 whitespace-pre-line">{{ $donationSettings['instructions'] }}</p>
+            </div>
+        </div>
+    @endif
+
     @if(session('success'))
         <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-3">
             <i data-lucide="check-circle" class="w-5 h-5 shrink-0"></i>
@@ -113,6 +123,16 @@
                 </div>
                 <p class="text-xs text-slate-400 mt-0.5">If you donated via Bank Wire, G-Cash, Crypto, or manual PayPal transfer, submit your transaction ID for staff verification.</p>
             </div>
+
+            @if(!empty($donationSettings['payment_details']))
+                <div class="p-3.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-200 space-y-1">
+                    <div class="font-bold text-cyan-300 flex items-center gap-1.5">
+                        <i data-lucide="wallet" class="w-4 h-4"></i>
+                        <span>Payment Instructions &amp; Account Details</span>
+                    </div>
+                    <div class="text-[11px] text-cyan-200/90 whitespace-pre-line">{{ $donationSettings['payment_details'] }}</div>
+                </div>
+            @endif
 
             <form method="POST" action="{{ route('donations.submit') }}" class="space-y-4">
                 @csrf
@@ -231,6 +251,23 @@
             </div>
         @endif
     @endauth
+
+    @if(!empty($donationSettings['kafra_guide']))
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-md space-y-2">
+            <div class="flex items-center gap-2">
+                <i data-lucide="package-check" class="w-4 h-4 text-emerald-400"></i>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-white">How In-Game Delivery Works</h3>
+            </div>
+            <p class="text-xs text-slate-300 whitespace-pre-line leading-relaxed">{{ $donationSettings['kafra_guide'] }}</p>
+        </div>
+    @endif
+
+    @if(!empty($donationSettings['terms']))
+        <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-800/80 text-[11px] text-slate-500 space-y-1">
+            <strong class="text-slate-400 block font-semibold uppercase tracking-wider text-[10px]">Terms of Contribution &amp; Policy</strong>
+            <p class="whitespace-pre-line leading-relaxed">{{ $donationSettings['terms'] }}</p>
+        </div>
+    @endif
 </div>
 
 <script>
