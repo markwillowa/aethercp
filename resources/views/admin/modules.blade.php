@@ -28,12 +28,20 @@
                     </span>
 
                     @if(empty($mod['protected']))
-                        <form method="POST" action="{{ route('admin.modules.toggle', $key) }}">
-                            @csrf
-                            <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-semibold {{ $mod['enabled'] ? 'bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-500/30' : 'bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/30' }}">
-                                {{ $mod['enabled'] ? 'Disable' : 'Enable' }}
-                            </button>
-                        </form>
+                        <div class="flex items-center gap-2">
+                            @if($key === 'marketplace')
+                                <a href="{{ route('admin.marketplace.index') }}" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#D4AF37]/20 hover:bg-[#D4AF37]/30 text-[#FCE69B] border border-[#D4AF37]/40 flex items-center gap-1 transition-colors">
+                                    <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+                                    Configure
+                                </a>
+                            @endif
+                            <form method="POST" action="{{ route('admin.modules.toggle', $key) }}">
+                                @csrf
+                                <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-semibold {{ $mod['enabled'] ? 'bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-500/30' : 'bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/30' }}">
+                                    {{ $mod['enabled'] ? 'Disable' : 'Enable' }}
+                                </button>
+                            </form>
+                        </div>
                     @else
                         <span class="text-[11px] font-semibold text-slate-500">Locked</span>
                     @endif

@@ -32,8 +32,11 @@ class MarketplaceEscrowService
             'rules' => SiteSetting::get('marketplace_rules', 'Items placed in the trade house are securely held in escrow until sold, cancelled, or withdrawn.'),
             'max_listings_player' => (int) SiteSetting::get('marketplace_max_listings_player', 15),
             'max_listings_char' => (int) SiteSetting::get('marketplace_max_listings_char', 8),
+            'max_items_per_listing' => (int) SiteSetting::get('marketplace_max_items_per_listing', 1000),
             'min_price' => (int) SiteSetting::get('marketplace_min_price', 1),
             'max_price' => (int) SiteSetting::get('marketplace_max_price', 1000000000),
+            'min_duration_hours' => (int) SiteSetting::get('marketplace_min_duration_hours', 24),
+            'max_duration_hours' => (int) SiteSetting::get('marketplace_max_duration_hours', 720),
             'default_duration_hours' => (int) SiteSetting::get('marketplace_default_duration_hours', 72),
             'allowed_durations' => [24, 72, 168, 336, 720], // 1 day, 3 days, 7 days, 14 days, 30 days
             'tax_percent' => (float) SiteSetting::get('marketplace_tax_percent', 5.0), // 5% default tax
@@ -443,7 +446,24 @@ class MarketplaceEscrowService
             throw new \RuntimeException("This character has reached the maximum allowed listings ({$settings['max_listings_char']}).");
         }
 
-        return DB::transaction(function () use ($user, $char, $marketplaceItemId, $currencyType, $unitPrice, $quantity, $durationHours) {
+        if ($quantity > $settings['max_items_per_listing']) {
+            throw new \RuntimeException("Quantity cannot exceed maximum allowed items per listing ({$settings['max_items_per_listing']}).");
+        }
+
+        if ($settings['listing_fee'] > 0) {
+            $charZeny = $this->getCharacterZeny($char->char_id);
+            if ($charZeny < $settings['listing_fee']) {
+                throw new \RuntimeException("Insufficient Zeny for the listing fee of " . number_format($settings['listing_fee']) . " Zeny.");
+            }
+        }
+
+        return DB::transaction(function () use ($user, $char, $marketplaceItemId, $currencyType, $unitPrice, $quantity, $durationHours, $settings) {
+            if ($settings['listing_fee'] > 0) {
+                DB::connection('ragnarok')->table('char')
+                    ->where('char_id', $char->char_id)
+                    ->decrement('zeny', $settings['listing_fee']);
+            }
+
             $item = MarketplaceItem::where('id', $marketplaceItemId)
                 ->where('user_id', $user->id)
                 ->lockForUpdate()

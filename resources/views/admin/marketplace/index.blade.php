@@ -270,7 +270,33 @@
         <div x-show="adminTab === 'settings'" class="space-y-6">
             <form action="{{ route('admin.marketplace.settings') }}" method="POST">
                 @csrf
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- Master Activation Card -->
+                <div class="p-5 rounded-2xl bg-[#1C1525] border border-[#3E2E4E] space-y-4">
+                    <h3 class="text-sm font-bold text-white font-cinzel flex items-center gap-2 border-b border-[#3E2E4E] pb-3">
+                        <i data-lucide="power" class="w-4 h-4 text-[#D4AF37]"></i>
+                        Extension Activation &amp; Maintenance Status
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center justify-between p-3.5 rounded-xl bg-[#140E1B] border border-[#352643]">
+                            <div>
+                                <label class="text-xs font-bold text-white block">Enable Marketplace Extension</label>
+                                <span class="text-[11px] text-slate-400">Master switch to make the Trade House accessible to registered players.</span>
+                            </div>
+                            <input type="checkbox" name="module_enabled_marketplace" value="1" {{ !empty($settings['enabled']) ? 'checked' : '' }} class="w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
+                        </div>
+
+                        <div class="flex items-center justify-between p-3.5 rounded-xl bg-[#140E1B] border border-[#352643]">
+                            <div>
+                                <label class="text-xs font-bold text-white block">Maintenance Mode</label>
+                                <span class="text-[11px] text-slate-400">Temporarily suspend listing creation and purchases while keeping listings safe.</span>
+                            </div>
+                            <input type="checkbox" name="marketplace_maintenance_mode" value="1" {{ !empty($settings['maintenance_mode']) ? 'checked' : '' }} class="w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                     <!-- General & Operation Settings -->
                     <div class="p-5 rounded-2xl bg-[#1C1525] border border-[#3E2E4E] space-y-4">
                         <h3 class="text-sm font-bold text-white font-cinzel flex items-center gap-2 border-b border-[#3E2E4E] pb-3">
@@ -278,32 +304,30 @@
                             Operations &amp; Announcements
                         </h3>
 
-                        <div class="flex items-center justify-between p-3 rounded-xl bg-[#140E1B] border border-[#352643]">
-                            <div>
-                                <label class="text-xs font-bold text-white block">Maintenance Mode</label>
-                                <span class="text-[11px] text-slate-400">Temporarily suspend listing creation and purchases for players.</span>
-                            </div>
-                            <input type="checkbox" name="marketplace_maintenance_mode" value="1" {{ !empty($settings['maintenance_mode']) ? 'checked' : '' }} class="w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
-                        </div>
-
                         <div>
                             <label class="text-xs font-bold text-slate-300 block mb-1">Marketplace Announcement</label>
                             <input type="text" name="marketplace_announcement" value="{{ $settings['announcement'] }}" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white">
+                            <span class="text-[10px] text-slate-400 mt-0.5 block">Displayed at the top of the Trade House interface</span>
                         </div>
 
                         <div>
                             <label class="text-xs font-bold text-slate-300 block mb-1">Trade House Rules &amp; Notice</label>
                             <textarea name="marketplace_rules" rows="3" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white">{{ $settings['rules'] }}</textarea>
+                            <span class="text-[10px] text-slate-400 mt-0.5 block">Official rules guidelines shown to players</span>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-3 gap-3">
                             <div>
-                                <label class="text-xs font-bold text-slate-300 block mb-1">Max Listings / Player</label>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Max / Player</label>
                                 <input type="number" name="marketplace_max_listings_player" value="{{ $settings['max_listings_player'] }}" min="1" max="100" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white">
                             </div>
                             <div>
-                                <label class="text-xs font-bold text-slate-300 block mb-1">Max Listings / Character</label>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Max / Character</label>
                                 <input type="number" name="marketplace_max_listings_char" value="{{ $settings['max_listings_char'] }}" min="1" max="50" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Max Items / Listing</label>
+                                <input type="number" name="marketplace_max_items_per_listing" value="{{ $settings['max_items_per_listing'] ?? 1000 }}" min="1" max="30000" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white">
                             </div>
                         </div>
 
@@ -317,28 +341,51 @@
                                 <input type="number" name="marketplace_max_price" value="{{ $settings['max_price'] }}" min="1" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white">
                             </div>
                         </div>
+
+                        <div class="grid grid-cols-3 gap-3 pt-2 border-t border-[#3E2E4E]">
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Min Duration</label>
+                                <input type="number" name="marketplace_min_duration_hours" value="{{ $settings['min_duration_hours'] ?? 24 }}" min="1" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white">
+                                <span class="text-[10px] text-slate-400">Hours</span>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Default Duration</label>
+                                <select name="marketplace_default_duration_hours" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white">
+                                    <option value="24" {{ $settings['default_duration_hours'] == 24 ? 'selected' : '' }}>24 Hours (1 Day)</option>
+                                    <option value="72" {{ $settings['default_duration_hours'] == 72 ? 'selected' : '' }}>72 Hours (3 Days)</option>
+                                    <option value="168" {{ $settings['default_duration_hours'] == 168 ? 'selected' : '' }}>168 Hours (7 Days)</option>
+                                    <option value="336" {{ $settings['default_duration_hours'] == 336 ? 'selected' : '' }}>336 Hours (14 Days)</option>
+                                    <option value="720" {{ $settings['default_duration_hours'] == 720 ? 'selected' : '' }}>720 Hours (30 Days)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Max Duration</label>
+                                <input type="number" name="marketplace_max_duration_hours" value="{{ $settings['max_duration_hours'] ?? 720 }}" min="24" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white">
+                                <span class="text-[10px] text-slate-400">Hours</span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Currencies, Tax & Restrictions -->
                     <div class="p-5 rounded-2xl bg-[#1C1525] border border-[#3E2E4E] space-y-4">
                         <h3 class="text-sm font-bold text-white font-cinzel flex items-center gap-2 border-b border-[#3E2E4E] pb-3">
                             <i data-lucide="shield-check" class="w-4 h-4 text-[#D4AF37]"></i>
-                            Currencies, Taxes &amp; Item Safety
+                            Currencies, Fees, Taxes &amp; Item Safety
                         </h3>
 
                         <div class="grid grid-cols-2 gap-4">
                             <div class="flex items-center justify-between p-3 rounded-xl bg-[#140E1B] border border-[#352643]">
                                 <div>
-                                    <label class="text-xs font-bold text-white block">Allow Zeny</label>
-                                    <span class="text-[10px] text-slate-400">Trade in Zeny</span>
+                                    <label class="text-xs font-bold text-white block">Allow Zeny Payments</label>
+                                    <span class="text-[10px] text-slate-400">Trade using character Zeny</span>
                                 </div>
                                 <input type="checkbox" name="marketplace_allow_zeny" value="1" {{ !empty($settings['allow_zeny']) ? 'checked' : '' }} class="w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
                             </div>
 
                             <div class="flex items-center justify-between p-3 rounded-xl bg-[#140E1B] border border-[#352643]">
                                 <div>
-                                    <label class="text-xs font-bold text-white block">Allow Cash Points</label>
-                                    <span class="text-[10px] text-slate-400">Trade in CP</span>
+                                    <label class="text-xs font-bold text-white block">Allow Cash Points Payments</label>
+                                    <span class="text-[10px] text-slate-400">Trade using account CP</span>
                                 </div>
                                 <input type="checkbox" name="marketplace_allow_cashpoints" value="1" {{ !empty($settings['allow_cashpoints']) ? 'checked' : '' }} class="w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
                             </div>
@@ -351,25 +398,20 @@
                                 <span class="text-[10px] text-slate-400">Deducted from seller proceeds</span>
                             </div>
                             <div>
-                                <label class="text-xs font-bold text-slate-300 block mb-1">Default Duration</label>
-                                <select name="marketplace_default_duration_hours" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white">
-                                    <option value="24" {{ $settings['default_duration_hours'] == 24 ? 'selected' : '' }}>24 Hours (1 Day)</option>
-                                    <option value="72" {{ $settings['default_duration_hours'] == 72 ? 'selected' : '' }}>72 Hours (3 Days)</option>
-                                    <option value="168" {{ $settings['default_duration_hours'] == 168 ? 'selected' : '' }}>168 Hours (7 Days)</option>
-                                    <option value="336" {{ $settings['default_duration_hours'] == 336 ? 'selected' : '' }}>336 Hours (14 Days)</option>
-                                    <option value="720" {{ $settings['default_duration_hours'] == 720 ? 'selected' : '' }}>720 Hours (30 Days)</option>
-                                </select>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Listing Insertion Fee (Zeny)</label>
+                                <input type="number" name="marketplace_listing_fee" value="{{ $settings['listing_fee'] }}" min="0" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white">
+                                <span class="text-[10px] text-slate-400">Flat fee charged upon listing</span>
                             </div>
                         </div>
 
                         <!-- Item Safety Rules -->
                         <div class="space-y-2 pt-2 border-t border-[#3E2E4E]">
-                            <p class="text-[11px] font-bold text-[#E5B358] uppercase tracking-wider">Trading Safeguards</p>
+                            <p class="text-[11px] font-bold text-[#E5B358] uppercase tracking-wider font-cinzel">Item Safeguards &amp; Restriction Rules</p>
 
                             <div class="grid grid-cols-2 gap-3 text-xs">
                                 <label class="flex items-center gap-2 text-slate-300">
                                     <input type="checkbox" name="marketplace_allow_withdrawals" value="1" {{ !empty($settings['allow_withdrawals']) ? 'checked' : '' }} class="w-4 h-4 rounded text-[#D4AF37]">
-                                    Allow Withdrawals
+                                    Allow Item Withdrawals
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-300">
                                     <input type="checkbox" name="marketplace_allow_stackables" value="1" {{ !empty($settings['allow_stackables']) ? 'checked' : '' }} class="w-4 h-4 rounded text-[#D4AF37]">
@@ -385,11 +427,11 @@
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-300">
                                     <input type="checkbox" name="marketplace_allow_cards" value="1" {{ !empty($settings['allow_cards']) ? 'checked' : '' }} class="w-4 h-4 rounded text-[#D4AF37]">
-                                    Allow Cards &amp; Carded Items
+                                    Allow Cards &amp; Item Options
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-300">
                                     <input type="checkbox" name="marketplace_history_enabled" value="1" {{ !empty($settings['history_enabled']) ? 'checked' : '' }} class="w-4 h-4 rounded text-[#D4AF37]">
-                                    Record Trade History
+                                    Enable Marketplace History
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-300">
                                     <input type="checkbox" name="marketplace_allow_bound" value="1" {{ !empty($settings['allow_bound']) ? 'checked' : '' }} class="w-4 h-4 rounded text-[#D4AF37]">
@@ -405,7 +447,7 @@
                 </div>
 
                 <div class="mt-6 flex justify-end">
-                    <button type="submit" class="px-6 py-2.5 rounded-xl font-bold text-xs bg-gradient-to-b from-[#E5B358] to-[#B8860B] text-[#17111F] border border-[#FCE69B] shadow-md hover:brightness-110 transition-all flex items-center gap-2">
+                    <button type="submit" class="px-6 py-2.5 rounded-xl font-bold text-xs bg-gradient-to-b from-[#E5B358] to-[#B8860B] text-[#17111F] border border-[#FCE69B] shadow-md hover:brightness-110 transition-all flex items-center gap-2 cursor-pointer">
                         <i data-lucide="save" class="w-4 h-4"></i>
                         Save Marketplace Settings
                     </button>

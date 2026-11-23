@@ -54,14 +54,18 @@ class AdminMarketplaceController extends Controller
     public function updateSettings(Request $request)
     {
         $fields = [
+            'module_enabled_marketplace' => $request->has('module_enabled_marketplace') ? '1' : '0',
             'marketplace_maintenance_mode' => $request->has('marketplace_maintenance_mode') ? '1' : '0',
             'marketplace_announcement' => $request->input('marketplace_announcement', ''),
             'marketplace_rules' => $request->input('marketplace_rules', ''),
             'marketplace_max_listings_player' => (int) $request->input('marketplace_max_listings_player', 15),
             'marketplace_max_listings_char' => (int) $request->input('marketplace_max_listings_char', 8),
+            'marketplace_max_items_per_listing' => (int) $request->input('marketplace_max_items_per_listing', 1000),
             'marketplace_min_price' => (int) $request->input('marketplace_min_price', 1),
             'marketplace_max_price' => (int) $request->input('marketplace_max_price', 1000000000),
             'marketplace_default_duration_hours' => (int) $request->input('marketplace_default_duration_hours', 72),
+            'marketplace_min_duration_hours' => (int) $request->input('marketplace_min_duration_hours', 24),
+            'marketplace_max_duration_hours' => (int) $request->input('marketplace_max_duration_hours', 720),
             'marketplace_tax_percent' => (float) $request->input('marketplace_tax_percent', 5.0),
             'marketplace_listing_fee' => (int) $request->input('marketplace_listing_fee', 0),
             'marketplace_allow_zeny' => $request->has('marketplace_allow_zeny') ? '1' : '0',
