@@ -1,5 +1,5 @@
 <footer class="mt-auto border-t-4 border-[#8C6A2D] bg-[#291A10] text-[#E7D5BE] shadow-inner">
-    <div class="max-w-7xl mx-auto px-4 py-10">
+    <div class="ro-container py-10">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <!-- Col 1: Server Lore & Branding -->
             <div class="md:col-span-2 space-y-3">

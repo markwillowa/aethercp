@@ -17,7 +17,7 @@
                 <p class="text-xs text-[#5C4632] mt-0.5">One unified account for in-game client & web dashboard</p>
             </div>
 
-            @if ($errors->any())
+            @if (isset($errors) && $errors->any())
                 <div class="p-3 bg-[#FDEEED] border border-[#EF5350] rounded text-xs text-[#B71C1C] space-y-1">
                     @foreach ($errors->all() as $error)
                         <p class="flex items-center gap-1.5">

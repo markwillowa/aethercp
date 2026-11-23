@@ -1,19 +1,19 @@
 <nav x-data="{ mobileOpen: false, userDropdown: false }" class="relative z-30 shadow-md">
     <!-- Middle Brand Banner (Classic Ragnarok Medieval Crest) -->
-    <div class="bg-gradient-to-r from-[#2F1D13] via-[#483120] to-[#2F1D13] border-b border-[#7D5D39] py-4 px-4 sm:px-6">
-        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+    <div class="ro-brand-banner px-4 sm:px-6">
+        <div class="ro-container flex flex-wrap items-center justify-between gap-4">
             <!-- Brand Crest & Server Titles -->
-            <a href="{{ route('home') }}" class="flex items-center gap-3.5 group text-decoration-none">
-                <div class="w-12 h-12 rounded bg-gradient-to-b from-[#D4AF67] to-[#7D5A1B] p-0.5 shadow-md flex items-center justify-center">
-                    <div class="w-full h-full bg-[#3B2618] rounded flex items-center justify-center border border-[#E9C788]">
-                        <i data-lucide="shield" class="w-6 h-6 text-[#FFDA89]"></i>
+            <a href="{{ route('home') }}" class="ro-brand">
+                <div class="ro-brand-crest">
+                    <div class="ro-brand-crest-inner">
+                        <i data-lucide="shield"></i>
                     </div>
                 </div>
-                <div>
-                    <span class="text-2xl font-black font-serif tracking-tight text-[#FFF0D4] drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] block">
+                <div class="ro-brand-text">
+                    <span class="ro-brand-title">
                         {{ config('aether.name', 'AetherCP') }}
                     </span>
-                    <span class="text-xs uppercase tracking-widest text-[#E6C280] font-bold block">
+                    <span class="ro-brand-subtitle">
                         {{ config('aether.server_name', 'Ragnarok Online') }} &bull; Rune-Midgard Saga
                     </span>
                 </div>
@@ -82,7 +82,7 @@
 
     <!-- Classic Wooden Menu Bar -->
     <div class="ro-navbar">
-        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+        <div class="ro-container flex items-center justify-between">
             <!-- Desktop Links -->
             <div class="ro-desktop-only items-center flex-wrap">
                 <a href="{{ route('home') }}" class="ro-nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
