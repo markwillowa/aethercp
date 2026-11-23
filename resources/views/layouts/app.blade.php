@@ -26,7 +26,11 @@
     </style>
 
     @if(!empty($currentTheme['has_css']) && !empty($currentTheme['slug']))
-        <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => $currentTheme['slug'], 'path' => 'theme.css']) }}">
+        @php
+            $cssAssetPath = base_path('themes/' . $currentTheme['slug'] . '/assets/theme.css');
+            $cssVer = file_exists($cssAssetPath) ? filemtime($cssAssetPath) : '1.0';
+        @endphp
+        <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => $currentTheme['slug'], 'path' => 'theme.css']) }}?v={{ $cssVer }}">
     @endif
 </head>
 <body class="text-slate-200 min-h-screen flex flex-col font-sans antialiased selection:bg-amber-400 selection:text-black">

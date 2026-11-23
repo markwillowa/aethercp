@@ -65,6 +65,26 @@ class DonationTest extends TestCase
             $table->tinyInteger('slots')->default(0);
         });
 
+        Schema::connection('ragnarok')->create('login', function ($table) {
+            $table->increments('account_id');
+            $table->string('userid', 23)->unique();
+            $table->string('user_pass', 32)->default('');
+            $table->string('sex', 1)->default('M');
+            $table->string('email', 39)->default('');
+            $table->integer('group_id')->default(0);
+            $table->integer('state')->default(0);
+        });
+
+        DB::connection('ragnarok')->table('login')->insert([
+            'account_id' => 2000001,
+            'userid' => 'adventurer',
+            'user_pass' => md5('password'),
+            'sex' => 'M',
+            'email' => 'adventurer@example.com',
+            'group_id' => 0,
+            'state' => 0,
+        ]);
+
         DB::connection('ragnarok')->table('item_db')->insert([
             ['id' => 607, 'name_aegis' => 'Yggdrasilberry', 'name_english' => 'Yggdrasil Berry', 'type' => 'Healing', 'slots' => 0],
             ['id' => 2220, 'name_aegis' => 'Helm_Of_Sun_God', 'name_english' => 'Helm of Sun God', 'type' => 'Armor', 'slots' => 1],
@@ -503,5 +523,65 @@ class DonationTest extends TestCase
 
         $this->assertCount(1, $storageRows);
         $this->assertEquals(25, $storageRows->first()->amount);
+    }
+
+    public function test_admin_can_grant_direct_reward_and_points_to_player(): void
+    {
+        // 1. Grant 5000 Cash Points and 20x Yggdrasil Berry to account 2000001
+        $response = $this->actingAs($this->admin)->post(route('admin.donations.grant'), [
+            'identifier' => '2000001',
+            'points' => 5000,
+            'item_id' => 607,
+            'item_amount' => 20,
+            'notes' => 'GM Event First Place Prize',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        // Check points in acc_reg_num
+        $pointsReg = DB::connection('ragnarok')
+            ->table('acc_reg_num')
+            ->where('account_id', 2000001)
+            ->where('key', '#CASHPOINTS')
+            ->first();
+
+        $this->assertNotNull($pointsReg);
+        $this->assertEquals(5000, $pointsReg->value);
+
+        // Check item delivered to storage
+        $storageItem = DB::connection('ragnarok')
+            ->table('storage')
+            ->where('account_id', 2000001)
+            ->where('nameid', 607)
+            ->first();
+
+        $this->assertNotNull($storageItem);
+        $this->assertEquals(20, $storageItem->amount);
+
+        // Verify donation ledger record created
+        $this->assertDatabaseHas('donations', [
+            'account_id' => 2000001,
+            'points_awarded' => 5000,
+            'payment_method' => 'admin_grant',
+            'status' => 'approved',
+            'points_delivered' => 1,
+            'items_delivered' => 1,
+        ]);
+
+        // 2. Invalid account returns error
+        $badAccRes = $this->actingAs($this->admin)->post(route('admin.donations.grant'), [
+            'identifier' => '9999999',
+            'points' => 100,
+        ]);
+        $badAccRes->assertSessionHas('error');
+
+        // 3. Non-existent item returns error
+        $badItemRes = $this->actingAs($this->admin)->post(route('admin.donations.grant'), [
+            'identifier' => '2000001',
+            'item_id' => 999999,
+            'item_amount' => 1,
+        ]);
+        $badItemRes->assertSessionHas('error');
     }
 }

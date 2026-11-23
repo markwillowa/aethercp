@@ -3,14 +3,14 @@
         <div class="flex items-center justify-between h-16">
             <!-- Brand Logo -->
             <div class="flex items-center gap-3">
-                <a href="{{ route('home') }}" class="flex items-center gap-2.5 group">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all">
+                <a href="{{ route('home') }}" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all shrink-0">
                         <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
                             <i data-lucide="shield" class="w-5 h-5 text-cyan-400 group-hover:scale-110 transition-transform"></i>
                         </div>
                     </div>
-                    <div>
-                        <span class="text-xl font-bold tracking-tight aether-gradient-text">{{ config('aether.name', 'AetherCP') }}</span>
+                    <div class="shrink-0">
+                        <span class="text-xl font-bold tracking-tight aether-gradient-text block">{{ config('aether.name', 'AetherCP') }}</span>
                         <span class="block text-[10px] text-slate-400 uppercase tracking-widest">{{ config('aether.server_name', 'Ragnarok') }}</span>
                     </div>
                 </a>

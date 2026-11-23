@@ -145,6 +145,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Donations
     Route::get('/donations', [AdminController::class, 'donations'])->name('donations');
     Route::post('/donations/{id}/status', [AdminController::class, 'updateDonationStatus'])->name('donations.status');
+    Route::post('/donations/grant', [AdminController::class, 'grantDonationReward'])->name('donations.grant');
     Route::get('/donations/packages', [AdminController::class, 'donationPackages'])->name('donations.packages');
     Route::post('/donations/packages', [AdminController::class, 'storeDonationPackage'])->name('donations.packages.store');
     Route::put('/donations/packages/{id}', [AdminController::class, 'updateDonationPackage'])->name('donations.packages.update');
@@ -152,6 +153,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/donations/packages/{id}/toggle', [AdminController::class, 'toggleDonationPackage'])->name('donations.packages.toggle');
     Route::post('/donations/settings', [AdminController::class, 'updateDonationSettings'])->name('donations.settings.update');
     Route::post('/donations/settings/reset', [AdminController::class, 'resetDefaultDonationSettings'])->name('donations.settings.reset');
+
+    // Downloads Editor
+    Route::get('/downloads', [AdminController::class, 'downloads'])->name('downloads.index');
+    Route::post('/downloads', [AdminController::class, 'storeDownload'])->name('downloads.store');
+    Route::put('/downloads/{id}', [AdminController::class, 'updateDownload'])->name('downloads.update');
+    Route::delete('/downloads/{id}', [AdminController::class, 'deleteDownload'])->name('downloads.delete');
+    Route::post('/downloads/{id}/toggle', [AdminController::class, 'toggleDownload'])->name('downloads.toggle');
 
     // Item Database Search for Admin Selectors
     Route::get('/items/search', [AdminController::class, 'searchItems'])->name('items.search');

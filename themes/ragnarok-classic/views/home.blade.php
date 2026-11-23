@@ -220,20 +220,20 @@
             </div>
 
             <!-- Quick Rates Strip inside banner -->
-            <div class="ro-rates-strip text-xs">
-                <div>
+            <div class="ro-rates-strip grid grid-cols-2 sm:grid-cols-4 w-full text-center bg-[#EBDDBF] border-t border-[#DECBB1] py-2.5 text-xs">
+                <div class="border-b sm:border-b-0 border-r border-[#DECBB1] py-1 px-2">
                     <span class="block text-[10px] text-[#77644E] font-bold uppercase">Base</span>
                     <strong class="text-sm font-bold text-[#3A2A1C]">{{ config('aether.rates.base') }}</strong>
                 </div>
-                <div>
+                <div class="border-b sm:border-b-0 sm:border-r border-[#DECBB1] py-1 px-2">
                     <span class="block text-[10px] text-[#77644E] font-bold uppercase">Job</span>
                     <strong class="text-sm font-bold text-[#3A2A1C]">{{ config('aether.rates.job') }}</strong>
                 </div>
-                <div>
+                <div class="border-r border-[#DECBB1] py-1 px-2">
                     <span class="block text-[10px] text-[#77644E] font-bold uppercase">Drop</span>
                     <strong class="text-sm font-bold text-[#3A2A1C]">{{ config('aether.rates.drop') }}</strong>
                 </div>
-                <div>
+                <div class="py-1 px-2">
                     <span class="block text-[10px] text-[#77644E] font-bold uppercase">Episode</span>
                     <strong class="text-sm font-bold text-[#315B88]">19.0</strong>
                 </div>

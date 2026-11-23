@@ -1,10 +1,46 @@
 @extends('layouts.admin')
 
 @section('admin_content')
-<div class="space-y-6">
-    <div class="border-b border-slate-800 pb-4">
-        <h1 class="text-2xl font-bold text-white">Donation Management</h1>
-        <p class="text-xs text-slate-400 mt-1">Review player donation submissions, PayPal IPN payments, and in-game reward fulfillment.</p>
+<div x-data="{
+    showGrantModal: false,
+    itemQuery: '',
+    items: [],
+    selectedItem: null,
+    searching: false,
+    searchItems() {
+        if (this.itemQuery.length < 2) {
+            this.items = [];
+            return;
+        }
+        this.searching = true;
+        fetch('{{ route('admin.items.search') }}?q=' + encodeURIComponent(this.itemQuery))
+            .then(res => res.json())
+            .then(data => {
+                this.items = data;
+                this.searching = false;
+            })
+            .catch(() => { this.searching = false; });
+    },
+    selectItem(item) {
+        this.selectedItem = item;
+        this.itemQuery = item.name + ' (#' + item.id + ')';
+        this.items = [];
+    },
+    clearItem() {
+        this.selectedItem = null;
+        this.itemQuery = '';
+        this.items = [];
+    }
+}" class="space-y-6">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+            <h1 class="text-2xl font-bold text-white">Donation Management</h1>
+            <p class="text-xs text-slate-400 mt-1">Review player donation submissions, PayPal IPN payments, and in-game reward fulfillment.</p>
+        </div>
+        <button @click="showGrantModal = true" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-amber-500/20 transition-all shrink-0">
+            <i data-lucide="award" class="w-4 h-4"></i>
+            <span>+ Direct GM Credit / Item Grant</span>
+        </button>
     </div>
 
     <!-- Top Sub-Navigation Tabs -->
@@ -23,6 +59,13 @@
         <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
             <i data-lucide="check-circle" class="w-4 h-4 shrink-0"></i>
             <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-center gap-2">
+            <i data-lucide="alert-triangle" class="w-4 h-4 shrink-0"></i>
+            <span>{{ session('error') }}</span>
         </div>
     @endif
 
@@ -120,6 +163,88 @@
 
     <div class="pt-2">
         {{ $donations->links() }}
+    </div>
+
+    <!-- Direct GM Grant Modal -->
+    <div x-show="showGrantModal" x-transition.opacity class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4" style="display: none;">
+        <div @click.away="showGrantModal = false" class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400"></i>
+                    <span>Direct GM Reward &amp; Points Grant</span>
+                </h3>
+                <button @click="showGrantModal = false" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-400">Directly grant in-game Cash Points (#CASHPOINTS) and/or official item rewards delivered straight to the player's Kafra Storage without requiring external payment.</p>
+
+            <form method="POST" action="{{ route('admin.donations.grant') }}" class="space-y-4 text-xs">
+                @csrf
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Target Account *</label>
+                    <input type="text" name="identifier" required placeholder="Game Account ID (e.g. 2000001) or Username" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white">
+                    <p class="text-[11px] text-slate-500 mt-1">Accepts numeric Account ID or exact login username from the rAthena game database.</p>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Cash Points to Award</label>
+                    <input type="number" name="points" min="0" placeholder="0" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white font-mono">
+                    <p class="text-[11px] text-slate-500 mt-1">Automatically credited to player's in-game <code>#CASHPOINTS</code> account registry.</p>
+                </div>
+
+                <!-- Item Reward Live Search -->
+                <div class="space-y-1 relative">
+                    <label class="block font-semibold text-slate-300">In-Game Item Reward (from Database)</label>
+                    <input type="hidden" name="item_id" :value="selectedItem ? selectedItem.id : ''">
+
+                    <div class="relative">
+                        <input type="text" x-model="itemQuery" @input.debounce.300ms="searchItems()" placeholder="Search item name or ID from item_db..." class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white">
+                        <div x-show="searching" class="absolute right-3 top-2.5 text-slate-500">
+                            <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                        </div>
+                        <button type="button" x-show="selectedItem" @click="clearItem()" class="absolute right-3 top-2.5 text-slate-400 hover:text-red-400">
+                            <i data-lucide="x-circle" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- Autocomplete dropdown -->
+                    <div x-show="items.length > 0" class="absolute left-0 right-0 z-50 mt-1 bg-slate-950 border border-slate-800 rounded-xl shadow-xl max-h-48 overflow-y-auto divide-y divide-slate-800/60" style="display: none;">
+                        <template x-for="item in items" :key="item.id">
+                            <div @click="selectItem(item)" class="p-2 hover:bg-slate-900 cursor-pointer flex items-center justify-between">
+                                <div>
+                                    <span class="text-white font-bold" x-text="item.name"></span>
+                                    <span class="text-[10px] text-slate-500 ml-1.5" x-text="'[' + item.type + ']'"></span>
+                                </div>
+                                <span class="font-mono text-cyan-400 text-[10px]" x-text="'#' + item.id"></span>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div x-show="selectedItem" class="p-2 bg-emerald-950/40 border border-emerald-500/30 rounded-xl text-emerald-300 text-[11px] flex items-center justify-between mt-1">
+                        <span>Selected: <strong x-text="selectedItem.name"></strong> (ID: #<span x-text="selectedItem.id"></span>)</span>
+                        <span class="text-[10px] uppercase font-bold text-emerald-400">Validated</span>
+                    </div>
+                </div>
+
+                <div x-show="selectedItem">
+                    <label class="block font-semibold text-slate-300 mb-1">Item Quantity</label>
+                    <input type="number" name="item_amount" min="1" value="1" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white font-mono">
+                    <p class="text-[11px] text-slate-500 mt-1">Directly delivered to player's in-game storage (Kafra).</p>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Grant Reason / Admin Audit Notes</label>
+                    <input type="text" name="notes" placeholder="e.g. PvP Tournament 1st Place reward" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white">
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                    <button type="button" @click="showGrantModal = false" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold">Confirm &amp; Deliver In-Game</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 @endsection

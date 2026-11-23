@@ -583,4 +583,188 @@ class AdminController extends Controller
 
         return response()->json($formatted);
     }
+
+    public function grantDonationReward(
+        Request $request,
+        \App\Services\Donation\InGameRewardService $rewardService,
+        \App\Contracts\Repositories\ItemRepositoryInterface $itemRepo
+    ) {
+        $request->validate([
+            'identifier' => 'required|string|max:50',
+            'points' => 'nullable|integer|min:0',
+            'item_id' => 'nullable|integer|min:1',
+            'item_amount' => 'nullable|integer|min:1',
+            'notes' => 'nullable|string|max:255',
+        ]);
+
+        $identifier = trim($request->input('identifier'));
+        $points = (int) $request->input('points', 0);
+        $itemId = $request->input('item_id') ? (int) $request->input('item_id') : null;
+        $itemAmount = $itemId ? (int) $request->input('item_amount', 1) : 0;
+        $notes = $request->input('notes') ?: 'Direct GM Reward Grant';
+
+        if ($points <= 0 && empty($itemId)) {
+            return back()->withInput()->with('error', 'Please specify either Cash Points or an Item Reward to grant.');
+        }
+
+        // Find game account by account_id or userid
+        $account = is_numeric($identifier)
+            ? $this->accounts->findById((int) $identifier)
+            : $this->accounts->findByUsername($identifier);
+
+        if (!$account) {
+            return back()->withInput()->with('error', "Game account '{$identifier}' could not be found.");
+        }
+
+        $itemName = null;
+        if ($itemId) {
+            $item = $itemRepo->findById($itemId);
+            if (!$item) {
+                return back()->withInput()->with('error', "Item ID {$itemId} does not exist in the game database.");
+            }
+            $itemName = $item->name_english ?: ($item->name_aegis ?: "Item #{$itemId}");
+        }
+
+        $noteDetails = $notes . ($itemId ? " | Item: {$itemAmount}x [{$itemName}] (#{$itemId})" : "");
+
+        // Create an approved donation ledger record
+        $donation = Donation::create([
+            'account_id' => $account->account_id,
+            'package_id' => null,
+            'amount' => 0.00,
+            'currency' => 'USD',
+            'points_awarded' => $points,
+            'payment_method' => 'admin_grant',
+            'transaction_reference' => 'GM-GRANT-' . strtoupper(bin2hex(random_bytes(6))),
+            'status' => 'approved',
+            'notes' => $noteDetails . ' (Granted by GM ' . (auth()->user()->username ?? 'Admin') . ')',
+            'points_delivered' => false,
+            'items_delivered' => false,
+            'verified_by' => auth()->id(),
+            'verified_at' => now(),
+        ]);
+
+        $deliveryMessages = [];
+
+        // Deliver Cash Points directly into acc_reg_num (#CASHPOINTS)
+        if ($points > 0) {
+            $success = $rewardService->creditCashPoints($account->account_id, $points);
+            if ($success) {
+                $donation->points_delivered = true;
+                $deliveryMessages[] = number_format($points) . " Cash Points";
+            }
+        }
+
+        // Deliver Item directly into player in-game storage
+        if ($itemId && $itemAmount > 0) {
+            $success = $rewardService->deliverItemToStorage($account->account_id, $itemId, $itemAmount);
+            if ($success) {
+                $donation->items_delivered = true;
+                $deliveryMessages[] = "{$itemAmount}x [{$itemName}] (ID: {$itemId}) delivered to Storage";
+            }
+        }
+
+        $donation->save();
+
+        $summary = implode(' and ', $deliveryMessages);
+        ActivityLog::log('admin.reward_grant', "Granted {$summary} to Account #{$account->account_id} ({$account->userid})");
+
+        return back()->with('success', "Successfully granted {$summary} to game account {$account->userid} (ID: #{$account->account_id})!");
+    }
+
+    public function downloads()
+    {
+        $downloads = Download::orderBy('sort_order')->orderBy('id', 'desc')->get();
+        return view('admin.downloads', compact('downloads'));
+    }
+
+    public function storeDownload(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:100',
+            'category' => 'required|string|max:50',
+            'version' => 'nullable|string|max:20',
+            'file_size' => 'nullable|string|max:50',
+            'url_mirror1' => 'required|url|max:255',
+            'url_mirror2' => 'nullable|url|max:255',
+            'url_mirror3' => 'nullable|url|max:255',
+            'description' => 'nullable|string|max:500',
+            'sort_order' => 'nullable|integer',
+            'is_active' => 'nullable|boolean',
+        ]);
+
+        $download = Download::create([
+            'title' => $validated['title'],
+            'category' => $validated['category'],
+            'version' => $validated['version'] ?? null,
+            'file_size' => $validated['file_size'] ?? null,
+            'url_mirror1' => $validated['url_mirror1'],
+            'url_mirror2' => $validated['url_mirror2'] ?? null,
+            'url_mirror3' => $validated['url_mirror3'] ?? null,
+            'description' => $validated['description'] ?? null,
+            'sort_order' => (int) ($validated['sort_order'] ?? 0),
+            'is_active' => (bool) $request->input('is_active', true),
+        ]);
+
+        ActivityLog::log('admin.download_create', "Added new game client download [{$download->title}]");
+
+        return back()->with('success', "Download '{$download->title}' added successfully.");
+    }
+
+    public function updateDownload(Request $request, int $id)
+    {
+        $download = Download::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:100',
+            'category' => 'required|string|max:50',
+            'version' => 'nullable|string|max:20',
+            'file_size' => 'nullable|string|max:50',
+            'url_mirror1' => 'required|url|max:255',
+            'url_mirror2' => 'nullable|url|max:255',
+            'url_mirror3' => 'nullable|url|max:255',
+            'description' => 'nullable|string|max:500',
+            'sort_order' => 'nullable|integer',
+            'is_active' => 'nullable|boolean',
+        ]);
+
+        $download->update([
+            'title' => $validated['title'],
+            'category' => $validated['category'],
+            'version' => $validated['version'] ?? null,
+            'file_size' => $validated['file_size'] ?? null,
+            'url_mirror1' => $validated['url_mirror1'],
+            'url_mirror2' => $validated['url_mirror2'] ?? null,
+            'url_mirror3' => $validated['url_mirror3'] ?? null,
+            'description' => $validated['description'] ?? null,
+            'sort_order' => (int) ($validated['sort_order'] ?? 0),
+            'is_active' => (bool) $request->input('is_active', true),
+        ]);
+
+        ActivityLog::log('admin.download_update', "Updated game client download [{$download->title}]");
+
+        return back()->with('success', "Download '{$download->title}' updated successfully.");
+    }
+
+    public function deleteDownload(int $id)
+    {
+        $download = Download::findOrFail($id);
+        $title = $download->title;
+        $download->delete();
+
+        ActivityLog::log('admin.download_delete', "Deleted game download package [{$title}]");
+
+        return back()->with('success', "Download '{$title}' deleted successfully.");
+    }
+
+    public function toggleDownload(int $id)
+    {
+        $download = Download::findOrFail($id);
+        $download->is_active = !$download->is_active;
+        $download->save();
+
+        ActivityLog::log('admin.download_toggle', "Toggled status for download [{$download->title}] to " . ($download->is_active ? 'active' : 'inactive'));
+
+        return back()->with('success', "Download status updated.");
+    }
 }

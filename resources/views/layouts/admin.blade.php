@@ -23,32 +23,36 @@
     </style>
 
     @if(!empty($currentTheme['has_css']) && !empty($currentTheme['slug']))
-        <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => $currentTheme['slug'], 'path' => 'theme.css']) }}">
+        @php
+            $cssAssetPath = base_path('themes/' . $currentTheme['slug'] . '/assets/theme.css');
+            $cssVer = file_exists($cssAssetPath) ? filemtime($cssAssetPath) : '1.0';
+        @endphp
+        <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => $currentTheme['slug'], 'path' => 'theme.css']) }}?v={{ $cssVer }}">
     @endif
 </head>
 <body class="{{ !empty($currentTheme['is_light']) ? 'bg-[#EDE2C7] text-[#3A2A1C]' : 'bg-[#070a13] text-slate-200' }} min-h-screen flex flex-col font-sans antialiased">
     <!-- Top Admin Bar -->
-    <header class="border-b border-slate-800 bg-[#0b0f19] sticky top-0 z-30">
+    <header class="admin-header border-b {{ !empty($currentTheme['is_light']) ? 'border-[#8C6A2D] bg-[#2D1D13]' : 'border-slate-800 bg-[#0b0f19]' }} sticky top-0 z-30">
         <div class="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold">
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 group">
+                    <div class="w-8 h-8 rounded-lg {{ !empty($currentTheme['is_light']) ? 'bg-[#4A301D] border border-[#FFDA89] text-[#FFE082]' : 'bg-amber-500/20 border border-amber-500/40 text-amber-400' }} flex items-center justify-center font-bold shrink-0">
                         <i data-lucide="shield-alert" class="w-4 h-4"></i>
                     </div>
-                    <div>
-                        <span class="text-sm font-bold text-white tracking-wide">AetherCP <span class="text-amber-400">Admin</span></span>
-                        <span class="block text-[10px] text-slate-500">{{ config('aether.server_name') }}</span>
+                    <div class="shrink-0">
+                        <span class="text-sm font-bold {{ !empty($currentTheme['is_light']) ? 'text-[#FFF0D4]' : 'text-white' }} tracking-wide">AetherCP <span class="text-amber-400">Admin</span></span>
+                        <span class="block text-[10px] {{ !empty($currentTheme['is_light']) ? 'text-[#C5B090]' : 'text-slate-500' }}">{{ config('aether.server_name') }}</span>
                     </div>
                 </a>
             </div>
 
             <div class="flex items-center space-x-3">
-                <a href="{{ route('home') }}" target="_blank" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 flex items-center gap-1.5 transition-colors">
+                <a href="{{ route('home') }}" target="_blank" class="px-3 py-1.5 rounded-lg text-xs font-semibold {{ !empty($currentTheme['is_light']) ? 'bg-[#315B88] border border-[#6392C2] text-[#F8EBD2] hover:bg-[#3d6e9f]' : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800' }} flex items-center gap-1.5 transition-colors">
                     <i data-lucide="globe" class="w-3.5 h-3.5 text-cyan-400"></i>
                     <span>View Public Site</span>
                 </a>
                 <span class="text-xs text-slate-400">|</span>
-                <span class="text-xs font-semibold text-cyan-400">{{ auth()->user()->username }}</span>
+                <span class="text-xs font-semibold {{ !empty($currentTheme['is_light']) ? 'text-[#FFDA89]' : 'text-cyan-400' }}">{{ auth()->user()->username }}</span>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="p-1.5 text-slate-400 hover:text-red-400 rounded-lg hover:bg-slate-900 transition-colors" title="Log Out">
@@ -61,9 +65,9 @@
 
     <div class="flex-grow flex">
         <!-- Sidebar Navigation -->
-        <aside class="w-64 border-r border-slate-800 bg-[#070a13] p-4 space-y-6 hidden md:block shrink-0">
+        <aside class="admin-sidebar w-64 border-r {{ !empty($currentTheme['is_light']) ? 'border-[#8C6A2D] bg-[#22140B] text-[#E7D5BE]' : 'border-slate-800 bg-[#070a13] text-slate-400' }} p-4 space-y-6 hidden md:block shrink-0">
             <div>
-                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3 mb-2">Operations</p>
+                <p class="text-[10px] font-bold uppercase tracking-wider {{ !empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500' }} px-3 mb-2">Operations</p>
                 <div class="space-y-1 text-xs">
                     <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                         <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
@@ -85,11 +89,15 @@
             </div>
 
             <div>
-                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3 mb-2">Content & Revenue</p>
+                <p class="text-[10px] font-bold uppercase tracking-wider {{ !empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500' }} px-3 mb-2">Content & Revenue</p>
                 <div class="space-y-1 text-xs">
                     <a href="{{ route('admin.news.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.news*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                         <i data-lucide="newspaper" class="w-4 h-4"></i>
                         <span>News & Articles</span>
+                    </a>
+                    <a href="{{ route('admin.downloads.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.downloads*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                        <i data-lucide="download-cloud" class="w-4 h-4"></i>
+                        <span>Downloads Editor</span>
                     </a>
                     <a href="{{ route('admin.donations') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ (request()->routeIs('admin.donations') && !request()->routeIs('admin.donations.packages*')) ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                         <i data-lucide="credit-card" class="w-4 h-4"></i>
@@ -103,7 +111,7 @@
             </div>
 
             <div>
-                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3 mb-2">System</p>
+                <p class="text-[10px] font-bold uppercase tracking-wider {{ !empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500' }} px-3 mb-2">System</p>
                 <div class="space-y-1 text-xs">
                     <a href="{{ route('admin.modules') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.modules*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                         <i data-lucide="package" class="w-4 h-4"></i>

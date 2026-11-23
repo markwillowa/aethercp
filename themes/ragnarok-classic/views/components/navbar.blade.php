@@ -3,17 +3,17 @@
     <div class="ro-brand-banner px-4 sm:px-6">
         <div class="ro-container flex flex-wrap items-center justify-between gap-4">
             <!-- Brand Crest & Server Titles -->
-            <a href="{{ route('home') }}" class="ro-brand">
-                <div class="ro-brand-crest">
+            <a href="{{ route('home') }}" class="ro-brand flex items-center no-underline group">
+                <div class="ro-brand-crest shrink-0 mr-3">
                     <div class="ro-brand-crest-inner">
-                        <i data-lucide="shield" class="w-6 h-6 text-[#FFDA89]"></i>
+                        <i data-lucide="shield" class="w-6 h-6 text-[#FFE082] stroke-[#FFE082] fill-[#FFDA89]/40 drop-shadow"></i>
                     </div>
                 </div>
                 <div class="ro-brand-text">
-                    <span class="ro-brand-title">
+                    <span class="ro-brand-title block">
                         {{ config('aether.name', 'AetherCP') }}
                     </span>
-                    <span class="ro-brand-subtitle">
+                    <span class="ro-brand-subtitle block">
                         {{ config('aether.server_name', 'Ragnarok Online') }} &bull; Rune-Midgard Saga
                     </span>
                 </div>

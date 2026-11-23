@@ -12,7 +12,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Ragnarok Classic Theme Stylesheet -->
-    <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => 'ragnarok-classic', 'path' => 'theme.css']) }}">
+    @php
+        $cssAssetPath = base_path('themes/ragnarok-classic/assets/theme.css');
+        $cssVer = file_exists($cssAssetPath) ? filemtime($cssAssetPath) : '1.0';
+    @endphp
+    <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => 'ragnarok-classic', 'path' => 'theme.css']) }}?v={{ $cssVer }}">
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased text-[#3A2A1C]">
     <!-- Top Retro MMORPG Status Bar -->

@@ -106,5 +106,59 @@ class AdminManagementTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Guild Records');
     }
+
+    public function test_admin_can_manage_downloads(): void
+    {
+        // 1. View downloads page
+        $res = $this->actingAs($this->admin)->get('/admin/downloads');
+        $res->assertStatus(200);
+        $res->assertSee('Downloads &amp; Client Manager', false);
+
+        // 2. Create download package
+        $createRes = $this->actingAs($this->admin)->post('/admin/downloads', [
+            'title' => 'FreynixRO Full Client v2.0',
+            'category' => 'Full Client',
+            'version' => '2.0.0',
+            'file_size' => '2.8 GB',
+            'url_mirror1' => 'https://downloads.example.com/client.zip',
+            'url_mirror2' => 'https://mirror2.example.com/client.zip',
+            'description' => 'Official full installer with updated Gepard Shield.',
+            'sort_order' => 1,
+            'is_active' => 1,
+        ]);
+        $createRes->assertRedirect();
+
+        $this->assertDatabaseHas('downloads', [
+            'title' => 'FreynixRO Full Client v2.0',
+            'category' => 'Full Client',
+            'version' => '2.0.0',
+            'file_size' => '2.8 GB',
+        ]);
+
+        $download = \App\Models\Download::where('title', 'FreynixRO Full Client v2.0')->first();
+
+        // 3. Update download package
+        $updateRes = $this->actingAs($this->admin)->put("/admin/downloads/{$download->id}", [
+            'title' => 'FreynixRO Full Client v2.1',
+            'category' => 'Full Client',
+            'version' => '2.1.0',
+            'file_size' => '2.9 GB',
+            'url_mirror1' => 'https://downloads.example.com/client_v2.1.zip',
+            'sort_order' => 1,
+            'is_active' => 1,
+        ]);
+        $updateRes->assertRedirect();
+        $this->assertDatabaseHas('downloads', ['title' => 'FreynixRO Full Client v2.1', 'version' => '2.1.0']);
+
+        // 4. Toggle active status
+        $toggleRes = $this->actingAs($this->admin)->post("/admin/downloads/{$download->id}/toggle");
+        $toggleRes->assertRedirect();
+        $this->assertFalse((bool) $download->fresh()->is_active);
+
+        // 5. Delete download package
+        $delRes = $this->actingAs($this->admin)->delete("/admin/downloads/{$download->id}");
+        $delRes->assertRedirect();
+        $this->assertDatabaseMissing('downloads', ['id' => $download->id]);
+    }
 }
 
