@@ -151,6 +151,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/donations/packages/{id}', [AdminController::class, 'deleteDonationPackage'])->name('donations.packages.delete');
     Route::post('/donations/packages/{id}/toggle', [AdminController::class, 'toggleDonationPackage'])->name('donations.packages.toggle');
     Route::post('/donations/settings', [AdminController::class, 'updateDonationSettings'])->name('donations.settings.update');
+    Route::post('/donations/settings/reset', [AdminController::class, 'resetDefaultDonationSettings'])->name('donations.settings.reset');
+
+    // Item Database Search for Admin Selectors
+    Route::get('/items/search', [AdminController::class, 'searchItems'])->name('items.search');
 
     // Modules & Themes
     Route::get('/modules', [AdminController::class, 'modules'])->name('modules');

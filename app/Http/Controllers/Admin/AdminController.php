@@ -376,9 +376,31 @@ class AdminController extends Controller
         }
     }
 
+    public static function getDefaultDonationGuides(): array
+    {
+        $serverName = config('aether.server_name', 'FreynixRO');
+        return [
+            'donation_instructions' => "Welcome to the official {$serverName} Support & Donation Portal!\n\nAll contributions go directly toward sustaining our high-performance dedicated server hosting, automated daily off-site backups, DDoS mitigation, anti-cheat licensing, and ongoing episode content expansions.\n\n⚡ Instant Automated Delivery:\nDonations completed via PayPal are automatically processed via IPN within seconds. Your Cash Points are immediately credited to your account (#CASHPOINTS) and reward items are placed into your account Kafra Storage.\n\n🛡️ Alternative & Manual Payment:\nIf you contribute via Bank Wire, GCash, or Crypto, submit your transaction reference ID below for Game Master verification.",
+
+            'donation_payment_details' => "Accepted Contribution Channels:\n\n1. Instant PayPal Checkout:\nClick the 'Instant PayPal Checkout' button on any package tier above for immediate automated delivery.\n\n2. G-Cash / E-Wallet:\nAccount Name: {$serverName} Administration\nAccount Number: 0917-555-ROCP (0917-555-7627)\n\n3. Bank Wire / Online Deposit:\nBank Name: Banco de Oro (BDO)\nAccount Name: {$serverName} Operations\nAccount Number: 0048-2819-9401\n\n4. Cryptocurrency (USDT - TRC20):\nWallet: TFreynixROCommunityWalletAddress7788\nNetwork: Tron (TRC20)\n\n*Important: After completing an offline transfer, submit your Transaction Reference ID below for GM verification.",
+
+            'donation_kafra_guide' => "How to Retrieve Your In-Game Rewards:\n\n1. Cash Points (#CASHPOINTS):\nPoints are automatically attached to your master account. You can verify your balance in-game using the @cashpoints command or by clicking the Cash Shop icon below the mini-map.\n\n2. In-Game Item Rewards (Kafra Storage Vault):\nReward items are delivered directly into your account's shared Kafra Storage.\n• Step 1: Log into any character on your account.\n• Step 2: Speak with any Kafra Employee in Prontera (Central: prontera 151, 187), Morroc, Geffen, Payon, or Alberta.\n• Step 3: Select 'Use Storage' from the menu.\n• Step 4: Your bonus reward items are ready to be withdrawn!",
+
+            'donation_terms' => "Donation Terms & Voluntary Support Policy:\n1. All donations are 100% voluntary contributions made to support {$serverName} server infrastructure and uptime.\n2. In-game Cash Points and bonus storage items are complimentary digital tokens of appreciation.\n3. Donations are non-refundable once processed and delivered.\n4. Game server rules apply equally to all adventurers; donor status provides no exemption from gameplay rules or anti-cheat policies.\n5. For support or payment inquiries, open a ticket on our official Discord community.",
+        ];
+    }
+
     public function donationPackages()
     {
         $packages = DonationPackage::orderBy('sort_order', 'asc')->get();
+
+        // Check if donation guides exist; if not, seed authentic defaults
+        if (!SiteSetting::where('key', 'donation_instructions')->exists()) {
+            foreach (static::getDefaultDonationGuides() as $k => $v) {
+                SiteSetting::set($k, $v, 'donations');
+            }
+        }
+
         $instructions = SiteSetting::get('donation_instructions', '');
         $paymentDetails = SiteSetting::get('donation_payment_details', '');
         $kafraGuide = SiteSetting::get('donation_kafra_guide', '');
@@ -405,9 +427,17 @@ class AdminController extends Controller
         $itemId = $request->input('item_id');
         $itemName = $request->input('item_name');
 
-        if ($itemId && empty($itemName)) {
+        if (!empty($itemId)) {
             $item = $itemRepo->findById((int) $itemId);
-            $itemName = $item ? ($item->name_english ?: $item->name_aegis) : "Reward Item #{$itemId}";
+            if (!$item) {
+                return back()->withInput()->with('error', "Item ID {$itemId} does not exist in the game database. Only items existing in the database can be selected as rewards.");
+            }
+            if (empty($itemName)) {
+                $itemName = $item->name_english ?: ($item->name_aegis ?: "Item #{$itemId}");
+            }
+        } else {
+            $itemId = null;
+            $itemName = null;
         }
 
         $package = DonationPackage::create([
@@ -417,9 +447,9 @@ class AdminController extends Controller
             'currency' => strtoupper($request->input('currency', 'USD')),
             'points' => (int) $request->input('points'),
             'bonus_points' => (int) $request->input('bonus_points', 0),
-            'item_id' => $itemId ?: null,
-            'item_amount' => (int) $request->input('item_amount', 0),
-            'item_name' => $itemName ?: null,
+            'item_id' => $itemId,
+            'item_amount' => $itemId ? (int) $request->input('item_amount', 1) : 0,
+            'item_name' => $itemName,
             'is_popular' => (bool) $request->input('is_popular', false),
             'is_active' => (bool) $request->input('is_active', true),
             'sort_order' => (int) $request->input('sort_order', 0),
@@ -449,9 +479,17 @@ class AdminController extends Controller
         $itemId = $request->input('item_id');
         $itemName = $request->input('item_name');
 
-        if ($itemId && empty($itemName)) {
+        if (!empty($itemId)) {
             $item = $itemRepo->findById((int) $itemId);
-            $itemName = $item ? ($item->name_english ?: $item->name_aegis) : "Reward Item #{$itemId}";
+            if (!$item) {
+                return back()->withInput()->with('error', "Item ID {$itemId} does not exist in the game database. Only items existing in the database can be selected as rewards.");
+            }
+            if (empty($itemName)) {
+                $itemName = $item->name_english ?: ($item->name_aegis ?: "Item #{$itemId}");
+            }
+        } else {
+            $itemId = null;
+            $itemName = null;
         }
 
         $package->update([
@@ -461,9 +499,9 @@ class AdminController extends Controller
             'currency' => strtoupper($request->input('currency', 'USD')),
             'points' => (int) $request->input('points'),
             'bonus_points' => (int) $request->input('bonus_points', 0),
-            'item_id' => $itemId ?: null,
-            'item_amount' => (int) $request->input('item_amount', 0),
-            'item_name' => $itemName ?: null,
+            'item_id' => $itemId,
+            'item_amount' => $itemId ? (int) $request->input('item_amount', 1) : 0,
+            'item_name' => $itemName,
             'is_popular' => (bool) $request->input('is_popular', false),
             'is_active' => (bool) $request->input('is_active', true),
             'sort_order' => (int) $request->input('sort_order', 0),
@@ -511,5 +549,38 @@ class AdminController extends Controller
         ActivityLog::log('admin.donation_settings', "Updated donation guidelines, instructions, and Kafra delivery details.");
 
         return back()->with('success', 'Donation instructions and reward guidelines saved successfully.');
+    }
+
+    public function resetDefaultDonationSettings()
+    {
+        foreach (static::getDefaultDonationGuides() as $k => $v) {
+            SiteSetting::set($k, $v, 'donations');
+        }
+
+        ActivityLog::log('admin.donation_guides_reset', "Reset donation guides and instructions to authentic defaults.");
+
+        return back()->with('success', 'Donation guides, payment instructions, and Kafra delivery details have been populated with authentic defaults.');
+    }
+
+    public function searchItems(Request $request, \App\Contracts\Repositories\ItemRepositoryInterface $itemRepo)
+    {
+        $keyword = trim($request->input('q', ''));
+        if (strlen($keyword) < 1) {
+            return response()->json([]);
+        }
+
+        $res = $itemRepo->search($keyword, null, 15);
+        $formatted = array_map(function ($item) {
+            $name = $item->name_english ?? $item->name_aegis ?? "Item #{$item->id}";
+            return [
+                'id' => $item->id,
+                'name' => $name,
+                'aegis' => $item->name_aegis ?? '',
+                'type' => $item->type ?? 'Item',
+                'slots' => $item->slots ?? 0,
+            ];
+        }, $res['items'] ?? []);
+
+        return response()->json($formatted);
     }
 }

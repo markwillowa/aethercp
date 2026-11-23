@@ -137,7 +137,26 @@ class InGameRewardService
     {
         $conn = DB::connection('ragnarok');
 
-        // Insert item into Kafra storage
+        // Check if an existing stack of this item already exists in storage
+        $existing = $conn->table('storage')
+            ->where('account_id', $accountId)
+            ->where('nameid', $itemId)
+            ->where('equip', 0)
+            ->where('card0', 0)
+            ->where('card1', 0)
+            ->where('card2', 0)
+            ->where('card3', 0)
+            ->where('refine', 0)
+            ->first();
+
+        // If an existing unrefined/uncarded stack exists, increment the amount (up to 30000 per stack)
+        if ($existing && ($existing->amount + $amount) <= 30000) {
+            return (bool) $conn->table('storage')
+                ->where('id', $existing->id)
+                ->increment('amount', $amount);
+        }
+
+        // Insert new item row into Kafra storage
         return $conn->table('storage')->insert([
             'account_id' => $accountId,
             'nameid' => $itemId,

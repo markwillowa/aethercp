@@ -88,7 +88,7 @@
                                         <i data-lucide="gift" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i>
                                         <span>+{{ $pkg->item_amount }}x {{ $pkg->item_name ?: 'Item #' . $pkg->item_id }}</span>
                                     </div>
-                                    <span class="text-[10px] text-slate-500 font-mono block">Item ID: {{ $pkg->item_id }} &bull; Storage Delivery</span>
+                                    <span class="text-[10px] text-slate-500 font-mono block">Item ID: {{ $pkg->item_id }} &bull; Auto-Assigned to Storage</span>
                                 @else
                                     <span class="text-slate-500 italic">Points Only</span>
                                 @endif
@@ -138,14 +138,24 @@
 
     <!-- Instructions & Details Customizer Form -->
     <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 backdrop-blur-md shadow-xl space-y-6">
-        <div>
-            <h2 class="text-base font-bold text-white flex items-center gap-2">
-                <i data-lucide="file-text" class="w-5 h-5 text-cyan-400"></i>
-                <span>Donation Guidelines, Payment Details &amp; Reward Instructions</span>
-            </h2>
-            <p class="text-xs text-slate-400 mt-0.5">
-                These notices and instructions appear on the public donation page to explain payment methods, claim procedures, and Kafra Storage delivery.
-            </p>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="file-text" class="w-5 h-5 text-cyan-400"></i>
+                    <span>Donation Guidelines, Payment Details &amp; Reward Instructions</span>
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">
+                    These notices and instructions appear on the public donation page to explain payment methods, claim procedures, and Kafra Storage delivery.
+                </p>
+            </div>
+
+            <form method="POST" action="{{ route('admin.donations.settings.reset') }}" onsubmit="return confirm('Populate / reset guidelines and instructions with authentic Ragnarok Online defaults?');">
+                @csrf
+                <button type="submit" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 text-xs font-semibold transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                    <span>Populate Default Guides</span>
+                </button>
+            </form>
         </div>
 
         <form method="POST" action="{{ route('admin.donations.settings.update') }}" class="space-y-4">
@@ -258,30 +268,62 @@
                 </div>
             </div>
 
-            <!-- In-Game Item Reward Section -->
+            <!-- In-Game Item Reward Selection Section (Database Verified) -->
             <div class="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 space-y-3">
-                <div class="flex items-center gap-1.5 text-xs font-bold text-amber-300">
-                    <i data-lucide="package-plus" class="w-4 h-4 text-amber-400"></i>
-                    <span>Bonus In-Game Item Reward (Delivered to Kafra Storage)</span>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1.5 text-xs font-bold text-amber-300">
+                        <i data-lucide="package-plus" class="w-4 h-4 text-amber-400"></i>
+                        <span>Bonus In-Game Item Reward (Assigned to Kafra Storage)</span>
+                    </div>
+                    <span class="text-[10px] text-slate-400 font-medium">Only items in `item_db` allowed</span>
                 </div>
 
+                <!-- Live Item Search Field -->
+                <div class="relative">
+                    <label class="block text-[11px] font-semibold text-slate-300 mb-1">Search &amp; Select Item from Database</label>
+                    <div class="relative">
+                        <input type="text" id="item_search_input" placeholder="Type item name or ID (e.g. Yggdrasil, Sword, 607)..." autocomplete="off"
+                            oninput="searchDatabaseItems(this.value)"
+                            class="w-full pl-8 pr-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200 placeholder-slate-600">
+                        <i data-lucide="search" class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2.5"></i>
+                    </div>
+
+                    <!-- Search Results Dropdown -->
+                    <div id="item_search_results" class="absolute left-0 right-0 top-full mt-1 bg-slate-950 border border-slate-800 rounded-xl max-h-48 overflow-y-auto shadow-2xl z-50 divide-y divide-slate-800/60 hidden">
+                    </div>
+                </div>
+
+                <!-- Selected Item Indicator Badge -->
+                <div id="selected_item_badge" class="p-2.5 rounded-lg bg-amber-950/40 border border-amber-500/30 flex items-center justify-between text-xs text-amber-200 hidden">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                        <div>
+                            <span id="selected_item_title" class="font-bold text-white"></span>
+                            <span id="selected_item_meta" class="text-[10px] text-amber-300 block font-mono"></span>
+                        </div>
+                    </div>
+                    <button type="button" onclick="clearSelectedItem()" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-red-950 text-slate-300 hover:text-red-300 text-[10px] font-semibold transition-colors">
+                        Clear Reward
+                    </button>
+                </div>
+
+                <!-- Hidden / Direct Values -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
                         <label class="block text-[11px] font-semibold text-slate-400 mb-1">Item ID</label>
-                        <input type="number" id="pkg_item_id" name="item_id" min="1" placeholder="e.g. 607"
-                            class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200 font-mono">
-                        <span class="text-[9px] text-slate-500">e.g. 607 (Yggdrasil Berry)</span>
-                    </div>
-
-                    <div>
-                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Amount</label>
-                        <input type="number" id="pkg_item_amount" name="item_amount" min="0" value="0" placeholder="15"
+                        <input type="number" id="pkg_item_id" name="item_id" min="1" placeholder="None"
                             class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200 font-mono">
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Display Item Name</label>
-                        <input type="text" id="pkg_item_name" name="item_name" placeholder="Yggdrasil Berry"
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Reward Quantity</label>
+                        <input type="number" id="pkg_item_amount" name="item_amount" min="0" value="0" placeholder="1"
+                            class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200 font-mono">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Display Item Label</label>
+                        <input type="text" id="pkg_item_name" name="item_name" placeholder="Leave empty to use database name"
                             class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
                     </div>
                 </div>
@@ -309,11 +351,11 @@
 
             <div class="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
                 <button type="button" onclick="closePackageModal()"
-                    class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">
+                    class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer">
                     Cancel
                 </button>
                 <button type="submit"
-                    class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold shadow-md">
+                    class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold shadow-md cursor-pointer">
                     Save Donation Package
                 </button>
             </div>
@@ -322,6 +364,73 @@
 </div>
 
 <script>
+    var searchTimeout = null;
+
+    function searchDatabaseItems(query) {
+        clearTimeout(searchTimeout);
+        var trimmed = query.trim();
+        var dropdown = document.getElementById('item_search_results');
+
+        if (trimmed.length < 1) {
+            dropdown.classList.add('hidden');
+            dropdown.innerHTML = '';
+            return;
+        }
+
+        searchTimeout = setTimeout(function () {
+            fetch("{{ route('admin.items.search') }}?q=" + encodeURIComponent(trimmed))
+                .then(function (res) { return res.json(); })
+                .then(function (items) {
+                    if (!items || items.length === 0) {
+                        dropdown.innerHTML = '<div class="p-3 text-xs text-slate-500 text-center">No matching items found in item_db.</div>';
+                        dropdown.classList.remove('hidden');
+                        return;
+                    }
+
+                    var html = '';
+                    items.forEach(function (it) {
+                        html += '<div onclick="selectDatabaseItem(' + it.id + ', \'' + it.name.replace(/'/g, "\\'") + '\', \'' + (it.type || '') + '\')" ' +
+                            'class="p-2.5 hover:bg-slate-900 cursor-pointer flex items-center justify-between text-xs transition-colors">' +
+                            '<div>' +
+                            '<strong class="text-white block font-bold">' + it.name + '</strong>' +
+                            '<span class="text-[10px] text-slate-500 font-mono">ID: #' + it.id + (it.aegis ? ' (' + it.aegis + ')' : '') + '</span>' +
+                            '</div>' +
+                            '<span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase bg-slate-800 text-cyan-300 border border-slate-700">' + (it.type || 'Item') + '</span>' +
+                            '</div>';
+                    });
+                    dropdown.innerHTML = html;
+                    dropdown.classList.remove('hidden');
+                })
+                .catch(function () {
+                    dropdown.classList.add('hidden');
+                });
+        }, 250);
+    }
+
+    function selectDatabaseItem(id, name, type) {
+        document.getElementById('pkg_item_id').value = id;
+        document.getElementById('pkg_item_name').value = name;
+        if (!document.getElementById('pkg_item_amount').value || document.getElementById('pkg_item_amount').value == '0') {
+            document.getElementById('pkg_item_amount').value = '1';
+        }
+
+        document.getElementById('selected_item_title').innerText = name;
+        document.getElementById('selected_item_meta').innerText = 'Database ID: #' + id + (type ? ' • Type: ' + type : '') + ' • Assigned to Kafra Storage';
+        document.getElementById('selected_item_badge').classList.remove('hidden');
+
+        document.getElementById('item_search_input').value = '';
+        document.getElementById('item_search_results').classList.add('hidden');
+    }
+
+    function clearSelectedItem() {
+        document.getElementById('pkg_item_id').value = '';
+        document.getElementById('pkg_item_name').value = '';
+        document.getElementById('pkg_item_amount').value = '0';
+        document.getElementById('selected_item_badge').classList.add('hidden');
+        document.getElementById('item_search_input').value = '';
+        document.getElementById('item_search_results').classList.add('hidden');
+    }
+
     function openCreateModal() {
         document.getElementById('modal_title').innerText = 'Create New Donation Package';
         document.getElementById('package_form').action = "{{ route('admin.donations.packages.store') }}";
@@ -340,6 +449,7 @@
         document.getElementById('pkg_is_popular').checked = false;
         document.getElementById('pkg_is_active').checked = true;
 
+        clearSelectedItem();
         document.getElementById('package_modal').classList.remove('hidden');
     }
 
@@ -361,12 +471,27 @@
         document.getElementById('pkg_is_popular').checked = !!pkg.is_popular;
         document.getElementById('pkg_is_active').checked = !!pkg.is_active;
 
+        if (pkg.item_id > 0) {
+            selectDatabaseItem(pkg.item_id, pkg.item_name || ('Item #' + pkg.item_id), '');
+        } else {
+            clearSelectedItem();
+        }
+
         document.getElementById('package_modal').classList.remove('hidden');
     }
 
     function closePackageModal() {
         document.getElementById('package_modal').classList.add('hidden');
+        document.getElementById('item_search_results').classList.add('hidden');
     }
+
+    // Close dropdown on outside click
+    document.addEventListener('click', function (e) {
+        var dropdown = document.getElementById('item_search_results');
+        var input = document.getElementById('item_search_input');
+        if (dropdown && !dropdown.contains(e.target) && e.target !== input) {
+            dropdown.classList.add('hidden');
+        }
+    });
 </script>
 @endsection
-

@@ -57,6 +57,19 @@ class DonationTest extends TestCase
             $table->bigInteger('unique_id')->default(0);
         });
 
+        Schema::connection('ragnarok')->create('item_db', function ($table) {
+            $table->increments('id');
+            $table->string('name_aegis', 50)->default('');
+            $table->string('name_english', 100)->default('');
+            $table->string('type', 20)->default('Etc');
+            $table->tinyInteger('slots')->default(0);
+        });
+
+        DB::connection('ragnarok')->table('item_db')->insert([
+            ['id' => 607, 'name_aegis' => 'Yggdrasilberry', 'name_english' => 'Yggdrasil Berry', 'type' => 'Healing', 'slots' => 0],
+            ['id' => 2220, 'name_aegis' => 'Helm_Of_Sun_God', 'name_english' => 'Helm of Sun God', 'type' => 'Armor', 'slots' => 1],
+        ]);
+
         $this->user = User::create([
             'account_id' => 2000001,
             'username' => 'adventurer',
@@ -406,5 +419,89 @@ class DonationTest extends TestCase
         $pub->assertStatus(200);
         $pub->assertSeeText('Special promo: 2x Cash Points this weekend only!');
         $pub->assertSeeText('Speak with the Prontera Central Kafra employee to retrieve your storage rewards.');
+    }
+
+    public function test_admin_cannot_assign_item_not_in_database(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/donations/packages', [
+            'name' => 'Invalid Item Package',
+            'price' => 15.00,
+            'currency' => 'USD',
+            'points' => 1000,
+            'item_id' => 999999, // Does not exist
+            'item_amount' => 1,
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+        $this->assertDatabaseMissing('donation_packages', ['name' => 'Invalid Item Package']);
+    }
+
+    public function test_admin_can_search_items_from_database(): void
+    {
+        $response = $this->actingAs($this->admin)->get('/admin/items/search?q=Yggdrasil');
+        $response->assertStatus(200);
+        $response->assertJsonFragment([
+            'id' => 607,
+            'name' => 'Yggdrasil Berry',
+            'type' => 'Healing',
+        ]);
+    }
+
+    public function test_admin_can_reset_donation_guides_to_defaults(): void
+    {
+        SiteSetting::set('donation_instructions', 'Old text');
+        $response = $this->actingAs($this->admin)->post('/admin/donations/settings/reset');
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $this->assertStringContainsString('FreynixRO', SiteSetting::get('donation_instructions'));
+        $this->assertStringContainsString('Kafra', SiteSetting::get('donation_kafra_guide'));
+    }
+
+    public function test_storage_delivery_increments_existing_item_stack(): void
+    {
+        // Player already has 10x Yggdrasil Berries in storage
+        DB::connection('ragnarok')->table('storage')->insert([
+            'account_id' => 2000001,
+            'nameid' => 607,
+            'amount' => 10,
+            'equip' => 0,
+            'identify' => 1,
+            'refine' => 0,
+            'attribute' => 0,
+            'card0' => 0,
+            'card1' => 0,
+            'card2' => 0,
+            'card3' => 0,
+            'expire_time' => 0,
+            'bound' => 0,
+            'unique_id' => 0,
+        ]);
+
+        $donation = Donation::create([
+            'account_id' => 2000001,
+            'package_id' => $this->package->id, // Package has 15x Yggdrasil Berry
+            'amount' => 25.00,
+            'currency' => 'USD',
+            'points_awarded' => 3000,
+            'payment_method' => 'manual',
+            'transaction_reference' => 'STACK-TEST-001',
+            'status' => 'pending',
+        ]);
+
+        $this->actingAs($this->admin)->post(route('admin.donations.status', $donation->id), [
+            'status' => 'approved',
+        ])->assertRedirect();
+
+        // Verify storage still has only 1 row for item 607, with incremented amount = 25 (10 + 15)
+        $storageRows = DB::connection('ragnarok')
+            ->table('storage')
+            ->where('account_id', 2000001)
+            ->where('nameid', 607)
+            ->get();
+
+        $this->assertCount(1, $storageRows);
+        $this->assertEquals(25, $storageRows->first()->amount);
     }
 }
