@@ -27,8 +27,28 @@ class InstallController extends Controller
         // Normalize out public if somehow present
         $suggestedUrl = preg_replace('/\/public\/?$/', '', $suggestedUrl);
 
+        $defaultConfig = [
+            'app_name' => config('app.name', 'AetherCP'),
+            'server_name' => config('aether.server_name', 'FreynixRO'),
+            'app_url' => $suggestedUrl,
+            'db_host' => config('database.connections.mysql.host', '127.0.0.1'),
+            'db_port' => config('database.connections.mysql.port', 3306),
+            'db_database' => config('database.connections.mysql.database', 'aether_cp'),
+            'db_username' => config('database.connections.mysql.username', 'admin'),
+            'db_password' => config('database.connections.mysql.password', ''),
+            'ro_db_host' => config('database.connections.ragnarok.host', '127.0.0.1'),
+            'ro_db_port' => config('database.connections.ragnarok.port', 3306),
+            'ro_db_database' => config('database.connections.ragnarok.database', 'freynix'),
+            'ro_db_username' => config('database.connections.ragnarok.username', 'admin'),
+            'ro_db_password' => config('database.connections.ragnarok.password', ''),
+            'ro_emulator' => config('emulator.driver', 'rathena'),
+            'ro_renewal' => (bool)config('emulator.renewal', true),
+            'ro_password_hash' => config('emulator.hash', 'plain'),
+        ];
+
         return view('install.index', [
             'requirements' => $requirements,
+            'defaultConfig' => $defaultConfig,
             'suggestedUrl' => $suggestedUrl,
             'isInstalled' => file_exists(storage_path('installed')),
         ]);
@@ -454,3 +474,4 @@ class InstallController extends Controller
         File::put($filePath, $content);
     }
 }
+

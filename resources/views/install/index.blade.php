@@ -40,29 +40,29 @@
              allRequirementsPassed: {{ $requirements['all_pass'] ? 'true' : 'false' }},
 
              // Step 2 Data
-             appName: 'AetherCP',
-             serverName: 'FreynixRO',
-             appUrl: '{{ $suggestedUrl }}',
+             appName: '{{ addslashes($defaultConfig['app_name']) }}',
+             serverName: '{{ addslashes($defaultConfig['server_name']) }}',
+             appUrl: '{{ addslashes($defaultConfig['app_url']) }}',
 
              // Step 3 Data: Web DB
-             dbHost: '127.0.0.1',
-             dbPort: 3306,
-             dbDatabase: 'aether_cp',
-             dbUsername: 'root',
-             dbPassword: '',
+             dbHost: '{{ addslashes($defaultConfig['db_host']) }}',
+             dbPort: {{ (int)$defaultConfig['db_port'] }},
+             dbDatabase: '{{ addslashes($defaultConfig['db_database']) }}',
+             dbUsername: '{{ addslashes($defaultConfig['db_username']) }}',
+             dbPassword: '{{ addslashes($defaultConfig['db_password']) }}',
              webDbTested: false,
              webDbTesting: false,
              webDbMessage: '',
 
              // Step 3 Data: Ragnarok Game DB
-             roDbHost: '127.0.0.1',
-             roDbPort: 3306,
-             roDbDatabase: 'freynix',
-             roDbUsername: 'root',
-             roDbPassword: '',
-             roEmulator: 'rathena',
-             roRenewal: true,
-             roPasswordHash: 'plain',
+             roDbHost: '{{ addslashes($defaultConfig['ro_db_host']) }}',
+             roDbPort: {{ (int)$defaultConfig['ro_db_port'] }},
+             roDbDatabase: '{{ addslashes($defaultConfig['ro_db_database']) }}',
+             roDbUsername: '{{ addslashes($defaultConfig['ro_db_username']) }}',
+             roDbPassword: '{{ addslashes($defaultConfig['ro_db_password']) }}',
+             roEmulator: '{{ addslashes($defaultConfig['ro_emulator']) }}',
+             roRenewal: {{ $defaultConfig['ro_renewal'] ? 'true' : 'false' }},
+             roPasswordHash: '{{ addslashes($defaultConfig['ro_password_hash']) }}',
              gameDbTested: false,
              gameDbTesting: false,
              gameDbMessage: '',
@@ -704,3 +704,4 @@
     </script>
 </body>
 </html>
+

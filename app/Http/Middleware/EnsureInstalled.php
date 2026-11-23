@@ -36,3 +36,4 @@ class EnsureInstalled
         return $next($request);
     }
 }
+
