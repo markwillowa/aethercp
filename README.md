@@ -75,7 +75,7 @@ AetherCP supports both a **Web-Based Setup Wizard** (no terminal needed) and a *
 #### Prerequisites
 - Install [XAMPP for Windows](https://www.apachefriends.org/) (PHP 8.2, 8.3, or 8.4) or [Laragon](https://laragon.org/).
 - Install [Composer for Windows](https://getcomposer.org/download/) (required to install PHP package dependencies).
-- *(Optional)* Install [Node.js & npm](https://nodejs.org/) (only if compiling frontend assets from source).
+- Install [Node.js & npm](https://nodejs.org/) (LTS version - **required** to compile frontend assets and generate the Vite manifest).
 - Ensure Apache and MySQL services are started in the XAMPP Control Panel.
 
 #### Step-by-Step Setup
@@ -101,7 +101,15 @@ AetherCP supports both a **Web-Based Setup Wizard** (no terminal needed) and a *
    php artisan key:generate
    ```
 
-4. **Verify PHP Extensions in `php.ini`**:
+4. **Install Node Dependencies & Compile Frontend Assets**:
+   > [!IMPORTANT]
+   > The `public/build/` directory is **excluded from Git**. You **must** run `npm install` and `npm run build` to compile the CSS, JavaScript, and generate `public/build/manifest.json`. Skipping this step causes `Illuminate\Foundation\ViteManifestNotFoundException: Vite manifest not found`.
+   ```powershell
+   npm install
+   npm run build
+   ```
+
+5. **Verify PHP Extensions in `php.ini`**:
    Open `C:\xampp\php\php.ini` and verify that the following extensions are uncommented (no leading `;`):
    ```ini
    extension=pdo_mysql
@@ -113,13 +121,6 @@ AetherCP supports both a **Web-Based Setup Wizard** (no terminal needed) and a *
    extension=zip
    ```
    *Restart Apache in XAMPP after editing `php.ini`.*
-
-5. **(Optional) Build Frontend Assets**:
-   Pre-built assets are included in `public/build/`. If you want to modify styles or themes:
-   ```powershell
-   npm install
-   npm run build
-   ```
 
 6. **Import Emulator SQL Files**:
    Open **phpMyAdmin** (`http://localhost/phpmyadmin`) or MySQL CLI and create your game database (e.g. `freynix`). Import your emulator's SQL files:
@@ -144,7 +145,7 @@ AetherCP supports both a **Web-Based Setup Wizard** (no terminal needed) and a *
 ### 2. Linux & Ubuntu Installation (22.04 / 24.04 LTS)
 
 #### Prerequisites & System Packages
-Update your package manager and install PHP, required extensions, and your web server:
+Update your package manager and install PHP, required extensions, Composer, Node.js, and your web server:
 
 ```bash
 sudo apt update && sudo apt upgrade -y
@@ -158,6 +159,10 @@ sudo apt update
 sudo apt install -y php8.3-fpm php8.3-cli php8.3-mysql php8.3-mbstring \
     php8.3-xml php8.3-curl php8.3-zip php8.3-gd php8.3-intl php8.3-bcmath \
     mariadb-server composer unzip
+
+# Install Node.js (v20+ LTS) and npm (Required for building Vite frontend assets)
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
 ```
 
 #### Option A: Nginx Configuration (Recommended)
@@ -168,13 +173,14 @@ sudo apt install -y php8.3-fpm php8.3-cli php8.3-mysql php8.3-mbstring \
    cd /var/www/aether
    ```
 
-2. **Install Composer Dependencies & Setup Environment**:
+2. **Install Composer & NPM Dependencies**:
    > [!IMPORTANT]
-   > Like all standard Laravel applications, third-party libraries in `vendor/` are **excluded from Git**. You **must** run `composer install` to create `vendor/autoload.php`.
+   > Like all standard Laravel applications, third-party libraries in `vendor/` and compiled assets in `public/build/` are **excluded from Git**. You **must** run `composer install` and `npm install && npm run build` to prevent `vendor/autoload.php` and `Vite manifest not found` errors.
    ```bash
    composer install --no-dev --optimize-autoloader
    cp .env.example .env
    php artisan key:generate
+   npm install && npm run build
    ```
 
 3. **Configure File Permissions**:
@@ -401,15 +407,36 @@ php artisan test
   php artisan key:generate
   ```
 
-### 3. Blank or Unstyled Pages / Missing CSS
-- **Cause**: Pre-built Vite assets in `public/build/` are missing or were cleaned.
+### 3. `Illuminate\Foundation\ViteManifestNotFoundException: Vite manifest not found`
+- **Error message**:
+  ```
+  Illuminate\Foundation\ViteManifestNotFoundException
+  vendor\laravel\framework\src\Illuminate\Foundation\Vite.php:974
+  Vite manifest not found at: C:\xampp\htdocs\aethercp\public\build/manifest.json
+  ```
+- **Cause**: The compiled frontend asset directory `public/build/` is gitignored. When cloning the repository, the compiled CSS/JS and the Vite `manifest.json` do not exist until the frontend build process runs.
+- **Solution**: Install Node dependencies and execute the production build command in your project root:
+  ```powershell
+  # Windows (PowerShell / CMD)
+  Set-Location C:\xampp\htdocs\aether
+  npm install
+  npm run build
+
+  # Linux (Ubuntu / Debian / CentOS)
+  cd /var/www/aether
+  npm install && npm run build
+  ```
+  *(Requires [Node.js & npm](https://nodejs.org/); if you do not have Node.js installed, download it or install via your OS package manager)*.
+
+### 4. Blank or Unstyled Pages / Missing CSS
+- **Cause**: Pre-built Vite assets in `public/build/` are missing or outdated.
 - **Solution**:
   ```bash
   npm install
   npm run build
   ```
 
-### 4. `Call to undefined function ...` or Missing PHP Extension
+### 5. `Call to undefined function ...` or Missing PHP Extension
 - **Cause**: Required PHP modules are disabled in `php.ini`.
 - **Solution**: Ensure `extension=pdo_mysql`, `extension=mbstring`, `extension=openssl`, `extension=curl`, `extension=fileinfo`, `extension=gd`, and `extension=zip` are active (uncommented) in `php.ini`, then restart your web server (Apache/Nginx).
 

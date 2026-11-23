@@ -47,7 +47,7 @@ server {
 
 ## 2. Dependency Installation & Environment Setup
 
-When cloning from Git, third-party libraries (`vendor/`) and environment configuration (`.env`) must be initialized:
+When cloning from Git, third-party libraries (`vendor/`), frontend bundles (`public/build/`), and environment configuration (`.env`) must be initialized:
 
 ```bash
 # 1. Install production PHP packages (creates vendor/autoload.php)
@@ -59,13 +59,18 @@ cp .env.example .env
 # 3. Generate application encryption key
 php artisan key:generate
 
-# 4. Set directory permissions (Linux)
+# 4. Install Node packages & compile production assets (creates public/build/manifest.json)
+npm install
+npm run build
+
+# 5. Set directory permissions (Linux)
 sudo chown -R www-data:www-data /var/www/aether
 sudo chmod -R 775 /var/www/aether/storage /var/www/aether/bootstrap/cache
 ```
 
-> [!NOTE]
-> If you encounter `Fatal error: Failed opening required vendor/autoload.php`, it indicates `composer install` has not been executed in the project root directory.
+> [!IMPORTANT]
+> - If you encounter `Fatal error: Failed opening required vendor/autoload.php`, run `composer install`.
+> - If you encounter `Illuminate\Foundation\ViteManifestNotFoundException: Vite manifest not found at: .../public/build/manifest.json`, run `npm install && npm run build`.
 
 ---
 
@@ -78,10 +83,7 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# 2. Build production assets
-npm run build
-
-# 3. Disable debug mode in .env
+# 2. Disable debug mode in .env
 APP_ENV=production
 APP_DEBUG=false
 ```
