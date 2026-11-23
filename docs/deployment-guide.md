@@ -90,9 +90,10 @@ APP_DEBUG=false
 
 ---
 
-## 4. Security Checklist
+## 4. Security Checklist & Admin Access
+- **Record Administrator Credentials**: The final step of the Web Installation Wizard explicitly displays your configured **Admin Username** and **Admin Password** (or reminder of in-game password). If installed via CLI `php artisan aether:install`, the default credentials are `admin` / `Admin1234!`.
+- **Change Default Password**: Change any default or temporary administrator password immediately upon first login at `/admin`.
 - Ensure `APP_DEBUG=false` in production.
 - Keep `DB_DATABASE` (`aether_cp`) separate from the game emulator database.
 - Use a database user with `SELECT`, `INSERT`, `UPDATE` permissions on emulator tables, avoiding unnecessary `DROP` privileges.
-- Change the default administrator password immediately upon first login.
 

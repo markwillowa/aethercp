@@ -137,8 +137,15 @@ AetherCP supports both a **Web-Based Setup Wizard** (no terminal needed) and a *
    - **Database Setup**: Pre-populated with your local MySQL credentials (`127.0.0.1`, port `3306`).
    - Click **"Test Connection"** on Web DB and **"Test Game DB"** to verify connectivity.
    - Click **"Execute Database Provisioning"** to migrate web tables.
-   - Choose your Administrator account (either elevate an existing in-game character to GM or create a web admin).
+   - **Administrator Account Setup**:
+     - *Elevate Existing Game Account (Recommended)*: Enter your existing game account userid to grant GM level 99 (uses your existing in-game password).
+     - *Create Standalone Web Administrator*: Enter a custom admin username, email, and password (minimum 6 characters).
    - Click **"Complete Installation"**!
+   - **Summary & Admin Credentials Screen**:
+     The final installation step explicitly lists your:
+     - **Admin Username**: Your designated administrator login.
+     - **Admin Password**: Your configured password (or a reminder if using your in-game password).
+     - Links to navigate straight to the **Public Site** or **Admin Control Panel** (`/admin`). Record these credentials before proceeding!
 
 ---
 
@@ -262,6 +269,7 @@ sudo apt install -y nodejs
 
 3. **Complete Installation in Browser**:
    Open `http://ro.yourdomain.com/` in your browser and follow the interactive wizard.
+   On Step 5, designate your administrator credentials. The final Step 6 screen will display your **Admin Username** and **Admin Password** for immediate login to `/admin`.
 
 ---
 
@@ -329,8 +337,13 @@ npm install && npm run build
 cp .env.example .env
 php artisan key:generate
 
-# 4. Run automated installation command
+# 4. Run automated installation command (creates database, tables, and default admin)
 php artisan aether:install
+
+# CLI installation outputs default administrative credentials upon completion:
+#   Username: admin
+#   Password: Admin1234!
+#   URL:      http://your-domain/login
 
 # 5. Lock the installer
 php -r "file_put_contents('storage/installed', json_encode(['installed_at' => date('c'), 'version' => '1.0.0']));"

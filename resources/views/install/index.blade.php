@@ -797,9 +797,14 @@
                             <span class="text-slate-500">Game Database:</span>
                             <span class="font-mono text-slate-200" x-text="roDbDatabase"></span>
                         </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-500">Administrator:</span>
-                            <strong class="text-amber-400" x-text="adminUsername"></strong>
+                        <div class="flex justify-between border-b border-slate-800/80 pb-1.5">
+                            <span class="text-slate-500">Admin Username:</span>
+                            <strong class="text-amber-400 font-mono" x-text="adminUsername"></strong>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-500">Admin Password:</span>
+                            <span class="font-mono text-emerald-400 font-bold select-all bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/30"
+                                  x-text="adminType === 'create_new_account' ? (adminPassword || 'Admin1234!') : '(Your In-Game Account Password)'"></span>
                         </div>
                     </div>
 
