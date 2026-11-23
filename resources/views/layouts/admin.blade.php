@@ -8,6 +8,9 @@
     <title>AetherCP Administration - {{ $title ?? 'Dashboard' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- Lucide Icons Global Fallback Script -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <!-- Dynamic Theme Styling & CSS Injection -->
     <style>
         :root {
@@ -52,7 +55,7 @@
                     <span>View Public Site</span>
                 </a>
                 <span class="text-xs text-slate-400">|</span>
-                <span class="text-xs font-semibold {{ !empty($currentTheme['is_light']) ? 'text-[#FFDA89]' : 'text-cyan-400' }}">{{ auth()->user()->username }}</span>
+                <span class="text-xs font-semibold {{ !empty($currentTheme['is_light']) ? 'text-[#FFDA89]' : 'text-cyan-400' }}">{{ auth()->user()?->username ?? 'Administrator' }}</span>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="p-1.5 text-slate-400 hover:text-red-400 rounded-lg hover:bg-slate-900 transition-colors" title="Log Out">
@@ -158,11 +161,15 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (window.renderAetherIcons) {
+        function initializeAdminIcons() {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            } else if (window.renderAetherIcons) {
                 window.renderAetherIcons();
             }
-        });
+        }
+        document.addEventListener('DOMContentLoaded', initializeAdminIcons);
+        window.addEventListener('load', initializeAdminIcons);
     </script>
 </body>
 </html>

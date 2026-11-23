@@ -1,0 +1,49 @@
+{
+    "name": "Aether Prestige",
+    "slug": "aether-prestige",
+    "description": "Luxury commercial MMORPG theme engineered for elite Ragnarok Online private servers. Features cinematic visuals, deep midnight aesthetics, champagne gold accents, and seamless rAthena & Hercules integration.",
+    "version": "1.0.0",
+    "author": "AetherCP Studios",
+    "license": "Commercial / Premium",
+    "price": "$39.00 USD",
+    "category": "Premium Commercial Theme",
+    "compatibility": {
+        "platform": "AetherCP v1.x",
+        "emulators": ["rAthena", "Hercules"],
+        "modes": ["Renewal", "Pre-Renewal"]
+    },
+    "colors": {
+        "primary": "#C6A76A",
+        "primary_dark": "#101725",
+        "accent": "#D8BE8A",
+        "background": "#101725",
+        "surface": "#151B26",
+        "surface_elevated": "#1B2432",
+        "surface_card": "#222D3C",
+        "platinum": "#D9DEE7",
+        "text_primary": "#F4F5F7",
+        "text_secondary": "#AAB3C1",
+        "text_muted": "#788394",
+        "border_subtle": "rgba(255, 255, 255, 0.08)",
+        "border_gold": "rgba(198, 167, 106, 0.35)",
+        "glow_gold": "rgba(198, 167, 106, 0.25)"
+    },
+    "typography": {
+        "display": "'Cinzel', serif",
+        "heading": "'Plus Jakarta Sans', sans-serif",
+        "body": "'Inter', sans-serif"
+    },
+    "customization": {
+        "server_logo": null,
+        "server_tagline": "Elevate Your World. Define Your Legacy.",
+        "hero_title": "AETHER PRESTIGE",
+        "hero_subtitle": "The Lost Realms",
+        "hero_description": "An epic open-world fantasy MMORPG where ancient powers clash, kingdoms fall, and heroes rise.",
+        "features_enabled": true,
+        "server_status_enabled": true,
+        "rankings_preview_enabled": true,
+        "news_preview_enabled": true,
+        "community_enabled": true
+    }
+}
+

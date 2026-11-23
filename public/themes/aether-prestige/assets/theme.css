@@ -1,0 +1,896 @@
+/* ==========================================================================
+   AETHER PRESTIGE — Luxury Commercial MMORPG Theme Stylesheet
+   Pixel-Perfect Layouts, Navigation, Hero, and Components
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    /* Brand Theme Colors */
+    --prestige-navy: #101725;
+    --prestige-charcoal: #151B26;
+    --prestige-surface: #1B2432;
+    --prestige-elevated: #222D3C;
+    
+    /* Luxury Accents */
+    --prestige-gold: #C6A76A;
+    --prestige-gold-light: #D8BE8A;
+    --prestige-cyan: #2DD4BF;
+    --prestige-platinum: #D9DEE7;
+    
+    /* Typography */
+    --prestige-text: #F4F5F7;
+    --prestige-text-secondary: #AAB3C1;
+    --prestige-text-muted: #788394;
+    
+    /* Borders */
+    --prestige-border: rgba(255, 255, 255, 0.08);
+    --prestige-border-gold: rgba(198, 167, 106, 0.35);
+
+    /* Fonts */
+    --font-serif: 'Cinzel', Georgia, serif;
+    --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Base Body Styles */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    background-color: var(--prestige-navy) !important;
+    color: var(--prestige-text) !important;
+    font-family: var(--font-sans);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+/* Typography Helpers */
+.font-cinzel {
+    font-family: var(--font-serif) !important;
+}
+
+.tracking-luxury {
+    letter-spacing: 0.25em !important;
+}
+
+.tracking-cinematic {
+    letter-spacing: 0.14em !important;
+}
+
+/* Global Container */
+.prestige-container {
+    width: 100%;
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+/* ==========================================================================
+   NAVIGATION BAR (Floating transparent on Home, solid on subpages)
+   ========================================================================== */
+.prestige-header-transparent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: linear-gradient(to bottom, rgba(16, 23, 37, 0.8) 0%, rgba(16, 23, 37, 0) 100%);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.prestige-header-solid {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: rgba(16, 23, 37, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--prestige-border);
+}
+
+.prestige-nav-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+}
+
+.prestige-nav-brand {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.prestige-nav-brand:hover {
+    color: var(--prestige-gold);
+}
+
+.prestige-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2.25rem;
+}
+
+.prestige-nav-link {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--prestige-text-secondary);
+    padding: 0.5rem 0.25rem;
+    position: relative;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.prestige-nav-link:hover,
+.prestige-nav-link.active {
+    color: #FFFFFF;
+}
+
+.prestige-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0%;
+    height: 1px;
+    background: #FFFFFF;
+    transition: width 0.2s ease;
+}
+
+.prestige-nav-link:hover::after,
+.prestige-nav-link.active::after {
+    width: 100%;
+}
+
+/* User Profile Badge (Reference: 'FERDI' with square avatar box) */
+.prestige-user-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(16, 23, 37, 0.6);
+    backdrop-filter: blur(12px);
+    cursor: pointer;
+    text-decoration: none;
+    color: #FFFFFF;
+    transition: all 0.2s ease;
+}
+
+.prestige-user-box:hover {
+    border-color: var(--prestige-gold);
+    background: rgba(27, 36, 50, 0.85);
+}
+
+.prestige-user-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, #C6A76A 0%, #D8BE8A 100%);
+    color: #101725;
+    font-weight: 800;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   HERO SECTION (Matching Reference Image)
+   ========================================================================= */
+.prestige-hero-screen {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: var(--prestige-navy);
+    overflow: hidden;
+    padding-top: 72px;
+}
+
+.prestige-hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    z-index: 1;
+}
+
+.prestige-hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: radial-gradient(circle at 50% 35%, rgba(16, 23, 37, 0.05) 0%, rgba(16, 23, 37, 0.4) 55%, rgba(16, 23, 37, 0.95) 100%),
+                linear-gradient(to top, #101725 0%, rgba(16, 23, 37, 0.2) 35%, rgba(16, 23, 37, 0.65) 100%);
+}
+
+.prestige-hero-body {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
+    flex-grow: 1;
+    padding-top: 4rem;
+    padding-bottom: 3rem;
+}
+
+.prestige-hero-left {
+    max-width: 580px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.prestige-hero-title {
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 5.5vw, 5rem);
+    font-weight: 800;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    line-height: 1.05;
+    margin: 0;
+    text-shadow: 0 10px 25px rgba(0, 0, 0, 0.85);
+}
+
+.prestige-hero-subtitle {
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 2vw, 1.65rem);
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    color: rgba(244, 245, 247, 0.9);
+    margin: 0;
+}
+
+.prestige-hero-desc {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: rgba(217, 222, 231, 0.85);
+    margin: 0;
+    max-width: 460px;
+}
+
+.prestige-hero-btn-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 0.75rem;
+}
+
+/* Buttons */
+.prestige-btn-cyan {
+    background: #2DD4BF;
+    color: #09131C !important;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    padding: 0.8rem 1.75rem;
+    box-shadow: 0 0 25px rgba(45, 212, 191, 0.45);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    font-size: 0.8125rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.prestige-btn-cyan:hover {
+    background: #5EEAD4;
+    box-shadow: 0 0 35px rgba(45, 212, 191, 0.65);
+    transform: translateY(-2px);
+}
+
+.prestige-btn-outline {
+    background: rgba(16, 23, 37, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #FFFFFF !important;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    padding: 0.8rem 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    font-size: 0.8125rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.prestige-btn-outline:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #FFFFFF;
+    transform: translateY(-2px);
+}
+
+.prestige-btn-primary {
+    background: linear-gradient(135deg, #D8BE8A 0%, #C6A76A 60%, #B08D4C 100%);
+    color: #0E1420 !important;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    padding: 0.75rem 1.75rem;
+    border: 1px solid rgba(245, 222, 179, 0.6);
+    box-shadow: 0 4px 20px rgba(198, 167, 106, 0.3);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.prestige-btn-primary:hover {
+    background: linear-gradient(135deg, #F5DEB3 0%, #D8BE8A 60%, #C6A76A 100%);
+    box-shadow: 0 6px 28px rgba(198, 167, 106, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Right Stack: Trailers (Reference Image: 01, 02, 03) */
+.prestige-hero-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.625rem;
+    flex-shrink: 0;
+}
+
+.prestige-trailers-header {
+    font-family: var(--font-serif);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(244, 245, 247, 0.9);
+    margin-bottom: 0.25rem;
+}
+
+.prestige-trailer-card {
+    background: rgba(16, 23, 37, 0.65);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 0.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none !important;
+    width: 275px;
+}
+
+.prestige-trailer-card:hover {
+    border-color: var(--prestige-gold);
+    background: rgba(27, 36, 50, 0.85);
+    transform: translateX(4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.prestige-trailer-thumb {
+    width: 135px;
+    height: 76px;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.prestige-trailer-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.prestige-trailer-card:hover .prestige-trailer-thumb img {
+    transform: scale(1.08);
+}
+
+.prestige-play-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.prestige-play-icon-badge {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(16, 23, 37, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.prestige-trailer-card:hover .prestige-play-icon-badge {
+    background: var(--prestige-gold);
+    border-color: #FFFFFF;
+    transform: scale(1.1);
+}
+
+.prestige-trailer-num {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.65);
+    padding-right: 0.875rem;
+}
+
+/* Bottom Strip of Hero Screen */
+.prestige-hero-bottom {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.prestige-rates-strip {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--prestige-text-secondary);
+}
+
+.prestige-social-icons {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    color: var(--prestige-text-secondary);
+}
+
+.prestige-social-icons a,
+.prestige-social-icons span {
+    color: var(--prestige-text-secondary);
+    transition: color 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.prestige-social-icons a:hover,
+.prestige-social-icons span:hover {
+    color: #FFFFFF;
+}
+
+/* ==========================================================================
+   HOMEPAGE CONTENT SECTIONS (Below Hero)
+   ========================================================================== */
+.prestige-sections-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6rem;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+
+/* Cards & Elevated Panels */
+.prestige-card {
+    background: rgba(21, 27, 38, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--prestige-border);
+    border-radius: 0.875rem;
+    transition: all 0.25s ease;
+}
+
+.prestige-card:hover {
+    border-color: rgba(198, 167, 106, 0.35);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px -5px rgba(198, 167, 106, 0.15);
+}
+
+.prestige-card-elevated {
+    background: rgba(27, 36, 50, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 1rem;
+}
+
+/* Responsive Grids */
+.prestige-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.prestige-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.prestige-grid-split {
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    gap: 2.5rem;
+}
+
+@media (max-width: 1024px) {
+    .prestige-grid-3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .prestige-grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .prestige-grid-split {
+        grid-template-columns: 1fr;
+    }
+    .prestige-hero-body {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2.5rem;
+    }
+    .prestige-hero-right {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 640px) {
+    .prestige-grid-3,
+    .prestige-grid-4 {
+        grid-template-columns: 1fr;
+    }
+    .prestige-hero-btn-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .prestige-hero-bottom {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+}
+
+/* Podiums */
+.rank-badge-1 {
+    background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 100%);
+    color: #451A03;
+    font-weight: 800;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+}
+
+.rank-badge-2 {
+    background: linear-gradient(135deg, #FFFFFF 0%, #94A3B8 100%);
+    color: #0F172A;
+    font-weight: 800;
+    box-shadow: 0 0 15px rgba(148, 163, 184, 0.3);
+}
+
+.rank-badge-3 {
+    background: linear-gradient(135deg, #FDBA74 0%, #C2410C 100%);
+    color: #431407;
+    font-weight: 800;
+    box-shadow: 0 0 15px rgba(194, 65, 12, 0.3);
+}
+
+/* Tables */
+.prestige-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.prestige-table th {
+    background: rgba(16, 23, 37, 0.9);
+    color: var(--prestige-text-secondary);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--prestige-border);
+}
+
+.prestige-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    font-size: 0.875rem;
+    color: var(--prestige-text);
+}
+
+.prestige-table tbody tr:hover td {
+    background-color: rgba(27, 36, 50, 0.5);
+}
+
+/* Form Inputs */
+.prestige-input {
+    width: 100%;
+    background: rgba(16, 23, 37, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: var(--prestige-text) !important;
+    font-size: 0.875rem;
+}
+
+.prestige-input:focus {
+    border-color: var(--prestige-gold) !important;
+    box-shadow: 0 0 0 3px rgba(198, 167, 106, 0.15) !important;
+    outline: none !important;
+}
+
+/* Video Modal */
+.prestige-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 12, 19, 0.92);
+    backdrop-filter: blur(12px);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.prestige-modal-backdrop.open {
+    display: flex;
+}
+
+/* ==========================================================================
+   FOOTER (Pixel-Perfect Alignment & Spacing)
+   ========================================================================== */
+.prestige-footer {
+    position: relative;
+    z-index: 20;
+    background: #0C111C;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 5rem;
+    padding-top: 5rem;
+    padding-bottom: 2.5rem;
+}
+
+.prestige-footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.25fr;
+    gap: 3.5rem;
+}
+
+@media (max-width: 1024px) {
+    .prestige-footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .prestige-footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+.prestige-footer-bottom {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--prestige-text-muted);
+}
+
+
+/* ==========================================================================
+   AETHER PRESTIGE — ADMIN PANEL LUXURY SUITE
+   Deep Midnight Navy, Elevated Panels, Champagne Gold Accents, Clean Grids
+   ========================================================================== */
+[data-theme="aether-prestige"] {
+    --admin-bg: #101725;
+    --admin-header-bg: #151B26;
+    --admin-sidebar-bg: #101725;
+    --admin-card-bg: rgba(21, 27, 38, 0.85);
+    --admin-card-elevated: #1B2432;
+    --admin-border: rgba(255, 255, 255, 0.08);
+    --admin-border-gold: rgba(198, 167, 106, 0.35);
+    --admin-gold: #C6A76A;
+    --admin-gold-light: #D8BE8A;
+    --admin-cyan: #2DD4BF;
+}
+
+[data-theme="aether-prestige"] body {
+    background-color: var(--admin-bg) !important;
+    color: #F4F5F7 !important;
+}
+
+/* Admin Header Bar */
+[data-theme="aether-prestige"] .admin-header {
+    background-color: var(--admin-header-bg) !important;
+    border-bottom: 1px solid var(--admin-border) !important;
+    backdrop-filter: blur(16px);
+}
+
+[data-theme="aether-prestige"] .admin-header a span.text-amber-400 {
+    color: var(--admin-gold) !important;
+}
+
+/* Admin Sidebar */
+[data-theme="aether-prestige"] .admin-sidebar {
+    background-color: var(--admin-sidebar-bg) !important;
+    border-right: 1px solid var(--admin-border) !important;
+}
+
+[data-theme="aether-prestige"] .admin-sidebar p {
+    color: var(--admin-gold) !important;
+    font-family: var(--font-serif) !important;
+    letter-spacing: 0.15em !important;
+}
+
+[data-theme="aether-prestige"] .admin-sidebar a {
+    color: #AAB3C1 !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+[data-theme="aether-prestige"] .admin-sidebar a:hover {
+    background-color: #1B2432 !important;
+    color: #FFFFFF !important;
+}
+
+/* Active Nav Links in Sidebar */
+[data-theme="aether-prestige"] .admin-sidebar a.bg-cyan-500\/10,
+[data-theme="aether-prestige"] .admin-sidebar a[class*="bg-cyan-500"] {
+    background: linear-gradient(135deg, rgba(198, 167, 106, 0.16) 0%, rgba(216, 190, 138, 0.05) 100%) !important;
+    border: 1px solid rgba(198, 167, 106, 0.4) !important;
+    color: var(--admin-gold-light) !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 15px rgba(198, 167, 106, 0.15) !important;
+}
+
+[data-theme="aether-prestige"] .admin-sidebar a.bg-cyan-500\/10 i,
+[data-theme="aether-prestige"] .admin-sidebar a[class*="bg-cyan-500"] i {
+    color: var(--admin-gold) !important;
+}
+
+/* Admin Metric Cards & Panels */
+[data-theme="aether-prestige"] .bg-slate-900,
+[data-theme="aether-prestige"] .bg-slate-900\/80,
+[data-theme="aether-prestige"] .bg-slate-900\/70,
+[data-theme="aether-prestige"] .bg-slate-950 {
+    background-color: var(--admin-card-bg) !important;
+    border-color: var(--admin-border) !important;
+    backdrop-filter: blur(16px);
+}
+
+[data-theme="aether-prestige"] .bg-slate-900\/80:hover {
+    border-color: rgba(198, 167, 106, 0.3) !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px -3px rgba(198, 167, 106, 0.1) !important;
+}
+
+/* Admin Headings */
+[data-theme="aether-prestige"] main h1 {
+    font-family: var(--font-serif) !important;
+    letter-spacing: 0.06em !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="aether-prestige"] main h2,
+[data-theme="aether-prestige"] main h3 {
+    font-family: var(--font-serif) !important;
+    letter-spacing: 0.04em !important;
+}
+
+/* Admin Tables */
+[data-theme="aether-prestige"] table thead {
+    background-color: #101725 !important;
+}
+
+[data-theme="aether-prestige"] table thead th {
+    color: #AAB3C1 !important;
+    border-bottom: 1px solid var(--admin-border) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+}
+
+[data-theme="aether-prestige"] table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+[data-theme="aether-prestige"] table tbody tr:hover {
+    background-color: rgba(27, 36, 50, 0.6) !important;
+}
+
+[data-theme="aether-prestige"] table tbody td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+    color: #F4F5F7 !important;
+}
+
+/* Form Controls & Inputs */
+[data-theme="aether-prestige"] input[type="text"],
+[data-theme="aether-prestige"] input[type="email"],
+[data-theme="aether-prestige"] input[type="password"],
+[data-theme="aether-prestige"] input[type="number"],
+[data-theme="aether-prestige"] select,
+[data-theme="aether-prestige"] textarea {
+    background-color: rgba(16, 23, 37, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="aether-prestige"] input:focus,
+[data-theme="aether-prestige"] select:focus,
+[data-theme="aether-prestige"] textarea:focus {
+    border-color: var(--admin-gold) !important;
+    box-shadow: 0 0 0 2px rgba(198, 167, 106, 0.25) !important;
+    outline: none !important;
+}
+
+/* Primary Action Buttons in Admin */
+[data-theme="aether-prestige"] .bg-cyan-600,
+[data-theme="aether-prestige"] .bg-gradient-to-r.from-cyan-500 {
+    background: linear-gradient(135deg, #D8BE8A 0%, #C6A76A 60%, #B08D4C 100%) !important;
+    color: #101725 !important;
+    font-weight: 700 !important;
+    border: 1px solid rgba(245, 222, 179, 0.5) !important;
+    box-shadow: 0 4px 15px rgba(198, 167, 106, 0.3) !important;
+}
+
+[data-theme="aether-prestige"] .bg-cyan-600:hover,
+[data-theme="aether-prestige"] .bg-gradient-to-r.from-cyan-500:hover {
+    background: linear-gradient(135deg, #F5DEB3 0%, #D8BE8A 60%, #C6A76A 100%) !important;
+    box-shadow: 0 6px 20px rgba(198, 167, 106, 0.45) !important;
+}

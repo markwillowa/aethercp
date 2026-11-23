@@ -15,7 +15,13 @@ AetherCP is an independent, modern, high-performance web-based control panel eng
 - **Dual Database Architecture**: Complete isolation between the AetherCP web application database (`aether_cp`) and the live game server databases (`login`, `char`, `map`).
 - **Emulator Abstraction Layer**: Pluggable driver system supporting **rAthena** and **Hercules** across both **Pre-Renewal** and **Renewal** modes.
 - **Universal Password Hashing**: Auto-detects and verifies password hashes across Bcrypt, SHA256 (Hercules), MD5 (Standard RO), and plaintext, completely preventing account lockouts during migrations.
-- **Dynamic Theming System**: Includes the official sleek **Aether Dark** theme (ethereal cyan/electric blue) and the celestial **Elysian Mythic** theme (midnight sapphire/Nordic gold), with dynamic runtime view overrides.
+- **Dynamic Theming System**: Ships with multiple distinctive themes:
+  - **Aether Prestige (Flagship)**: Ultra-luxury AAA MMORPG aesthetic featuring ambient Ken-Burns hero motion, floating atmospheric light particles, staggered entrance animations, and a bespoke **Sovereign Treasury Vault** interactive 2-column donation console.
+  - **Aether Dark (Default)**: Sleek ethereal cyan & electric blue neon aesthetic.
+  - **Elysian Mythic**: Midnight sapphire and Nordic gold celestial design.
+  - **Ragnarok Classic**: Nostalgic parchment-and-wood aesthetic reminiscent of classic Ragnarok Online portals.
+- **Dynamic Home Page & Settings Editor**: All home page hero titles, subtitles, storyline descriptions, trailers (main + stacked preview cards), hallmark feature cards, telemetry, and call-to-action banners are 100% configurable in real time via the Admin Control Panel without editing code. Settings synchronize dynamically from the database (`site_settings`) into runtime configuration.
+- **Automated & Manual Donation Suite**: Full-featured patronage engine supporting automated PayPal IPN transactions with instant delivery of Cash Points (`#CASHPOINTS`) and bonus items directly into players' account Kafra Storage vaults, alongside manual claim verification for GCash, Bank Wire, and Cryptocurrency.
 - **Clean Subdirectory Routing**: Native support for subdirectory paths without `/public` in the URL (e.g. `http://localhost/aether/` or `https://myserver.com/cp/`).
 - **Live Server Pings**: High-precision cluster pings (Login, Character, Map servers) and live online player tracking.
 - **Player & Guild Leaderboards**: High-performance cached rankings for Base Level, Job Level, Zeny, MVP Fame, and Guild EXP.
