@@ -14,17 +14,31 @@
     $serverType = \App\Models\SiteSetting::get('chronicles_server_type', 'Pre-Renewal');
     $rateBase = \App\Models\SiteSetting::get('rate_base', '100x');
     $rateJob = \App\Models\SiteSetting::get('rate_job', '100x');
-    $rateDrop = \App\Models\SiteSetting::get('rate_drop', '50x');
     $episode = \App\Models\SiteSetting::get('chronicles_episode', 'Classic');
     $roEmulator = \App\Models\SiteSetting::get('chronicles_emulator', 'rAthena');
 
     $promoTitle = \App\Models\SiteSetting::get('chronicles_promo_title', 'Experience the True Ragnarok!');
     $promoDesc = \App\Models\SiteSetting::get('chronicles_promo_desc', 'Join thousands of players in an epic adventure across Rune-Midgard!');
     $promoBadge = \App\Models\SiteSetting::get('chronicles_badge', 'Episode XIII: Noghaltz');
+    $promoBg = \App\Models\SiteSetting::get('chronicles_promo_bg');
+    if (empty($promoBg)) {
+        $promoBg = route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/promo_banner_clean.jpg']);
+    }
 
     $feat1Title = \App\Models\SiteSetting::get('chronicles_feat1_title', 'Epic WoE Battles');
     $feat1Desc = \App\Models\SiteSetting::get('chronicles_feat1_desc', 'Fight for your guild glory!');
     $feat1Link = \App\Models\SiteSetting::get('chronicles_feat1_link', route('woe.index'));
+    $feat1Img = \App\Models\SiteSetting::get('chronicles_feat1_img');
+    if (empty($feat1Img)) {
+        $feat1Img = route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/feat_woe_boss.jpg']);
+    }
+
+    $screenshotTitle = \App\Models\SiteSetting::get('chronicles_screenshot_title', 'Screenshots');
+    $screenshotImg = \App\Models\SiteSetting::get('chronicles_screenshot_img');
+    if (empty($screenshotImg)) {
+        $screenshotImg = route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/screenshot_prontera.jpg']);
+    }
+    $screenshotUrl = \App\Models\SiteSetting::get('chronicles_screenshot_url', route('news.index'));
 
     $ctaTitle = \App\Models\SiteSetting::get('chronicles_cta_title', 'Join the Adventure Today!');
     $ctaDesc = \App\Models\SiteSetting::get('chronicles_cta_desc', 'Be part of our growing Ragnarok community.');
@@ -33,6 +47,11 @@
     $discordUrl = \App\Models\SiteSetting::get('discord_url', 'https://discord.gg/ragnarok');
     $facebookUrl = \App\Models\SiteSetting::get('facebook_url', '#');
     $youtubeUrl = \App\Models\SiteSetting::get('youtube_url', '#');
+
+    $angelingBadge = \App\Models\SiteSetting::get('chronicles_angeling_img');
+    if (empty($angelingBadge)) {
+        $angelingBadge = route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/angeling_status_badge.jpg']);
+    }
 @endphp
 
 <div class="chronicles-container py-3">
@@ -79,13 +98,15 @@
                 </div>
             </div>
 
-            <!-- 2. SERVER STATUS -->
+            <!-- 2. SERVER STATUS (With Angeling Mascot) -->
             <div class="chronicles-panel">
                 <div class="chronicles-panel-header">
-                    <span class="chronicles-panel-title">
-                        <i data-lucide="settings"></i>
+                    <span class="chronicles-panel-title flex items-center gap-1.5">
+                        <img src="{{ $angelingBadge }}" alt="Angeling" 
+                             class="w-5 h-5 rounded-full object-cover border border-[#D4AF37]/60 shadow">
                         <span>Server Status</span>
                     </span>
+                    <span class="chronicles-status-online text-[9px] uppercase tracking-wider">Realm Online</span>
                 </div>
                 <div>
                     <div class="chronicles-spec-row">
@@ -191,11 +212,11 @@
              ================================================================== -->
         <main class="chronicles-right-main">
 
-            <!-- ROW 1: Large Promo Banner (~72%) + Featured/Screenshots (~28%) -->
+            <!-- ROW 1: Large Clean Promo Banner (~72%) + Featured/Screenshots (~28%) -->
             <section class="chronicles-top-row">
 
-                <!-- MAIN PROMOTIONAL BANNER -->
-                <div class="chronicles-promo-banner" style="background-image: url('{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/promo_chronicles_girl.jpg']) }}');">
+                <!-- MAIN PROMOTIONAL BANNER (Clean background with Rogue girl on right, HTML text on left) -->
+                <div class="chronicles-promo-banner" style="background-image: url('{{ $promoBg }}');">
                     <div class="chronicles-promo-gradient"></div>
 
                     <div class="relative z-10">
@@ -245,8 +266,7 @@
                             </span>
                         </div>
                         <div class="p-2 flex-1 flex flex-col justify-between">
-                            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/feat_woe_boss.jpg']) }}" 
-                                 alt="Featured Boss" class="chronicles-thumb-img">
+                            <img src="{{ $feat1Img }}" alt="{{ $feat1Title }}" class="chronicles-thumb-img">
                             <div class="mt-1">
                                 <h4 class="font-cinzel font-bold text-[11px] text-[#F3E5AB] leading-snug">{{ $feat1Title }}</h4>
                                 <p class="text-[10px] text-[#A396AD] line-clamp-1 leading-tight">{{ $feat1Desc }}</p>
@@ -257,20 +277,21 @@
                         </div>
                     </div>
 
-                    <!-- Screenshots -->
+                    <!-- Screenshots (Managed in Admin) -->
                     <div class="chronicles-panel flex-1 flex flex-col justify-between">
                         <div class="chronicles-panel-header">
                             <span class="chronicles-panel-title">
                                 <i data-lucide="image"></i>
-                                <span>Screenshots</span>
+                                <span>{{ $screenshotTitle }}</span>
                             </span>
-                            <a href="{{ route('news.index') }}" class="text-[9px] font-cinzel text-[#C8BDA8] hover:text-[#FFD700]">
+                            <a href="{{ $screenshotUrl }}" class="text-[9px] font-cinzel text-[#C8BDA8] hover:text-[#FFD700]">
                                 View Gallery &raquo;
                             </a>
                         </div>
                         <div class="p-2">
-                            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/screenshot_prontera.jpg']) }}" 
-                                 alt="Prontera Screenshots" class="chronicles-thumb-img">
+                            <a href="{{ $screenshotUrl }}">
+                                <img src="{{ $screenshotImg }}" alt="{{ $screenshotTitle }}" class="chronicles-thumb-img hover:opacity-90 transition-opacity">
+                            </a>
                         </div>
                     </div>
 
@@ -278,10 +299,10 @@
 
             </section>
 
-            <!-- ROW 2: Latest News & Announcements (Aged Parchment) + Top Rankings -->
+            <!-- ROW 2: Latest News & Announcements (Actual Database News) + Top Rankings -->
             <section class="chronicles-mid-row">
 
-                <!-- LATEST NEWS & ANNOUNCEMENTS (Aged Parchment Style) -->
+                <!-- LATEST NEWS & ANNOUNCEMENTS (Aged Parchment Style with Actual Database Records) -->
                 <div class="chronicles-panel flex flex-col">
                     <div class="chronicles-panel-header">
                         <span class="chronicles-panel-title">
@@ -294,54 +315,39 @@
                     </div>
 
                     <div class="chronicles-parchment-box flex-1">
-                        <!-- News Item 1: Grand Festival -->
-                        <a href="{{ route('news.index') }}" class="chronicles-news-item">
-                            <div class="relative shrink-0">
-                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/news_festival.jpg']) }}" 
-                                     alt="Festival" class="chronicles-news-thumb">
-                                <span class="absolute top-0 left-0 bg-[#E53935] text-white text-[8px] font-bold px-1 rounded-br">HOT</span>
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-1.5 mb-0.5">
-                                    <span class="text-[9px] text-[#7A6B56]">Nov 26, 2026</span>
-                                    <span class="chronicles-badge-cat events">Events</span>
+                        @forelse($news as $item)
+                            <a href="{{ route('news.show', $item->slug) }}" class="chronicles-news-item">
+                                <div class="relative shrink-0">
+                                    @if(!empty($item->image))
+                                        <img src="{{ $item->image }}" alt="{{ $item->title }}" class="chronicles-news-thumb">
+                                    @else
+                                        <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/news_festival.jpg']) }}" 
+                                             alt="{{ $item->title }}" class="chronicles-news-thumb">
+                                    @endif
+                                    @if($item->is_pinned)
+                                        <span class="absolute top-0 left-0 bg-[#E53935] text-white text-[8px] font-bold px-1 rounded-br">HOT</span>
+                                    @endif
                                 </div>
-                                <h4 class="chronicles-news-title">Grand Festival Event is Live!</h4>
-                                <p class="chronicles-news-desc line-clamp-1">Join our biggest event of the year and get exclusive rewards!</p>
-                            </div>
-                        </a>
-
-                        <!-- News Item 2: Server Update -->
-                        <a href="{{ route('news.index') }}" class="chronicles-news-item">
-                            <div class="shrink-0">
-                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/news_chests.jpg']) }}" 
-                                     alt="Updates" class="chronicles-news-thumb">
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-1.5 mb-0.5">
-                                    <span class="text-[9px] text-[#7A6B56]">Nov 24, 2026</span>
-                                    <span class="chronicles-badge-cat updates">Updates</span>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-1.5 mb-0.5">
+                                        <span class="text-[9px] text-[#7A6B56]">
+                                            {{ $item->published_at ? $item->published_at->format('M d, Y') : $item->created_at->format('M d, Y') }}
+                                        </span>
+                                        <span class="chronicles-badge-cat {{ strtolower($item->category ?? 'news') }}">
+                                            {{ ucfirst($item->category ?? 'News') }}
+                                        </span>
+                                    </div>
+                                    <h4 class="chronicles-news-title">{{ $item->title }}</h4>
+                                    <p class="chronicles-news-desc line-clamp-1">
+                                        {{ $item->summary ?? Str::limit(strip_tags($item->content), 75) }}
+                                    </p>
                                 </div>
-                                <h4 class="chronicles-news-title">Server Update v2.0.0</h4>
-                                <p class="chronicles-news-desc line-clamp-1">New maps, new quests and more exciting content!</p>
+                            </a>
+                        @empty
+                            <div class="p-6 text-center text-xs text-[#7A6B56]">
+                                No news or event chronicles published yet.
                             </div>
-                        </a>
-
-                        <!-- News Item 3: Welcome -->
-                        <a href="{{ route('news.index') }}" class="chronicles-news-item">
-                            <div class="shrink-0">
-                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/community_king_poring.jpg']) }}" 
-                                     alt="Welcome" class="chronicles-news-thumb">
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-1.5 mb-0.5">
-                                    <span class="text-[9px] text-[#7A6B56]">Nov 20, 2026</span>
-                                    <span class="chronicles-badge-cat news">News</span>
-                                </div>
-                                <h4 class="chronicles-news-title">Welcome to Aether Chronicles!</h4>
-                                <p class="chronicles-news-desc line-clamp-1">Thank you for choosing our server!</p>
-                            </div>
-                        </a>
+                        @endforelse
                     </div>
                 </div>
 
@@ -365,62 +371,72 @@
                         <a href="{{ route('rankings.index', ['type' => 'guild']) }}" class="chronicles-rank-tab">Guild</a>
                     </div>
 
-                    <!-- 5 Character Rows -->
+                    <!-- Character Rows (Dynamic Top Players from Database) -->
                     <div class="flex-1 flex flex-col justify-around">
-                        <!-- Rank 1: Gold Crown -->
-                        <div class="chronicles-rank-row">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-xs text-[#FFD700]">👑</span>
-                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/lord_knight.png']) }}" 
-                                     alt="DarkKnight" class="chronicles-rank-avatar">
-                                <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB]">DarkKnight</span>
+                        @forelse($topPlayers as $idx => $p)
+                            @php
+                                $crownIcon = $idx === 0 ? '👑' : ($idx === 1 ? '🥈' : ($idx === 2 ? '🥉' : ($idx + 1)));
+                                $crownColor = $idx === 0 ? 'text-[#FFD700]' : ($idx === 1 ? 'text-[#E0E0E0]' : ($idx === 2 ? 'text-[#CD7F32]' : 'text-[#8C7F99]'));
+                            @endphp
+                            <div class="chronicles-rank-row">
+                                <div class="flex items-center gap-1.5 min-w-0">
+                                    <span class="text-xs {{ $crownColor }} w-4 text-center shrink-0">{{ $crownIcon }}</span>
+                                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/lord_knight.png']) }}" 
+                                         alt="Avatar" class="chronicles-rank-avatar shrink-0">
+                                    <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB] truncate">
+                                        {{ $p->name ?? 'Adventurer' }}
+                                    </span>
+                                </div>
+                                <span class="font-mono text-[#FFD700] font-bold text-xs shrink-0">Lv. {{ $p->base_level ?? 99 }}</span>
                             </div>
-                            <span class="font-mono text-[#FFD700] font-bold text-xs">Lv. 99</span>
-                        </div>
-
-                        <!-- Rank 2: Silver Crown -->
-                        <div class="chronicles-rank-row">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-xs text-[#E0E0E0]">🥈</span>
-                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/champion.png']) }}" 
-                                     alt="ShuraZen" class="chronicles-rank-avatar">
-                                <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB]">ShuraZen</span>
+                        @empty
+                            <!-- Default Fallback Mock Rows -->
+                            <div class="chronicles-rank-row">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs text-[#FFD700]">👑</span>
+                                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/lord_knight.png']) }}" 
+                                         alt="DarkKnight" class="chronicles-rank-avatar">
+                                    <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB]">DarkKnight</span>
+                                </div>
+                                <span class="font-mono text-[#FFD700] font-bold text-xs">Lv. 99</span>
                             </div>
-                            <span class="font-mono text-[#C0C0C0] font-bold text-xs">Lv. 99</span>
-                        </div>
-
-                        <!-- Rank 3: Bronze Crown -->
-                        <div class="chronicles-rank-row">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-xs text-[#CD7F32]">🥉</span>
-                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/high_wizard.png']) }}" 
-                                     alt="RagnarokPH" class="chronicles-rank-avatar">
-                                <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB]">RagnarokPH</span>
+                            <div class="chronicles-rank-row">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs text-[#E0E0E0]">🥈</span>
+                                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/champion.png']) }}" 
+                                         alt="ShuraZen" class="chronicles-rank-avatar">
+                                    <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB]">ShuraZen</span>
+                                </div>
+                                <span class="font-mono text-[#C0C0C0] font-bold text-xs">Lv. 99</span>
                             </div>
-                            <span class="font-mono text-[#CD7F32] font-bold text-xs">Lv. 98</span>
-                        </div>
-
-                        <!-- Rank 4 -->
-                        <div class="chronicles-rank-row">
-                            <div class="flex items-center gap-1.5">
-                                <span class="font-cinzel font-bold text-[10px] text-[#8C7F99] w-3 text-center">4</span>
-                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/assassin_cross.png']) }}" 
-                                     alt="MysticSoul" class="chronicles-rank-avatar">
-                                <span class="font-cinzel font-bold text-[11px] text-[#D2C7BC]">MysticSoul</span>
+                            <div class="chronicles-rank-row">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs text-[#CD7F32]">🥉</span>
+                                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/high_wizard.png']) }}" 
+                                         alt="RagnarokPH" class="chronicles-rank-avatar">
+                                    <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB]">RagnarokPH</span>
+                                </div>
+                                <span class="font-mono text-[#CD7F32] font-bold text-xs">Lv. 98</span>
                             </div>
-                            <span class="font-mono text-[#A396AD] font-bold text-xs">Lv. 98</span>
-                        </div>
-
-                        <!-- Rank 5 -->
-                        <div class="chronicles-rank-row">
-                            <div class="flex items-center gap-1.5">
-                                <span class="font-cinzel font-bold text-[10px] text-[#8C7F99] w-3 text-center">5</span>
-                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/sniper.png']) }}" 
-                                     alt="BladeMaster" class="chronicles-rank-avatar">
-                                <span class="font-cinzel font-bold text-[11px] text-[#D2C7BC]">BladeMaster</span>
+                            <div class="chronicles-rank-row">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-cinzel font-bold text-[10px] text-[#8C7F99] w-3 text-center">4</span>
+                                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/assassin_cross.png']) }}" 
+                                         alt="MysticSoul" class="chronicles-rank-avatar">
+                                    <span class="font-cinzel font-bold text-[11px] text-[#D2C7BC]">MysticSoul</span>
+                                </div>
+                                <span class="font-mono text-[#A396AD] font-bold text-xs">Lv. 98</span>
                             </div>
-                            <span class="font-mono text-[#A396AD] font-bold text-xs">Lv. 97</span>
-                        </div>
+                            <div class="chronicles-rank-row">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-cinzel font-bold text-[10px] text-[#8C7F99] w-3 text-center">5</span>
+                                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/sniper.png']) }}" 
+                                         alt="BladeMaster" class="chronicles-rank-avatar">
+                                    <span class="font-cinzel font-bold text-[11px] text-[#D2C7BC]">BladeMaster</span>
+                                </div>
+                                <span class="font-mono text-[#A396AD] font-bold text-xs">Lv. 97</span>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
 

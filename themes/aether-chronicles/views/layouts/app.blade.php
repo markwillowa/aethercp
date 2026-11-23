@@ -14,7 +14,11 @@
     <!-- Aether Chronicles Classic MMORPG Theme Stylesheet -->
     @php
         $cssAssetPath = base_path('themes/aether-chronicles/assets/theme.css');
-        $cssVer = file_exists($cssAssetPath) ? filemtime($cssAssetPath) : '3.0';
+        $cssVer = file_exists($cssAssetPath) ? filemtime($cssAssetPath) : '4.0';
+        $headerBg = \App\Models\SiteSetting::get('chronicles_header_bg');
+        if (empty($headerBg)) {
+            $headerBg = route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/header_chronicles_hero_hd.jpg']);
+        }
     @endphp
     <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'theme.css']) }}?v={{ $cssVer }}">
 
@@ -27,34 +31,32 @@
         <!-- ======================================================================
              1. MAIN WEBSITE HEADER BANNER (Castle, Knight, Priestess & Crest)
              ====================================================================== -->
-        <header class="chronicles-header-banner" style="background-image: url('{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/header_chronicles_hero.jpg']) }}');">
+        <header class="chronicles-header-banner" style="background-image: url('{{ $headerBg }}');">
             <div class="chronicles-header-overlay"></div>
             
-            <div class="chronicles-container w-full relative z-10 py-5 flex items-center justify-between">
-                <!-- Left: Clickable Logo Link (Transparent anchor or custom server name) -->
+            <div class="chronicles-container w-full relative z-10 py-6 flex items-center justify-between">
+                <!-- Left: 3D Embossed Logo & Tagline -->
                 @php
                     $customLogo = \App\Models\SiteSetting::get('chronicles_logo');
-                    $customServerName = \App\Models\SiteSetting::get('server_name', 'Aether Chronicles');
+                    $serverName = \App\Models\SiteSetting::get('server_name', 'AETHER CHRONICLES');
+                    $tagline = \App\Models\SiteSetting::get('chronicles_tagline', 'Your Legend Begins in Rune-Midgard.');
                 @endphp
 
                 <a href="{{ route('home') }}" class="no-underline inline-block group">
                     @if(!empty($customLogo))
-                        <img src="{{ $customLogo }}" alt="{{ $customServerName }}" class="h-16 object-contain">
-                    @elseif(!empty($customServerName) && $customServerName !== 'Aether Chronicles' && $customServerName !== 'FreynixRO')
+                        <img src="{{ $customLogo }}" alt="{{ $serverName }}" class="h-16 object-contain">
+                    @else
                         <div class="chronicles-logo-badge">
                             <span>✦</span>
                             <span>Classic MMORPG</span>
                             <span>✦</span>
                         </div>
                         <h1 class="chronicles-logo-title group-hover:brightness-110 transition-all">
-                            {{ $customServerName }}
+                            {{ $serverName }}
                         </h1>
                         <p class="chronicles-logo-subtitle">
-                            {{ \App\Models\SiteSetting::get('chronicles_tagline', 'Your Legend Begins in Rune-Midgard.') }}
+                            {{ $tagline }}
                         </p>
-                    @else
-                        <!-- Spacer matching the painted Aether Chronicles logo in the artwork -->
-                        <div class="py-6 px-4"></div>
                     @endif
                 </a>
 

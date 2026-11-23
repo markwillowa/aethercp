@@ -20,12 +20,6 @@
             </div>
         </div>
 
-        <!-- JOBS -->
-        <a href="{{ route('rankings.index') }}" class="chronicles-nav-item">
-            <i data-lucide="swords" class="w-3.5 h-3.5"></i>
-            <span>JOBS</span>
-        </a>
-
         <!-- MAPS & MONSTERS -->
         <a href="{{ route('itemdb.index') }}" class="chronicles-nav-item {{ request()->routeIs('itemdb.*') ? 'active' : '' }}">
             <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
@@ -50,7 +44,7 @@
             <span>DOWNLOADS</span>
         </a>
 
-        <!-- DONATE / COMMUNITY -->
+        <!-- DONATE -->
         <a href="{{ route('donations.index') }}" class="chronicles-nav-item {{ request()->routeIs('donations.*') ? 'active' : '' }}">
             <i data-lucide="gem" class="w-3.5 h-3.5"></i>
             <span>DONATE</span>
@@ -58,7 +52,7 @@
     </div>
 
     <!-- Far Right: Prominent Ornate Gold "Play Now" CTA Button -->
-    <div class="py-1 pl-2">
+    <div class="py-1 pl-2 shrink-0">
         <a href="{{ route('downloads.index') }}" class="chronicles-btn-playnow">
             <span>PLAY NOW</span>
             <span class="text-sm">✦</span>

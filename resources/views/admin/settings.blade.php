@@ -725,9 +725,9 @@
                 <div class="space-y-3 pt-3 border-t border-slate-800">
                     <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
                         <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400"></i>
-                        <span>Featured Right Sidebar Card</span>
+                        <span>Featured Right Sidebar Card (WoE)</span>
                     </h4>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Card Title</label>
                             <input type="text" name="chronicles_feat1_title" value="{{ $settings['chronicles_feat1_title'] ?? 'Epic WoE Battles' }}"
@@ -743,10 +743,70 @@
                             <input type="text" name="chronicles_feat1_link" value="{{ $settings['chronicles_feat1_link'] ?? '/woe' }}"
                                 class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
                         </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Thumbnail URL</label>
+                            <input type="text" name="chronicles_feat1_img" value="{{ $settings['chronicles_feat1_img'] ?? '' }}"
+                                placeholder="/themes/aether-chronicles/assets/images/feat_woe_boss.jpg"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
                     </div>
                 </div>
 
-                <!-- 4. Bottom Adventure Banner & CTA -->
+                <!-- 4. Screenshots Right Sidebar Card (Admin Managed) -->
+                <div class="space-y-3 pt-3 border-t border-slate-800">
+                    <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="image" class="w-3.5 h-3.5 text-amber-400"></i>
+                        <span>Screenshots Showcase Card (Right Sidebar)</span>
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Section Title</label>
+                            <input type="text" name="chronicles_screenshot_title" value="{{ $settings['chronicles_screenshot_title'] ?? 'Screenshots' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Screenshot Image URL / Path</label>
+                            <input type="text" name="chronicles_screenshot_img" value="{{ $settings['chronicles_screenshot_img'] ?? '' }}"
+                                placeholder="e.g. /themes/aether-chronicles/assets/images/screenshot_prontera.jpg"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Gallery / Target URL</label>
+                            <input type="text" name="chronicles_screenshot_url" value="{{ $settings['chronicles_screenshot_url'] ?? '/news' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Custom Graphics & Mascot -->
+                <div class="space-y-3 pt-3 border-t border-slate-800">
+                    <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="palette" class="w-3.5 h-3.5 text-amber-400"></i>
+                        <span>Custom Theme Artwork &amp; Mascot Overrides</span>
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Header Banner Image URL</label>
+                            <input type="text" name="chronicles_header_bg" value="{{ $settings['chronicles_header_bg'] ?? '' }}"
+                                placeholder="Leave empty for default HD Castle & Knight Hero banner"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Center Promo Banner Image URL</label>
+                            <input type="text" name="chronicles_promo_bg" value="{{ $settings['chronicles_promo_bg'] ?? '' }}"
+                                placeholder="Leave empty for default clean Rogue Girl banner"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Server Status Angeling Mascot URL</label>
+                            <input type="text" name="chronicles_angeling_img" value="{{ $settings['chronicles_angeling_img'] ?? '' }}"
+                                placeholder="Leave empty for default Angeling status badge"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Bottom Adventure Banner & CTA -->
                 <div class="space-y-3 pt-3 border-t border-slate-800">
                     <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
                         <i data-lucide="flag" class="w-3.5 h-3.5 text-amber-400"></i>
