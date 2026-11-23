@@ -153,3 +153,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::post('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Installation Wizard Routes
+|--------------------------------------------------------------------------
+*/
+Route::prefix('install')->name('install.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Install\InstallController::class, 'index'])->name('index');
+    Route::get('/requirements', [\App\Http\Controllers\Install\InstallController::class, 'checkRequirements'])->name('requirements');
+    Route::post('/test-database', [\App\Http\Controllers\Install\InstallController::class, 'testDatabase'])->name('test-database');
+    Route::post('/test-game-database', [\App\Http\Controllers\Install\InstallController::class, 'testGameDatabase'])->name('test-game-database');
+    Route::post('/setup-environment', [\App\Http\Controllers\Install\InstallController::class, 'setupEnvironment'])->name('setup-environment');
+    Route::post('/setup-admin', [\App\Http\Controllers\Install\InstallController::class, 'setupAdmin'])->name('setup-admin');
+});
+
