@@ -132,6 +132,68 @@
 
         <!-- Sidebar Widgets (1 Col) -->
         <div class="space-y-6">
+            <!-- Account Portal Widget -->
+            <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-4">
+                <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+                    <i data-lucide="key" class="w-4 h-4 text-cyan-400"></i>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white">Account Portal</h3>
+                </div>
+
+                @auth
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-500 flex items-center justify-center font-bold text-sm text-white shadow-md">
+                                {{ strtoupper(substr(auth()->user()->username ?? auth()->user()->name, 0, 1)) }}
+                            </div>
+                            <div class="overflow-hidden">
+                                <p class="text-sm font-bold text-white truncate">{{ auth()->user()->username ?? auth()->user()->name }}</p>
+                                <p class="text-[11px] text-cyan-400 font-mono">ACCOUNT #{{ auth()->user()->account_id }}</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5 text-xs font-semibold">
+                            <a href="{{ route('account.profile') }}" class="flex items-center justify-between p-2 rounded-xl bg-slate-950/50 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 transition-colors">
+                                <span class="flex items-center gap-2">
+                                    <i data-lucide="user" class="w-3.5 h-3.5 text-cyan-400"></i>
+                                    <span>My Account Profile</span>
+                                </span>
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500"></i>
+                            </a>
+                            <a href="{{ route('account.characters') }}" class="flex items-center justify-between p-2 rounded-xl bg-slate-950/50 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 transition-colors">
+                                <span class="flex items-center gap-2">
+                                    <i data-lucide="users" class="w-3.5 h-3.5 text-blue-400"></i>
+                                    <span>Character Management</span>
+                                </span>
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500"></i>
+                            </a>
+                            @if(auth()->user()->isAdmin())
+                                <a href="{{ route('admin.dashboard') }}" class="flex items-center justify-between p-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 transition-colors">
+                                    <span class="flex items-center gap-2">
+                                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-400"></i>
+                                        <span>Admin Control Panel</span>
+                                    </span>
+                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-amber-400"></i>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                @else
+                    <div class="space-y-3">
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Sign in to inspect your character roster, reallocate stat points, view guild affiliations, and manage donation items.
+                        </p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <a href="{{ route('login') }}" class="py-2 text-center rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold border border-slate-700 transition-colors">
+                                Sign In
+                            </a>
+                            <a href="{{ route('register') }}" class="py-2 text-center rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-xs font-bold shadow-md transition-colors">
+                                Register
+                            </a>
+                        </div>
+                    </div>
+                @endauth
+            </div>
+
             <!-- Server Status Card -->
             <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-4">
                 <div class="flex items-center gap-2 border-b border-slate-800 pb-3">

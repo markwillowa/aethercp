@@ -214,7 +214,7 @@
 </div>
 
 <!-- Create / Edit Package Modal -->
-<div id="package_modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+<div id="package_modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl">
         <div class="p-4 border-b border-slate-800 flex items-center justify-between">
             <h3 id="modal_title" class="text-sm font-bold text-white flex items-center gap-2">

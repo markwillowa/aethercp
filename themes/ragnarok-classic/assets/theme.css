@@ -561,6 +561,88 @@ html[data-theme="ragnarok-classic"] .aether-glass {
     border-radius: 4px !important;
 }
 
+/* Modal Backdrops & Overlays MUST always remain dark semi-transparent dimming scrims */
+html[data-theme="ragnarok-classic"] .fixed.inset-0.z-50,
+html[data-theme="ragnarok-classic"] .fixed.inset-0[class*="z-50"],
+html[data-theme="ragnarok-classic"] [id*="modal"].fixed,
+html[data-theme="ragnarok-classic"] [id*="modal"].fixed.inset-0 {
+    background-color: rgba(18, 12, 7, 0.78) !important;
+    backdrop-filter: blur(5px) !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Modal Card Dialog Box */
+html[data-theme="ragnarok-classic"] .fixed.inset-0 > div,
+html[data-theme="ragnarok-classic"] [id*="modal"].fixed > div {
+    background-color: #F5EBD5 !important;
+    border: 2px solid #8C6A2D !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), inset 0 0 0 1px #C8A66A !important;
+    color: #3A2A1C !important;
+    border-radius: 6px !important;
+    overflow: hidden !important;
+}
+
+/* Modal Header Bar */
+html[data-theme="ragnarok-classic"] .fixed.inset-0 > div > div:first-child,
+html[data-theme="ragnarok-classic"] [id*="modal"].fixed > div > div:first-child {
+    background: linear-gradient(180deg, #442E1F 0%, #2D1D13 100%) !important;
+    border-bottom: 2px solid #8C6A2D !important;
+    color: #FFF0D4 !important;
+    padding: 12px 18px !important;
+}
+
+html[data-theme="ragnarok-classic"] .fixed.inset-0 > div > div:first-child h3,
+html[data-theme="ragnarok-classic"] [id*="modal"].fixed > div > div:first-child h3 {
+    color: #FFF0D4 !important;
+    font-family: Georgia, "Times New Roman", serif !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+}
+
+html[data-theme="ragnarok-classic"] .fixed.inset-0 > div > div:first-child button,
+html[data-theme="ragnarok-classic"] [id*="modal"].fixed > div > div:first-child button {
+    color: #FFDA89 !important;
+}
+
+html[data-theme="ragnarok-classic"] .fixed.inset-0 > div > div:first-child button:hover,
+html[data-theme="ragnarok-classic"] [id*="modal"].fixed > div > div:first-child button:hover {
+    color: #FFFFFF !important;
+}
+
+/* Modal Form Labels and Inner Sections */
+html[data-theme="ragnarok-classic"] .fixed.inset-0 label,
+html[data-theme="ragnarok-classic"] [id*="modal"] label {
+    color: #3A2A1C !important;
+    font-weight: bold !important;
+}
+
+/* Modal & Admin Submit Buttons (Converting Cyan to Classic Beveled Blue) */
+html[data-theme="ragnarok-classic"] .bg-cyan-600,
+html[data-theme="ragnarok-classic"] .bg-cyan-500,
+html[data-theme="ragnarok-classic"] button[type="submit"].bg-cyan-600,
+html[data-theme="ragnarok-classic"] button[type="submit"].bg-cyan-500,
+html[data-theme="ragnarok-classic"] .fixed.inset-0 button.bg-cyan-600,
+html[data-theme="ragnarok-classic"] [id*="modal"] button.bg-cyan-600 {
+    background: linear-gradient(180deg, #3D6A99 0%, #264A73 100%) !important;
+    border-top: 2px solid #6392C2 !important;
+    border-left: 2px solid #6392C2 !important;
+    border-right: 2px solid #14273E !important;
+    border-bottom: 2px solid #14273E !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    border-radius: 4px !important;
+    font-weight: bold !important;
+    text-shadow: 1px 1px 1px #112033 !important;
+}
+
+html[data-theme="ragnarok-classic"] .bg-cyan-600:hover,
+html[data-theme="ragnarok-classic"] .bg-cyan-500:hover,
+html[data-theme="ragnarok-classic"] [id*="modal"] button.bg-cyan-600:hover {
+    background: linear-gradient(180deg, #4A7EB5 0%, #2E588A 100%) !important;
+    color: #FFFFFF !important;
+}
+
 html[data-theme="ragnarok-classic"] .border-slate-800,
 html[data-theme="ragnarok-classic"] .border-slate-700 {
     border-color: #8C6A2D !important;
