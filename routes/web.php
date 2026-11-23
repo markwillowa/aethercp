@@ -164,6 +164,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/downloads/{id}', [AdminController::class, 'deleteDownload'])->name('downloads.delete');
     Route::post('/downloads/{id}/toggle', [AdminController::class, 'toggleDownload'])->name('downloads.toggle');
 
+    // Gallery Manager
+    Route::get('/gallery', [\App\Http\Controllers\Admin\AdminGalleryController::class, 'index'])->name('gallery.index');
+    Route::post('/gallery', [\App\Http\Controllers\Admin\AdminGalleryController::class, 'store'])->name('gallery.store');
+    Route::put('/gallery/{id}', [\App\Http\Controllers\Admin\AdminGalleryController::class, 'update'])->name('gallery.update');
+    Route::delete('/gallery/{id}', [\App\Http\Controllers\Admin\AdminGalleryController::class, 'destroy'])->name('gallery.destroy');
+    Route::post('/gallery/reset', [\App\Http\Controllers\Admin\AdminGalleryController::class, 'resetDefaults'])->name('gallery.reset');
+
     // Item Database Search for Admin Selectors
     Route::get('/items/search', [AdminController::class, 'searchItems'])->name('items.search');
 
