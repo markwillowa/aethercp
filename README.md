@@ -4,162 +4,327 @@
   <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/shield.svg" width="80" height="80" alt="AetherCP Shield">
 </p>
 
-AetherCP is an independent, modern, high-performance web-based control panel engineered for **rAthena** and **Hercules** Ragnarok Online private servers. Built from the ground up on PHP 8.4+, Laravel 12, Tailwind CSS, Alpine.js, and Lucide Icons, AetherCP delivers an extensible architecture with zero legacy baggage.
+AetherCP is an independent, modern, high-performance web-based control panel engineered for **rAthena** and **Hercules** Ragnarok Online private servers. Built from the ground up on PHP 8.4+, Laravel 12, Tailwind CSS 4, Alpine.js, and Lucide Icons, AetherCP delivers an extensible architecture with zero legacy baggage.
 
 ---
 
 ## Key Highlights
 
+- **Interactive Web Installation Wizard**: 1-click web setup wizard (`/install`) with pre-flight environment diagnostics, real-time database connection testing, and automated schema migration.
+- **Shared Hosting Plug & Play**: Fully deployable on cPanel, DirectAdmin, and shared Apache hosting with **zero terminal/SSH access required**.
 - **Dual Database Architecture**: Complete isolation between the AetherCP web application database (`aether_cp`) and the live game server databases (`login`, `char`, `map`).
 - **Emulator Abstraction Layer**: Pluggable driver system supporting **rAthena** and **Hercules** across both **Pre-Renewal** and **Renewal** modes.
 - **Universal Password Hashing**: Auto-detects and verifies password hashes across Bcrypt, SHA256 (Hercules), MD5 (Standard RO), and plaintext, completely preventing account lockouts during migrations.
-- **Modern MMORPG Dark Theme ("Aether Dark")**: Sleek deep-navy slate background, ethereal cyan and electric blue glowing accents, responsive on desktop, tablet, and mobile.
+- **Dynamic Theming System**: Includes the official sleek **Aether Dark** theme (ethereal cyan/electric blue) and the celestial **Elysian Mythic** theme (midnight sapphire/Nordic gold), with dynamic runtime view overrides.
+- **Clean Subdirectory Routing**: Native support for subdirectory paths without `/public` in the URL (e.g. `http://localhost/aether/` or `https://myserver.com/cp/`).
 - **Live Server Pings**: High-precision cluster pings (Login, Character, Map servers) and live online player tracking.
 - **Player & Guild Leaderboards**: High-performance cached rankings for Base Level, Job Level, Zeny, MVP Fame, and Guild EXP.
-- **Player Tools**: Self-service unstuck (reset position to Prontera), in-game 4-digit security PIN changes, password updates, and character inspection.
+- **Player Self-Service Tools**: Unstuck (reset character position to Prontera), in-game 4-digit security PIN changes, password updates, and character inspection.
 - **Comprehensive Administration**: Full GM dashboard, account search with ban/unban toggles, character viewer, news and announcement CMS, donation claim reviews, and system audit logging.
-- **Extensible Module & Theme System**: Declare and manage modules and themes with clean JSON manifests and admin control.
 
 ---
 
 ## Technical Stack
 
-- **Backend**: PHP 8.4+ / Laravel 12 (Eloquent ORM, robust routing, CSRF & XSS protection, rate limiting)
+- **Backend**: PHP 8.3+ / PHP 8.4+ (Laravel 12 core, Eloquent ORM, CSRF & XSS protection, rate limiting)
 - **Frontend**: Blade Components, Tailwind CSS 4, Alpine.js, Lucide Icons, Vite
-- **Database**: MariaDB 10.11+ / MySQL 8.0+
-- **Supported Emulators**: rAthena (PR/Renewal), Hercules (PR/Renewal)
+- **Web Servers Supported**: Apache 2.4+, Nginx 1.20+, LiteSpeed, Caddy
+- **Database**: MariaDB 10.4+ / MySQL 8.0+
+- **Supported Emulators**: rAthena (Pre-Renewal & Renewal), Hercules (Pre-Renewal & Renewal)
 
 ---
 
-## Directory Architecture
-
-```text
-aether/
-├── app/
-│   ├── Console/Commands/       # Artisan commands (aether:install)
-│   ├── Contracts/              # EmulatorInterface, PasswordHasherInterface, Repositories
-│   ├── Http/
-│   │   ├── Controllers/        # Auth, Account, Public, and Admin controllers
-│   │   └── Middleware/         # EnsureUserIsAdmin
-│   ├── Models/                 # User, News, Download, Donation, DonationPackage, SiteSetting, ActivityLog
-│   ├── Providers/              # EmulatorServiceProvider, AppServiceProvider
-│   ├── Repositories/           # AccountRepository, CharacterRepository, GuildRepository, RankingRepository, ItemRepository
-│   └── Services/
-│       ├── Emulator/           # EmulatorManager, EmulatorPasswordHasher, RAthenaAdapter, HerculesAdapter
-│       ├── Module/             # ModuleManager
-│       └── Theme/              # ThemeManager
-├── config/
-│   ├── aether.php              # Site settings, rates, social links, download mirrors
-│   ├── emulator.php            # Driver selection, renewal flag, hashing, server sockets, table maps
-│   └── modules.php             # Module feature flags and declarations
-├── database/
-│   ├── migrations/             # AetherCP web application database migrations
-│   └── seeders/                # AetherDatabaseSeeder (admin, default news, downloads, packages)
-├── docs/                       # Technical specs, compatibility matrices, deployment guides
-├── modules/                    # Pluggable community modules
-├── resources/
-│   ├── css/                    # Tailwind CSS configuration and dark theme utilities
-│   ├── js/                     # Alpine.js & Lucide icon initializers
-│   └── views/                  # Blade templates (layouts, components, auth, account, public, admin)
-├── routes/
-│   ├── web.php                 # Public, Player, and Admin routes
-│   └── console.php             # Artisan console schedule and commands
-├── tests/
-│   ├── Feature/                # PublicPagesTest, AdminManagementTest
-│   └── Unit/                   # EmulatorPasswordHasherTest, EmulatorAdapterTest
-└── themes/                     # Pluggable theme directory
-```
-
----
-
-## Quick Installation Guide
-
-### 1. Requirements
-Ensure your environment meets the minimum requirements:
-- PHP 8.3+ with `pdo_mysql`, `mbstring`, `openssl`, `curl` extensions enabled
-- MariaDB 10.4+ or MySQL 8.0+
-- Node.js 20+ and NPM
-- Composer 2+
-
-### 2. Database Architecture & Setup Rules
+## Database Architecture & Important Setup Rules
 
 > [!IMPORTANT]
-> **Do NOT create Laravel migrations for rAthena or Hercules tables!**
+> **Do NOT create Laravel migrations for rAthena or Hercules game tables!**
 > 
 > AetherCP strictly isolates the emulator database from the web application database:
 > 
-> 1. **Ragnarok Game Database (e.g. `freynix`)**:
->    - **Requirement**: Import the official rAthena/Hercules SQL files (`sql-files/main.sql`, `sql-files/item_db.sql`, `sql-files/logs.sql`, etc.) directly into your game database using MySQL CLI or phpMyAdmin.
->    - **Zero Migrations**: Game tables (`login`, `char`, `guild`, `inventory`, `storage`, `item_db`, etc.) are 100% owned by rAthena/Hercules and are **never** managed or created by Laravel migrations.
->    - **Single Source of Truth**: The web control panel authenticates directly against the rAthena `login` table that was imported from `main.sql`. Any account in `login` (such as `s1`, `malda009`, or newly registered players) can immediately log in on the website.
+> 1. **Ragnarok Game Database (e.g. `freynix` or `ragnarok`)**:
+>    - **Requirement**: Import the official rAthena or Hercules SQL files (`sql-files/main.sql`, `sql-files/item_db.sql`, `sql-files/logs.sql`, etc.) directly into your game database using MySQL CLI or phpMyAdmin.
+>    - **Zero Migrations**: Game tables (`login`, `char`, `guild`, `inventory`, `storage`, `item_db`, etc.) are 100% owned by the game server emulator and are **never** altered or generated by Laravel migrations.
+>    - **Single Source of Truth**: The web control panel authenticates directly against the emulator `login` table. Any account in `login` (such as `s1`, `admin`, or newly registered players) can immediately log in on the website.
 > 
 > 2. **AetherCP Web Database (e.g. `aether_cp`)**:
->    - Contains only web-specific CMS tables (`news`, `downloads`, `donations`, `site_settings`, `activity_logs`).
->    - Laravel migrations in `database/migrations/` apply **only** to this separate web database.
-
-### 3. Configure Environment
-Copy the example environment file and configure your credentials:
-```bash
-cp .env.example .env
-php artisan key:generate
-```
-
-Configure your `.env` database connections:
-```env
-# AetherCP Web Application Database
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=aether_cp
-DB_USERNAME=admin
-DB_PASSWORD=your_password
-
-# Ragnarok Live Game Database
-RO_DB_HOST=127.0.0.1
-RO_DB_PORT=3306
-RO_DB_DATABASE=freynix
-RO_DB_USERNAME=admin
-RO_DB_PASSWORD=your_password
-
-# Emulator Configuration
-RO_SERVER_NAME="Freynix RO"
-RO_EMULATOR=rathena
-RO_RENEWAL=true
-RO_PASSWORD_HASH=md5
-```
-
-### 4. Run One-Click Installation
-```bash
-php artisan aether:install
-```
-
-### 5. Build Frontend Assets
-```bash
-npm install
-npm run build
-```
-
-### 6. Access the Panel
-- Public Home: `http://localhost/aether/public/`
-- Default Admin Login:
-  - **Username**: `admin`
-  - **Password**: `Admin1234!`
-  - **Admin URL**: `http://localhost/aether/public/admin`
+>    - Contains web-specific tables (`news`, `downloads`, `donations`, `donation_packages`, `site_settings`, `activity_logs`, `sessions`).
+>    - Laravel migrations apply **only** to this separate web database.
 
 ---
 
-## Testing
+## Universal Installation Guides
 
-Run the automated test suite with PHPUnit:
+AetherCP supports both a **Web-Based Setup Wizard** (no terminal needed) and a **CLI Artisan Command** for automated server deployments.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   Select Deployment Target                  │
+├─────────────────────────────────────────────────────────────┤
+│ 1. Windows (XAMPP / Laragon / Native)                       │
+│ 2. Linux & Ubuntu (Nginx + PHP-FPM / Apache2)               │
+│ 3. Shared Web Hosting (cPanel / DirectAdmin / Plesk)        │
+│ 4. Docker & Docker Compose                                  │
+│ 5. Advanced Headless / CLI Deployment                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 1. Windows Installation (XAMPP or Laragon)
+
+#### Prerequisites
+- Install [XAMPP for Windows](https://www.apachefriends.org/) (PHP 8.2, 8.3, or 8.4) or [Laragon](https://laragon.org/).
+- Ensure Apache and MySQL services are started in the XAMPP Control Panel.
+
+#### Step-by-Step Setup
+1. **Clone or Extract AetherCP**:
+   Extract or clone the project into your web root:
+   ```powershell
+   Set-Location C:\xampp\htdocs
+   git clone https://github.com/markwillowa/aethercp.git aether
+   ```
+2. **Verify PHP Extensions in `php.ini`**:
+   Open `C:\xampp\php\php.ini` and verify that the following extensions are uncommented (no leading `;`):
+   ```ini
+   extension=pdo_mysql
+   extension=mbstring
+   extension=openssl
+   extension=curl
+   extension=fileinfo
+   extension=gd
+   ```
+   *Restart Apache in XAMPP after editing `php.ini`.*
+
+3. **Import Emulator SQL Files**:
+   Open **phpMyAdmin** (`http://localhost/phpmyadmin`) or MySQL CLI and create your game database (e.g. `freynix`). Import your emulator's SQL files:
+   - For rAthena: Import `sql-files/main.sql` and `sql-files/item_db.sql`.
+   - For Hercules: Import `sql-files/main.sql`.
+
+4. **Run the Web Installation Wizard**:
+   Open your browser and navigate to:
+   ```
+   http://localhost/aether/
+   ```
+   The interactive wizard will automatically launch:
+   - **Pre-flight Checks**: Confirms PHP runtime, extensions, and directory permissions.
+   - **Database Setup**: Pre-populated with your local MySQL credentials (`127.0.0.1`, port `3306`).
+   - Click **"Test Connection"** on Web DB and **"Test Game DB"** to verify connectivity.
+   - Click **"Execute Database Provisioning"** to migrate web tables.
+   - Choose your Administrator account (either elevate an existing in-game character to GM or create a web admin).
+   - Click **"Complete Installation"**!
+
+---
+
+### 2. Linux & Ubuntu Installation (22.04 / 24.04 LTS)
+
+#### Prerequisites & System Packages
+Update your package manager and install PHP, required extensions, and your web server:
+
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y software-properties-common curl git unzip
+
+# Add Ondřej Surý PHP PPA for modern PHP versions
+sudo add-apt-repository ppa:ondrej/php -y
+sudo apt update
+
+# Install PHP 8.3 or 8.4 with required modules
+sudo apt install -y php8.3-fpm php8.3-cli php8.3-mysql php8.3-mbstring \
+    php8.3-xml php8.3-curl php8.3-zip php8.3-gd php8.3-intl php8.3-bcmath mariadb-server
+```
+
+#### Option A: Nginx Configuration (Recommended)
+1. **Clone Project**:
+   ```bash
+   cd /var/www
+   sudo git clone https://github.com/markwillowa/aethercp.git aether
+   ```
+
+2. **Configure File Permissions**:
+   ```bash
+   sudo chown -R www-data:www-data /var/www/aether
+   sudo chmod -R 775 /var/www/aether/storage /var/www/aether/bootstrap/cache
+   ```
+
+3. **Create Nginx Server Block**:
+   ```bash
+   sudo nano /etc/nginx/sites-available/aether
+   ```
+   Paste the following configuration:
+   ```nginx
+   server {
+       listen 80;
+       server_name ro.yourdomain.com; # Or your server IP
+       root /var/www/aether/public;
+
+       index index.php index.html;
+       charset utf-8;
+
+       # Security: block dotfiles and sensitive config
+       location ~ /\.(?!well-known).* {
+           deny all;
+       }
+
+       location / {
+           try_files $uri $uri/ /index.php?$query_string;
+       }
+
+       location = /favicon.ico { access_log off; log_not_found off; }
+       location = /robots.txt  { access_log off; log_not_found off; }
+
+       error_page 404 /index.php;
+
+       location ~ \.php$ {
+           fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+           fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+           include fastcgi_params;
+           fastcgi_hide_header X-Powered-By;
+       }
+   }
+   ```
+   Enable the site and restart Nginx:
+   ```bash
+   sudo ln -s /etc/nginx/sites-available/aether /etc/nginx/sites-enabled/
+   sudo nginx -t && sudo systemctl reload nginx
+   ```
+
+#### Option B: Apache2 Configuration
+1. **Enable Apache Modules**:
+   ```bash
+   sudo a2enmod rewrite headers
+   ```
+2. **Create Apache VirtualHost**:
+   ```bash
+   sudo nano /etc/apache2/sites-available/aether.conf
+   ```
+   ```apache
+   <VirtualHost *:80>
+       ServerName ro.yourdomain.com
+       DocumentRoot /var/www/aether/public
+
+       <Directory /var/www/aether/public>
+           Options -Indexes +FollowSymLinks
+           AllowOverride All
+           Require all granted
+       </Directory>
+
+       ErrorLog ${APACHE_LOG_DIR}/aether_error.log
+       CustomLog ${APACHE_LOG_DIR}/aether_access.log combined
+   </VirtualHost>
+   ```
+   Enable and restart Apache:
+   ```bash
+   sudo a2ensite aether.conf && sudo systemctl restart apache2
+   ```
+
+3. **Complete Installation in Browser**:
+   Open `http://ro.yourdomain.com/` in your browser and follow the interactive wizard.
+
+---
+
+### 3. Shared Web Hosting (cPanel / DirectAdmin / Plesk)
+
+AetherCP is specifically designed to run on shared web hosting with **zero terminal or SSH access required**.
+
+#### Step 1: Upload Files via File Manager or FTP
+- Download or zip the AetherCP release package (including `vendor/` and `public/build/`).
+- Open your hosting **File Manager** in cPanel.
+- **Root Domain Deployment** (e.g. `https://yourserver.com`):
+  - Upload and extract all files directly inside `public_html/`.
+  - The included `.htaccess` automatically routes requests into `public/` while securing your `.env` and source code.
+- **Subdirectory Deployment** (e.g. `https://yourserver.com/cp/`):
+  - Upload and extract into `public_html/cp/`.
+  - Works automatically out of the box with clean URLs.
+
+#### Step 2: Create Databases in cPanel
+1. Open **MySQL Databases** or **MySQL Database Wizard** in cPanel.
+2. Create your AetherCP web database: `cpaneluser_aether`.
+3. Create your Ragnarok game database (if hosted on the same server): `cpaneluser_freynix`.
+4. Create a database user, assign a password, and grant **ALL PRIVILEGES** to both databases.
+
+#### Step 3: Import Ragnarok Emulator SQL
+- Open **phpMyAdmin** from cPanel.
+- Select your game database (`cpaneluser_freynix`).
+- Click **Import** and upload your emulator's `main.sql` and `item_db.sql`.
+
+#### Step 4: Run the Web Installer
+- Open `https://yourserver.com/` (or `https://yourserver.com/cp/`) in your browser.
+- The web wizard will detect your environment, test the cPanel database credentials, run migrations via PHP, and lock the installation.
+
+---
+
+### 4. Docker & Docker Compose Deployment
+
+AetherCP includes production-ready containerization files out of the box.
+
+1. **Start the Stack**:
+   ```bash
+   docker compose up -d
+   ```
+   This will spin up:
+   - **`aether_control_panel`**: PHP 8.4 + Apache web application container on port `8080`.
+   - **`aether_database`**: MariaDB 10.11 container.
+2. **Access the Setup Wizard**:
+   Navigate to `http://localhost:8080/` to configure the application.
+
+---
+
+### 5. Advanced Headless / CLI Deployment (Sysadmins)
+
+For automated server provisioning or CI/CD pipelines:
+
+```bash
+# 1. Clone repository
+git clone https://github.com/markwillowa/aethercp.git
+cd aether
+
+# 2. Install dependencies & build assets
+composer install --no-dev --optimize-autoloader
+npm install && npm run build
+
+# 3. Setup environment file
+cp .env.example .env
+php artisan key:generate
+
+# 4. Run automated installation command
+php artisan aether:install
+
+# 5. Lock the installer
+php -r "file_put_contents('storage/installed', json_encode(['installed_at' => date('c'), 'version' => '1.0.0']));"
+```
+
+---
+
+## Background Task Scheduling (Cron Job)
+
+To enable automatic ranking caching, server uptime heartbeats, and donation polling, add a single cron entry to your server:
+
+```bash
+crontab -e
+```
+Add the following line:
+```cron
+* * * * * cd /path/to/aether && php artisan schedule:run >> /dev/null 2>&1
+```
+
+*(On cPanel, navigate to **Cron Jobs**, set frequency to `* * * * *` (Every Minute), and enter `/usr/local/bin/php /home/cpaneluser/public_html/artisan schedule:run >/dev/null 2>&1`)*.
+
+---
+
+## Automated Test Suite
+
+AetherCP maintains a comprehensive unit and feature test suite. Run tests via:
+
 ```bash
 php artisan test
 ```
 
-All 22 unit and feature tests validate:
-- Emulator password auto-detection (MD5, Bcrypt, SHA256)
-- Pre-Renewal and Renewal stat column differences
-- Public and account routes
-- Role-based admin guards and moderation tools
+**41 automated tests (126 assertions)** validate:
+- Emulator password auto-detection across Plaintext, MD5, SHA256, and Bcrypt
+- Pre-Renewal and Renewal stat and column detection (preventing SQL 1054 errors)
+- Public routes, ranking caches, database searches, and downloads
+- Dynamic theme switching (Aether Dark & Elysian Mythic)
+- Installation wizard pre-flight validation and lock gating
 
 ---
 
