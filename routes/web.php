@@ -152,6 +152,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/themes', [AdminController::class, 'themes'])->name('themes');
     Route::post('/themes/{theme}/activate', [AdminController::class, 'activateTheme'])->name('themes.activate');
 
+    // Database & YAML Importer
+    Route::get('/importer', [AdminController::class, 'importer'])->name('importer');
+    Route::post('/importer', [AdminController::class, 'runImport'])->name('importer.run');
+
     // Logs & Settings
     Route::get('/logs', [AdminController::class, 'activityLogs'])->name('logs');
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');

@@ -109,6 +109,10 @@
                         <i data-lucide="palette" class="w-4 h-4"></i>
                         <span>Theme Manager</span>
                     </a>
+                    <a href="{{ route('admin.importer') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.importer*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                        <i data-lucide="database" class="w-4 h-4"></i>
+                        <span>Database & YAML Importer</span>
+                    </a>
                     <a href="{{ route('admin.settings') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.settings*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                         <i data-lucide="sliders" class="w-4 h-4"></i>
                         <span>Server Settings</span>

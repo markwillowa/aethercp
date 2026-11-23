@@ -276,4 +276,102 @@ class AdminController extends Controller
 
         return back()->with('error', "Theme [{$theme}] could not be found.");
     }
+
+    public function importer()
+    {
+        $itemDbCount = 0;
+        $itemDb2Count = 0;
+        $tableExists = false;
+
+        try {
+            if (\Illuminate\Support\Facades\Schema::connection('ragnarok')->hasTable('item_db')) {
+                $tableExists = true;
+                $itemDbCount = \Illuminate\Support\Facades\DB::connection('ragnarok')->table('item_db')->count();
+            }
+            if (\Illuminate\Support\Facades\Schema::connection('ragnarok')->hasTable('item_db2')) {
+                $itemDb2Count = \Illuminate\Support\Facades\DB::connection('ragnarok')->table('item_db2')->count();
+            }
+        } catch (\Throwable $e) {
+            // Ignore connection error for isolated testing
+        }
+
+        // Search for known local emulator YAML paths
+        $suggestedPaths = [];
+        $candidatePaths = [
+            'C:/Users/villa/Desktop/FreinyxRO/rathena/db/pre-re/item_db.yml',
+            'C:/Users/villa/Desktop/FreinyxRO/rathena/db/pre-re/item_db_equip.yml',
+            'C:/Users/villa/Desktop/FreinyxRO/rathena/db/pre-re/item_db_usable.yml',
+            'C:/Users/villa/Desktop/FreinyxRO/rathena/db/pre-re/item_db_etc.yml',
+            'C:/Users/villa/Desktop/FreinyxRO/rathena/db/item_db.yml',
+            'C:/Users/villa/Desktop/FreinyxRO/rathena/db/item_db_equip.yml',
+            base_path('database/data/item_db.yml'),
+        ];
+
+        foreach ($candidatePaths as $p) {
+            if (file_exists($p) && is_readable($p)) {
+                $suggestedPaths[] = [
+                    'path' => $p,
+                    'size' => round(filesize($p) / 1024, 1) . ' KB',
+                    'filename' => basename($p),
+                ];
+            }
+        }
+
+        return view('admin.importer', compact('itemDbCount', 'itemDb2Count', 'tableExists', 'suggestedPaths'));
+    }
+
+    public function runImport(Request $request, \App\Services\Database\ItemDbImporter $importer)
+    {
+        $request->validate([
+            'source_type' => 'required|in:upload,path,url',
+            'target_table' => 'required|in:item_db,item_db2',
+            'mode' => 'required|in:upsert,truncate,insert_missing',
+            'yaml_file' => 'required_if:source_type,upload|file|max:51200',
+            'file_path' => 'required_if:source_type,path|nullable|string',
+            'remote_url' => 'required_if:source_type,url|nullable|url',
+        ]);
+
+        $sourceType = $request->input('source_type');
+        $targetTable = $request->input('target_table');
+        $mode = $request->input('mode');
+        $tempFile = null;
+
+        try {
+            if ($sourceType === 'upload') {
+                $file = $request->file('yaml_file');
+                if (!$file || !$file->isValid()) {
+                    return back()->with('error', 'Uploaded YAML file is invalid or missing.');
+                }
+                $filePath = $file->getRealPath();
+            } elseif ($sourceType === 'path') {
+                $filePath = trim($request->input('file_path'));
+                if (!file_exists($filePath) || !is_readable($filePath)) {
+                    return back()->with('error', "Server file path does not exist or cannot be read: {$filePath}");
+                }
+            } elseif ($sourceType === 'url') {
+                $url = trim($request->input('remote_url'));
+                $response = \Illuminate\Support\Facades\Http::timeout(60)->get($url);
+                if (!$response->successful()) {
+                    return back()->with('error', "Failed downloading remote YAML (HTTP {$response->status()}).");
+                }
+                $tempFile = tempnam(sys_get_temp_dir(), 'aether_yaml_');
+                file_put_contents($tempFile, $response->body());
+                $filePath = $tempFile;
+            } else {
+                return back()->with('error', 'Invalid source type specified.');
+            }
+
+            $result = $importer->import($filePath, $targetTable, $mode);
+
+            $msg = "Successfully ingested {$result['imported']} items into [{$targetTable}] in {$result['elapsed_seconds']}s.";
+            return back()->with('success', $msg)->with('import_result', $result);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('YAML Importer Error: ' . $e->getMessage());
+            return back()->with('error', 'Import failed: ' . $e->getMessage());
+        } finally {
+            if ($tempFile && file_exists($tempFile)) {
+                @unlink($tempFile);
+            }
+        }
+    }
 }
