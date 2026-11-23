@@ -74,16 +74,34 @@ AetherCP supports both a **Web-Based Setup Wizard** (no terminal needed) and a *
 
 #### Prerequisites
 - Install [XAMPP for Windows](https://www.apachefriends.org/) (PHP 8.2, 8.3, or 8.4) or [Laragon](https://laragon.org/).
+- Install [Composer for Windows](https://getcomposer.org/download/) (required to install PHP package dependencies).
+- *(Optional)* Install [Node.js & npm](https://nodejs.org/) (only if compiling frontend assets from source).
 - Ensure Apache and MySQL services are started in the XAMPP Control Panel.
 
 #### Step-by-Step Setup
 1. **Clone or Extract AetherCP**:
-   Extract or clone the project into your web root:
+   Extract or clone the project into your web root (`htdocs`):
    ```powershell
    Set-Location C:\xampp\htdocs
    git clone https://github.com/markwillowa/aethercp.git aether
+   Set-Location C:\xampp\htdocs\aether
    ```
-2. **Verify PHP Extensions in `php.ini`**:
+
+2. **Install Composer Dependencies**:
+   > [!IMPORTANT]
+   > Like standard PHP/Laravel applications, third-party libraries in `vendor/` are **excluded from Git**. You **must** run `composer install` once after cloning to generate `vendor/autoload.php` and avoid the error `Failed opening required vendor/autoload.php`.
+   ```powershell
+   composer install
+   ```
+
+3. **Initialize Environment & Application Key**:
+   Create your local `.env` configuration file from the template and generate the application security key:
+   ```powershell
+   copy .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Verify PHP Extensions in `php.ini`**:
    Open `C:\xampp\php\php.ini` and verify that the following extensions are uncommented (no leading `;`):
    ```ini
    extension=pdo_mysql
@@ -92,15 +110,23 @@ AetherCP supports both a **Web-Based Setup Wizard** (no terminal needed) and a *
    extension=curl
    extension=fileinfo
    extension=gd
+   extension=zip
    ```
    *Restart Apache in XAMPP after editing `php.ini`.*
 
-3. **Import Emulator SQL Files**:
+5. **(Optional) Build Frontend Assets**:
+   Pre-built assets are included in `public/build/`. If you want to modify styles or themes:
+   ```powershell
+   npm install
+   npm run build
+   ```
+
+6. **Import Emulator SQL Files**:
    Open **phpMyAdmin** (`http://localhost/phpmyadmin`) or MySQL CLI and create your game database (e.g. `freynix`). Import your emulator's SQL files:
    - For rAthena: Import `sql-files/main.sql` and `sql-files/item_db.sql`.
    - For Hercules: Import `sql-files/main.sql`.
 
-4. **Run the Web Installation Wizard**:
+7. **Run the Web Installation Wizard**:
    Open your browser and navigate to:
    ```
    http://localhost/aether/
@@ -128,9 +154,10 @@ sudo apt install -y software-properties-common curl git unzip
 sudo add-apt-repository ppa:ondrej/php -y
 sudo apt update
 
-# Install PHP 8.3 or 8.4 with required modules
+# Install PHP 8.3 or 8.4 with required modules, Composer, and unzip
 sudo apt install -y php8.3-fpm php8.3-cli php8.3-mysql php8.3-mbstring \
-    php8.3-xml php8.3-curl php8.3-zip php8.3-gd php8.3-intl php8.3-bcmath mariadb-server
+    php8.3-xml php8.3-curl php8.3-zip php8.3-gd php8.3-intl php8.3-bcmath \
+    mariadb-server composer unzip
 ```
 
 #### Option A: Nginx Configuration (Recommended)
@@ -138,15 +165,25 @@ sudo apt install -y php8.3-fpm php8.3-cli php8.3-mysql php8.3-mbstring \
    ```bash
    cd /var/www
    sudo git clone https://github.com/markwillowa/aethercp.git aether
+   cd /var/www/aether
    ```
 
-2. **Configure File Permissions**:
+2. **Install Composer Dependencies & Setup Environment**:
+   > [!IMPORTANT]
+   > Like all standard Laravel applications, third-party libraries in `vendor/` are **excluded from Git**. You **must** run `composer install` to create `vendor/autoload.php`.
+   ```bash
+   composer install --no-dev --optimize-autoloader
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+3. **Configure File Permissions**:
    ```bash
    sudo chown -R www-data:www-data /var/www/aether
    sudo chmod -R 775 /var/www/aether/storage /var/www/aether/bootstrap/cache
    ```
 
-3. **Create Nginx Server Block**:
+4. **Create Nginx Server Block**:
    ```bash
    sudo nano /etc/nginx/sites-available/aether
    ```
@@ -319,12 +356,62 @@ AetherCP maintains a comprehensive unit and feature test suite. Run tests via:
 php artisan test
 ```
 
-**41 automated tests (126 assertions)** validate:
+**69 automated tests (279 assertions)** validate:
 - Emulator password auto-detection across Plaintext, MD5, SHA256, and Bcrypt
 - Pre-Renewal and Renewal stat and column detection (preventing SQL 1054 errors)
 - Public routes, ranking caches, database searches, and downloads
-- Dynamic theme switching (Aether Dark & Elysian Mythic)
+- Dynamic theme switching (Aether Dark, Elysian Mythic, and Ragnarok Classic)
 - Installation wizard pre-flight validation and lock gating
+- In-game Kafra item delivery and automated donation package fulfillment
+- YAML database file validation and migration
+
+---
+
+## Troubleshooting & FAQ
+
+### 1. `Fatal error: Failed opening required '.../vendor/autoload.php'`
+- **Error message**:
+  ```
+  Warning: require(.../vendor/autoload.php): Failed to open stream: No such file or directory in .../public/index.php on line 14
+  Fatal error: Uncaught Error: Failed opening required '.../vendor/autoload.php' in .../public/index.php:14
+  ```
+- **Cause**: The application was cloned directly with Git, but the external PHP packages in `vendor/` have not been installed yet. Git intentionally ignores `vendor/` according to standard industry practices.
+- **Solution**: Open your terminal (PowerShell, CMD, or Bash), navigate to the root directory where AetherCP is installed, and run:
+  ```powershell
+  # Windows (XAMPP / Laragon)
+  Set-Location C:\xampp\htdocs\aether
+  composer install
+
+  # Linux (Ubuntu / Debian / CentOS)
+  cd /var/www/aether
+  composer install --no-dev --optimize-autoloader
+  ```
+  *(If you do not have Composer installed, download and install it from [getcomposer.org](https://getcomposer.org/download/))*.
+
+### 2. `No application encryption key has been specified`
+- **Cause**: The application is missing its `.env` configuration file or security key.
+- **Solution**:
+  ```powershell
+  # Windows
+  copy .env.example .env
+  php artisan key:generate
+
+  # Linux
+  cp .env.example .env
+  php artisan key:generate
+  ```
+
+### 3. Blank or Unstyled Pages / Missing CSS
+- **Cause**: Pre-built Vite assets in `public/build/` are missing or were cleaned.
+- **Solution**:
+  ```bash
+  npm install
+  npm run build
+  ```
+
+### 4. `Call to undefined function ...` or Missing PHP Extension
+- **Cause**: Required PHP modules are disabled in `php.ini`.
+- **Solution**: Ensure `extension=pdo_mysql`, `extension=mbstring`, `extension=openssl`, `extension=curl`, `extension=fileinfo`, `extension=gd`, and `extension=zip` are active (uncommented) in `php.ini`, then restart your web server (Apache/Nginx).
 
 ---
 

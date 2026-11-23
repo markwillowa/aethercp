@@ -45,7 +45,31 @@ server {
 
 ---
 
-## 2. Production Optimizations
+## 2. Dependency Installation & Environment Setup
+
+When cloning from Git, third-party libraries (`vendor/`) and environment configuration (`.env`) must be initialized:
+
+```bash
+# 1. Install production PHP packages (creates vendor/autoload.php)
+composer install --no-dev --optimize-autoloader
+
+# 2. Setup environment configuration
+cp .env.example .env
+
+# 3. Generate application encryption key
+php artisan key:generate
+
+# 4. Set directory permissions (Linux)
+sudo chown -R www-data:www-data /var/www/aether
+sudo chmod -R 775 /var/www/aether/storage /var/www/aether/bootstrap/cache
+```
+
+> [!NOTE]
+> If you encounter `Fatal error: Failed opening required vendor/autoload.php`, it indicates `composer install` has not been executed in the project root directory.
+
+---
+
+## 3. Production Optimizations
 
 Before launching your live server:
 ```bash
@@ -64,7 +88,7 @@ APP_DEBUG=false
 
 ---
 
-## 3. Security Checklist
+## 4. Security Checklist
 - Ensure `APP_DEBUG=false` in production.
 - Keep `DB_DATABASE` (`aether_cp`) separate from the game emulator database.
 - Use a database user with `SELECT`, `INSERT`, `UPDATE` permissions on emulator tables, avoiding unnecessary `DROP` privileges.
