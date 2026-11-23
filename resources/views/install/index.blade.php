@@ -79,22 +79,70 @@
              adminEmail: 'admin@freynix.ro',
              adminPassword: '',
 
-             async testWebDb() {
-                 this.webDbTesting = true;
-                 this.webDbMessage = '';
+             // STAGE 1 VALIDATION
+             proceedToStep2() {
                  this.statusError = '';
+                 if (!this.allRequirementsPassed) {
+                     this.statusError = 'Cannot proceed: One or more critical system requirements failed. Please ensure PHP 8.2+ and required extensions are installed.';
+                     return;
+                 }
+                 this.step = 2;
+             },
+
+             // STAGE 2 VALIDATION
+             proceedToStep3() {
+                 this.statusError = '';
+                 if (!this.appName || this.appName.trim().length < 2) {
+                     this.statusError = 'Stage 2 Incomplete: Control Panel Name is required (minimum 2 characters).';
+                     return;
+                 }
+                 if (!this.serverName || this.serverName.trim().length < 2) {
+                     this.statusError = 'Stage 2 Incomplete: Ragnarok Server Name is required (minimum 2 characters).';
+                     return;
+                 }
+                 const urlTrimmed = (this.appUrl || '').trim();
+                 if (!urlTrimmed || !urlTrimmed.match(/^https?:\/\/.+/i)) {
+                     this.statusError = 'Stage 2 Incomplete: A valid Application URL starting with http:// or https:// is required.';
+                     return;
+                 }
+                 this.step = 3;
+             },
+
+             // STAGE 3 VALIDATION (DATABASE)
+             async testWebDb() {
+                 this.statusError = '';
+                 this.webDbMessage = '';
+                 if (!this.dbHost || !this.dbHost.trim()) {
+                     this.statusError = 'Missing Web DB Host.';
+                     return;
+                 }
+                 if (!this.dbPort || this.dbPort < 1 || this.dbPort > 65535) {
+                     this.statusError = 'Invalid Web DB Port (1 - 65535).';
+                     return;
+                 }
+                 if (!this.dbDatabase || !this.dbDatabase.trim()) {
+                     this.statusError = 'Missing Web DB Database Name.';
+                     return;
+                 }
+                 if (!this.dbUsername || !this.dbUsername.trim()) {
+                     this.statusError = 'Missing Web DB Username.';
+                     return;
+                 }
+
+                 this.webDbTesting = true;
                  try {
                      const res = await fetch('{{ route('install.test-database') }}', {
                          method: 'POST',
                          headers: {
                              'Content-Type': 'application/json',
+                             'Accept': 'application/json',
                              'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
                          },
                          body: JSON.stringify({
-                             db_host: this.dbHost,
+                             db_host: this.dbHost.trim(),
                              db_port: this.dbPort,
-                             db_database: this.dbDatabase,
-                             db_username: this.dbUsername,
+                             db_database: this.dbDatabase.trim(),
+                             db_username: this.dbUsername.trim(),
                              db_password: this.dbPassword
                          })
                      });
@@ -108,28 +156,46 @@
                      }
                  } catch (err) {
                      this.webDbTested = false;
-                     this.statusError = err.message;
+                     this.statusError = 'Web DB Connection Error: ' + err.message;
                  } finally {
                      this.webDbTesting = false;
                  }
              },
 
              async testGameDb() {
-                 this.gameDbTesting = true;
-                 this.gameDbMessage = '';
                  this.statusError = '';
+                 this.gameDbMessage = '';
+                 if (!this.roDbHost || !this.roDbHost.trim()) {
+                     this.statusError = 'Missing Game DB Host.';
+                     return;
+                 }
+                 if (!this.roDbPort || this.roDbPort < 1 || this.roDbPort > 65535) {
+                     this.statusError = 'Invalid Game DB Port (1 - 65535).';
+                     return;
+                 }
+                 if (!this.roDbDatabase || !this.roDbDatabase.trim()) {
+                     this.statusError = 'Missing Game DB Database Name.';
+                     return;
+                 }
+                 if (!this.roDbUsername || !this.roDbUsername.trim()) {
+                     this.statusError = 'Missing Game DB Username.';
+                     return;
+                 }
+
+                 this.gameDbTesting = true;
                  try {
                      const res = await fetch('{{ route('install.test-game-database') }}', {
                          method: 'POST',
                          headers: {
                              'Content-Type': 'application/json',
+                             'Accept': 'application/json',
                              'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
                          },
                          body: JSON.stringify({
-                             ro_db_host: this.roDbHost,
+                             ro_db_host: this.roDbHost.trim(),
                              ro_db_port: this.roDbPort,
-                             ro_db_database: this.roDbDatabase,
-                             ro_db_username: this.roDbUsername,
+                             ro_db_database: this.roDbDatabase.trim(),
+                             ro_db_username: this.roDbUsername.trim(),
                              ro_db_password: this.roDbPassword,
                              ro_emulator: this.roEmulator
                          })
@@ -145,12 +211,37 @@
                      }
                  } catch (err) {
                      this.gameDbTested = false;
-                     this.statusError = err.message;
+                     this.statusError = 'Game DB Connection Error: ' + err.message;
                  } finally {
                      this.gameDbTesting = false;
                  }
              },
 
+             proceedToStep4() {
+                 this.statusError = '';
+                 // 1. Check Web DB completeness
+                 if (!this.dbHost || !this.dbHost.trim() || !this.dbDatabase || !this.dbDatabase.trim() || !this.dbUsername || !this.dbUsername.trim()) {
+                     this.statusError = 'Stage 3 Incomplete: Please fill in all required fields for the AetherCP Web Database.';
+                     return;
+                 }
+                 // 2. Check Game DB completeness
+                 if (!this.roDbHost || !this.roDbHost.trim() || !this.roDbDatabase || !this.roDbDatabase.trim() || !this.roDbUsername || !this.roDbUsername.trim()) {
+                     this.statusError = 'Stage 3 Incomplete: Please fill in all required fields for the Ragnarok Game Database.';
+                     return;
+                 }
+                 // 3. Strict verification requirement: Both tests must pass
+                 if (!this.webDbTested) {
+                     this.statusError = 'Cannot proceed: You must click \'Test Connection\' on the AetherCP Web Database and verify connectivity first.';
+                     return;
+                 }
+                 if (!this.gameDbTested) {
+                     this.statusError = 'Cannot proceed: You must click \'Test Game DB\' on the Ragnarok Game Database and verify connectivity first.';
+                     return;
+                 }
+                 this.step = 4;
+             },
+
+             // STAGE 4: MIGRATION & PROVISIONING
              async runSetup() {
                  this.migrating = true;
                  this.statusError = '';
@@ -160,21 +251,22 @@
                          method: 'POST',
                          headers: {
                              'Content-Type': 'application/json',
+                             'Accept': 'application/json',
                              'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
                          },
                          body: JSON.stringify({
-                             app_name: this.appName,
-                             server_name: this.serverName,
-                             app_url: this.appUrl,
-                             db_host: this.dbHost,
+                             app_name: this.appName.trim(),
+                             server_name: this.serverName.trim(),
+                             app_url: this.appUrl.trim(),
+                             db_host: this.dbHost.trim(),
                              db_port: this.dbPort,
-                             db_database: this.dbDatabase,
-                             db_username: this.dbUsername,
+                             db_database: this.dbDatabase.trim(),
+                             db_username: this.dbUsername.trim(),
                              db_password: this.dbPassword,
-                             ro_db_host: this.roDbHost,
+                             ro_db_host: this.roDbHost.trim(),
                              ro_db_port: this.roDbPort,
-                             ro_db_database: this.roDbDatabase,
-                             ro_db_username: this.roDbUsername,
+                             ro_db_database: this.roDbDatabase.trim(),
+                             ro_db_username: this.roDbUsername.trim(),
                              ro_db_password: this.roDbPassword,
                              ro_emulator: this.roEmulator,
                              ro_renewal: this.roRenewal,
@@ -191,26 +283,43 @@
                          this.statusError = data.message || 'Database provisioning failed.';
                      }
                  } catch (err) {
-                     this.statusError = err.message;
+                     this.statusError = 'Setup execution error: ' + err.message;
                  } finally {
                      this.migrating = false;
                  }
              },
 
+             // STAGE 5 VALIDATION (ADMIN SETUP)
              async completeAdmin() {
-                 this.submitting = true;
                  this.statusError = '';
+                 if (!this.adminUsername || this.adminUsername.trim().length < 2) {
+                     this.statusError = 'Stage 5 Incomplete: Administrator username is required (minimum 2 characters).';
+                     return;
+                 }
+                 if (!this.adminEmail || !this.adminEmail.trim().includes('@')) {
+                     this.statusError = 'Stage 5 Incomplete: A valid notification email address is required.';
+                     return;
+                 }
+                 if (this.adminType === 'create_new_account') {
+                     if (!this.adminPassword || this.adminPassword.length < 6) {
+                         this.statusError = 'Stage 5 Incomplete: Password is required when creating a standalone administrator (minimum 6 characters).';
+                         return;
+                     }
+                 }
+
+                 this.submitting = true;
                  try {
                      const res = await fetch('{{ route('install.setup-admin') }}', {
                          method: 'POST',
                          headers: {
                              'Content-Type': 'application/json',
+                             'Accept': 'application/json',
                              'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
                          },
                          body: JSON.stringify({
                              admin_type: this.adminType,
-                             username: this.adminUsername,
-                             email: this.adminEmail,
+                             username: this.adminUsername.trim(),
+                             email: this.adminEmail.trim(),
                              password: this.adminPassword
                          })
                      });
@@ -221,7 +330,7 @@
                          this.statusError = data.message || 'Admin configuration failed.';
                      }
                  } catch (err) {
-                     this.statusError = err.message;
+                     this.statusError = 'Admin setup error: ' + err.message;
                  } finally {
                      this.submitting = false;
                  }
@@ -261,10 +370,10 @@
             <div class="bg-slate-900/90 border border-slate-800/80 backdrop-blur-xl py-8 px-6 sm:px-10 rounded-3xl shadow-2xl relative">
 
                 <!-- Global Error Alert -->
-                <div x-show="statusError" x-cloak class="mb-6 p-4 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200 text-xs flex items-start gap-3">
+                <div x-show="statusError" x-cloak class="mb-6 p-4 rounded-xl bg-red-950/70 border border-red-500/40 text-red-200 text-xs flex items-start gap-3 animate-pulse">
                     <i data-lucide="alert-triangle" class="w-4 h-4 text-red-400 shrink-0 mt-0.5"></i>
                     <div class="flex-grow">
-                        <strong class="font-bold">Error:</strong>
+                        <strong class="font-bold">Cannot Proceed:</strong>
                         <span x-text="statusError"></span>
                     </div>
                 </div>
@@ -287,7 +396,7 @@
                             <span>Step 1: System Pre-flight Checks</span>
                         </h2>
                         <p class="text-xs text-slate-400 mt-1">
-                            Verifying PHP runtime, required extensions, and file system permissions.
+                            Verifying PHP runtime, required extensions, and file system permissions. All requirements must pass to continue.
                         </p>
                     </div>
 
@@ -345,7 +454,7 @@
                     </div>
 
                     <div class="pt-4 flex justify-end">
-                        <button type="button" @click="step = 2" :disabled="!allRequirementsPassed"
+                        <button type="button" @click="proceedToStep2()" :disabled="!allRequirementsPassed"
                                 class="px-6 py-2.5 rounded-xl font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all">
                             <span>Proceed to Realm Settings</span>
                             <i data-lucide="arrow-right" class="w-4 h-4"></i>
@@ -363,35 +472,35 @@
                             <span>Step 2: General Realm Settings</span>
                         </h2>
                         <p class="text-xs text-slate-400 mt-1">
-                            Configure your server identity and public web address.
+                            Configure your server identity and public web address. All fields are required.
                         </p>
                     </div>
 
                     <div class="space-y-4 text-xs">
                         <div>
-                            <label class="block font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Control Panel Name</label>
-                            <input type="text" x-model="appName" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl text-slate-100 placeholder-slate-500">
-                            <p class="text-[11px] text-slate-500 mt-1">Default branding displayed in the navigation and metadata.</p>
+                            <label class="block font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Control Panel Name <span class="text-red-400">*</span></label>
+                            <input type="text" x-model="appName" @input="statusError = ''" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl text-slate-100 placeholder-slate-500" placeholder="e.g. AetherCP">
+                            <p class="text-[11px] text-slate-500 mt-1">Branding displayed in title, navbar, and metadata.</p>
                         </div>
 
                         <div>
-                            <label class="block font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Ragnarok Server Name</label>
-                            <input type="text" x-model="serverName" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl text-slate-100 placeholder-slate-500">
-                            <p class="text-[11px] text-slate-500 mt-1">The name of your Ragnarok Online server (e.g. FreynixRO).</p>
+                            <label class="block font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Ragnarok Server Name <span class="text-red-400">*</span></label>
+                            <input type="text" x-model="serverName" @input="statusError = ''" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl text-slate-100 placeholder-slate-500" placeholder="e.g. FreynixRO">
+                            <p class="text-[11px] text-slate-500 mt-1">The name of your Ragnarok Online server.</p>
                         </div>
 
                         <div>
-                            <label class="block font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Application URL</label>
-                            <input type="text" x-model="appUrl" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl text-slate-100 font-mono">
-                            <p class="text-[11px] text-slate-500 mt-1">The public root URL of your control panel without trailing slash or /public (e.g. http://localhost/aether or https://myro.com).</p>
+                            <label class="block font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Application URL <span class="text-red-400">*</span></label>
+                            <input type="text" x-model="appUrl" @input="statusError = ''" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl text-slate-100 font-mono" placeholder="http://localhost/aether">
+                            <p class="text-[11px] text-slate-500 mt-1">The root URL without /public or trailing slash (must start with http:// or https://).</p>
                         </div>
                     </div>
 
                     <div class="pt-4 flex justify-between">
-                        <button type="button" @click="step = 1" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80">
+                        <button type="button" @click="step = 1; statusError = ''" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80">
                             Back
                         </button>
-                        <button type="button" @click="step = 3" class="px-6 py-2.5 rounded-xl font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition-all">
+                        <button type="button" @click="proceedToStep3()" class="px-6 py-2.5 rounded-xl font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition-all">
                             <span>Proceed to Database Setup</span>
                             <i data-lucide="arrow-right" class="w-4 h-4"></i>
                         </button>
@@ -408,7 +517,7 @@
                             <span>Step 3: Dual Database Configuration</span>
                         </h2>
                         <p class="text-xs text-slate-400 mt-1">
-                            AetherCP cleanly isolates its own web database from your Ragnarok game server database.
+                            Both database connections must be tested and verified before you can proceed to the provisioning stage.
                         </p>
                     </div>
 
@@ -416,36 +525,41 @@
                     <div class="bg-slate-950/70 border border-slate-800/80 rounded-2xl p-5 space-y-4">
                         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                             <div class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                                <span class="w-2.5 h-2.5 rounded-full" :class="webDbTested ? 'bg-emerald-400' : 'bg-cyan-400'"></span>
                                 <h3 class="text-xs font-bold uppercase tracking-wider text-slate-200">1. AetherCP Web Database</h3>
                             </div>
-                            <button type="button" @click="testWebDb()" :disabled="webDbTesting"
-                                    class="px-3 py-1 rounded-lg text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 transition-all flex items-center gap-1.5">
-                                <i data-lucide="zap" class="w-3.5 h-3.5"></i>
-                                <span x-text="webDbTesting ? 'Testing...' : 'Test Connection'"></span>
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <span x-show="webDbTested" class="text-xs text-emerald-400 font-bold flex items-center gap-1">
+                                    <i data-lucide="check" class="w-3.5 h-3.5"></i> Verified
+                                </span>
+                                <button type="button" @click="testWebDb()" :disabled="webDbTesting"
+                                        class="px-3 py-1 rounded-lg text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 transition-all flex items-center gap-1.5">
+                                    <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                                    <span x-text="webDbTesting ? 'Testing...' : 'Test Connection'"></span>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-3 text-xs">
                             <div>
-                                <label class="block text-slate-400 mb-1">Host</label>
-                                <input type="text" x-model="dbHost" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                <label class="block text-slate-400 mb-1">Host <span class="text-red-400">*</span></label>
+                                <input type="text" x-model="dbHost" @input="webDbTested = false; webDbMessage = ''; statusError = ''" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">Port</label>
-                                <input type="number" x-model="dbPort" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                <label class="block text-slate-400 mb-1">Port <span class="text-red-400">*</span></label>
+                                <input type="number" x-model="dbPort" @input="webDbTested = false; webDbMessage = ''; statusError = ''" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">Database Name</label>
-                                <input type="text" x-model="dbDatabase" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                <label class="block text-slate-400 mb-1">Database Name <span class="text-red-400">*</span></label>
+                                <input type="text" x-model="dbDatabase" @input="webDbTested = false; webDbMessage = ''; statusError = ''" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">Username</label>
-                                <input type="text" x-model="dbUsername" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                <label class="block text-slate-400 mb-1">Username <span class="text-red-400">*</span></label>
+                                <input type="text" x-model="dbUsername" @input="webDbTested = false; webDbMessage = ''; statusError = ''" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
                             </div>
                             <div class="col-span-2">
                                 <label class="block text-slate-400 mb-1">Password</label>
-                                <input type="password" x-model="dbPassword" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                <input type="password" x-model="dbPassword" @input="webDbTested = false; webDbMessage = ''; statusError = ''" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
                             </div>
                         </div>
 
@@ -459,14 +573,19 @@
                     <div class="bg-slate-950/70 border border-slate-800/80 rounded-2xl p-5 space-y-4">
                         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                             <div class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                                <span class="w-2.5 h-2.5 rounded-full" :class="gameDbTested ? 'bg-emerald-400' : 'bg-amber-400'"></span>
                                 <h3 class="text-xs font-bold uppercase tracking-wider text-slate-200">2. Ragnarok Game Database</h3>
                             </div>
-                            <button type="button" @click="testGameDb()" :disabled="gameDbTesting"
-                                    class="px-3 py-1 rounded-lg text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 transition-all flex items-center gap-1.5">
-                                <i data-lucide="zap" class="w-3.5 h-3.5"></i>
-                                <span x-text="gameDbTesting ? 'Testing...' : 'Test Game DB'"></span>
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <span x-show="gameDbTested" class="text-xs text-emerald-400 font-bold flex items-center gap-1">
+                                    <i data-lucide="check" class="w-3.5 h-3.5"></i> Verified
+                                </span>
+                                <button type="button" @click="testGameDb()" :disabled="gameDbTesting"
+                                        class="px-3 py-1 rounded-lg text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 transition-all flex items-center gap-1.5">
+                                    <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                                    <span x-text="gameDbTesting ? 'Testing...' : 'Test Game DB'"></span>
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Important emulator data reminder banner -->
@@ -479,41 +598,41 @@
 
                         <div class="grid grid-cols-2 gap-3 text-xs">
                             <div>
-                                <label class="block text-slate-400 mb-1">Emulator Core</label>
+                                <label class="block text-slate-400 mb-1">Emulator Core <span class="text-red-400">*</span></label>
                                 <select x-model="roEmulator" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
                                     <option value="rathena">rAthena</option>
                                     <option value="hercules">Hercules</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">Game Mode</label>
+                                <label class="block text-slate-400 mb-1">Game Mode <span class="text-red-400">*</span></label>
                                 <select x-model="roRenewal" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
                                     <option :value="true">Renewal (4th Jobs / Episode 19+)</option>
                                     <option :value="false">Pre-Renewal (Classic / Transcendent)</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">Game DB Host</label>
-                                <input type="text" x-model="roDbHost" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                <label class="block text-slate-400 mb-1">Game DB Host <span class="text-red-400">*</span></label>
+                                <input type="text" x-model="roDbHost" @input="gameDbTested = false; gameDbMessage = ''; statusError = ''" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">Game DB Port</label>
-                                <input type="number" x-model="roDbPort" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                <label class="block text-slate-400 mb-1">Game DB Port <span class="text-red-400">*</span></label>
+                                <input type="number" x-model="roDbPort" @input="gameDbTested = false; gameDbMessage = ''; statusError = ''" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">Game DB Name</label>
-                                <input type="text" x-model="roDbDatabase" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                <label class="block text-slate-400 mb-1">Game DB Name <span class="text-red-400">*</span></label>
+                                <input type="text" x-model="roDbDatabase" @input="gameDbTested = false; gameDbMessage = ''; statusError = ''" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">Game DB User</label>
-                                <input type="text" x-model="roDbUsername" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                <label class="block text-slate-400 mb-1">Game DB User <span class="text-red-400">*</span></label>
+                                <input type="text" x-model="roDbUsername" @input="gameDbTested = false; gameDbMessage = ''; statusError = ''" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
                             </div>
                             <div>
                                 <label class="block text-slate-400 mb-1">Game DB Password</label>
-                                <input type="password" x-model="roDbPassword" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                <input type="password" x-model="roDbPassword" @input="gameDbTested = false; gameDbMessage = ''; statusError = ''" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
                             </div>
                             <div>
-                                <label class="block text-slate-400 mb-1">Password Encryption</label>
+                                <label class="block text-slate-400 mb-1">Password Encryption <span class="text-red-400">*</span></label>
                                 <select x-model="roPasswordHash" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
                                     <option value="plain">Plaintext</option>
                                     <option value="md5">MD5</option>
@@ -529,10 +648,12 @@
                     </div>
 
                     <div class="pt-4 flex justify-between">
-                        <button type="button" @click="step = 2" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80">
+                        <button type="button" @click="step = 2; statusError = ''" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80">
                             Back
                         </button>
-                        <button type="button" @click="step = 4" class="px-6 py-2.5 rounded-xl font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition-all">
+                        <button type="button" @click="proceedToStep4()"
+                                :class="(!webDbTested || !gameDbTested) ? 'opacity-60 cursor-not-allowed bg-slate-700 text-slate-400' : 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20'"
+                                class="px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all">
                             <span>Proceed to Migration</span>
                             <i data-lucide="arrow-right" class="w-4 h-4"></i>
                         </button>
@@ -575,7 +696,7 @@
                     </div>
 
                     <div class="pt-4 flex justify-between">
-                        <button type="button" @click="step = 3" :disabled="migrating" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80">
+                        <button type="button" @click="step = 3; statusError = ''" :disabled="migrating" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80">
                             Back
                         </button>
                     </div>
@@ -591,7 +712,7 @@
                             <span>Step 5: Administrative Privileges</span>
                         </h2>
                         <p class="text-xs text-slate-400 mt-1">
-                            Choose how you wish to access the AetherCP Admin Control Panel.
+                            Choose how you wish to access the AetherCP Admin Control Panel. Incomplete data is blocked.
                         </p>
                     </div>
 
@@ -621,18 +742,21 @@
 
                     <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-5 space-y-4 text-xs">
                         <div>
-                            <label class="block font-semibold text-slate-300 mb-1" x-text="adminType === 'designate_game_account' ? 'Game Account Username' : 'Administrator Username'"></label>
-                            <input type="text" x-model="adminUsername" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                            <label class="block font-semibold text-slate-300 mb-1">
+                                <span x-text="adminType === 'designate_game_account' ? 'Game Account Username' : 'Administrator Username'"></span>
+                                <span class="text-red-400">*</span>
+                            </label>
+                            <input type="text" x-model="adminUsername" @input="statusError = ''" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100" placeholder="Username (min 2 chars)">
                         </div>
 
                         <div>
-                            <label class="block font-semibold text-slate-300 mb-1">Notification Email</label>
-                            <input type="email" x-model="adminEmail" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                            <label class="block font-semibold text-slate-300 mb-1">Notification Email <span class="text-red-400">*</span></label>
+                            <input type="email" x-model="adminEmail" @input="statusError = ''" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100" placeholder="admin@yourserver.com">
                         </div>
 
                         <div x-show="adminType === 'create_new_account'">
-                            <label class="block font-semibold text-slate-300 mb-1">Admin Password</label>
-                            <input type="password" x-model="adminPassword" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                            <label class="block font-semibold text-slate-300 mb-1">Admin Password <span class="text-red-400">*</span></label>
+                            <input type="password" x-model="adminPassword" @input="statusError = ''" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100" placeholder="Minimum 6 characters">
                         </div>
                     </div>
 
@@ -704,4 +828,3 @@
     </script>
 </body>
 </html>
-

@@ -193,23 +193,52 @@ class InstallController extends Controller
     public function setupEnvironment(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'app_name' => 'required|string|max:50',
-            'app_url' => 'required|string',
-            'server_name' => 'required|string|max:50',
+            'app_name' => 'required|string|min:2|max:50',
+            'app_url' => 'required|string|url',
+            'server_name' => 'required|string|min:2|max:50',
             'db_host' => 'required|string',
-            'db_port' => 'required|numeric',
-            'db_database' => 'required|string',
-            'db_username' => 'required|string',
+            'db_port' => 'required|integer|between:1,65535',
+            'db_database' => 'required|string|min:1',
+            'db_username' => 'required|string|min:1',
             'db_password' => 'nullable|string',
             'ro_db_host' => 'required|string',
-            'ro_db_port' => 'required|numeric',
-            'ro_db_database' => 'required|string',
-            'ro_db_username' => 'required|string',
+            'ro_db_port' => 'required|integer|between:1,65535',
+            'ro_db_database' => 'required|string|min:1',
+            'ro_db_username' => 'required|string|min:1',
             'ro_db_password' => 'nullable|string',
             'ro_emulator' => 'required|in:rathena,hercules',
             'ro_renewal' => 'required|boolean',
             'ro_password_hash' => 'required|in:plain,md5,sha256',
         ]);
+
+        // Pre-validate database connectivity before writing configuration
+        try {
+            new PDO(
+                "mysql:host={$validated['db_host']};port={$validated['db_port']};dbname={$validated['db_database']}",
+                $validated['db_username'],
+                $validated['db_password'] ?? '',
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 5]
+            );
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Web database connection check failed: ' . $e->getMessage(),
+            ], 422);
+        }
+
+        try {
+            new PDO(
+                "mysql:host={$validated['ro_db_host']};port={$validated['ro_db_port']};dbname={$validated['ro_db_database']}",
+                $validated['ro_db_username'],
+                $validated['ro_db_password'] ?? '',
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 5]
+            );
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ragnarok game database connection check failed: ' . $e->getMessage(),
+            ], 422);
+        }
 
         try {
             // 1. Update .env file
@@ -302,10 +331,19 @@ class InstallController extends Controller
     {
         $validated = $request->validate([
             'admin_type' => 'required|in:designate_game_account,create_new_account',
-            'username' => 'required|string|max:50',
-            'email' => 'nullable|email|max:100',
-            'password' => 'nullable|string|min:6',
+            'username' => 'required|string|min:2|max:50',
+            'email' => 'required|email|max:100',
+            'password' => 'nullable|string',
         ]);
+
+        if ($validated['admin_type'] === 'create_new_account') {
+            if (empty($validated['password']) || strlen($validated['password']) < 6) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'A password of at least 6 characters is required when creating a new administrator account.',
+                ], 422);
+            }
+        }
 
         try {
             $username = $validated['username'];

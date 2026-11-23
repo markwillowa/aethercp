@@ -87,4 +87,62 @@ class InstallTest extends TestCase
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['ro_db_host', 'ro_db_port', 'ro_db_database', 'ro_db_username', 'ro_emulator']);
     }
+
+    public function test_setup_environment_endpoint_validates_input_strictly(): void
+    {
+        if (File::exists($this->lockFile)) {
+            File::delete($this->lockFile);
+        }
+
+        $response = $this->postJson('/install/setup-environment', []);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors([
+            'app_name', 'app_url', 'server_name',
+            'db_host', 'db_port', 'db_database', 'db_username',
+            'ro_db_host', 'ro_db_port', 'ro_db_database', 'ro_db_username',
+            'ro_emulator', 'ro_renewal', 'ro_password_hash'
+        ]);
+    }
+
+    public function test_setup_admin_endpoint_validates_input_strictly(): void
+    {
+        if (File::exists($this->lockFile)) {
+            File::delete($this->lockFile);
+        }
+
+        $response = $this->postJson('/install/setup-admin', []);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['admin_type', 'username', 'email']);
+    }
+
+    public function test_setup_admin_fails_when_creating_admin_without_password(): void
+    {
+        if (File::exists($this->lockFile)) {
+            File::delete($this->lockFile);
+        }
+
+        $response = $this->postJson('/install/setup-admin', [
+            'admin_type' => 'create_new_account',
+            'username' => 'newadmin',
+            'email' => 'admin@test.com',
+            'password' => '',
+        ]);
+        $response->assertStatus(422);
+        $response->assertJson(['success' => false]);
+    }
+
+    public function test_setup_admin_fails_when_game_account_not_found(): void
+    {
+        if (File::exists($this->lockFile)) {
+            File::delete($this->lockFile);
+        }
+
+        $response = $this->postJson('/install/setup-admin', [
+            'admin_type' => 'designate_game_account',
+            'username' => 'nonexistent_character_user_xyz',
+            'email' => 'admin@test.com',
+        ]);
+        $response->assertStatus(422);
+        $response->assertJson(['success' => false]);
+    }
 }

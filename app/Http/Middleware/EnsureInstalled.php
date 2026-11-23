@@ -20,6 +20,13 @@ class EnsureInstalled
             return $next($request);
         }
 
+        // In testing environment, allow test suite to run unless explicitly testing the installer
+        if (app()->environment('testing') && !$isInstalled) {
+            if (!$request->is('install*')) {
+                return $next($request);
+            }
+        }
+
         // If not installed, redirect all non-installer requests to the installer wizard
         if (!$isInstalled) {
             if (!$request->is('install*')) {
