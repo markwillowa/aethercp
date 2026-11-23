@@ -66,20 +66,28 @@
                     @endif
                 </a>
 
-                <!-- Right: Online Adventurers Pill Badge -->
+                <!-- Right: Online Adventurers Pill Badge (Live Server Status) -->
                 @php
                     $emulator = app(\App\Contracts\EmulatorInterface::class);
                     $onlinePlayers = 0;
+                    $isClusterOnline = false;
                     try {
                         $onlinePlayers = $emulator->getOnlinePlayerCount();
+                        $statusLogin = $emulator->checkServerStatus('login');
+                        $isClusterOnline = !empty($statusLogin['online']) || $onlinePlayers > 0;
                     } catch (\Throwable $e) {
-                        $onlinePlayers = 1248;
+                        $onlinePlayers = 0;
+                        $isClusterOnline = false;
                     }
                 @endphp
                 <div class="hidden md:flex items-center gap-2.5 chronicles-online-pill self-end mb-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#22C55E] animate-ping"></span>
+                    @if($isClusterOnline)
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#22C55E] animate-ping"></span>
+                    @else
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#EF4444]"></span>
+                    @endif
                     <span class="text-xs font-cinzel text-[#E8DCC9]">Players In Midgard:</span>
-                    <strong class="font-mono text-[#FFD700] text-sm">{{ number_format($onlinePlayers) }}</strong>
+                    <strong class="font-mono {{ $onlinePlayers > 0 ? 'text-[#FFD700]' : 'text-[#8C7F99]' }} text-sm">{{ number_format($onlinePlayers) }}</strong>
                 </div>
             </div>
         </header>

@@ -105,7 +105,7 @@
                     </div>
 
                     @auth
-                        @if($paypalEnabled)
+                        @if(!empty($paypalEnabled) || !empty($paypalConfig['enabled']))
                             <form method="POST" :action="'{{ url('/donations/paypal/checkout') }}/' + selectedPackage">
                                 @csrf
                                 <button type="submit" class="chronicles-btn-red w-full">

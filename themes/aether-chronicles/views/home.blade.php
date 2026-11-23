@@ -2,13 +2,11 @@
 
 @section('content')
 @php
-    $emulator = app(\App\Contracts\EmulatorInterface::class);
-    $onlineCount = 0;
-    try {
-        $onlineCount = $emulator->getOnlinePlayerCount();
-    } catch (\Throwable $e) {
-        $onlineCount = 1248;
-    }
+    $loginOnline = !empty($serverStatus['login']['online']);
+    $charOnline = !empty($serverStatus['char']['online']);
+    $mapOnline = !empty($serverStatus['map']['online']);
+    $clusterOnline = $loginOnline || $charOnline || $mapOnline;
+    $onlineCount = $serverStatus['online_count'] ?? 0;
 
     // Flexible asset resolver for Web URLs, custom root paths, or theme asset defaults
     $resolveAsset = function ($key, $defaultPath) {
@@ -48,6 +46,43 @@
     $screenshotUrl = \App\Models\SiteSetting::get('chronicles_screenshot_url');
     if (empty($screenshotUrl) || $screenshotUrl === '/news') {
         $screenshotUrl = route('gallery.index');
+    }
+
+    $customGalleryJson = \App\Models\SiteSetting::get('chronicles_gallery_data', null);
+    $galleryScreenshots = [];
+    if (!empty($customGalleryJson)) {
+        $decoded = json_decode($customGalleryJson, true);
+        if (is_array($decoded)) {
+            $galleryScreenshots = $decoded;
+        }
+    }
+    if (empty($galleryScreenshots)) {
+        $galleryScreenshots = [
+            [
+                'title' => 'Capital City of Prontera',
+                'image' => route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/screenshot_prontera.jpg']),
+            ],
+            [
+                'title' => 'War of Emperium Castle Siege',
+                'image' => route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/feat_woe_boss.jpg']),
+            ],
+            [
+                'title' => 'Grand Midgard Festival',
+                'image' => route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/news_festival.jpg']),
+            ],
+            [
+                'title' => 'Treasure Vaults & Update',
+                'image' => route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/news_update.jpg']),
+            ],
+            [
+                'title' => 'Episode XIII: Noghaltz & Odin Shrine',
+                'image' => route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/header_chronicles_hero_clean.jpg']),
+            ],
+            [
+                'title' => 'Road to Midgard Highway',
+                'image' => route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/bottom_strip_clean.jpg']),
+            ],
+        ];
     }
 
     $angelingBadge = $resolveAsset('chronicles_angeling_img', 'images/angeling_transparent.png');
@@ -109,7 +144,7 @@
                 </div>
             </div>
 
-            <!-- 2. SERVER STATUS (With Official Angeling Mascot) -->
+            <!-- 2. SERVER STATUS (Dynamic Live Server Status) -->
             <div class="chronicles-panel">
                 <div class="chronicles-panel-header">
                     <span class="chronicles-panel-title flex items-center gap-1.5">
@@ -117,30 +152,49 @@
                              class="w-6 h-6 rounded-full object-cover border border-[#D4AF37]/70 shadow">
                         <span>Server Status</span>
                     </span>
-                    <span class="chronicles-status-online text-[9px] uppercase tracking-wider flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-ping"></span>
-                        <span>Online</span>
-                    </span>
+                    @if($clusterOnline)
+                        <span class="chronicles-status-online text-[9px] uppercase tracking-wider flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-ping"></span>
+                            <span>Online</span>
+                        </span>
+                    @else
+                        <span class="text-[#EF4444] text-[9px] uppercase tracking-wider flex items-center gap-1 font-bold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#EF4444]"></span>
+                            <span>Offline</span>
+                        </span>
+                    @endif
                 </div>
                 <div>
                     <div class="chronicles-spec-row">
                         <span class="chronicles-spec-label">Login Server</span>
-                        <span class="chronicles-status-online">Online</span>
+                        @if($loginOnline)
+                            <span class="chronicles-status-online">Online</span>
+                        @else
+                            <span class="text-[#EF4444] text-xs font-bold font-mono">Offline</span>
+                        @endif
                     </div>
                     <div class="chronicles-spec-row">
                         <span class="chronicles-spec-label">Character Server</span>
-                        <span class="chronicles-status-online">Online</span>
+                        @if($charOnline)
+                            <span class="chronicles-status-online">Online</span>
+                        @else
+                            <span class="text-[#EF4444] text-xs font-bold font-mono">Offline</span>
+                        @endif
                     </div>
                     <div class="chronicles-spec-row">
                         <span class="chronicles-spec-label">Map Server</span>
-                        <span class="chronicles-status-online">Online</span>
+                        @if($mapOnline)
+                            <span class="chronicles-status-online">Online</span>
+                        @else
+                            <span class="text-[#EF4444] text-xs font-bold font-mono">Offline</span>
+                        @endif
                     </div>
                     <div class="chronicles-spec-row">
                         <span class="chronicles-spec-label flex items-center gap-1">
                             <i data-lucide="users" class="w-3 h-3 text-[#D4AF37]"></i>
                             <span>Online Players</span>
                         </span>
-                        <strong class="text-[#FFD700] font-mono font-bold text-xs">{{ number_format($onlineCount) }}</strong>
+                        <strong class="{{ $onlineCount > 0 ? 'text-[#FFD700]' : 'text-[#8C7F99]' }} font-mono font-bold text-xs">{{ number_format($onlineCount) }}</strong>
                     </div>
                 </div>
             </div>
@@ -290,20 +344,41 @@
                         </div>
                     </div>
 
-                    <!-- Screenshots (Managed in Admin) -->
-                    <div class="chronicles-panel flex-1 flex flex-col justify-between">
+                    <!-- Screenshots (Managed in Admin, Rotates randomly every 15s, links to /gallery) -->
+                    <div class="chronicles-panel flex-1 flex flex-col justify-between"
+                         x-data="{
+                             gallery: {{ json_encode($galleryScreenshots) }},
+                             activeIdx: 0,
+                             init() {
+                                 if (this.gallery.length > 1) {
+                                     setInterval(() => {
+                                         let next;
+                                         do {
+                                             next = Math.floor(Math.random() * this.gallery.length);
+                                         } while (next === this.activeIdx && this.gallery.length > 1);
+                                         this.activeIdx = next;
+                                     }, 15000);
+                                 }
+                             }
+                         }">
                         <div class="chronicles-panel-header">
                             <span class="chronicles-panel-title">
                                 <i data-lucide="image"></i>
-                                <span>{{ $screenshotTitle }}</span>
+                                <span x-text="gallery[activeIdx]?.title || '{{ $screenshotTitle }}'">{{ $screenshotTitle }}</span>
                             </span>
-                            <a href="{{ $screenshotUrl }}" class="text-[9px] font-cinzel text-[#C8BDA8] hover:text-[#FFD700]">
+                            <a href="{{ route('gallery.index') }}" class="text-[9px] font-cinzel text-[#C8BDA8] hover:text-[#FFD700]">
                                 View Gallery &raquo;
                             </a>
                         </div>
-                        <div class="p-2">
-                            <a href="{{ $screenshotUrl }}">
-                                <img src="{{ $screenshotImg }}" alt="{{ $screenshotTitle }}" class="chronicles-thumb-img hover:opacity-90 transition-opacity">
+                        <div class="p-2 flex-1 flex flex-col justify-center">
+                            <a href="{{ route('gallery.index') }}" class="block relative overflow-hidden rounded group" title="Click to view full Gallery">
+                                <img :src="gallery[activeIdx]?.image" 
+                                     :alt="gallery[activeIdx]?.title" 
+                                     class="chronicles-thumb-img hover:opacity-90 transition-all duration-700 w-full h-24 object-cover">
+                                <div class="absolute bottom-0 inset-x-0 bg-black/75 px-2 py-0.5 text-[8.5px] font-cinzel text-[#F3E5AB] truncate flex justify-between items-center border-t border-[#D4AF37]/30">
+                                    <span x-text="gallery[activeIdx]?.title" class="truncate"></span>
+                                    <span class="text-[#D4AF37] font-bold shrink-0 ml-1">&raquo;</span>
+                                </div>
                             </a>
                         </div>
                     </div>
@@ -364,29 +439,29 @@
                     </div>
                 </div>
 
-                <!-- TOP RANKINGS (240px wide — Matches Featured Stack above) -->
-                <div class="chronicles-panel flex flex-col">
+                <!-- TOP RANKINGS (Client-Side Switchable Tabs, Current Live Database Data Only) -->
+                <div class="chronicles-panel flex flex-col" x-data="{ activeRankTab: 'base' }">
                     <div class="chronicles-panel-header">
                         <span class="chronicles-panel-title">
                             <i data-lucide="trophy"></i>
                             <span>Top Rankings</span>
                         </span>
                         <a href="{{ route('rankings.index') }}" class="text-[9px] font-cinzel text-[#C8BDA8] hover:text-[#FFD700]">
-                            View Rankings &raquo;
+                            View All &raquo;
                         </a>
                     </div>
 
-                    <!-- Category Tabs -->
+                    <!-- Category Tabs (Switches client-side on homepage) -->
                     <div class="chronicles-rank-tabs">
-                        <span class="chronicles-rank-tab active">Base Lv</span>
-                        <a href="{{ route('rankings.index', ['type' => 'job']) }}" class="chronicles-rank-tab">Job Lv</a>
-                        <a href="{{ route('rankings.index', ['type' => 'mvp']) }}" class="chronicles-rank-tab">MVP</a>
-                        <a href="{{ route('rankings.index', ['type' => 'guild']) }}" class="chronicles-rank-tab">Guild</a>
+                        <button type="button" @click="activeRankTab = 'base'" :class="activeRankTab === 'base' ? 'active' : ''" class="chronicles-rank-tab">Base Lv</button>
+                        <button type="button" @click="activeRankTab = 'job'" :class="activeRankTab === 'job' ? 'active' : ''" class="chronicles-rank-tab">Job Lv</button>
+                        <button type="button" @click="activeRankTab = 'mvp'" :class="activeRankTab === 'mvp' ? 'active' : ''" class="chronicles-rank-tab">MVP</button>
+                        <button type="button" @click="activeRankTab = 'guild'" :class="activeRankTab === 'guild' ? 'active' : ''" class="chronicles-rank-tab">Guild</button>
                     </div>
 
-                    <!-- Character Rows (Dynamic Top Players from Database) -->
-                    <div class="flex-1 flex flex-col justify-around">
-                        @forelse($topPlayers as $idx => $p)
+                    <!-- TAB 1: Base Level -->
+                    <div x-show="activeRankTab === 'base'" class="flex-1 flex flex-col justify-around">
+                        @forelse($topBase ?? [] as $idx => $p)
                             @php
                                 $crownIcon = $idx === 0 ? '👑' : ($idx === 1 ? '🥈' : ($idx === 2 ? '🥉' : ($idx + 1)));
                                 $crownColor = $idx === 0 ? 'text-[#FFD700]' : ($idx === 1 ? 'text-[#E0E0E0]' : ($idx === 2 ? 'text-[#CD7F32]' : 'text-[#8C7F99]'));
@@ -394,59 +469,84 @@
                             <div class="chronicles-rank-row">
                                 <div class="flex items-center gap-1.5 min-w-0">
                                     <span class="text-xs {{ $crownColor }} w-4 text-center shrink-0">{{ $crownIcon }}</span>
-                                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/lord_knight.png']) }}" 
-                                         alt="Avatar" class="chronicles-rank-avatar shrink-0">
                                     <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB] truncate">
-                                        {{ $p->name ?? 'Adventurer' }}
+                                        {{ $p->name }}
                                     </span>
                                 </div>
-                                <span class="font-mono text-[#FFD700] font-bold text-xs shrink-0">Lv. {{ $p->base_level ?? 99 }}</span>
+                                <span class="font-mono text-[#FFD700] font-bold text-xs shrink-0">Lv. {{ $p->base_level }}</span>
                             </div>
                         @empty
-                            <div class="chronicles-rank-row">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-xs text-[#FFD700]">👑</span>
-                                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/lord_knight.png']) }}" 
-                                         alt="DarkKnight" class="chronicles-rank-avatar">
-                                    <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB]">DarkKnight</span>
-                                </div>
-                                <span class="font-mono text-[#FFD700] font-bold text-xs">Lv. 99</span>
+                            <div class="p-6 text-center text-xs text-[#8C7F99] font-cinzel">
+                                No characters ranked yet.
                             </div>
+                        @endforelse
+                    </div>
+
+                    <!-- TAB 2: Job Level -->
+                    <div x-show="activeRankTab === 'job'" class="flex-1 flex flex-col justify-around" style="display: none;">
+                        @forelse($topJob ?? [] as $idx => $p)
+                            @php
+                                $crownIcon = $idx === 0 ? '👑' : ($idx === 1 ? '🥈' : ($idx === 2 ? '🥉' : ($idx + 1)));
+                                $crownColor = $idx === 0 ? 'text-[#FFD700]' : ($idx === 1 ? 'text-[#E0E0E0]' : ($idx === 2 ? 'text-[#CD7F32]' : 'text-[#8C7F99]'));
+                            @endphp
                             <div class="chronicles-rank-row">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-xs text-[#E0E0E0]">🥈</span>
-                                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/champion.png']) }}" 
-                                         alt="ShuraZen" class="chronicles-rank-avatar">
-                                    <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB]">ShuraZen</span>
+                                <div class="flex items-center gap-1.5 min-w-0">
+                                    <span class="text-xs {{ $crownColor }} w-4 text-center shrink-0">{{ $crownIcon }}</span>
+                                    <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB] truncate">
+                                        {{ $p->name }}
+                                    </span>
                                 </div>
-                                <span class="font-mono text-[#C0C0C0] font-bold text-xs">Lv. 99</span>
+                                <span class="font-mono text-[#CD7F32] font-bold text-xs shrink-0">Job {{ $p->job_level }}</span>
                             </div>
-                            <div class="chronicles-rank-row">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-xs text-[#CD7F32]">🥉</span>
-                                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/high_wizard.png']) }}" 
-                                         alt="RagnarokPH" class="chronicles-rank-avatar">
-                                    <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB]">RagnarokPH</span>
-                                </div>
-                                <span class="font-mono text-[#CD7F32] font-bold text-xs">Lv. 98</span>
+                        @empty
+                            <div class="p-6 text-center text-xs text-[#8C7F99] font-cinzel">
+                                No characters ranked yet.
                             </div>
+                        @endforelse
+                    </div>
+
+                    <!-- TAB 3: MVP -->
+                    <div x-show="activeRankTab === 'mvp'" class="flex-1 flex flex-col justify-around" style="display: none;">
+                        @forelse($topMvp ?? [] as $idx => $p)
+                            @php
+                                $crownIcon = $idx === 0 ? '👑' : ($idx === 1 ? '🥈' : ($idx === 2 ? '🥉' : ($idx + 1)));
+                                $crownColor = $idx === 0 ? 'text-[#FFD700]' : ($idx === 1 ? 'text-[#E0E0E0]' : ($idx === 2 ? 'text-[#CD7F32]' : 'text-[#8C7F99]'));
+                            @endphp
                             <div class="chronicles-rank-row">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="font-cinzel font-bold text-[10px] text-[#8C7F99] w-3 text-center">4</span>
-                                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/assassin_cross.png']) }}" 
-                                         alt="MysticSoul" class="chronicles-rank-avatar">
-                                    <span class="font-cinzel font-bold text-[11px] text-[#D2C7BC]">MysticSoul</span>
+                                <div class="flex items-center gap-1.5 min-w-0">
+                                    <span class="text-xs {{ $crownColor }} w-4 text-center shrink-0">{{ $crownIcon }}</span>
+                                    <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB] truncate">
+                                        {{ $p->name }}
+                                    </span>
                                 </div>
-                                <span class="font-mono text-[#A396AD] font-bold text-xs">Lv. 98</span>
+                                <span class="font-mono text-[#E53935] font-bold text-xs shrink-0">{{ $p->fame ?? 0 }} Fame</span>
                             </div>
+                        @empty
+                            <div class="p-6 text-center text-xs text-[#8C7F99] font-cinzel">
+                                No MVP champions recorded yet.
+                            </div>
+                        @endforelse
+                    </div>
+
+                    <!-- TAB 4: Guild -->
+                    <div x-show="activeRankTab === 'guild'" class="flex-1 flex flex-col justify-around" style="display: none;">
+                        @forelse($topGuilds ?? [] as $idx => $g)
+                            @php
+                                $crownIcon = $idx === 0 ? '👑' : ($idx === 1 ? '🥈' : ($idx === 2 ? '🥉' : ($idx + 1)));
+                                $crownColor = $idx === 0 ? 'text-[#FFD700]' : ($idx === 1 ? 'text-[#E0E0E0]' : ($idx === 2 ? 'text-[#CD7F32]' : 'text-[#8C7F99]'));
+                            @endphp
                             <div class="chronicles-rank-row">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="font-cinzel font-bold text-[10px] text-[#8C7F99] w-3 text-center">5</span>
-                                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/sniper.png']) }}" 
-                                         alt="BladeMaster" class="chronicles-rank-avatar">
-                                    <span class="font-cinzel font-bold text-[11px] text-[#D2C7BC]">BladeMaster</span>
+                                <div class="flex items-center gap-1.5 min-w-0">
+                                    <span class="text-xs {{ $crownColor }} w-4 text-center shrink-0">{{ $crownIcon }}</span>
+                                    <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB] truncate">
+                                        {{ $g->name }}
+                                    </span>
                                 </div>
-                                <span class="font-mono text-[#A396AD] font-bold text-xs">Lv. 97</span>
+                                <span class="font-mono text-[#D4AF37] font-bold text-xs shrink-0">G.Lv {{ $g->guild_lv }}</span>
+                            </div>
+                        @empty
+                            <div class="p-6 text-center text-xs text-[#8C7F99] font-cinzel">
+                                No guilds formed yet.
                             </div>
                         @endforelse
                     </div>

@@ -137,7 +137,7 @@ body.chronicles-theme {
    ========================================================================== */
 .chronicles-nav {
     position: relative;
-    z-index: 50;
+    z-index: 100;
     background: linear-gradient(180deg, #332B3E 0%, #221A2B 50%, #17131D 100%);
     border: 2px solid #5A4A68;
     border-top: 1px solid #756385;
@@ -151,7 +151,7 @@ body.chronicles-theme {
     padding: 0 6px;
     margin-top: -10px;
     margin-bottom: 14px;
-    overflow-x: auto;
+    overflow: visible;
 }
 
 .chronicles-nav-links {
@@ -160,6 +160,7 @@ body.chronicles-theme {
     flex-wrap: nowrap;
     gap: 2px;
     white-space: nowrap;
+    overflow: visible;
 }
 
 .chronicles-nav-item {
@@ -630,6 +631,9 @@ body.chronicles-theme {
     font-weight: 700;
     color: #A396AD;
     text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
     border-radius: 2px;
     transition: all 0.15s ease;
 }

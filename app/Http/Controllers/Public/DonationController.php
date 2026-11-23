@@ -38,7 +38,9 @@ class DonationController extends Controller
             'terms' => SiteSetting::get('donation_terms') ?: $defaults['donation_terms'],
         ];
 
-        return view('donations.index', compact('packages', 'userDonations', 'paypalConfig', 'donationSettings'));
+        $paypalEnabled = !empty($paypalConfig['enabled']);
+
+        return view('donations.index', compact('packages', 'userDonations', 'paypalConfig', 'paypalEnabled', 'donationSettings'));
     }
 
     public function submitManual(Request $request)
