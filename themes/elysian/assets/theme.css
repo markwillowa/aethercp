@@ -3,87 +3,146 @@
    Palette: Celestial Sapphire & Luminous Nordic Amber/Gold
    ========================================================================== */
 
-[data-theme="elysian"] {
+:root,
+html[data-theme="elysian"] {
     --elysian-gold: #f59e0b;
     --elysian-gold-light: #fbbf24;
     --elysian-sapphire: #38bdf8;
-    --elysian-bg: #050811;
+    --elysian-bg: #060913;
     --elysian-surface: #0c1322;
 }
 
-[data-theme="elysian"] body {
-    background-color: var(--elysian-bg) !important;
+html[data-theme="elysian"],
+html[data-theme="elysian"] body,
+body[data-theme="elysian"] {
+    background-color: #060913 !important;
+    color: #e2e8f0 !important;
+}
+
+/* Navbar */
+html[data-theme="elysian"] nav,
+.elysian-navbar {
+    background-color: #080d1a !important;
+    border-bottom: 1px solid rgba(245, 158, 11, 0.25) !important;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Hero Banner */
+.elysian-hero-banner {
+    background: linear-gradient(135deg, #0d1527 0%, #091020 50%, #171105 100%) !important;
+    border: 1px solid rgba(245, 158, 11, 0.35) !important;
+    box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(245, 158, 11, 0.08) !important;
 }
 
 /* Luminous Gold Text Gradient */
 .elysian-gold-text {
-    background: linear-gradient(135deg, #fffbeb 0%, #fde047 30%, #f59e0b 70%, #d97706 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background: linear-gradient(135deg, #fffbeb 0%, #fde047 30%, #f59e0b 70%, #d97706 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
 }
 
 /* Celestial Sapphire Text */
 .elysian-sapphire-text {
-    background: linear-gradient(135deg, #e0f2fe 0%, #38bdf8 60%, #0284c7 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background: linear-gradient(135deg, #e0f2fe 0%, #38bdf8 60%, #0284c7 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
 }
 
-/* Elysian Mythic Card */
-[data-theme="elysian"] .bg-slate-900\/60,
-[data-theme="elysian"] .bg-slate-900\/70,
-[data-theme="elysian"] .bg-slate-900\/80,
-[data-theme="elysian"] .bg-slate-900\/90 {
-    background-color: rgba(12, 19, 34, 0.75) !important;
-    border-color: rgba(245, 158, 11, 0.15) !important;
-    backdrop-filter: blur(12px);
+/* Cards & Surface Containers */
+html[data-theme="elysian"] .bg-slate-900\/60,
+html[data-theme="elysian"] .bg-slate-900\/70,
+html[data-theme="elysian"] .bg-slate-900\/80,
+html[data-theme="elysian"] .bg-slate-900\/90,
+html[data-theme="elysian"] .bg-slate-900 {
+    background-color: #0c1322 !important;
+    border: 1px solid rgba(245, 158, 11, 0.2) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
 }
 
-[data-theme="elysian"] .bg-slate-900\/60:hover,
-[data-theme="elysian"] .bg-slate-900\/70:hover {
-    border-color: rgba(245, 158, 11, 0.4) !important;
-    box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.1);
+html[data-theme="elysian"] .bg-slate-950\/60,
+html[data-theme="elysian"] .bg-slate-950\/70,
+html[data-theme="elysian"] .bg-slate-950\/80,
+html[data-theme="elysian"] .bg-slate-950 {
+    background-color: #070c17 !important;
+}
+
+/* Card hover effect */
+html[data-theme="elysian"] .bg-slate-900\/60:hover,
+html[data-theme="elysian"] .bg-slate-900\/70:hover,
+html[data-theme="elysian"] .bg-slate-900:hover {
+    border-color: rgba(245, 158, 11, 0.45) !important;
+    box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.15) !important;
 }
 
 /* Header & Table Styling */
-[data-theme="elysian"] header {
-    border-bottom-color: rgba(245, 158, 11, 0.2) !important;
-    background-color: rgba(5, 8, 17, 0.85) !important;
+html[data-theme="elysian"] header {
+    border-bottom: 1px solid rgba(245, 158, 11, 0.2) !important;
+    background-color: #060a14 !important;
 }
 
-[data-theme="elysian"] thead {
-    background-color: rgba(8, 14, 26, 0.95) !important;
-    border-bottom-color: rgba(245, 158, 11, 0.2) !important;
+html[data-theme="elysian"] thead {
+    background-color: #080f1d !important;
+    border-bottom: 1px solid rgba(245, 158, 11, 0.25) !important;
 }
 
-/* Hero Glow Overrides */
-[data-theme="elysian"] .fixed.inset-0 .bg-cyan-600\/10 {
+/* Ambient Glow Orbs */
+html[data-theme="elysian"] .fixed.inset-0 .bg-cyan-600\/10 {
     background-color: rgba(245, 158, 11, 0.15) !important;
 }
 
-[data-theme="elysian"] .fixed.inset-0 .bg-blue-600\/10 {
-    background-color: rgba(56, 189, 248, 0.15) !important;
+html[data-theme="elysian"] .fixed.inset-0 .bg-blue-600\/10 {
+    background-color: rgba(56, 189, 248, 0.12) !important;
 }
 
-[data-theme="elysian"] .fixed.inset-0 .bg-purple-600\/10 {
-    background-color: rgba(217, 119, 6, 0.12) !important;
+html[data-theme="elysian"] .fixed.inset-0 .bg-purple-600\/10 {
+    background-color: rgba(217, 119, 6, 0.1) !important;
 }
 
 /* Primary Action Buttons */
-[data-theme="elysian"] .bg-gradient-to-r.from-cyan-500.to-blue-600 {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 60%, #b45309 100%) !important;
+html[data-theme="elysian"] .bg-gradient-to-r.from-cyan-500.to-blue-600,
+.elysian-btn-primary {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 70%, #b45309 100%) !important;
     color: #050811 !important;
-    box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.35) !important;
+    font-weight: 700 !important;
+    box-shadow: 0 8px 20px -4px rgba(245, 158, 11, 0.4) !important;
 }
 
-[data-theme="elysian"] .bg-gradient-to-r.from-cyan-500.to-blue-600:hover {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 60%, #d97706 100%) !important;
+html[data-theme="elysian"] .bg-gradient-to-r.from-cyan-500.to-blue-600:hover,
+.elysian-btn-primary:hover {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 70%, #d97706 100%) !important;
+    transform: translateY(-1px);
+}
+
+/* Secondary Action Button */
+.elysian-btn-secondary {
+    background-color: #0d1527 !important;
+    color: #fde68a !important;
+    border: 1px solid rgba(245, 158, 11, 0.4) !important;
+}
+.elysian-btn-secondary:hover {
+    background-color: #131e36 !important;
+    border-color: #f59e0b !important;
 }
 
 /* Golden Halo Badges */
 .elysian-gold-badge {
-    background: rgba(245, 158, 11, 0.12);
-    border: 1px solid rgba(245, 158, 11, 0.35);
-    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.12) !important;
+    border: 1px solid rgba(245, 158, 11, 0.4) !important;
+    color: #fbbf24 !important;
+}
+
+/* Footer Styling */
+html[data-theme="elysian"] footer {
+    background-color: #060913 !important;
+    border-top: 1px solid rgba(245, 158, 11, 0.25) !important;
+}
+
+html[data-theme="elysian"] footer .text-cyan-400,
+html[data-theme="elysian"] footer .text-blue-400 {
+    color: #f59e0b !important;
+}
+
+html[data-theme="elysian"] footer .hover\:text-cyan-400:hover {
+    color: #fbbf24 !important;
 }
 
