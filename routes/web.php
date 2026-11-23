@@ -19,34 +19,50 @@ use App\Http\Controllers\Admin\AdminController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // News & CMS
-Route::get('/news', [NewsController::class, 'index'])->name('news.index');
-Route::get('/news/{slug}', [NewsController::class, 'show'])->name('news.show');
+Route::middleware('module:news')->group(function () {
+    Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+    Route::get('/news/{slug}', [NewsController::class, 'show'])->name('news.show');
+});
 
 // Rankings
-Route::get('/rankings', [RankingController::class, 'index'])->name('rankings.index');
+Route::middleware('module:rankings')->group(function () {
+    Route::get('/rankings', [RankingController::class, 'index'])->name('rankings.index');
+});
 
 // Guilds & Emblems
-Route::get('/guilds', [\App\Http\Controllers\Public\GuildController::class, 'index'])->name('guilds.index');
-Route::get('/guilds/{id}', [\App\Http\Controllers\Public\GuildController::class, 'show'])->name('guilds.show')->where('id', '[0-9]+');
-Route::get('/guilds/{id}/emblem', [\App\Http\Controllers\Public\GuildController::class, 'emblem'])->name('guilds.emblem')->where('id', '[0-9]+');
+Route::middleware('module:guild')->group(function () {
+    Route::get('/guilds', [\App\Http\Controllers\Public\GuildController::class, 'index'])->name('guilds.index');
+    Route::get('/guilds/{id}', [\App\Http\Controllers\Public\GuildController::class, 'show'])->name('guilds.show')->where('id', '[0-9]+');
+    Route::get('/guilds/{id}/emblem', [\App\Http\Controllers\Public\GuildController::class, 'emblem'])->name('guilds.emblem')->where('id', '[0-9]+');
+});
 
 // Characters & Online Roster
-Route::get('/characters/{name}', [\App\Http\Controllers\Public\CharacterViewController::class, 'show'])->name('characters.show');
-Route::get('/online', [\App\Http\Controllers\Public\CharacterViewController::class, 'online'])->name('characters.online');
+Route::middleware('module:character')->group(function () {
+    Route::get('/characters/{name}', [\App\Http\Controllers\Public\CharacterViewController::class, 'show'])->name('characters.show');
+    Route::get('/online', [\App\Http\Controllers\Public\CharacterViewController::class, 'online'])->name('characters.online');
+});
 
 // War of Emperium
-Route::get('/woe', [\App\Http\Controllers\Public\WoeController::class, 'index'])->name('woe.index');
+Route::middleware('module:guild')->group(function () {
+    Route::get('/woe', [\App\Http\Controllers\Public\WoeController::class, 'index'])->name('woe.index');
+});
 
 // Item Database
-Route::get('/database/items', [ItemDbController::class, 'index'])->name('itemdb.index');
-Route::get('/database/items/{id}', [ItemDbController::class, 'show'])->name('itemdb.show');
+Route::middleware('module:itemdb')->group(function () {
+    Route::get('/database/items', [ItemDbController::class, 'index'])->name('itemdb.index');
+    Route::get('/database/items/{id}', [ItemDbController::class, 'show'])->name('itemdb.show');
+});
 
 // Downloads
-Route::get('/downloads', [DownloadController::class, 'index'])->name('downloads.index');
+Route::middleware('module:downloads')->group(function () {
+    Route::get('/downloads', [DownloadController::class, 'index'])->name('downloads.index');
+});
 
 // Donations
-Route::get('/donations', [DonationController::class, 'index'])->name('donations.index');
-Route::post('/donations/submit', [DonationController::class, 'submitManual'])->name('donations.submit')->middleware('auth');
+Route::middleware('module:donations')->group(function () {
+    Route::get('/donations', [DonationController::class, 'index'])->name('donations.index');
+    Route::post('/donations/submit', [DonationController::class, 'submitManual'])->name('donations.submit')->middleware('auth');
+});
 
 // Dynamic Theme Assets Route
 Route::get('/themes/{theme}/assets/{path}', function (string $theme, string $path) {

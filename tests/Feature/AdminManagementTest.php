@@ -33,6 +33,24 @@ class AdminManagementTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Modules Manager');
         $response->assertSee('Account System');
+        $response->assertSee('Vending & Market Tracker');
+    }
+
+    public function test_admin_can_toggle_module_and_routes_are_enforced(): void
+    {
+        // 1. Module is initially enabled
+        $this->get('/donations')->assertStatus(200);
+
+        // 2. Admin toggles donations module OFF
+        $toggleRes = $this->actingAs($this->admin)->post('/admin/modules/donations/toggle');
+        $toggleRes->assertRedirect();
+
+        // 3. Visiting disabled module returns 404
+        $this->get('/donations')->assertStatus(404);
+
+        // 4. Admin toggles donations module back ON
+        $this->actingAs($this->admin)->post('/admin/modules/donations/toggle');
+        $this->get('/donations')->assertStatus(200);
     }
 
     public function test_admin_can_view_themes_page(): void
