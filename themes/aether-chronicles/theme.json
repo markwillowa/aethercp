@@ -1,0 +1,55 @@
+{
+    "name": "Aether Chronicles",
+    "slug": "aether-chronicles",
+    "description": "Nostalgic commercial Ragnarok Online theme inspired by classic Episode XIII website compositions. Features ornate medieval stone frames, mossy wood borders, parchment panels, animated players online canopy, and complete rAthena & Hercules integration.",
+    "version": "1.0.0",
+    "author": "AetherCP Studios",
+    "license": "Commercial / Premium",
+    "price": "$39.00 USD",
+    "category": "Premium Commercial Theme",
+    "tagline": "Your Legend Begins in Rune-Midgard.",
+    "compatibility": {
+        "platform": "AetherCP v1.x",
+        "emulators": ["rAthena", "Hercules"],
+        "modes": ["Pre-Renewal", "Renewal"]
+    },
+    "colors": {
+        "primary": "#A88B57",
+        "primary_dark": "#211E27",
+        "royal_purple": "#30243B",
+        "midnight_violet": "#191521",
+        "antique_gold": "#A88B57",
+        "gold_bright": "#D4AF37",
+        "bronze": "#795E43",
+        "wood_brown": "#5A3D28",
+        "stone_gray": "#827B75",
+        "dark_silver": "#55515A",
+        "dark_parchment": "#3A3335",
+        "aged_stone": "#4A4140",
+        "dark_fantasy": "#17151B",
+        "warm_ivory": "#E9DFC9",
+        "antique_white": "#C8BDA8",
+        "muted_gray": "#A69A8A",
+        "ivy_green": "#4E7A27",
+        "moss_green": "#2D5A1E"
+    },
+    "typography": {
+        "display": "'Cinzel', 'Trajan Pro', Georgia, serif",
+        "heading": "'Cinzel', serif",
+        "body": "'Inter', 'Plus Jakarta Sans', system-ui, sans-serif"
+    },
+    "customization": {
+        "server_logo": null,
+        "server_tagline": "Your Legend Begins in Rune-Midgard.",
+        "header_title": "AETHER CHRONICLES",
+        "header_subtitle": "Episode XIII: Noghaltz & The Lost Heritage",
+        "welcome_title": "WELCOME ADVENTURER !!!",
+        "welcome_desc": "Embark on an unforgettable journey through the lands of Rune-Midgard. Master legendary job classes, conquer ancient dungeons, and claim glory in the War of Emperium.",
+        "video_embed_url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        "side_emblem_enabled": true,
+        "server_status_enabled": true,
+        "rankings_widget_enabled": true,
+        "multimedia_enabled": true,
+        "quicklinks_enabled": true
+    }
+}

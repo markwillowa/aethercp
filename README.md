@@ -16,6 +16,7 @@ AetherCP is an independent, modern, high-performance web-based control panel eng
 - **Emulator Abstraction Layer**: Pluggable driver system supporting **rAthena** and **Hercules** across both **Pre-Renewal** and **Renewal** modes.
 - **Universal Password Hashing**: Auto-detects and verifies password hashes across Bcrypt, SHA256 (Hercules), MD5 (Standard RO), and plaintext, completely preventing account lockouts during migrations.
 - **Dynamic Theming System**: Ships with multiple distinctive themes:
+  - **Aether Chronicles (Commercial Premium)**: Faithful reproduction of the classic Episode XIII & Noghaltz promotional composition. Features ornate medieval stone frames, engraved metallic borders, dark fantasy stone backgrounds, gold filigree buttons, aged parchment news cards, and a live 3-column desktop layout.
   - **Aether Prestige (Flagship)**: Ultra-luxury AAA MMORPG aesthetic featuring ambient Ken-Burns hero motion, floating atmospheric light particles, staggered entrance animations, and a bespoke **Sovereign Treasury Vault** interactive 2-column donation console.
   - **Aether Dark (Default)**: Sleek ethereal cyan & electric blue neon aesthetic.
   - **Elysian Mythic**: Midnight sapphire and Nordic gold celestial design.

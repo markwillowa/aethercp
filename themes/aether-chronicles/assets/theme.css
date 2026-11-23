@@ -1,0 +1,520 @@
+/* ==========================================================================
+   AETHER CHRONICLES — Premium Commercial MMORPG Theme Stylesheet
+   Faithful to Classic Ragnarok Online Episode XIII & Noghaltz Website Composition
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --chronicles-bg: #151219;
+    --chronicles-bg-dark: #0D0A10;
+    --chronicles-purple: #2A1F36;
+    --chronicles-charcoal: #1C1922;
+    --chronicles-stone-frame: #3E3747;
+    --chronicles-stone-border: #564C63;
+    --chronicles-gold: #D4AF37;
+    --chronicles-gold-dark: #8C6D23;
+    --chronicles-gold-light: #FCE69B;
+    --chronicles-gold-border: #B8860B;
+    --chronicles-parchment: #EFE4CE;
+    --chronicles-parchment-mid: #E5D6BA;
+    --chronicles-parchment-dark: #D4BE98;
+    --chronicles-parchment-border: #BBA077;
+    --chronicles-text-light: #EFE8DA;
+    --chronicles-text-muted: #A396AD;
+    --chronicles-text-gold: #F2C94C;
+    --chronicles-text-dark: #3A2E1F;
+    --chronicles-green-online: #22C55E;
+}
+
+/* Base Body Environment */
+body.chronicles-theme {
+    background-color: var(--chronicles-bg);
+    background-image: 
+        radial-gradient(circle at 50% 200px, rgba(142, 68, 173, 0.15) 0%, rgba(21, 18, 25, 0.95) 70%),
+        linear-gradient(to bottom, #1D1824 0%, #151219 400px, #0D0B10 100%);
+    color: var(--chronicles-text-light);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.font-cinzel {
+    font-family: 'Cinzel', serif !important;
+}
+
+.font-cinzel-decorative {
+    font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
+}
+
+/* Master Container */
+.chronicles-container {
+    max-width: 1180px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+/* ==========================================================================
+   HEADER BANNER (Matching Reference: Logo, Castle, Knight, Priestess)
+   ========================================================================== */
+.chronicles-header-banner {
+    position: relative;
+    width: 100%;
+    min-height: 250px;
+    max-height: 290px;
+    background-color: #1A1522;
+    background-image: url('../images/header_chronicles_hero.jpg');
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
+    border-bottom: 2px solid var(--chronicles-gold-dark);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 -2px 10px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+}
+
+.chronicles-header-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(15, 12, 18, 0.7) 0%, rgba(15, 12, 18, 0.2) 50%, rgba(15, 12, 18, 0.5) 100%);
+    pointer-events: none;
+}
+
+.chronicles-logo-title {
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.75rem);
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    margin: 0;
+    line-height: 1.1;
+    background: linear-gradient(180deg, #FFFFFF 0%, #FFF2CC 40%, #E5A823 80%, #8C530A 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
+}
+
+.chronicles-logo-subtitle {
+    font-family: 'Cinzel', serif;
+    font-style: italic;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: #E6D8C3;
+    margin-top: 0.35rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+/* ==========================================================================
+   NAVIGATION BAR (Ornate Metallic Slate with Gold Play Now CTA)
+   ========================================================================== */
+.chronicles-nav {
+    position: relative;
+    z-index: 40;
+    background: linear-gradient(180deg, #2D2736 0%, #1E1926 50%, #15111C 100%);
+    border: 2px solid #5A4A68;
+    border-top: 1px solid #756385;
+    border-bottom: 2px solid #3A2F45;
+    border-radius: 6px;
+    box-shadow: 
+        0 6px 15px rgba(0, 0, 0, 0.7),
+        inset 0 1px 1px rgba(255, 255, 255, 0.15),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+    margin-top: -12px;
+}
+
+.chronicles-nav-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem 0.85rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #E2D9EB;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+    text-decoration: none !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.15s ease;
+}
+
+.chronicles-nav-item:hover,
+.chronicles-nav-item.active {
+    color: #FFD700;
+    background: rgba(255, 255, 255, 0.05);
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+}
+
+.chronicles-nav-item i {
+    color: #CBB488;
+    transition: color 0.15s ease;
+}
+
+.chronicles-nav-item:hover i {
+    color: #FFD700;
+}
+
+/* Play Now Golden Beveled Button */
+.chronicles-btn-playnow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.55rem 1.4rem;
+    background: linear-gradient(180deg, #FDE68A 0%, #EAB308 45%, #CA8A04 75%, #854D0E 100%);
+    border: 2px solid #FFFBEB;
+    border-radius: 6px;
+    color: #381A02 !important;
+    font-family: 'Cinzel', serif;
+    font-size: 0.875rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+    box-shadow: 
+        0 4px 12px rgba(202, 138, 4, 0.5),
+        inset 0 1px 2px rgba(255, 255, 255, 0.9),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chronicles-btn-playnow:hover {
+    background: linear-gradient(180deg, #FFFBEB 0%, #FACC15 45%, #EAB308 75%, #A16207 100%);
+    box-shadow: 0 6px 18px rgba(234, 179, 8, 0.7);
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   ORNATE MEDIEVAL STONE PANELS (Dark Stone with Antique Gold Trim)
+   ========================================================================== */
+.chronicles-panel {
+    position: relative;
+    background: linear-gradient(180deg, #241E2D 0%, #1A1622 100%);
+    border: 2px solid #443851;
+    border-radius: 6px;
+    box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.65),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1),
+        inset 0 0 15px rgba(0, 0, 0, 0.4);
+    padding: 0.75rem;
+}
+
+/* Panel Header with Gold Icon & Title */
+.chronicles-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.65rem;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+}
+
+.chronicles-panel-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #F3E5AB;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    text-transform: uppercase;
+}
+
+.chronicles-panel-title i {
+    color: #E5A823;
+}
+
+.chronicles-panel-link {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: #CBB488;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.chronicles-panel-link:hover {
+    color: #FFD700;
+}
+
+/* ==========================================================================
+   CENTER HERO PROMOTIONAL FRAME (The Rogue Girl Banner)
+   ========================================================================== */
+.chronicles-promo-box {
+    position: relative;
+    border: 3px solid #8C6D23;
+    border-radius: 8px;
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.75),
+        inset 0 0 20px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+    min-height: 250px;
+    background-color: #17131D;
+    background-image: url('../images/promo_chronicles_girl.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem 1.25rem 1rem 1.25rem;
+}
+
+.chronicles-promo-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(20, 16, 25, 0.85) 0%, rgba(20, 16, 25, 0.6) 50%, rgba(20, 16, 25, 0.1) 100%);
+    pointer-events: none;
+}
+
+.chronicles-promo-title {
+    font-family: 'Cinzel', serif;
+    font-style: italic;
+    font-size: clamp(1.4rem, 2.5vw, 2.1rem);
+    font-weight: 900;
+    color: #FFF3D6;
+    line-height: 1.15;
+    margin: 0;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.95), 0 0 10px rgba(212, 175, 55, 0.4);
+}
+
+.chronicles-promo-desc {
+    font-size: 0.8125rem;
+    color: #E8DCC9;
+    max-width: 320px;
+    line-height: 1.45;
+    margin-top: 0.5rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+}
+
+/* Gold CTA Button */
+.chronicles-btn-gold {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1.15rem;
+    background: linear-gradient(180deg, #FDE68A 0%, #D4AF37 50%, #9E7412 100%);
+    border: 1.5px solid #FFF3D6;
+    border-radius: 5px;
+    color: #2F1703 !important;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chronicles-btn-gold:hover {
+    background: linear-gradient(180deg, #FFFBEB 0%, #F5C642 50%, #B8860B 100%);
+    transform: translateY(-1px);
+}
+
+/* Dark Slate CTA Button */
+.chronicles-btn-dark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1.15rem;
+    background: linear-gradient(180deg, #3A3245 0%, #251F2D 50%, #15111C 100%);
+    border: 1.5px solid #6E5B82;
+    border-radius: 5px;
+    color: #E2D9EB !important;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chronicles-btn-dark:hover {
+    background: linear-gradient(180deg, #4A4057 0%, #352C40 50%, #211B2B 100%);
+    border-color: #8C75A4;
+    color: #FFFFFF !important;
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   AGED PARCHMENT NEWS CONTAINER (Matching Reference Image)
+   ========================================================================== */
+.chronicles-parchment-container {
+    background: #EFE4CE;
+    border: 2px solid #BAA077;
+    border-radius: 6px;
+    box-shadow: inset 0 0 15px rgba(186, 160, 119, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
+    padding: 0.85rem;
+    color: #382C1B;
+}
+
+.chronicles-news-row {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid #DFCEB4;
+    text-decoration: none !important;
+    border-radius: 4px;
+    transition: background 0.15s ease;
+}
+
+.chronicles-news-row:last-child {
+    border-bottom: none;
+}
+
+.chronicles-news-row:hover {
+    background: rgba(255, 255, 255, 0.45);
+}
+
+.chronicles-news-thumb {
+    width: 88px;
+    height: 52px;
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1.5px solid #BAA077;
+    flex-shrink: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Category Badges on Parchment */
+.chronicles-badge-events {
+    background: #7E22CE;
+    color: #FFFFFF;
+    font-size: 0.625rem;
+    font-weight: 700;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.chronicles-badge-updates {
+    background: #1D4ED8;
+    color: #FFFFFF;
+    font-size: 0.625rem;
+    font-weight: 700;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.chronicles-badge-news {
+    background: #15803D;
+    color: #FFFFFF;
+    font-size: 0.625rem;
+    font-weight: 700;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+/* ==========================================================================
+   TOP RANKINGS (Crown Medals & Character Sprites/Avatars)
+   ========================================================================== */
+.chronicles-rank-tabs {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.65rem;
+}
+
+.chronicles-rank-tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.35rem 0.2rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    border-radius: 4px;
+    background: #251F2D;
+    border: 1px solid #443851;
+    color: #B5A7C4;
+    text-decoration: none !important;
+    transition: all 0.15s ease;
+}
+
+.chronicles-rank-tab.active,
+.chronicles-rank-tab:hover {
+    background: linear-gradient(180deg, #D4AF37 0%, #8C6D23 100%);
+    border-color: #FCE69B;
+    color: #2F1703;
+    font-weight: 800;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.chronicles-rank-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 0.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.75rem;
+}
+
+.chronicles-rank-row:last-child {
+    border-bottom: none;
+}
+
+.chronicles-rank-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--chronicles-gold);
+    object-fit: cover;
+    background: #1F1926;
+}
+
+/* ==========================================================================
+   BOTTOM BANNER STRIP (Server Features, CTA, Mascot, Quick Links)
+   ========================================================================== */
+.chronicles-bottom-strip {
+    background: linear-gradient(180deg, #2A2135 0%, #1A1523 100%);
+    border: 2px solid #564766;
+    border-radius: 6px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+    padding: 1rem 1.25rem;
+    margin-top: 1.5rem;
+}
+
+/* ==========================================================================
+   FOOTER (Dark Slate with Gold Accents)
+   ========================================================================== */
+.chronicles-footer {
+    background: #0E0C12;
+    border-top: 2px solid #3E344A;
+    padding: 1.25rem 0;
+    margin-top: 2.5rem;
+    font-size: 0.75rem;
+    color: #8C7F99;
+}
+
+.chronicles-footer a {
+    color: #B5A7C4;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.chronicles-footer a:hover {
+    color: #FFD700;
+}
