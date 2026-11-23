@@ -1,480 +1,476 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="chronicles-container py-4 space-y-4">
+@php
+    $emulator = app(\App\Contracts\EmulatorInterface::class);
+    $onlineCount = 0;
+    try {
+        $onlineCount = $emulator->getOnlinePlayerCount();
+    } catch (\Throwable $e) {
+        $onlineCount = 1248;
+    }
+
+    $serverName = \App\Models\SiteSetting::get('server_name', 'Aether Chronicles');
+    $serverType = \App\Models\SiteSetting::get('chronicles_server_type', 'Pre-Renewal');
+    $rateBase = \App\Models\SiteSetting::get('rate_base', '100x');
+    $rateJob = \App\Models\SiteSetting::get('rate_job', '100x');
+    $rateDrop = \App\Models\SiteSetting::get('rate_drop', '50x');
+    $episode = \App\Models\SiteSetting::get('chronicles_episode', 'Classic');
+    $roEmulator = \App\Models\SiteSetting::get('chronicles_emulator', 'rAthena');
+
+    $promoTitle = \App\Models\SiteSetting::get('chronicles_promo_title', 'Experience the True Ragnarok!');
+    $promoDesc = \App\Models\SiteSetting::get('chronicles_promo_desc', 'Join thousands of players in an epic adventure across Rune-Midgard!');
+    $promoBadge = \App\Models\SiteSetting::get('chronicles_badge', 'Episode XIII: Noghaltz');
+
+    $feat1Title = \App\Models\SiteSetting::get('chronicles_feat1_title', 'Epic WoE Battles');
+    $feat1Desc = \App\Models\SiteSetting::get('chronicles_feat1_desc', 'Fight for your guild glory!');
+    $feat1Link = \App\Models\SiteSetting::get('chronicles_feat1_link', route('woe.index'));
+
+    $ctaTitle = \App\Models\SiteSetting::get('chronicles_cta_title', 'Join the Adventure Today!');
+    $ctaDesc = \App\Models\SiteSetting::get('chronicles_cta_desc', 'Be part of our growing Ragnarok community.');
+    $ctaBtnText = \App\Models\SiteSetting::get('chronicles_cta_btn_text', 'Play Now');
+
+    $discordUrl = \App\Models\SiteSetting::get('discord_url', 'https://discord.gg/ragnarok');
+    $facebookUrl = \App\Models\SiteSetting::get('facebook_url', '#');
+    $youtubeUrl = \App\Models\SiteSetting::get('youtube_url', '#');
+@endphp
+
+<div class="chronicles-container py-3">
 
     <!-- ======================================================================
-         MAIN 3-COLUMN COMPOSITION (Faithful to Reference Image)
+         MASTER HOMEPAGE LAYOUT: Left Sidebar (220px) + Right Main Content
          ====================================================================== -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
+    <div class="chronicles-main-layout">
 
         <!-- ==================================================================
-             LEFT COLUMN (lg:col-span-3 - approx 22% width)
+             LEFT COLUMN (Sidebar): Server Info, Status, Account, Community
              ================================================================== -->
-        <div class="lg:col-span-3 space-y-3.5">
+        <aside class="chronicles-sidebar">
 
-            <!-- 1. Server Information Panel -->
+            <!-- 1. SERVER INFORMATION -->
             <div class="chronicles-panel">
                 <div class="chronicles-panel-header">
                     <span class="chronicles-panel-title">
-                        <i data-lucide="home" class="w-3.5 h-3.5"></i>
+                        <i data-lucide="home"></i>
                         <span>Server Information</span>
                     </span>
                 </div>
-                <div class="space-y-1.5 text-xs">
-                    <div class="flex justify-between border-b border-white/[0.04] pb-1">
-                        <span class="text-[#A396AD]">Server Name</span>
-                        <strong class="text-[#F3E5AB] font-cinzel">{{ \App\Models\SiteSetting::get('server_name', 'Aether Chronicles') }}</strong>
+                <div>
+                    <div class="chronicles-spec-row">
+                        <span class="chronicles-spec-label">Server Name</span>
+                        <strong class="chronicles-spec-val">{{ $serverName }}</strong>
                     </div>
-                    <div class="flex justify-between border-b border-white/[0.04] pb-1">
-                        <span class="text-[#A396AD]">Server Type</span>
-                        <span class="text-[#E2D9EB] font-medium">Pre-Renewal</span>
+                    <div class="chronicles-spec-row">
+                        <span class="chronicles-spec-label">Server Type</span>
+                        <strong class="chronicles-spec-val">{{ $serverType }}</strong>
                     </div>
-                    <div class="flex justify-between border-b border-white/[0.04] pb-1">
-                        <span class="text-[#A396AD]">Rates</span>
-                        <strong class="text-[#FFD700] font-mono">{{ \App\Models\SiteSetting::get('rate_base', '100x') }} / {{ \App\Models\SiteSetting::get('rate_job', '100x') }}</strong>
+                    <div class="chronicles-spec-row">
+                        <span class="chronicles-spec-label">Rates</span>
+                        <strong class="chronicles-spec-val text-[#FFD700]">{{ $rateBase }} / {{ $rateJob }}</strong>
                     </div>
-                    <div class="flex justify-between border-b border-white/[0.04] pb-1">
-                        <span class="text-[#A396AD]">Episode</span>
-                        <span class="text-[#E2D9EB] font-medium">Classic</span>
+                    <div class="chronicles-spec-row">
+                        <span class="chronicles-spec-label">Episode</span>
+                        <strong class="chronicles-spec-val">{{ $episode }}</strong>
                     </div>
-                    <div class="flex justify-between">
-                        <span class="text-[#A396AD]">Emulator</span>
-                        <span class="text-[#E2D9EB] font-mono">rAthena</span>
+                    <div class="chronicles-spec-row">
+                        <span class="chronicles-spec-label">Emulator</span>
+                        <strong class="chronicles-spec-val font-mono">{{ $roEmulator }}</strong>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. Server Status Panel -->
+            <!-- 2. SERVER STATUS -->
             <div class="chronicles-panel">
                 <div class="chronicles-panel-header">
                     <span class="chronicles-panel-title">
-                        <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+                        <i data-lucide="settings"></i>
                         <span>Server Status</span>
                     </span>
                 </div>
-                <div class="space-y-1.5 text-xs">
-                    <div class="flex items-center justify-between border-b border-white/[0.04] pb-1">
-                        <span class="flex items-center gap-1.5 text-[#E2D9EB]">
-                            <span class="w-2 h-2 rounded-full bg-[#22C55E]"></span>
-                            <span>Login Server</span>
-                        </span>
-                        <span class="text-[#22C55E] font-bold">Online</span>
+                <div>
+                    <div class="chronicles-spec-row">
+                        <span class="chronicles-spec-label">Login Server</span>
+                        <span class="chronicles-status-online">Online</span>
                     </div>
-                    <div class="flex items-center justify-between border-b border-white/[0.04] pb-1">
-                        <span class="flex items-center gap-1.5 text-[#E2D9EB]">
-                            <span class="w-2 h-2 rounded-full bg-[#22C55E]"></span>
-                            <span>Character Server</span>
-                        </span>
-                        <span class="text-[#22C55E] font-bold">Online</span>
+                    <div class="chronicles-spec-row">
+                        <span class="chronicles-spec-label">Character Server</span>
+                        <span class="chronicles-status-online">Online</span>
                     </div>
-                    <div class="flex items-center justify-between border-b border-white/[0.04] pb-1">
-                        <span class="flex items-center gap-1.5 text-[#E2D9EB]">
-                            <span class="w-2 h-2 rounded-full bg-[#22C55E]"></span>
-                            <span>Map Server</span>
-                        </span>
-                        <span class="text-[#22C55E] font-bold">Online</span>
+                    <div class="chronicles-spec-row">
+                        <span class="chronicles-spec-label">Map Server</span>
+                        <span class="chronicles-status-online">Online</span>
                     </div>
-                    <div class="flex items-center justify-between pt-0.5">
-                        <span class="flex items-center gap-1.5 text-[#A396AD]">
-                            <i data-lucide="users" class="w-3 h-3 text-[#E5A823]"></i>
+                    <div class="chronicles-spec-row">
+                        <span class="chronicles-spec-label flex items-center gap-1">
+                            <i data-lucide="users" class="w-3 h-3 text-[#D4AF37]"></i>
                             <span>Online Players</span>
                         </span>
-                        @php
-                            $emulator = app(\App\Contracts\EmulatorInterface::class);
-                            $onlinePlayers = 0;
-                            try { $onlinePlayers = $emulator->getOnlinePlayerCount(); } catch (\Throwable $e) { $onlinePlayers = 1248; }
-                        @endphp
-                        <strong class="text-[#FFD700] font-mono font-bold">{{ number_format($onlinePlayers) }}</strong>
+                        <strong class="text-[#FFD700] font-mono font-bold text-xs">{{ number_format($onlineCount) }}</strong>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. Account Menu Panel -->
+            <!-- 3. ACCOUNT MENU -->
             <div class="chronicles-panel">
                 <div class="chronicles-panel-header">
                     <span class="chronicles-panel-title">
-                        <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
+                        <i data-lucide="user"></i>
                         <span>Account Menu</span>
                     </span>
                 </div>
-                <div class="space-y-1 text-xs font-cinzel">
-                    @guest
-                        <a href="{{ route('login') }}" class="flex items-center gap-2 p-1.5 rounded hover:bg-[#352B42] text-[#E2D9EB] hover:text-[#FFD700] transition-colors">
-                            <i data-lucide="key" class="w-3.5 h-3.5 text-[#E5A823]"></i>
-                            <span>Login</span>
+                <div>
+                    @auth
+                        <a href="{{ route('account.profile') }}" class="chronicles-menu-link">
+                            <i data-lucide="user"></i>
+                            <span>My Account</span>
                         </a>
-                        <a href="{{ route('register') }}" class="flex items-center gap-2 p-1.5 rounded hover:bg-[#352B42] text-[#E2D9EB] hover:text-[#FFD700] transition-colors">
-                            <i data-lucide="user-plus" class="w-3.5 h-3.5 text-[#E5A823]"></i>
-                            <span>Register</span>
-                        </a>
-                    @else
-                        <a href="{{ route('account.profile') }}" class="flex items-center gap-2 p-1.5 rounded hover:bg-[#352B42] text-[#E2D9EB] hover:text-[#FFD700] transition-colors">
-                            <i data-lucide="user" class="w-3.5 h-3.5 text-[#E5A823]"></i>
-                            <span>My Account ({{ auth()->user()->username }})</span>
-                        </a>
-                        <a href="{{ route('account.characters') }}" class="flex items-center gap-2 p-1.5 rounded hover:bg-[#352B42] text-[#E2D9EB] hover:text-[#FFD700] transition-colors">
-                            <i data-lucide="shield" class="w-3.5 h-3.5 text-[#E5A823]"></i>
+                        <a href="{{ route('account.characters') }}" class="chronicles-menu-link">
+                            <i data-lucide="users"></i>
                             <span>My Characters</span>
                         </a>
-                        <a href="{{ route('account.profile') }}" class="flex items-center gap-2 p-1.5 rounded hover:bg-[#352B42] text-[#E2D9EB] hover:text-[#FFD700] transition-colors">
-                            <i data-lucide="lock" class="w-3.5 h-3.5 text-[#E5A823]"></i>
+                        <a href="{{ route('account.password') }}" class="chronicles-menu-link">
+                            <i data-lucide="lock"></i>
                             <span>Change Password</span>
                         </a>
-                        <form method="POST" action="{{ route('logout') }}" class="pt-1">
+                        @if(auth()->user()->is_admin ?? false)
+                            <a href="{{ route('admin.dashboard') }}" class="chronicles-menu-link text-[#FFD700]">
+                                <i data-lucide="shield-alert" class="text-[#FFD700]"></i>
+                                <span>Admin Panel</span>
+                            </a>
+                        @endif
+                        <form method="POST" action="{{ route('logout') }}" class="m-0 p-0">
                             @csrf
-                            <button type="submit" class="flex items-center gap-2 w-full p-1.5 rounded hover:bg-[#352B42] text-[#E57373] text-left transition-colors">
-                                <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                            <button type="submit" class="chronicles-menu-link w-full text-left text-[#E57373] hover:text-[#FFCDD2] bg-transparent border-0 cursor-pointer">
+                                <i data-lucide="log-out" class="text-[#E57373]"></i>
                                 <span>Sign Out</span>
                             </button>
                         </form>
-                    @endguest
-                </div>
-            </div>
-
-            <!-- 4. Join Our Community! Panel (Cute King Poring) -->
-            <div class="chronicles-panel text-center p-3">
-                <div class="mb-2 rounded overflow-hidden">
-                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/community_king_poring.jpg']) }}" 
-                         alt="Join Community" class="w-full h-24 object-cover rounded border border-[#564C63]">
-                </div>
-                <div class="font-cinzel font-bold text-xs text-[#F3E5AB] tracking-wide mb-2 uppercase">
-                    Join Our Community!
-                </div>
-                <div class="flex items-center justify-center gap-2.5">
-                    <a href="{{ \App\Models\SiteSetting::get('social_discord', '#') }}" target="_blank" rel="noopener" 
-                       class="w-7 h-7 rounded bg-[#5865F2] text-white flex items-center justify-center hover:scale-110 transition-transform shadow" title="Discord">
-                        <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
-                    </a>
-                    <a href="{{ \App\Models\SiteSetting::get('social_facebook', '#') }}" target="_blank" rel="noopener" 
-                       class="w-7 h-7 rounded bg-[#1877F2] text-white flex items-center justify-center hover:scale-110 transition-transform shadow" title="Facebook">
-                        <i data-lucide="facebook" class="w-3.5 h-3.5"></i>
-                    </a>
-                    <a href="{{ \App\Models\SiteSetting::get('social_youtube', '#') }}" target="_blank" rel="noopener" 
-                       class="w-7 h-7 rounded bg-[#CD201F] text-white flex items-center justify-center hover:scale-110 transition-transform shadow" title="YouTube">
-                        <i data-lucide="youtube" class="w-3.5 h-3.5"></i>
-                    </a>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ==================================================================
-             CENTER COLUMN (lg:col-span-6 - approx 56% width)
-             ================================================================== -->
-        <div class="lg:col-span-6 space-y-3.5">
-
-            <!-- 1. Main Promotional Hero Box (Rogue Girl Artwork) -->
-            <div class="chronicles-promo-box">
-                <div class="chronicles-promo-overlay"></div>
-
-                <div class="relative z-10">
-                    <h2 class="chronicles-promo-title">
-                        {{ \App\Models\SiteSetting::get('home_hero_subtitle', 'Experience the True Ragnarok!') }}
-                    </h2>
-                    <p class="chronicles-promo-desc">
-                        {{ \App\Models\SiteSetting::get('home_hero_desc', 'Join thousands of players in an epic adventure across Rune-Midgard!') }}
-                    </p>
-                </div>
-
-                <div class="relative z-10 pt-6 flex items-center justify-between flex-wrap gap-3">
-                    <div class="flex items-center gap-2.5">
-                        <a href="{{ route('register') }}" class="chronicles-btn-gold">
-                            <span>Register Now</span>
-                            <span>▸</span>
+                    @else
+                        <a href="{{ route('login') }}" class="chronicles-menu-link">
+                            <i data-lucide="log-in"></i>
+                            <span>Login</span>
                         </a>
-                        <a href="{{ route('downloads.index') }}" class="chronicles-btn-dark">
-                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                            <span>Download Client</span>
+                        <a href="{{ route('register') }}" class="chronicles-menu-link">
+                            <i data-lucide="user-plus"></i>
+                            <span>Register</span>
+                        </a>
+                        <a href="{{ route('login') }}" class="chronicles-menu-link">
+                            <i data-lucide="key"></i>
+                            <span>Forgot Password</span>
+                        </a>
+                    @endauth
+                </div>
+            </div>
+
+            <!-- 4. JOIN OUR COMMUNITY! (King Poring) -->
+            <div class="chronicles-panel">
+                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/community_king_poring.jpg']) }}" 
+                     alt="King Poring Community" class="chronicles-community-img">
+                <div class="chronicles-community-bar">
+                    <span class="font-cinzel text-[10px] text-[#F3E5AB] font-bold block uppercase tracking-wider mb-1.5">
+                        Join Our Community!
+                    </span>
+                    <div class="flex items-center justify-center gap-2">
+                        <a href="{{ $discordUrl }}" target="_blank" rel="noopener" class="chronicles-social-icon" title="Discord">
+                            <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+                        </a>
+                        <a href="{{ $facebookUrl }}" target="_blank" rel="noopener" class="chronicles-social-icon" title="Facebook">
+                            <i data-lucide="facebook" class="w-3.5 h-3.5"></i>
+                        </a>
+                        <a href="{{ $youtubeUrl }}" target="_blank" rel="noopener" class="chronicles-social-icon" title="YouTube">
+                            <i data-lucide="youtube" class="w-3.5 h-3.5"></i>
                         </a>
                     </div>
-
-                    <!-- Carousel Dots -->
-                    <div class="flex items-center gap-1.5">
-                        <span class="w-2.5 h-2.5 rounded-full bg-[#E5A823] border border-white shadow"></span>
-                        <span class="w-2 h-2 rounded-full bg-white/40"></span>
-                        <span class="w-2 h-2 rounded-full bg-white/40"></span>
-                    </div>
                 </div>
             </div>
 
-            <!-- 2. Latest News & Announcements (Aged Parchment Container) -->
-            <div class="chronicles-panel p-2">
-                <div class="chronicles-panel-header px-1">
-                    <span class="chronicles-panel-title">
-                        <i data-lucide="megaphone" class="w-3.5 h-3.5"></i>
-                        <span>Latest News & Announcements</span>
-                    </span>
-                    <a href="{{ route('news.index') }}" class="chronicles-panel-link">
-                        View All News &raquo;
-                    </a>
-                </div>
-
-                <div class="chronicles-parchment-container space-y-1">
-                    <!-- News Item 1 (Festival Event) -->
-                    <a href="{{ route('news.index') }}" class="chronicles-news-row group relative overflow-hidden">
-                        <div class="relative shrink-0">
-                            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/news_festival.jpg']) }}" 
-                                 alt="Festival" class="chronicles-news-thumb">
-                            <span class="absolute top-0 left-0 bg-[#E53935] text-white text-[9px] font-bold px-1 rounded-br">HOT</span>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-2 mb-0.5">
-                                <span class="text-[10px] text-[#7A6B56] flex items-center gap-1">
-                                    <i data-lucide="calendar" class="w-3 h-3"></i>
-                                    <span>Nov 26, 2026</span>
-                                </span>
-                                <span class="chronicles-badge-events">Events</span>
-                            </div>
-                            <h4 class="font-cinzel text-xs font-bold text-[#382C1B] group-hover:text-[#8C6D23] leading-snug">
-                                Grand Festival Event is Live!
-                            </h4>
-                            <p class="text-[11px] text-[#695842] leading-tight line-clamp-1 mt-0.5">
-                                Join our biggest event of the year and get exclusive rewards!
-                            </p>
-                        </div>
-                    </a>
-
-                    <!-- News Item 2 (Server Update) -->
-                    <a href="{{ route('news.index') }}" class="chronicles-news-row group">
-                        <div class="shrink-0">
-                            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/news_chests.jpg']) }}" 
-                                 alt="Update" class="chronicles-news-thumb">
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-2 mb-0.5">
-                                <span class="text-[10px] text-[#7A6B56] flex items-center gap-1">
-                                    <i data-lucide="calendar" class="w-3 h-3"></i>
-                                    <span>Nov 24, 2026</span>
-                                </span>
-                                <span class="chronicles-badge-updates">Updates</span>
-                            </div>
-                            <h4 class="font-cinzel text-xs font-bold text-[#382C1B] group-hover:text-[#8C6D23] leading-snug">
-                                Server Update v2.0.0
-                            </h4>
-                            <p class="text-[11px] text-[#695842] leading-tight line-clamp-1 mt-0.5">
-                                New maps, new quests and more exciting content!
-                            </p>
-                        </div>
-                    </a>
-
-                    <!-- News Item 3 (Welcome) -->
-                    <a href="{{ route('news.index') }}" class="chronicles-news-row group">
-                        <div class="shrink-0">
-                            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/community_king_poring.jpg']) }}" 
-                                 alt="Welcome" class="chronicles-news-thumb">
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-2 mb-0.5">
-                                <span class="text-[10px] text-[#7A6B56] flex items-center gap-1">
-                                    <i data-lucide="calendar" class="w-3 h-3"></i>
-                                    <span>Nov 20, 2026</span>
-                                </span>
-                                <span class="chronicles-badge-news">News</span>
-                            </div>
-                            <h4 class="font-cinzel text-xs font-bold text-[#382C1B] group-hover:text-[#8C6D23] leading-snug">
-                                Welcome to Aether Chronicles!
-                            </h4>
-                            <p class="text-[11px] text-[#695842] leading-tight line-clamp-1 mt-0.5">
-                                Thank you for choosing our server!
-                            </p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-        </div>
+        </aside>
 
         <!-- ==================================================================
-             RIGHT COLUMN (lg:col-span-3 - approx 22% width)
+             RIGHT COLUMN: Promo Banner, Featured, News Parchment, Rankings
              ================================================================== -->
-        <div class="lg:col-span-3 space-y-3.5">
+        <main class="chronicles-right-main">
 
-            <!-- 1. Featured WoE Panel -->
-            <div class="chronicles-panel">
-                <div class="chronicles-panel-header">
-                    <span class="chronicles-panel-title">
-                        <i data-lucide="star" class="w-3.5 h-3.5"></i>
-                        <span>Featured</span>
-                    </span>
-                </div>
-                <div>
-                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/feat_woe_boss.jpg']) }}" 
-                         alt="WoE Boss" class="w-full h-24 object-cover rounded border border-[#564C63] mb-2">
-                    <h4 class="font-cinzel font-bold text-xs text-[#F3E5AB]">Epic WoE Battles</h4>
-                    <p class="text-[11px] text-[#A396AD] mt-0.5">Fight for your guild glory!</p>
-                    <a href="{{ route('woe.index') }}" class="text-[11px] font-cinzel font-bold text-[#E5A823] hover:underline inline-block mt-1">
-                        Read More &raquo;
-                    </a>
-                </div>
-            </div>
+            <!-- ROW 1: Large Promo Banner (~72%) + Featured/Screenshots (~28%) -->
+            <section class="chronicles-top-row">
 
-            <!-- 2. Screenshots Panel -->
-            <div class="chronicles-panel">
-                <div class="chronicles-panel-header">
-                    <span class="chronicles-panel-title">
-                        <i data-lucide="image" class="w-3.5 h-3.5"></i>
-                        <span>Screenshots</span>
-                    </span>
-                    <a href="{{ route('news.index') }}" class="chronicles-panel-link">
-                        View Gallery &raquo;
-                    </a>
-                </div>
-                <div>
-                    <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/screenshot_prontera.jpg']) }}" 
-                         alt="Prontera Screenshot" class="w-full h-24 object-cover rounded border border-[#564C63]">
-                </div>
-            </div>
+                <!-- MAIN PROMOTIONAL BANNER -->
+                <div class="chronicles-promo-banner" style="background-image: url('{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/promo_chronicles_girl.jpg']) }}');">
+                    <div class="chronicles-promo-gradient"></div>
 
-            <!-- 3. Top Rankings Panel -->
-            <div class="chronicles-panel">
-                <div class="chronicles-panel-header">
-                    <span class="chronicles-panel-title">
-                        <i data-lucide="trophy" class="w-3.5 h-3.5"></i>
-                        <span>Top Rankings</span>
-                    </span>
-                    <a href="{{ route('rankings.index') }}" class="chronicles-panel-link">
-                        View Rankings &raquo;
-                    </a>
-                </div>
-
-                <!-- Tabs: Base Lv, Job Lv, MVP, Guild -->
-                <div class="chronicles-rank-tabs">
-                    <span class="chronicles-rank-tab active">Base Lv</span>
-                    <a href="{{ route('rankings.index', ['type' => 'job']) }}" class="chronicles-rank-tab">Job Lv</a>
-                    <a href="{{ route('rankings.index', ['type' => 'mvp']) }}" class="chronicles-rank-tab">MVP</a>
-                    <a href="{{ route('rankings.index', ['type' => 'guild']) }}" class="chronicles-rank-tab">Guild</a>
-                </div>
-
-                <!-- 5 Rows matching Reference: Crowns & Avatars -->
-                <div class="space-y-0.5">
-                    <!-- Rank 1: Gold Crown -->
-                    <div class="chronicles-rank-row">
-                        <div class="flex items-center gap-2">
-                            <span class="text-base text-[#FFD700]" title="Rank 1">👑</span>
-                            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/lord_knight.png']) }}" 
-                                 alt="Avatar" class="chronicles-rank-avatar">
-                            <span class="font-cinzel font-bold text-[#F3E5AB]">DarkKnight</span>
+                    <div class="relative z-10">
+                        <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[#D4AF37]/40 text-[#FCE69B] text-[9px] font-cinzel font-bold tracking-widest uppercase mb-1.5">
+                            <span>✦</span>
+                            <span>{{ $promoBadge }}</span>
+                            <span>✦</span>
                         </div>
-                        <span class="font-mono text-[#FFD700] font-bold">Lv. 99</span>
+                        <h2 class="chronicles-promo-title">
+                            {{ $promoTitle }}
+                        </h2>
+                        <p class="chronicles-promo-desc">
+                            {{ $promoDesc }}
+                        </p>
                     </div>
 
-                    <!-- Rank 2: Silver Crown -->
-                    <div class="chronicles-rank-row">
-                        <div class="flex items-center gap-2">
-                            <span class="text-base text-[#C0C0C0]" title="Rank 2">👑</span>
-                            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/champion.png']) }}" 
-                                 alt="Avatar" class="chronicles-rank-avatar">
-                            <span class="font-cinzel font-bold text-[#E2D9EB]">ShuraZen</span>
+                    <div class="relative z-10 pt-4 flex items-center justify-between flex-wrap gap-2">
+                        <div class="flex items-center gap-2.5">
+                            <a href="{{ route('register') }}" class="chronicles-btn-gold">
+                                <span>Register Now</span>
+                                <span>▸</span>
+                            </a>
+                            <a href="{{ route('downloads.index') }}" class="chronicles-btn-dark">
+                                <i data-lucide="download" class="w-3 h-3"></i>
+                                <span>Download Client</span>
+                            </a>
                         </div>
-                        <span class="font-mono text-[#C0C0C0] font-bold">Lv. 99</span>
-                    </div>
 
-                    <!-- Rank 3: Bronze Crown -->
-                    <div class="chronicles-rank-row">
-                        <div class="flex items-center gap-2">
-                            <span class="text-base text-[#CD7F32]" title="Rank 3">👑</span>
-                            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/high_wizard.png']) }}" 
-                                 alt="Avatar" class="chronicles-rank-avatar">
-                            <span class="font-cinzel font-bold text-[#E2D9EB]">RagnarokPH</span>
+                        <!-- Dots Indicator -->
+                        <div class="flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-[#E5A823] border border-white"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-white/40"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-white/40"></span>
                         </div>
-                        <span class="font-mono text-[#CD7F32] font-bold">Lv. 98</span>
-                    </div>
-
-                    <!-- Rank 4 -->
-                    <div class="chronicles-rank-row">
-                        <div class="flex items-center gap-2">
-                            <span class="font-cinzel font-bold text-xs text-[#A396AD] w-4 text-center">4</span>
-                            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/sniper.png']) }}" 
-                                 alt="Avatar" class="chronicles-rank-avatar">
-                            <span class="font-cinzel text-xs text-[#E2D9EB]">MysticSoul</span>
-                        </div>
-                        <span class="font-mono text-xs text-[#A396AD]">Lv. 98</span>
-                    </div>
-
-                    <!-- Rank 5 -->
-                    <div class="chronicles-rank-row">
-                        <div class="flex items-center gap-2">
-                            <span class="font-cinzel font-bold text-xs text-[#A396AD] w-4 text-center">5</span>
-                            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/assassin_cross.png']) }}" 
-                                 alt="Avatar" class="chronicles-rank-avatar">
-                            <span class="font-cinzel text-xs text-[#E2D9EB]">BladeMaster</span>
-                        </div>
-                        <span class="font-mono text-xs text-[#A396AD]">Lv. 97</span>
                     </div>
                 </div>
-            </div>
 
-        </div>
+                <!-- RIGHT SIDEBAR STACK: Featured & Screenshots -->
+                <div class="chronicles-sidebar-stack">
+
+                    <!-- Featured (WoE) -->
+                    <div class="chronicles-panel flex-1 flex flex-col justify-between">
+                        <div class="chronicles-panel-header">
+                            <span class="chronicles-panel-title">
+                                <i data-lucide="star"></i>
+                                <span>Featured</span>
+                            </span>
+                        </div>
+                        <div class="p-2 flex-1 flex flex-col justify-between">
+                            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/feat_woe_boss.jpg']) }}" 
+                                 alt="Featured Boss" class="chronicles-thumb-img">
+                            <div class="mt-1">
+                                <h4 class="font-cinzel font-bold text-[11px] text-[#F3E5AB] leading-snug">{{ $feat1Title }}</h4>
+                                <p class="text-[10px] text-[#A396AD] line-clamp-1 leading-tight">{{ $feat1Desc }}</p>
+                            </div>
+                            <a href="{{ $feat1Link }}" class="text-[10px] font-cinzel font-bold text-[#E5A823] hover:underline mt-1 block">
+                                Read More &raquo;
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Screenshots -->
+                    <div class="chronicles-panel flex-1 flex flex-col justify-between">
+                        <div class="chronicles-panel-header">
+                            <span class="chronicles-panel-title">
+                                <i data-lucide="image"></i>
+                                <span>Screenshots</span>
+                            </span>
+                            <a href="{{ route('news.index') }}" class="text-[9px] font-cinzel text-[#C8BDA8] hover:text-[#FFD700]">
+                                View Gallery &raquo;
+                            </a>
+                        </div>
+                        <div class="p-2">
+                            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/screenshot_prontera.jpg']) }}" 
+                                 alt="Prontera Screenshots" class="chronicles-thumb-img">
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ROW 2: Latest News & Announcements (Aged Parchment) + Top Rankings -->
+            <section class="chronicles-mid-row">
+
+                <!-- LATEST NEWS & ANNOUNCEMENTS (Aged Parchment Style) -->
+                <div class="chronicles-panel flex flex-col">
+                    <div class="chronicles-panel-header">
+                        <span class="chronicles-panel-title">
+                            <i data-lucide="megaphone"></i>
+                            <span>Latest News &amp; Announcements</span>
+                        </span>
+                        <a href="{{ route('news.index') }}" class="text-[9px] font-cinzel text-[#C8BDA8] hover:text-[#FFD700]">
+                            View All News &raquo;
+                        </a>
+                    </div>
+
+                    <div class="chronicles-parchment-box flex-1">
+                        <!-- News Item 1: Grand Festival -->
+                        <a href="{{ route('news.index') }}" class="chronicles-news-item">
+                            <div class="relative shrink-0">
+                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/news_festival.jpg']) }}" 
+                                     alt="Festival" class="chronicles-news-thumb">
+                                <span class="absolute top-0 left-0 bg-[#E53935] text-white text-[8px] font-bold px-1 rounded-br">HOT</span>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-1.5 mb-0.5">
+                                    <span class="text-[9px] text-[#7A6B56]">Nov 26, 2026</span>
+                                    <span class="chronicles-badge-cat events">Events</span>
+                                </div>
+                                <h4 class="chronicles-news-title">Grand Festival Event is Live!</h4>
+                                <p class="chronicles-news-desc line-clamp-1">Join our biggest event of the year and get exclusive rewards!</p>
+                            </div>
+                        </a>
+
+                        <!-- News Item 2: Server Update -->
+                        <a href="{{ route('news.index') }}" class="chronicles-news-item">
+                            <div class="shrink-0">
+                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/news_chests.jpg']) }}" 
+                                     alt="Updates" class="chronicles-news-thumb">
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-1.5 mb-0.5">
+                                    <span class="text-[9px] text-[#7A6B56]">Nov 24, 2026</span>
+                                    <span class="chronicles-badge-cat updates">Updates</span>
+                                </div>
+                                <h4 class="chronicles-news-title">Server Update v2.0.0</h4>
+                                <p class="chronicles-news-desc line-clamp-1">New maps, new quests and more exciting content!</p>
+                            </div>
+                        </a>
+
+                        <!-- News Item 3: Welcome -->
+                        <a href="{{ route('news.index') }}" class="chronicles-news-item">
+                            <div class="shrink-0">
+                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/community_king_poring.jpg']) }}" 
+                                     alt="Welcome" class="chronicles-news-thumb">
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-1.5 mb-0.5">
+                                    <span class="text-[9px] text-[#7A6B56]">Nov 20, 2026</span>
+                                    <span class="chronicles-badge-cat news">News</span>
+                                </div>
+                                <h4 class="chronicles-news-title">Welcome to Aether Chronicles!</h4>
+                                <p class="chronicles-news-desc line-clamp-1">Thank you for choosing our server!</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- TOP RANKINGS -->
+                <div class="chronicles-panel flex flex-col">
+                    <div class="chronicles-panel-header">
+                        <span class="chronicles-panel-title">
+                            <i data-lucide="trophy"></i>
+                            <span>Top Rankings</span>
+                        </span>
+                        <a href="{{ route('rankings.index') }}" class="text-[9px] font-cinzel text-[#C8BDA8] hover:text-[#FFD700]">
+                            View Rankings &raquo;
+                        </a>
+                    </div>
+
+                    <!-- Category Tabs -->
+                    <div class="chronicles-rank-tabs">
+                        <span class="chronicles-rank-tab active">Base Lv</span>
+                        <a href="{{ route('rankings.index', ['type' => 'job']) }}" class="chronicles-rank-tab">Job Lv</a>
+                        <a href="{{ route('rankings.index', ['type' => 'mvp']) }}" class="chronicles-rank-tab">MVP</a>
+                        <a href="{{ route('rankings.index', ['type' => 'guild']) }}" class="chronicles-rank-tab">Guild</a>
+                    </div>
+
+                    <!-- 5 Character Rows -->
+                    <div class="flex-1 flex flex-col justify-around">
+                        <!-- Rank 1: Gold Crown -->
+                        <div class="chronicles-rank-row">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs text-[#FFD700]">👑</span>
+                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/lord_knight.png']) }}" 
+                                     alt="DarkKnight" class="chronicles-rank-avatar">
+                                <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB]">DarkKnight</span>
+                            </div>
+                            <span class="font-mono text-[#FFD700] font-bold text-xs">Lv. 99</span>
+                        </div>
+
+                        <!-- Rank 2: Silver Crown -->
+                        <div class="chronicles-rank-row">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs text-[#E0E0E0]">🥈</span>
+                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/champion.png']) }}" 
+                                     alt="ShuraZen" class="chronicles-rank-avatar">
+                                <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB]">ShuraZen</span>
+                            </div>
+                            <span class="font-mono text-[#C0C0C0] font-bold text-xs">Lv. 99</span>
+                        </div>
+
+                        <!-- Rank 3: Bronze Crown -->
+                        <div class="chronicles-rank-row">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs text-[#CD7F32]">🥉</span>
+                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/high_wizard.png']) }}" 
+                                     alt="RagnarokPH" class="chronicles-rank-avatar">
+                                <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB]">RagnarokPH</span>
+                            </div>
+                            <span class="font-mono text-[#CD7F32] font-bold text-xs">Lv. 98</span>
+                        </div>
+
+                        <!-- Rank 4 -->
+                        <div class="chronicles-rank-row">
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-cinzel font-bold text-[10px] text-[#8C7F99] w-3 text-center">4</span>
+                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/assassin_cross.png']) }}" 
+                                     alt="MysticSoul" class="chronicles-rank-avatar">
+                                <span class="font-cinzel font-bold text-[11px] text-[#D2C7BC]">MysticSoul</span>
+                            </div>
+                            <span class="font-mono text-[#A396AD] font-bold text-xs">Lv. 98</span>
+                        </div>
+
+                        <!-- Rank 5 -->
+                        <div class="chronicles-rank-row">
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-cinzel font-bold text-[10px] text-[#8C7F99] w-3 text-center">5</span>
+                                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/characters/sniper.png']) }}" 
+                                     alt="BladeMaster" class="chronicles-rank-avatar">
+                                <span class="font-cinzel font-bold text-[11px] text-[#D2C7BC]">BladeMaster</span>
+                            </div>
+                            <span class="font-mono text-[#A396AD] font-bold text-xs">Lv. 97</span>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
 
     </div>
 
     <!-- ======================================================================
-         BOTTOM BANNER STRIP (Server Features, CTA, Mascot, Quick Links)
+         BOTTOM FULL-WIDTH STRIP: Server Features, Join Adventure Today, Quick Links
          ====================================================================== -->
-    <div class="chronicles-bottom-strip">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-            
-            <!-- Left: Server Features (4 cols) -->
-            <div class="md:col-span-4 flex items-center gap-4 border-b md:border-b-0 md:border-r border-[#564766]/50 pb-4 md:pb-0 pr-2">
-                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/monsters/baphomet.gif']) }}" 
-                     alt="Monster" class="h-16 object-contain shrink-0">
-                <div class="space-y-1 text-xs">
-                    <div class="font-cinzel font-bold text-[#F3E5AB] uppercase mb-1">Server Features</div>
-                    <div class="flex items-center gap-1.5 text-[#E2D9EB]">
-                        <span class="text-[#FFD700]">✔</span>
-                        <span>Balanced Gameplay</span>
-                    </div>
-                    <div class="flex items-center gap-1.5 text-[#E2D9EB]">
-                        <span class="text-[#FFD700]">✔</span>
-                        <span>Active Community</span>
-                    </div>
-                    <div class="flex items-center gap-1.5 text-[#E2D9EB]">
-                        <span class="text-[#FFD700]">✔</span>
-                        <span>Regular Events</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Center: CTA & Flying Angeling Mascot (5 cols) -->
-            <div class="md:col-span-5 flex items-center justify-between gap-4 border-b md:border-b-0 md:border-r border-[#564766]/50 pb-4 md:pb-0 px-2">
-                <div class="text-center sm:text-left">
-                    <h3 class="font-cinzel font-bold text-sm text-[#FFF3D6] uppercase tracking-wide">
-                        Join the Adventure Today!
-                    </h3>
-                    <p class="text-xs text-[#A396AD] mt-0.5 mb-2.5">
-                        Be part of our growing Ragnarok community.
-                    </p>
-                    <a href="{{ route('downloads.index') }}" class="chronicles-btn-playnow text-xs py-1.5 px-5">
-                        <span>Play Now</span>
-                        <span>▸</span>
-                    </a>
-                </div>
-                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/monsters/angeling.gif']) }}" 
-                     alt="Angeling Mascot" class="h-14 object-contain shrink-0 drop-shadow">
-            </div>
-
-            <!-- Right: Quick Links (3 cols) -->
-            <div class="md:col-span-3 text-xs space-y-1 pl-2">
-                <div class="font-cinzel font-bold text-[#F3E5AB] uppercase mb-1">Quick Links</div>
-                <div class="grid grid-cols-2 gap-1 font-cinzel">
-                    <a href="{{ route('downloads.index') }}" class="text-[#E2D9EB] hover:text-[#FFD700] flex items-center gap-1">
-                        <span>▸</span> Downloads
-                    </a>
-                    <a href="{{ route('news.index') }}" class="text-[#E2D9EB] hover:text-[#FFD700] flex items-center gap-1">
-                        <span>▸</span> FAQ
-                    </a>
-                    <a href="{{ route('donations.index') }}" class="text-[#E2D9EB] hover:text-[#FFD700] flex items-center gap-1">
-                        <span>▸</span> Support
-                    </a>
-                    <a href="{{ route('news.index') }}" class="text-[#E2D9EB] hover:text-[#FFD700] flex items-center gap-1">
-                        <span>▸</span> Contact Us
-                    </a>
-                </div>
-            </div>
-
+    <section class="chronicles-bottom-strip" style="background-image: url('{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/bottom_strip_bg.jpg']) }}');">
+        
+        <!-- Left: Server Features -->
+        <div class="chronicles-bottom-col">
+            <h4>Server Features</h4>
+            <ul>
+                <li><span class="text-[#22C55E] mr-1">✔</span> Balanced Gameplay</li>
+                <li><span class="text-[#22C55E] mr-1">✔</span> Active Community</li>
+                <li><span class="text-[#22C55E] mr-1">✔</span> Regular Events</li>
+            </ul>
         </div>
-    </div>
+
+        <!-- Center: CTA & Angeling Mascot -->
+        <div class="chronicles-bottom-center">
+            <div>
+                <h4 class="font-cinzel text-xs font-bold text-[#F3E5AB] uppercase mb-0.5">{{ $ctaTitle }}</h4>
+                <p class="text-[10px] text-[#C8BDAA] mb-2">{{ $ctaDesc }}</p>
+                <a href="{{ route('downloads.index') }}" class="chronicles-btn-playnow text-xs py-1 px-4">
+                    <span>{{ $ctaBtnText }}</span>
+                    <span>▸</span>
+                </a>
+            </div>
+            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/mascot_angeling.jpg']) }}" 
+                 alt="Flying Angeling Mascot" class="chronicles-angeling-mascot">
+        </div>
+
+        <!-- Right: Quick Links -->
+        <div class="chronicles-bottom-col">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="{{ route('downloads.index') }}">&raquo; Downloads</a></li>
+                <li><a href="{{ route('news.index') }}">&raquo; FAQ</a></li>
+                <li><a href="{{ route('donations.index') }}">&raquo; Support</a></li>
+                <li><a href="{{ route('news.index') }}">&raquo; Contact Us</a></li>
+            </ul>
+        </div>
+
+    </section>
 
 </div>
 @endsection

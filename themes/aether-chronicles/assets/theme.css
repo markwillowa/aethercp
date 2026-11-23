@@ -1,44 +1,45 @@
 /* ==========================================================================
-   AETHER CHRONICLES — Premium Commercial MMORPG Theme Stylesheet
-   Faithful to Classic Ragnarok Online Episode XIII & Noghaltz Website Composition
+   AETHER CHRONICLES — Premium Commercial Theme Stylesheet
+   Faithful to Classic Ragnarok Online Episode XIII & Approved Mockup
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-    --chronicles-bg: #151219;
-    --chronicles-bg-dark: #0D0A10;
-    --chronicles-purple: #2A1F36;
-    --chronicles-charcoal: #1C1922;
+    --chronicles-bg: #1B1721;
+    --chronicles-bg-dark: #120E17;
+    --chronicles-purple: #33243E;
+    --chronicles-deep-violet: #21172B;
+    --chronicles-charcoal: #25212A;
+    --chronicles-midnight: #17141C;
     --chronicles-stone-frame: #3E3747;
     --chronicles-stone-border: #564C63;
-    --chronicles-gold: #D4AF37;
-    --chronicles-gold-dark: #8C6D23;
+    --chronicles-gold: #B69A65;
+    --chronicles-gold-bright: #D4AF37;
     --chronicles-gold-light: #FCE69B;
-    --chronicles-gold-border: #B8860B;
-    --chronicles-parchment: #EFE4CE;
-    --chronicles-parchment-mid: #E5D6BA;
-    --chronicles-parchment-dark: #D4BE98;
-    --chronicles-parchment-border: #BBA077;
-    --chronicles-text-light: #EFE8DA;
-    --chronicles-text-muted: #A396AD;
-    --chronicles-text-gold: #F2C94C;
-    --chronicles-text-dark: #3A2E1F;
+    --chronicles-bronze: #806442;
+    --chronicles-stone-gray: #89827A;
+    --chronicles-silver: #B2AAA0;
+    --chronicles-parchment: #F4ECE1;
+    --chronicles-parchment-mid: #E8DCBE;
+    --chronicles-parchment-border: #BAA077;
+    --chronicles-text-primary: #EDE4D2;
+    --chronicles-text-secondary: #C8BDAA;
+    --chronicles-text-muted: #A69A8A;
     --chronicles-green-online: #22C55E;
 }
 
-/* Base Body Environment */
 body.chronicles-theme {
     background-color: var(--chronicles-bg);
     background-image: 
-        radial-gradient(circle at 50% 200px, rgba(142, 68, 173, 0.15) 0%, rgba(21, 18, 25, 0.95) 70%),
-        linear-gradient(to bottom, #1D1824 0%, #151219 400px, #0D0B10 100%);
-    color: var(--chronicles-text-light);
+        radial-gradient(circle at 50% 180px, rgba(142, 68, 173, 0.15) 0%, rgba(27, 23, 33, 0.98) 75%),
+        linear-gradient(to bottom, #231C2C 0%, #1B1721 400px, #120E17 100%);
+    color: var(--chronicles-text-primary);
     font-family: 'Inter', sans-serif;
-    min-height: 100vh;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    min-height: 100vh;
 }
 
 .font-cinzel {
@@ -49,30 +50,29 @@ body.chronicles-theme {
     font-family: 'Cinzel Decorative', 'Cinzel', serif !important;
 }
 
-/* Master Container */
+/* Master Fixed Container (1180px) */
 .chronicles-container {
     max-width: 1180px;
     margin-left: auto;
     margin-right: auto;
     padding-left: 12px;
     padding-right: 12px;
+    box-sizing: border-box;
 }
 
 /* ==========================================================================
-   HEADER BANNER (Matching Reference: Logo, Castle, Knight, Priestess)
+   1. MAIN HEADER BANNER (Castle, Knight & Priestess Illustration)
    ========================================================================== */
 .chronicles-header-banner {
     position: relative;
     width: 100%;
-    min-height: 250px;
-    max-height: 290px;
-    background-color: #1A1522;
-    background-image: url('../images/header_chronicles_hero.jpg');
-    background-repeat: no-repeat;
-    background-position: center top;
+    min-height: 220px;
+    background-color: #17141C;
     background-size: cover;
-    border-bottom: 2px solid var(--chronicles-gold-dark);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 -2px 10px rgba(0, 0, 0, 0.6);
+    background-position: center top;
+    background-repeat: no-repeat;
+    border-bottom: 2px solid var(--chronicles-gold);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
     display: flex;
     align-items: center;
 }
@@ -80,396 +80,572 @@ body.chronicles-theme {
 .chronicles-header-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(15, 12, 18, 0.7) 0%, rgba(15, 12, 18, 0.2) 50%, rgba(15, 12, 18, 0.5) 100%);
+    background: linear-gradient(90deg, rgba(18, 14, 23, 0.75) 0%, rgba(18, 14, 23, 0.2) 50%, rgba(18, 14, 23, 0.1) 100%);
     pointer-events: none;
+}
+
+.chronicles-logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    color: #FCE69B;
+    text-transform: uppercase;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+    margin-bottom: 0.25rem;
 }
 
 .chronicles-logo-title {
     font-family: 'Cinzel Decorative', 'Cinzel', serif;
-    font-size: clamp(1.8rem, 3.5vw, 2.75rem);
+    font-size: clamp(2rem, 3.8vw, 2.9rem);
     font-weight: 900;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #FFFFFF;
     margin: 0;
-    line-height: 1.1;
+    line-height: 1.05;
     background: linear-gradient(180deg, #FFFFFF 0%, #FFF2CC 40%, #E5A823 80%, #8C530A 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 12px rgba(212, 175, 55, 0.4));
 }
 
 .chronicles-logo-subtitle {
     font-family: 'Cinzel', serif;
     font-style: italic;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.15em;
     color: #E6D8C3;
     margin-top: 0.35rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95);
+}
+
+.chronicles-online-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(14, 11, 18, 0.75);
+    border: 1.5px solid rgba(212, 175, 55, 0.5);
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
 }
 
 /* ==========================================================================
-   NAVIGATION BAR (Ornate Metallic Slate with Gold Play Now CTA)
+   2. ORNATE NAVIGATION BAR (Full Width Medieval Stone Bar)
    ========================================================================== */
 .chronicles-nav {
     position: relative;
-    z-index: 40;
-    background: linear-gradient(180deg, #2D2736 0%, #1E1926 50%, #15111C 100%);
+    z-index: 50;
+    background: linear-gradient(180deg, #332B3E 0%, #221A2B 50%, #17131D 100%);
     border: 2px solid #5A4A68;
     border-top: 1px solid #756385;
     border-bottom: 2px solid #3A2F45;
     border-radius: 6px;
-    box-shadow: 
-        0 6px 15px rgba(0, 0, 0, 0.7),
-        inset 0 1px 1px rgba(255, 255, 255, 0.15),
-        inset 0 -1px 2px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.12);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 4px;
-    margin-top: -12px;
+    padding: 0 6px;
+    margin-top: -10px;
+    margin-bottom: 14px;
+}
+
+.chronicles-nav-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2px;
 }
 
 .chronicles-nav-item {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.35rem;
     padding: 0.65rem 0.85rem;
     font-family: 'Cinzel', serif;
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.08em;
-    color: #E2D9EB;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
-    text-decoration: none !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.06);
-    transition: all 0.15s ease;
+    color: #D2C7BC;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    border: 1px solid transparent;
 }
 
-.chronicles-nav-item:hover,
-.chronicles-nav-item.active {
+.chronicles-nav-item:hover {
     color: #FFD700;
     background: rgba(255, 255, 255, 0.05);
-    text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+    border-color: rgba(212, 175, 55, 0.3);
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
 }
 
-.chronicles-nav-item i {
-    color: #CBB488;
-    transition: color 0.15s ease;
-}
-
-.chronicles-nav-item:hover i {
+.chronicles-nav-item.active {
     color: #FFD700;
+    background: linear-gradient(180deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.05) 100%);
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
 }
 
-/* Play Now Golden Beveled Button */
 .chronicles-btn-playnow {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 0.45rem;
-    padding: 0.55rem 1.4rem;
-    background: linear-gradient(180deg, #FDE68A 0%, #EAB308 45%, #CA8A04 75%, #854D0E 100%);
-    border: 2px solid #FFFBEB;
-    border-radius: 6px;
-    color: #381A02 !important;
-    font-family: 'Cinzel', serif;
-    font-size: 0.875rem;
-    font-weight: 900;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
-    box-shadow: 
-        0 4px 12px rgba(202, 138, 4, 0.5),
-        inset 0 1px 2px rgba(255, 255, 255, 0.9),
-        inset 0 -2px 3px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    text-decoration: none !important;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.chronicles-btn-playnow:hover {
-    background: linear-gradient(180deg, #FFFBEB 0%, #FACC15 45%, #EAB308 75%, #A16207 100%);
-    box-shadow: 0 6px 18px rgba(234, 179, 8, 0.7);
-    transform: translateY(-1px);
-}
-
-/* ==========================================================================
-   ORNATE MEDIEVAL STONE PANELS (Dark Stone with Antique Gold Trim)
-   ========================================================================== */
-.chronicles-panel {
-    position: relative;
-    background: linear-gradient(180deg, #241E2D 0%, #1A1622 100%);
-    border: 2px solid #443851;
-    border-radius: 6px;
-    box-shadow: 
-        0 8px 20px rgba(0, 0, 0, 0.65),
-        inset 0 1px 1px rgba(255, 255, 255, 0.1),
-        inset 0 0 15px rgba(0, 0, 0, 0.4);
-    padding: 0.75rem;
-}
-
-/* Panel Header with Gold Icon & Title */
-.chronicles-panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.65rem;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.35);
-}
-
-.chronicles-panel-title {
-    display: inline-flex;
-    align-items: center;
     gap: 0.4rem;
+    padding: 0.55rem 1.25rem;
     font-family: 'Cinzel', serif;
     font-size: 0.8125rem;
     font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #261600;
+    text-transform: uppercase;
+    text-decoration: none;
+    background: linear-gradient(180deg, #FFE894 0%, #D8A528 50%, #8C5E09 100%);
+    border: 1.5px solid #FFEAA5;
+    border-radius: 4px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 12px rgba(212, 175, 55, 0.4);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chronicles-btn-playnow:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255, 215, 0, 0.7);
+}
+
+/* ==========================================================================
+   3. MASTER HOMEPAGE GRID (Left Sidebar ~220px / Right Main ~930px)
+   ========================================================================== */
+.chronicles-main-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 12px;
+    align-items: start;
+}
+
+@media (max-width: 960px) {
+    .chronicles-main-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Sidebar Panels (Ornate Medieval Stone Boxes) */
+.chronicles-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chronicles-panel {
+    background: linear-gradient(180deg, #261E30 0%, #1A1422 100%);
+    border: 1.5px solid #4A3E56;
+    border-top: 1.5px solid #635373;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.chronicles-panel-header {
+    background: linear-gradient(180deg, #382C45 0%, #261D30 100%);
+    border-bottom: 1.5px solid #4A3E56;
+    padding: 0.45rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chronicles-panel-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 800;
     letter-spacing: 0.08em;
     color: #F3E5AB;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
     text-transform: uppercase;
 }
 
 .chronicles-panel-title i {
-    color: #E5A823;
+    color: #D4AF37;
+    width: 14px;
+    height: 14px;
 }
 
-.chronicles-panel-link {
-    font-family: 'Cinzel', serif;
+.chronicles-spec-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.35rem 0.65rem;
     font-size: 0.6875rem;
-    font-weight: 700;
-    color: #CBB488;
-    text-decoration: none;
-    transition: color 0.15s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.chronicles-panel-link:hover {
+.chronicles-spec-row:last-child {
+    border-bottom: none;
+}
+
+.chronicles-spec-label {
+    color: #A396AD;
+    font-weight: 500;
+}
+
+.chronicles-spec-val {
+    color: #E8DCC9;
+    font-weight: 700;
+}
+
+.chronicles-status-online {
+    color: #22C55E;
+    font-weight: 700;
+    font-size: 0.6875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.chronicles-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.75rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #C8BDA8;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.15s ease;
+}
+
+.chronicles-menu-link:hover {
     color: #FFD700;
+    background: rgba(255, 255, 255, 0.04);
+    padding-left: 0.95rem;
+}
+
+.chronicles-menu-link i {
+    width: 13px;
+    height: 13px;
+    color: #A88B57;
+}
+
+/* King Poring Community Box */
+.chronicles-community-img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    display: block;
+}
+
+.chronicles-community-bar {
+    padding: 0.4rem 0.5rem;
+    background: #17121D;
+    border-top: 1px solid #4A3E56;
+    text-align: center;
+}
+
+.chronicles-social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background: #251D2E;
+    border: 1px solid #5A4A68;
+    color: #E8DCC9;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.chronicles-social-icon:hover {
+    background: #423354;
+    border-color: #D4AF37;
+    color: #FFD700;
+    transform: translateY(-1px);
 }
 
 /* ==========================================================================
-   CENTER HERO PROMOTIONAL FRAME (The Rogue Girl Banner)
+   4. RIGHT MAIN CONTENT AREA
    ========================================================================== */
-.chronicles-promo-box {
+.chronicles-right-main {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Top Row: Promo Banner (~72%) + Featured/Screenshots (~28%) */
+.chronicles-top-row {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 10px;
+    align-items: stretch;
+}
+
+@media (max-width: 800px) {
+    .chronicles-top-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chronicles-promo-banner {
     position: relative;
-    border: 3px solid #8C6D23;
-    border-radius: 8px;
-    box-shadow: 
-        0 10px 25px rgba(0, 0, 0, 0.75),
-        inset 0 0 20px rgba(0, 0, 0, 0.8);
-    overflow: hidden;
-    min-height: 250px;
-    background-color: #17131D;
-    background-image: url('../images/promo_chronicles_girl.jpg');
+    border: 2px solid #5A4A68;
+    border-top: 2px solid #756385;
+    border-radius: 5px;
+    background-color: #1A1422;
     background-size: cover;
-    background-position: center;
+    background-position: right center;
+    background-repeat: no-repeat;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+    padding: 18px 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 1.5rem 1.25rem 1rem 1.25rem;
+    min-height: 195px;
+    overflow: hidden;
 }
 
-.chronicles-promo-overlay {
+.chronicles-promo-gradient {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(20, 16, 25, 0.85) 0%, rgba(20, 16, 25, 0.6) 50%, rgba(20, 16, 25, 0.1) 100%);
+    background: linear-gradient(90deg, rgba(20, 15, 26, 0.95) 0%, rgba(20, 15, 26, 0.75) 45%, rgba(20, 15, 26, 0.15) 100%);
     pointer-events: none;
 }
 
 .chronicles-promo-title {
-    font-family: 'Cinzel', serif;
-    font-style: italic;
-    font-size: clamp(1.4rem, 2.5vw, 2.1rem);
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
+    font-size: clamp(1.25rem, 2.2vw, 1.65rem);
     font-weight: 900;
-    color: #FFF3D6;
+    letter-spacing: 0.05em;
+    color: #FFF2CC;
+    margin: 0 0 6px 0;
     line-height: 1.15;
-    margin: 0;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.95), 0 0 10px rgba(212, 175, 55, 0.4);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+    background: linear-gradient(180deg, #FFFFFF 0%, #F5DEB3 50%, #D4AF37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .chronicles-promo-desc {
-    font-size: 0.8125rem;
-    color: #E8DCC9;
+    font-size: 0.75rem;
+    color: #C8BDAA;
+    line-height: 1.4;
+    margin: 0;
     max-width: 320px;
-    line-height: 1.45;
-    margin-top: 0.5rem;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
-/* Gold CTA Button */
 .chronicles-btn-gold {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    padding: 0.5rem 1.15rem;
-    background: linear-gradient(180deg, #FDE68A 0%, #D4AF37 50%, #9E7412 100%);
-    border: 1.5px solid #FFF3D6;
-    border-radius: 5px;
-    color: #2F1703 !important;
+    gap: 0.35rem;
+    padding: 0.45rem 1.1rem;
     font-family: 'Cinzel', serif;
     font-size: 0.75rem;
     font-weight: 800;
     letter-spacing: 0.08em;
+    color: #261600;
     text-transform: uppercase;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    text-decoration: none !important;
-    cursor: pointer;
+    text-decoration: none;
+    background: linear-gradient(180deg, #FFE894 0%, #D8A528 50%, #8C5E09 100%);
+    border: 1.5px solid #FFEAA5;
+    border-radius: 4px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.7);
     transition: all 0.2s ease;
 }
 
 .chronicles-btn-gold:hover {
-    background: linear-gradient(180deg, #FFFBEB 0%, #F5C642 50%, #B8860B 100%);
+    filter: brightness(1.15);
     transform: translateY(-1px);
 }
 
-/* Dark Slate CTA Button */
 .chronicles-btn-dark {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    padding: 0.5rem 1.15rem;
-    background: linear-gradient(180deg, #3A3245 0%, #251F2D 50%, #15111C 100%);
-    border: 1.5px solid #6E5B82;
-    border-radius: 5px;
-    color: #E2D9EB !important;
+    gap: 0.35rem;
+    padding: 0.45rem 1rem;
     font-family: 'Cinzel', serif;
     font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #E2D9EB;
     text-transform: uppercase;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    text-decoration: none !important;
-    cursor: pointer;
+    text-decoration: none;
+    background: linear-gradient(180deg, #382C45 0%, #201729 100%);
+    border: 1.5px solid #5A4A68;
+    border-radius: 4px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
     transition: all 0.2s ease;
 }
 
 .chronicles-btn-dark:hover {
-    background: linear-gradient(180deg, #4A4057 0%, #352C40 50%, #211B2B 100%);
-    border-color: #8C75A4;
-    color: #FFFFFF !important;
-    transform: translateY(-1px);
+    background: linear-gradient(180deg, #4A3A5B 0%, #2A1F36 100%);
+    border-color: #7B688E;
+    color: #FFF;
 }
 
-/* ==========================================================================
-   AGED PARCHMENT NEWS CONTAINER (Matching Reference Image)
-   ========================================================================== */
-.chronicles-parchment-container {
-    background: #EFE4CE;
-    border: 2px solid #BAA077;
-    border-radius: 6px;
-    box-shadow: inset 0 0 15px rgba(186, 160, 119, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
-    padding: 0.85rem;
-    color: #382C1B;
+/* Featured & Screenshots Stack */
+.chronicles-sidebar-stack {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
 }
 
-.chronicles-news-row {
+.chronicles-thumb-img {
+    width: 100%;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 3px;
+    border: 1px solid #5A4A68;
+    display: block;
+}
+
+/* Middle Row: News (Aged Parchment) & Top Rankings */
+.chronicles-mid-row {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 10px;
+    align-items: stretch;
+}
+
+@media (max-width: 800px) {
+    .chronicles-mid-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Parchment Container for News */
+.chronicles-parchment-box {
+    background-color: var(--chronicles-parchment);
+    background-image: linear-gradient(to bottom, #FAF3E6 0%, #EFE3CA 100%);
+    border: 2px solid var(--chronicles-parchment-border);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.65), inset 0 0 25px rgba(186, 160, 119, 0.35);
+    padding: 8px 12px;
+}
+
+.chronicles-news-item {
     display: flex;
     align-items: center;
-    gap: 0.85rem;
-    padding: 0.55rem 0.5rem;
-    border-bottom: 1px solid #DFCEB4;
-    text-decoration: none !important;
-    border-radius: 4px;
-    transition: background 0.15s ease;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(186, 160, 119, 0.4);
+    text-decoration: none;
+    transition: all 0.15s ease;
 }
 
-.chronicles-news-row:last-child {
+.chronicles-news-item:last-child {
     border-bottom: none;
 }
 
-.chronicles-news-row:hover {
-    background: rgba(255, 255, 255, 0.45);
-}
-
 .chronicles-news-thumb {
-    width: 88px;
-    height: 52px;
-    border-radius: 4px;
+    width: 60px;
+    height: 35px;
     object-fit: cover;
-    border: 1.5px solid #BAA077;
+    border-radius: 2px;
+    border: 1px solid #BAA077;
     flex-shrink: 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Category Badges on Parchment */
-.chronicles-badge-events {
-    background: #7E22CE;
-    color: #FFFFFF;
-    font-size: 0.625rem;
-    font-weight: 700;
-    padding: 0.1rem 0.4rem;
-    border-radius: 3px;
+.chronicles-news-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #2F2417;
+    line-height: 1.2;
+    margin: 0;
+    transition: color 0.15s ease;
+}
+
+.chronicles-news-item:hover .chronicles-news-title {
+    color: #8C5E09;
+}
+
+.chronicles-news-desc {
+    font-size: 0.6875rem;
+    color: #5C4E3A;
+    line-height: 1.25;
+    margin-top: 2px;
+}
+
+.chronicles-badge-hot {
+    background: #E53935;
+    color: white;
+    font-size: 0.5625rem;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 2px;
     text-transform: uppercase;
 }
 
-.chronicles-badge-updates {
-    background: #1D4ED8;
-    color: #FFFFFF;
+.chronicles-badge-cat {
     font-size: 0.625rem;
     font-weight: 700;
-    padding: 0.1rem 0.4rem;
-    border-radius: 3px;
+    padding: 1px 5px;
+    border-radius: 2px;
     text-transform: uppercase;
 }
 
-.chronicles-badge-news {
-    background: #15803D;
-    color: #FFFFFF;
-    font-size: 0.625rem;
-    font-weight: 700;
-    padding: 0.1rem 0.4rem;
-    border-radius: 3px;
-    text-transform: uppercase;
+.chronicles-badge-cat.events {
+    background: #7B1FA2;
+    color: white;
 }
 
-/* ==========================================================================
-   TOP RANKINGS (Crown Medals & Character Sprites/Avatars)
-   ========================================================================== */
+.chronicles-badge-cat.updates {
+    background: #1976D2;
+    color: white;
+}
+
+.chronicles-badge-cat.news {
+    background: #388E3C;
+    color: white;
+}
+
+/* Top Rankings Box */
 .chronicles-rank-tabs {
     display: flex;
-    gap: 0.25rem;
-    margin-bottom: 0.65rem;
+    align-items: center;
+    background: #1C1523;
+    border-bottom: 1px solid #4A3E56;
+    padding: 2px;
+    gap: 2px;
 }
 
 .chronicles-rank-tab {
     flex: 1;
     text-align: center;
-    padding: 0.35rem 0.2rem;
+    padding: 3px 0;
     font-family: 'Cinzel', serif;
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     font-weight: 700;
-    border-radius: 4px;
-    background: #251F2D;
-    border: 1px solid #443851;
-    color: #B5A7C4;
-    text-decoration: none !important;
+    color: #A396AD;
+    text-decoration: none;
+    border-radius: 2px;
     transition: all 0.15s ease;
 }
 
 .chronicles-rank-tab.active,
 .chronicles-rank-tab:hover {
-    background: linear-gradient(180deg, #D4AF37 0%, #8C6D23 100%);
-    border-color: #FCE69B;
-    color: #2F1703;
-    font-weight: 800;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    background: #3A2E47;
+    color: #FFD700;
 }
 
 .chronicles-rank-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.4rem 0.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.6875rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .chronicles-rank-row:last-child {
@@ -477,40 +653,104 @@ body.chronicles-theme {
 }
 
 .chronicles-rank-avatar {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
     border-radius: 50%;
-    border: 1px solid var(--chronicles-gold);
-    object-fit: cover;
-    background: #1F1926;
+    background: #251D2E;
+    border: 1px solid #5A4A68;
 }
 
 /* ==========================================================================
-   BOTTOM BANNER STRIP (Server Features, CTA, Mascot, Quick Links)
+   5. BOTTOM ADVENTURE STRIP (Landscape Background + Angeling Mascot)
    ========================================================================== */
 .chronicles-bottom-strip {
-    background: linear-gradient(180deg, #2A2135 0%, #1A1523 100%);
-    border: 2px solid #564766;
-    border-radius: 6px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
-    padding: 1rem 1.25rem;
-    margin-top: 1.5rem;
+    background-color: #17121E;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 2px solid #5A4A68;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+    padding: 14px 20px;
+    display: grid;
+    grid-template-columns: 1.1fr 1.8fr 1.1fr;
+    gap: 16px;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+@media (max-width: 800px) {
+    .chronicles-bottom-strip {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+}
+
+.chronicles-bottom-col h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78125rem;
+    font-weight: 800;
+    color: #F3E5AB;
+    margin: 0 0 6px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.chronicles-bottom-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.6875rem;
+    color: #C8BDAA;
+    line-height: 1.6;
+}
+
+.chronicles-bottom-col ul li a {
+    color: #C8BDAA;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.chronicles-bottom-col ul li a:hover {
+    color: #FFD700;
+}
+
+.chronicles-bottom-center {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.chronicles-angeling-mascot {
+    height: 48px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8));
+    animation: chronicles-float 3s ease-in-out infinite;
+}
+
+@keyframes chronicles-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
 }
 
 /* ==========================================================================
-   FOOTER (Dark Slate with Gold Accents)
+   6. FOOTER STYLING
    ========================================================================== */
 .chronicles-footer {
-    background: #0E0C12;
-    border-top: 2px solid #3E344A;
-    padding: 1.25rem 0;
-    margin-top: 2.5rem;
+    background: #110D17;
+    border-top: 2px solid #3A2F45;
+    padding: 24px 0 30px 0;
     font-size: 0.75rem;
     color: #8C7F99;
 }
 
 .chronicles-footer a {
-    color: #B5A7C4;
+    color: #A396AD;
     text-decoration: none;
     transition: color 0.15s ease;
 }

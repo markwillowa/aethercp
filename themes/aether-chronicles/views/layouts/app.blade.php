@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? config('aether.name', 'Aether Chronicles') }} - {{ \App\Models\SiteSetting::get('server_name', config('aether.server_name', 'Aether Chronicles')) }}</title>
-    <meta name="description" content="{{ \App\Models\SiteSetting::get('tagline', 'Your Legend Begins in Rune-Midgard.') }}">
+    <title>{{ $title ?? 'Aether Chronicles' }} - {{ \App\Models\SiteSetting::get('server_name', 'Aether Chronicles') }}</title>
+    <meta name="description" content="{{ \App\Models\SiteSetting::get('chronicles_tagline', 'Your Legend Begins in Rune-Midgard.') }}">
 
     <!-- Google Fonts & Tailwind Styles via Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -14,7 +14,7 @@
     <!-- Aether Chronicles Classic MMORPG Theme Stylesheet -->
     @php
         $cssAssetPath = base_path('themes/aether-chronicles/assets/theme.css');
-        $cssVer = file_exists($cssAssetPath) ? filemtime($cssAssetPath) : '1.0';
+        $cssVer = file_exists($cssAssetPath) ? filemtime($cssAssetPath) : '3.0';
     @endphp
     <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'theme.css']) }}?v={{ $cssVer }}">
 
@@ -25,30 +25,40 @@
 
     <div>
         <!-- ======================================================================
-             MAIN WEBSITE HEADER BANNER (Logo, Castle, Knight, Priestess)
+             1. MAIN WEBSITE HEADER BANNER (Castle, Knight, Priestess & Crest)
              ====================================================================== -->
-        <header class="chronicles-header-banner">
+        <header class="chronicles-header-banner" style="background-image: url('{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/header_chronicles_hero.jpg']) }}');">
             <div class="chronicles-header-overlay"></div>
             
-            <div class="chronicles-container w-full relative z-10 py-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-                <!-- Left: 3D Embossed Logo & Tagline -->
-                <div class="text-center sm:text-left">
-                    <a href="{{ route('home') }}" class="no-underline inline-block group">
-                        <div class="flex items-center gap-2 justify-center sm:justify-start mb-1">
-                            <span class="text-[#FFD700] text-xl">✦</span>
-                            <span class="text-xs font-cinzel font-bold text-[#E5A823] tracking-widest uppercase">Classic MMORPG</span>
-                            <span class="text-[#FFD700] text-xl">✦</span>
+            <div class="chronicles-container w-full relative z-10 py-5 flex items-center justify-between">
+                <!-- Left: Clickable Logo Link (Transparent anchor or custom server name) -->
+                @php
+                    $customLogo = \App\Models\SiteSetting::get('chronicles_logo');
+                    $customServerName = \App\Models\SiteSetting::get('server_name', 'Aether Chronicles');
+                @endphp
+
+                <a href="{{ route('home') }}" class="no-underline inline-block group">
+                    @if(!empty($customLogo))
+                        <img src="{{ $customLogo }}" alt="{{ $customServerName }}" class="h-16 object-contain">
+                    @elseif(!empty($customServerName) && $customServerName !== 'Aether Chronicles' && $customServerName !== 'FreynixRO')
+                        <div class="chronicles-logo-badge">
+                            <span>✦</span>
+                            <span>Classic MMORPG</span>
+                            <span>✦</span>
                         </div>
                         <h1 class="chronicles-logo-title group-hover:brightness-110 transition-all">
-                            {{ \App\Models\SiteSetting::get('server_name', 'AETHER CHRONICLES') }}
+                            {{ $customServerName }}
                         </h1>
                         <p class="chronicles-logo-subtitle">
-                            {{ \App\Models\SiteSetting::get('tagline', 'Your Legend Begins in Rune-Midgard.') }}
+                            {{ \App\Models\SiteSetting::get('chronicles_tagline', 'Your Legend Begins in Rune-Midgard.') }}
                         </p>
-                    </a>
-                </div>
+                    @else
+                        <!-- Spacer matching the painted Aether Chronicles logo in the artwork -->
+                        <div class="py-6 px-4"></div>
+                    @endif
+                </a>
 
-                <!-- Right: Online Badge Counter -->
+                <!-- Right: Online Adventurers Pill Badge -->
                 @php
                     $emulator = app(\App\Contracts\EmulatorInterface::class);
                     $onlinePlayers = 0;
@@ -58,31 +68,31 @@
                         $onlinePlayers = 1248;
                     }
                 @endphp
-                <div class="hidden md:flex items-center gap-3 bg-black/40 border border-[#D4AF37]/40 px-4 py-2 rounded-lg backdrop-blur-sm">
+                <div class="hidden md:flex items-center gap-2.5 chronicles-online-pill self-end mb-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-[#22C55E] animate-ping"></span>
                     <span class="text-xs font-cinzel text-[#E8DCC9]">Players In Midgard:</span>
-                    <strong class="font-mono text-[#FFD700] text-base">{{ number_format($onlinePlayers) }}</strong>
+                    <strong class="font-mono text-[#FFD700] text-sm">{{ number_format($onlinePlayers) }}</strong>
                 </div>
             </div>
         </header>
 
         <!-- ======================================================================
-             DECORATIVE NAVIGATION BAR (Ornate Metallic Slate with Gold CTA)
+             2. DECORATIVE NAVIGATION BAR (Full Width Medieval Stone)
              ====================================================================== -->
         <div class="chronicles-container">
             @include('components.navbar')
         </div>
 
         <!-- Flash Notifications -->
-        <div class="chronicles-container my-3">
+        <div class="chronicles-container my-2">
             @if(session('success'))
-                <div class="p-3.5 rounded-lg bg-[#1E3A18] border border-[#4CAF50] text-[#D8FFB8] text-xs flex items-center gap-2.5 shadow-lg">
+                <div class="p-3 rounded bg-[#1E3A18] border border-[#4CAF50] text-[#D8FFB8] text-xs flex items-center gap-2.5 shadow-lg">
                     <i data-lucide="check-circle" class="w-4 h-4 text-[#4CAF50] shrink-0"></i>
                     <span>{{ session('success') }}</span>
                 </div>
             @endif
             @if(session('error'))
-                <div class="p-3.5 rounded-lg bg-[#3A1818] border border-[#F44336] text-[#FFCDD2] text-xs flex items-center gap-2.5 shadow-lg">
+                <div class="p-3 rounded bg-[#3A1818] border border-[#F44336] text-[#FFCDD2] text-xs flex items-center gap-2.5 shadow-lg">
                     <i data-lucide="alert-circle" class="w-4 h-4 text-[#F44336] shrink-0"></i>
                     <span>{{ session('error') }}</span>
                 </div>
@@ -98,9 +108,9 @@
     <!-- Footer -->
     @include('components.footer')
 
-    <!-- Lucide Icons Replacement Script -->
+    <!-- Lucide Icons Initializer -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', function () {
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }

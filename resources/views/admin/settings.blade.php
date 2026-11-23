@@ -58,6 +58,13 @@
             <i data-lucide="credit-card" class="w-4 h-4"></i>
             <span>PayPal Gateway</span>
         </button>
+
+        <button type="button" @click="activeTab = 'chronicles'"
+            :class="activeTab === 'chronicles' ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' : 'text-slate-400 hover:text-white border-transparent'"
+            class="px-4 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2">
+            <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
+            <span>Aether Chronicles</span>
+        </button>
     </div>
 
     <!-- Main Settings Form -->
@@ -644,6 +651,124 @@
                     </span>
                     <p class="font-mono text-xs text-slate-200 break-all select-all bg-slate-900 px-3 py-2 rounded-lg border border-slate-800">{{ url('/donations/paypal/ipn') }}</p>
                     <p class="text-[10px] text-slate-500">Configure this exact URL in your PayPal Account Settings &gt; Instant Payment Notification to automate reward delivery without staff intervention.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 7: AETHER CHRONICLES THEME SETTINGS -->
+        <div x-show="activeTab === 'chronicles'" class="space-y-6">
+            <div class="bg-slate-900/80 border border-amber-500/30 rounded-2xl p-6 backdrop-blur-md shadow-xl space-y-5">
+                <div class="border-b border-slate-800 pb-3 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                            <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
+                            <span>Aether Chronicles Commercial Theme Customization</span>
+                        </h3>
+                        <p class="text-[11px] text-slate-400">Edit all headlines, promotional copy, server specifications, and promotional cards on the classic Ragnarok theme.</p>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        Episode XIII Style
+                    </span>
+                </div>
+
+                <!-- 1. Server Specs in Left Sidebar -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="server" class="w-3.5 h-3.5 text-amber-400"></i>
+                        <span>Sidebar Server Specifications</span>
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Server Type</label>
+                            <input type="text" name="chronicles_server_type" value="{{ $settings['chronicles_server_type'] ?? 'Pre-Renewal' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Episode Label</label>
+                            <input type="text" name="chronicles_episode" value="{{ $settings['chronicles_episode'] ?? 'Classic XIII' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Emulator Name</label>
+                            <input type="text" name="chronicles_emulator" value="{{ $settings['chronicles_emulator'] ?? 'rAthena' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Main Promotional Banner -->
+                <div class="space-y-3 pt-3 border-t border-slate-800">
+                    <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+                        <span>Top Main Promotional Banner</span>
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Promo Badge</label>
+                            <input type="text" name="chronicles_badge" value="{{ $settings['chronicles_badge'] ?? 'Episode XIII: Noghaltz' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Promo Headline</label>
+                            <input type="text" name="chronicles_promo_title" value="{{ $settings['chronicles_promo_title'] ?? 'Experience the True Ragnarok!' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Promo Subtitle / Narrative</label>
+                        <textarea name="chronicles_promo_desc" rows="2"
+                            class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">{{ $settings['chronicles_promo_desc'] ?? 'Join thousands of players in an epic adventure across Rune-Midgard!' }}</textarea>
+                    </div>
+                </div>
+
+                <!-- 3. Featured WoE Card -->
+                <div class="space-y-3 pt-3 border-t border-slate-800">
+                    <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400"></i>
+                        <span>Featured Right Sidebar Card</span>
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Card Title</label>
+                            <input type="text" name="chronicles_feat1_title" value="{{ $settings['chronicles_feat1_title'] ?? 'Epic WoE Battles' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Card Description</label>
+                            <input type="text" name="chronicles_feat1_desc" value="{{ $settings['chronicles_feat1_desc'] ?? 'Fight for your guild glory!' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Card Target URL</label>
+                            <input type="text" name="chronicles_feat1_link" value="{{ $settings['chronicles_feat1_link'] ?? '/woe' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Bottom Adventure Banner & CTA -->
+                <div class="space-y-3 pt-3 border-t border-slate-800">
+                    <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="flag" class="w-3.5 h-3.5 text-amber-400"></i>
+                        <span>Bottom Adventure Strip &amp; CTA</span>
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">CTA Headline</label>
+                            <input type="text" name="chronicles_cta_title" value="{{ $settings['chronicles_cta_title'] ?? 'Join the Adventure Today!' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">CTA Subtitle</label>
+                            <input type="text" name="chronicles_cta_desc" value="{{ $settings['chronicles_cta_desc'] ?? 'Be part of our growing Ragnarok community.' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">CTA Button Text</label>
+                            <input type="text" name="chronicles_cta_btn_text" value="{{ $settings['chronicles_cta_btn_text'] ?? 'Play Now' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
