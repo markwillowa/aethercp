@@ -42,6 +42,11 @@
                 <a href="{{ route('downloads.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('downloads.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Downloads
                 </a>
+                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('marketplace'))
+                    <a href="{{ route('marketplace.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('marketplace.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                        Marketplace
+                    </a>
+                @endif
                 <a href="{{ route('donations.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('donations.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Donations
                 </a>

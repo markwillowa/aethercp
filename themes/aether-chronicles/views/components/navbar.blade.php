@@ -65,6 +65,14 @@
             <span>DOWNLOADS</span>
         </a>
 
+        <!-- MARKETPLACE -->
+        @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('marketplace'))
+            <a href="{{ route('marketplace.index') }}" class="chronicles-nav-item {{ request()->routeIs('marketplace.*') ? 'active' : '' }}">
+                <i data-lucide="scale" class="w-3.5 h-3.5"></i>
+                <span>MARKETPLACE</span>
+            </a>
+        @endif
+
         <!-- DONATE -->
         <a href="{{ route('donations.index') }}" class="chronicles-nav-item {{ request()->routeIs('donations.*') ? 'active' : '' }}">
             <i data-lucide="gem" class="w-3.5 h-3.5"></i>

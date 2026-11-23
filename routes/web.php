@@ -71,6 +71,17 @@ Route::middleware('module:donations')->group(function () {
     Route::get('/donations/paypal/cancel', [DonationController::class, 'paypalCancel'])->name('donations.paypal.cancel');
 });
 
+// Player Marketplace
+Route::middleware(['auth', 'module:marketplace'])->prefix('marketplace')->name('marketplace.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Public\MarketplaceController::class, 'index'])->name('index');
+    Route::post('/character', [\App\Http\Controllers\Public\MarketplaceController::class, 'selectCharacter'])->name('character');
+    Route::post('/transfer', [\App\Http\Controllers\Public\MarketplaceController::class, 'transfer'])->name('transfer');
+    Route::post('/list', [\App\Http\Controllers\Public\MarketplaceController::class, 'createListing'])->name('list');
+    Route::post('/cancel/{id}', [\App\Http\Controllers\Public\MarketplaceController::class, 'cancel'])->name('cancel');
+    Route::post('/withdraw/{id}', [\App\Http\Controllers\Public\MarketplaceController::class, 'withdraw'])->name('withdraw');
+    Route::post('/buy/{id}', [\App\Http\Controllers\Public\MarketplaceController::class, 'buy'])->name('buy');
+});
+
 // Dynamic Theme Assets Route
 Route::get('/themes/{theme}/assets/{path}', function (string $theme, string $path) {
     $filePath = base_path("themes/{$theme}/assets/{$path}");
@@ -170,6 +181,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/gallery/{id}', [\App\Http\Controllers\Admin\AdminGalleryController::class, 'update'])->name('gallery.update');
     Route::delete('/gallery/{id}', [\App\Http\Controllers\Admin\AdminGalleryController::class, 'destroy'])->name('gallery.destroy');
     Route::post('/gallery/reset', [\App\Http\Controllers\Admin\AdminGalleryController::class, 'resetDefaults'])->name('gallery.reset');
+
+    // Marketplace Manager
+    Route::get('/marketplace', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'index'])->name('marketplace.index');
+    Route::post('/marketplace/settings', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'updateSettings'])->name('marketplace.settings');
+    Route::post('/marketplace/cancel/{id}', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'cancelListing'])->name('marketplace.cancel');
 
     // Item Database Search for Admin Selectors
     Route::get('/items/search', [AdminController::class, 'searchItems'])->name('items.search');

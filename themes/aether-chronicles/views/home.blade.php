@@ -217,6 +217,12 @@
                             <i data-lucide="users"></i>
                             <span>My Characters</span>
                         </a>
+                        @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('marketplace'))
+                            <a href="{{ route('marketplace.index') }}" class="chronicles-menu-link">
+                                <i data-lucide="scale"></i>
+                                <span>Trade House</span>
+                            </a>
+                        @endif
                         <a href="{{ route('account.password') }}" class="chronicles-menu-link">
                             <i data-lucide="lock"></i>
                             <span>Change Password</span>

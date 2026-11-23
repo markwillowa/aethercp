@@ -63,6 +63,12 @@ return [
             'version' => '1.0.0',
             'enabled' => true,
         ],
+        'marketplace' => [
+            'name' => 'Player Marketplace',
+            'description' => 'Player-to-player trade house for escrowed items using Zeny or Cash Points.',
+            'version' => '1.0.0',
+            'enabled' => true,
+        ],
     ],
 ];
 
