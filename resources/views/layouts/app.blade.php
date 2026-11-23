@@ -10,8 +10,24 @@
 
     <!-- Google Fonts / Instrument Sans via Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Dynamic Theme Styling & CSS Injection -->
+    @if(!empty($currentTheme['colors']))
+    <style>
+        :root {
+            --color-theme-primary: {{ $currentTheme['colors']['primary'] ?? '#06b6d4' }};
+            --color-theme-accent: {{ $currentTheme['colors']['accent'] ?? '#3b82f6' }};
+            --color-theme-bg: {{ $currentTheme['colors']['background'] ?? '#070a13' }};
+            --color-theme-surface: {{ $currentTheme['colors']['surface'] ?? '#0f172a' }};
+        }
+    </style>
+    @endif
+
+    @if(!empty($currentTheme['has_css']) && !empty($currentTheme['slug']))
+        <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => $currentTheme['slug'], 'path' => 'theme.css']) }}">
+    @endif
 </head>
-<body class="bg-[#070a13] text-slate-200 min-h-screen flex flex-col font-sans antialiased selection:bg-cyan-500 selection:text-black">
+<body data-theme="{{ $currentTheme['slug'] ?? 'aether-dark' }}" class="{{ !empty($currentTheme['classes']['body']) ? $currentTheme['classes']['body'] : 'bg-[#070a13]' }} text-slate-200 min-h-screen flex flex-col font-sans antialiased selection:bg-cyan-500 selection:text-black">
     <!-- Ethereal Background Glow Effects -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div class="absolute -top-40 -left-40 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl"></div>

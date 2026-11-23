@@ -8,18 +8,88 @@ use Illuminate\Support\Facades\View;
 
 class ThemeManager
 {
-    protected string $activeTheme;
+    protected string $activeTheme = 'aether-dark';
     protected string $themesPath;
 
     public function __construct()
     {
         $this->themesPath = base_path('themes');
-        $this->activeTheme = SiteSetting::get('active_theme', config('aether.theme', 'aether-dark'));
+        $this->activeTheme = $this->getActiveTheme();
+    }
+
+    public function boot(): void
+    {
+        $this->apply();
+    }
+
+    public function apply(): void
+    {
+        $activeTheme = $this->getActiveTheme();
+
+        if (app()->bound('view')) {
+            $finder = app('view')->getFinder();
+            $defaultPaths = [resource_path('views')];
+            $themesRoot = base_path('themes');
+            $customViewsPath = $themesRoot . DIRECTORY_SEPARATOR . $activeTheme . DIRECTORY_SEPARATOR . 'views';
+
+            if ($activeTheme !== 'aether-dark' && is_dir($customViewsPath)) {
+                $finder->setPaths([$customViewsPath, ...$defaultPaths]);
+            } else {
+                $finder->setPaths($defaultPaths);
+            }
+            $finder->flush();
+        }
+
+        View::share('currentTheme', $this->getActiveThemeData());
     }
 
     public function getActiveTheme(): string
     {
-        return $this->activeTheme;
+        try {
+            return SiteSetting::get('active_theme', config('aether.theme', 'aether-dark'));
+        } catch (\Throwable $e) {
+            return config('aether.theme', 'aether-dark');
+        }
+    }
+
+    public function getActiveThemeData(): array
+    {
+        $activeTheme = $this->getActiveTheme();
+
+        if ($activeTheme === 'aether-dark') {
+            return [
+                'name' => 'Aether Dark',
+                'slug' => 'aether-dark',
+                'description' => 'Official sleek MMORPG dark navy theme with blue/cyan ethereal glow.',
+                'version' => '1.0.0',
+                'author' => 'AetherCP Team',
+                'is_core' => true,
+                'has_css' => false,
+                'colors' => [
+                    'primary' => '#06b6d4',
+                    'accent' => '#3b82f6',
+                    'background' => '#070a13',
+                    'surface' => '#0f172a',
+                ],
+            ];
+        }
+
+        $manifestFile = $this->themesPath . DIRECTORY_SEPARATOR . $activeTheme . DIRECTORY_SEPARATOR . 'theme.json';
+        if (File::exists($manifestFile)) {
+            $data = json_decode(File::get($manifestFile), true) ?: [];
+            $cssFile = $this->themesPath . DIRECTORY_SEPARATOR . $activeTheme . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'theme.css';
+            $data['has_css'] = File::exists($cssFile);
+            $data['is_core'] = false;
+            $data['slug'] = $activeTheme;
+            return $data;
+        }
+
+        return [
+            'name' => ucfirst($activeTheme),
+            'slug' => $activeTheme,
+            'is_core' => false,
+            'has_css' => false,
+        ];
     }
 
     public function setActiveTheme(string $theme): bool
@@ -29,7 +99,14 @@ class ThemeManager
         }
 
         SiteSetting::set('active_theme', $theme);
-        $this->activeTheme = $theme;
+
+        // Apply immediately
+        $this->apply();
+
+        // Clear compiled blade views so the new theme takes effect immediately
+        try {
+            \Illuminate\Support\Facades\Artisan::call('view:clear');
+        } catch (\Throwable $e) {}
 
         return true;
     }
@@ -41,13 +118,15 @@ class ThemeManager
 
     public function getInstalledThemes(): array
     {
+        $activeTheme = $this->getActiveTheme();
+
         $themes = [
             'aether-dark' => [
                 'name' => 'Aether Dark',
                 'description' => 'Official sleek MMORPG dark navy theme with blue/cyan ethereal glow.',
                 'version' => '1.0.0',
                 'author' => 'AetherCP Team',
-                'is_active' => ($this->activeTheme === 'aether-dark'),
+                'is_active' => ($activeTheme === 'aether-dark'),
                 'is_core' => true,
             ],
         ];
@@ -65,7 +144,7 @@ class ThemeManager
                         'description' => $manifest['description'] ?? 'Custom Community Theme',
                         'version' => $manifest['version'] ?? '1.0.0',
                         'author' => $manifest['author'] ?? 'Third Party',
-                        'is_active' => ($this->activeTheme === $slug),
+                        'is_active' => ($activeTheme === $slug),
                         'is_core' => false,
                     ];
                 }

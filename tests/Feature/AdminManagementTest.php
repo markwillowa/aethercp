@@ -43,6 +43,20 @@ class AdminManagementTest extends TestCase
         $response->assertSee('Aether Dark');
     }
 
+    public function test_admin_can_activate_theme_and_views_switch_successfully(): void
+    {
+        $response = $this->actingAs($this->admin)->post('/admin/themes/elysian/activate');
+        $response->assertRedirect();
+
+        $home = $this->get('/');
+        $home->assertStatus(200);
+        $home->assertSee('VALKYRIE REALM');
+        $home->assertSee('Ascend to');
+
+        // Revert back to core theme for clean state
+        $this->actingAs($this->admin)->post('/admin/themes/aether-dark/activate');
+    }
+
     public function test_admin_can_publish_news_article(): void
     {
         $response = $this->actingAs($this->admin)->post('/admin/news', [

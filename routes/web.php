@@ -48,6 +48,24 @@ Route::get('/downloads', [DownloadController::class, 'index'])->name('downloads.
 Route::get('/donations', [DonationController::class, 'index'])->name('donations.index');
 Route::post('/donations/submit', [DonationController::class, 'submitManual'])->name('donations.submit')->middleware('auth');
 
+// Dynamic Theme Assets Route
+Route::get('/themes/{theme}/assets/{path}', function (string $theme, string $path) {
+    $filePath = base_path("themes/{$theme}/assets/{$path}");
+    if (!file_exists($filePath) || str_contains($path, '..')) {
+        abort(404);
+    }
+    $mime = match (pathinfo($filePath, PATHINFO_EXTENSION)) {
+        'css' => 'text/css',
+        'js' => 'application/javascript',
+        'png' => 'image/png',
+        'jpg', 'jpeg' => 'image/jpeg',
+        'svg' => 'image/svg+xml',
+        'woff2' => 'font/woff2',
+        default => mime_content_type($filePath) ?: 'text/plain',
+    };
+    return response()->file($filePath, ['Content-Type' => $mime]);
+})->where('path', '.*')->name('theme.asset');
+
 /*
 |--------------------------------------------------------------------------
 | Guest Authentication Routes

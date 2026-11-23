@@ -1,17 +1,18 @@
 {
     "name": "Elysian Mythic",
     "slug": "elysian",
-    "description": "An ethereal celestial theme featuring sapphire blues, golden highlights, and Nordic fantasy elements.",
+    "description": "An ethereal celestial theme featuring sapphire blues, luminous Nordic gold highlights, and Valkyrie fantasy aesthetics.",
     "version": "1.2.0",
     "author": "AetherCP Design Guild",
     "license": "MIT",
-    "support": "https://github.com/aethercp/aether",
     "parent": "aether-dark",
     "colors": {
         "primary": "#38bdf8",
         "accent": "#f59e0b",
-        "background": "#050b14",
-        "surface": "#0c1524"
+        "background": "#050811",
+        "surface": "#0c1322"
+    },
+    "classes": {
+        "body": "bg-[#050811] text-amber-50 selection:bg-amber-400 selection:text-slate-950"
     }
 }
-
