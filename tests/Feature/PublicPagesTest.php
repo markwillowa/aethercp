@@ -68,6 +68,17 @@ class PublicPagesTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_item_database_search_works_with_text_and_numeric_query(): void
+    {
+        $resText = $this->get('/database/items?q=card');
+        $resText->assertStatus(200);
+        $resText->assertSee('Item Database Search');
+
+        $resNum = $this->get('/database/items?q=501');
+        $resNum->assertStatus(200);
+        $resNum->assertSee('Item Database Search');
+    }
+
     public function test_login_and_register_pages_load(): void
     {
         $this->get('/login')->assertStatus(200);

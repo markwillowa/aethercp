@@ -19,7 +19,7 @@
                         #{{ $item->id }}
                     </span>
                 </div>
-                <p class="text-xs text-slate-400 mt-1">{{ $item->name_japanese ?? '' }}</p>
+                <p class="text-xs text-slate-400 mt-1">{{ $item->name_aegis ?? $item->name_japanese ?? '' }}</p>
             </div>
         </div>
 

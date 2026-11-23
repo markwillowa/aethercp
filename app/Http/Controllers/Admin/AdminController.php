@@ -58,8 +58,10 @@ class AdminController extends Controller
             if (is_numeric($search)) {
                 $query->where('account_id', (int) $search);
             } else {
-                $query->where('userid', 'like', "%{$search}%")
+                $query->where(function ($q) use ($search) {
+                    $q->where('userid', 'like', "%{$search}%")
                       ->orWhere('email', 'like', "%{$search}%");
+                });
             }
         }
 
@@ -98,7 +100,9 @@ class AdminController extends Controller
 
         if (!empty($search)) {
             if (is_numeric($search)) {
-                $query->where('char_id', (int) $search)->orWhere('account_id', (int) $search);
+                $query->where(function ($q) use ($search) {
+                    $q->where('char_id', (int) $search)->orWhere('account_id', (int) $search);
+                });
             } else {
                 $query->where('name', 'like', "%{$search}%");
             }
@@ -120,8 +124,10 @@ class AdminController extends Controller
             if (is_numeric($search)) {
                 $query->where('guild_id', (int) $search);
             } else {
-                $query->where('name', 'like', "%{$search}%")
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
                       ->orWhere('master', 'like', "%{$search}%");
+                });
             }
         }
 
