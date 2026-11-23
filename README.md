@@ -81,7 +81,23 @@ Ensure your environment meets the minimum requirements:
 - Node.js 20+ and NPM
 - Composer 2+
 
-### 2. Configure Environment
+### 2. Database Architecture & Setup Rules
+
+> [!IMPORTANT]
+> **Do NOT create Laravel migrations for rAthena or Hercules tables!**
+> 
+> AetherCP strictly isolates the emulator database from the web application database:
+> 
+> 1. **Ragnarok Game Database (e.g. `freynix`)**:
+>    - **Requirement**: Import the official rAthena/Hercules SQL files (`sql-files/main.sql`, `sql-files/item_db.sql`, `sql-files/logs.sql`, etc.) directly into your game database using MySQL CLI or phpMyAdmin.
+>    - **Zero Migrations**: Game tables (`login`, `char`, `guild`, `inventory`, `storage`, `item_db`, etc.) are 100% owned by rAthena/Hercules and are **never** managed or created by Laravel migrations.
+>    - **Single Source of Truth**: The web control panel authenticates directly against the rAthena `login` table that was imported from `main.sql`. Any account in `login` (such as `s1`, `malda009`, or newly registered players) can immediately log in on the website.
+> 
+> 2. **AetherCP Web Database (e.g. `aether_cp`)**:
+>    - Contains only web-specific CMS tables (`news`, `downloads`, `donations`, `site_settings`, `activity_logs`).
+>    - Laravel migrations in `database/migrations/` apply **only** to this separate web database.
+
+### 3. Configure Environment
 Copy the example environment file and configure your credentials:
 ```bash
 cp .env.example .env
@@ -112,18 +128,18 @@ RO_RENEWAL=true
 RO_PASSWORD_HASH=md5
 ```
 
-### 3. Run One-Click Installation
+### 4. Run One-Click Installation
 ```bash
 php artisan aether:install
 ```
 
-### 4. Build Frontend Assets
+### 5. Build Frontend Assets
 ```bash
 npm install
 npm run build
 ```
 
-### 5. Access the Panel
+### 6. Access the Panel
 - Public Home: `http://localhost/aether/public/`
 - Default Admin Login:
   - **Username**: `admin`
