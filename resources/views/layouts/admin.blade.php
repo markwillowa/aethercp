@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" data-theme="{{ $currentTheme['slug'] ?? 'aether-dark' }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="{{ !empty($currentTheme['is_light']) ? 'light' : 'dark' }}" data-theme="{{ $currentTheme['slug'] ?? 'aether-dark' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,7 +18,7 @@
         }
         html, body {
             background-color: var(--color-theme-bg) !important;
-            color: #e2e8f0 !important;
+            color: {{ !empty($currentTheme['is_light']) ? '#3A2A1C' : '#e2e8f0' }} !important;
         }
     </style>
 
@@ -26,7 +26,7 @@
         <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => $currentTheme['slug'], 'path' => 'theme.css']) }}">
     @endif
 </head>
-<body class="bg-[#070a13] text-slate-200 min-h-screen flex flex-col font-sans antialiased">
+<body class="{{ !empty($currentTheme['is_light']) ? 'bg-[#EDE2C7] text-[#3A2A1C]' : 'bg-[#070a13] text-slate-200' }} min-h-screen flex flex-col font-sans antialiased">
     <!-- Top Admin Bar -->
     <header class="border-b border-slate-800 bg-[#0b0f19] sticky top-0 z-30">
         <div class="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">

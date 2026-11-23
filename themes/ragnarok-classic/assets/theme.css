@@ -330,10 +330,15 @@ html[data-theme="ragnarok-classic"] .ro-heading {
     justify-content: center !important;
 }
 
+.ro-brand-crest-inner svg,
 .ro-brand-crest-inner i {
-    width: 22px !important;
-    height: 22px !important;
+    width: 24px !important;
+    height: 24px !important;
     color: #FFDA89 !important;
+    stroke: #FFDA89 !important;
+    stroke-width: 2.2px !important;
+    fill: rgba(255, 218, 137, 0.25) !important;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8)) !important;
 }
 
 .ro-brand-text {
@@ -761,5 +766,104 @@ html[data-theme="ragnarok-classic"] .border-slate-800\/60 {
 /* User Avatar Initial circle */
 html[data-theme="ragnarok-classic"] .w-16.h-16.rounded-2xl {
     border-radius: 4px !important;
+}
+
+/* ==========================================================================
+   Admin Panel Layout Styling for Ragnarok Classic
+   ========================================================================== */
+
+/* Admin Top Bar */
+html[data-theme="ragnarok-classic"] header.bg-\[\#0b0f19\] {
+    background: linear-gradient(180deg, #2D1D13 0%, #3C291B 100%) !important;
+    border-bottom: 2px solid #8C6A2D !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-theme="ragnarok-classic"] header.bg-\[\#0b0f19\] .text-white {
+    color: #FFF0D4 !important;
+    font-family: Georgia, serif !important;
+}
+
+html[data-theme="ragnarok-classic"] header.bg-\[\#0b0f19\] .text-amber-400 {
+    color: #FFDA89 !important;
+}
+
+html[data-theme="ragnarok-classic"] header.bg-\[\#0b0f19\] .text-slate-500 {
+    color: #C5B090 !important;
+}
+
+html[data-theme="ragnarok-classic"] header.bg-\[\#0b0f19\] .text-cyan-400 {
+    color: #FFDA89 !important;
+}
+
+html[data-theme="ragnarok-classic"] header.bg-\[\#0b0f19\] a.bg-slate-900 {
+    background: linear-gradient(180deg, #3D6A99 0%, #264A73 100%) !important;
+    border-top: 1px solid #6392C2 !important;
+    border-left: 1px solid #6392C2 !important;
+    border-bottom: 1px solid #14273E !important;
+    border-right: 1px solid #14273E !important;
+    color: #F8EBD2 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25) !important;
+}
+
+html[data-theme="ragnarok-classic"] header.bg-\[\#0b0f19\] a.bg-slate-900 i {
+    color: #FFDA89 !important;
+}
+
+/* Admin Sidebar */
+html[data-theme="ragnarok-classic"] aside.bg-\[\#070a13\] {
+    background: linear-gradient(180deg, #362417 0%, #24160E 100%) !important;
+    border-right: 2px solid #8C6A2D !important;
+    box-shadow: 3px 0 10px rgba(0, 0, 0, 0.25) !important;
+}
+
+html[data-theme="ragnarok-classic"] aside.bg-\[\#070a13\] p.text-slate-500 {
+    color: #FFDA89 !important;
+    font-family: Georgia, serif !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    letter-spacing: 1px !important;
+    border-bottom: 1px solid #4D3522 !important;
+    padding-bottom: 4px !important;
+}
+
+html[data-theme="ragnarok-classic"] aside.bg-\[\#070a13\] a {
+    color: #E7D5BE !important;
+    font-family: Tahoma, Arial, sans-serif !important;
+    border-radius: 4px !important;
+    transition: all 0.15s ease-in-out !important;
+}
+
+html[data-theme="ragnarok-classic"] aside.bg-\[\#070a13\] a i {
+    color: #C8A66A !important;
+}
+
+html[data-theme="ragnarok-classic"] aside.bg-\[\#070a13\] a:hover {
+    background: #4D3522 !important;
+    color: #FFDA89 !important;
+}
+
+html[data-theme="ragnarok-classic"] aside.bg-\[\#070a13\] a:hover i {
+    color: #FFDA89 !important;
+}
+
+/* Admin Sidebar Active Item */
+html[data-theme="ragnarok-classic"] aside.bg-\[\#070a13\] a.bg-cyan-500\/10,
+html[data-theme="ragnarok-classic"] aside.bg-\[\#070a13\] a.text-cyan-400 {
+    background: linear-gradient(180deg, #3D6A99 0%, #264A73 100%) !important;
+    border: 1px solid #6392C2 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+html[data-theme="ragnarok-classic"] aside.bg-\[\#070a13\] a.bg-cyan-500\/10 i,
+html[data-theme="ragnarok-classic"] aside.bg-\[\#070a13\] a.text-cyan-400 i {
+    color: #FFDA89 !important;
+}
+
+/* Admin Content Area */
+html[data-theme="ragnarok-classic"] main,
+html[data-theme="ragnarok-classic"] .flex-grow {
+    background-color: #EDE2C7 !important;
 }
 

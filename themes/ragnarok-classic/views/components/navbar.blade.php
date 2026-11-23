@@ -6,7 +6,7 @@
             <a href="{{ route('home') }}" class="ro-brand">
                 <div class="ro-brand-crest">
                     <div class="ro-brand-crest-inner">
-                        <i data-lucide="shield"></i>
+                        <i data-lucide="shield" class="w-6 h-6 text-[#FFDA89]"></i>
                     </div>
                 </div>
                 <div class="ro-brand-text">
