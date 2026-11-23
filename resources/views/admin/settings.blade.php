@@ -772,7 +772,8 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Gallery / Target URL</label>
-                            <input type="text" name="chronicles_screenshot_url" value="{{ $settings['chronicles_screenshot_url'] ?? '/news' }}"
+                            <input type="text" name="chronicles_screenshot_url" value="{{ $settings['chronicles_screenshot_url'] ?? '/gallery' }}"
+                                placeholder="/gallery"
                                 class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
                         </div>
                     </div>
@@ -800,7 +801,7 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Server Status Angeling Mascot URL</label>
                             <input type="text" name="chronicles_angeling_img" value="{{ $settings['chronicles_angeling_img'] ?? '' }}"
-                                placeholder="e.g. https://... or images/angeling_status_badge.png"
+                                placeholder="e.g. images/angeling_transparent.png"
                                 class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
                         </div>
                     </div>
@@ -820,7 +821,7 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Bottom Flying Angeling Mascot URL</label>
                             <input type="text" name="chronicles_bottom_mascot_img" value="{{ $settings['chronicles_bottom_mascot_img'] ?? '' }}"
-                                placeholder="e.g. images/angeling_avatar.png"
+                                placeholder="e.g. images/angeling_transparent.png"
                                 class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
                         </div>
                     </div>

@@ -15,6 +15,7 @@
             </button>
             <div class="hidden group-hover:block absolute top-full left-0 mt-0.5 w-48 bg-[#1F1926] border-2 border-[#5A4A68] rounded shadow-2xl p-1.5 z-50">
                 <a href="{{ route('downloads.index') }}" class="block px-3 py-1.5 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352B42] hover:text-[#FFD700] rounded">Client Downloads</a>
+                <a href="{{ route('gallery.index') }}" class="block px-3 py-1.5 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352B42] hover:text-[#FFD700] rounded">Media Gallery</a>
                 <a href="{{ route('characters.online') }}" class="block px-3 py-1.5 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352B42] hover:text-[#FFD700] rounded">Active Adventurers</a>
                 <a href="{{ route('news.index') }}" class="block px-3 py-1.5 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352B42] hover:text-[#FFD700] rounded">Server Chronicles</a>
             </div>
@@ -42,6 +43,12 @@
         <a href="{{ route('downloads.index') }}" class="chronicles-nav-item {{ request()->routeIs('downloads.*') ? 'active' : '' }}">
             <i data-lucide="download" class="w-3.5 h-3.5"></i>
             <span>DOWNLOADS</span>
+        </a>
+
+        <!-- GALLERY -->
+        <a href="{{ route('gallery.index') }}" class="chronicles-nav-item {{ request()->routeIs('gallery.*') ? 'active' : '' }}">
+            <i data-lucide="image" class="w-3.5 h-3.5"></i>
+            <span>GALLERY</span>
         </a>
 
         <!-- DONATE -->

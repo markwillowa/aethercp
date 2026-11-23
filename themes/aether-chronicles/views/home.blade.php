@@ -14,6 +14,10 @@
     $resolveAsset = function ($key, $defaultPath) {
         $val = \App\Models\SiteSetting::get($key);
         if (!empty($val)) {
+            // Automatically remap legacy white-background JPG mascots to clean transparent PNG
+            if (str_contains($val, 'mascot_angeling.jpg') || str_contains($val, 'angeling_status_badge.jpg')) {
+                $val = 'images/angeling_transparent.png';
+            }
             if (\Illuminate\Support\Str::startsWith($val, ['http://', 'https://', '//', '/'])) {
                 return $val;
             }
@@ -41,12 +45,15 @@
 
     $screenshotTitle = \App\Models\SiteSetting::get('chronicles_screenshot_title', 'Screenshots');
     $screenshotImg = $resolveAsset('chronicles_screenshot_img', 'images/screenshot_prontera.jpg');
-    $screenshotUrl = \App\Models\SiteSetting::get('chronicles_screenshot_url', route('news.index'));
+    $screenshotUrl = \App\Models\SiteSetting::get('chronicles_screenshot_url');
+    if (empty($screenshotUrl) || $screenshotUrl === '/news') {
+        $screenshotUrl = route('gallery.index');
+    }
 
-    $angelingBadge = $resolveAsset('chronicles_angeling_img', 'images/angeling_status_badge.png');
+    $angelingBadge = $resolveAsset('chronicles_angeling_img', 'images/angeling_transparent.png');
     $communityImg = $resolveAsset('chronicles_community_img', 'images/community_king_poring.jpg');
     $bottomStripBg = $resolveAsset('chronicles_bottom_strip_bg', 'images/bottom_strip_clean.jpg');
-    $bottomMascotImg = $resolveAsset('chronicles_bottom_mascot_img', 'images/angeling_avatar.png');
+    $bottomMascotImg = $resolveAsset('chronicles_bottom_mascot_img', 'images/angeling_transparent.png');
 
     $ctaTitle = \App\Models\SiteSetting::get('chronicles_cta_title', 'Join the Adventure Today!');
     $ctaDesc = \App\Models\SiteSetting::get('chronicles_cta_desc', 'Be part of our growing Ragnarok community.');

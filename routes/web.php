@@ -58,6 +58,9 @@ Route::middleware('module:downloads')->group(function () {
     Route::get('/downloads', [DownloadController::class, 'index'])->name('downloads.index');
 });
 
+// Gallery & Screenshots
+Route::get('/gallery', [\App\Http\Controllers\Public\GalleryController::class, 'index'])->name('gallery.index');
+
 // Donations
 Route::middleware('module:donations')->group(function () {
     Route::get('/donations', [DonationController::class, 'index'])->name('donations.index');
