@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('admin_content')
-<div x-data="{ activeTab: 'general' }" class="max-w-5xl space-y-6">
+<div x-data="{ activeTab: '{{ \App\Models\SiteSetting::get('active_theme') === 'aether-chronicles' ? 'chronicles' : 'general' }}' }" class="max-w-5xl space-y-6">
     <div class="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-white">Website &amp; Realm Settings</h1>
@@ -782,25 +782,45 @@
                 <div class="space-y-3 pt-3 border-t border-slate-800">
                     <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
                         <i data-lucide="palette" class="w-3.5 h-3.5 text-amber-400"></i>
-                        <span>Custom Theme Artwork &amp; Mascot Overrides</span>
+                        <span>Custom Theme Artwork &amp; Mascot Overrides (URLs or Local Folder Paths)</span>
                     </h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Header Banner Image URL</label>
                             <input type="text" name="chronicles_header_bg" value="{{ $settings['chronicles_header_bg'] ?? '' }}"
-                                placeholder="Leave empty for default HD Castle & Knight Hero banner"
+                                placeholder="e.g. https://... or images/header_chronicles_hero_clean.jpg"
                                 class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Center Promo Banner Image URL</label>
                             <input type="text" name="chronicles_promo_bg" value="{{ $settings['chronicles_promo_bg'] ?? '' }}"
-                                placeholder="Leave empty for default clean Rogue Girl banner"
+                                placeholder="e.g. https://... or images/promo_banner_clean.jpg"
                                 class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Server Status Angeling Mascot URL</label>
                             <input type="text" name="chronicles_angeling_img" value="{{ $settings['chronicles_angeling_img'] ?? '' }}"
-                                placeholder="Leave empty for default Angeling status badge"
+                                placeholder="e.g. https://... or images/angeling_status_badge.png"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Community Card Graphic URL</label>
+                            <input type="text" name="chronicles_community_img" value="{{ $settings['chronicles_community_img'] ?? '' }}"
+                                placeholder="e.g. images/community_king_poring.jpg"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Bottom Strip Background Image</label>
+                            <input type="text" name="chronicles_bottom_strip_bg" value="{{ $settings['chronicles_bottom_strip_bg'] ?? '' }}"
+                                placeholder="e.g. images/bottom_strip_clean.jpg"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Bottom Flying Angeling Mascot URL</label>
+                            <input type="text" name="chronicles_bottom_mascot_img" value="{{ $settings['chronicles_bottom_mascot_img'] ?? '' }}"
+                                placeholder="e.g. images/angeling_avatar.png"
                                 class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
                         </div>
                     </div>
@@ -812,7 +832,7 @@
                         <i data-lucide="flag" class="w-3.5 h-3.5 text-amber-400"></i>
                         <span>Bottom Adventure Strip &amp; CTA</span>
                     </h4>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">CTA Headline</label>
                             <input type="text" name="chronicles_cta_title" value="{{ $settings['chronicles_cta_title'] ?? 'Join the Adventure Today!' }}"
@@ -826,6 +846,11 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">CTA Button Text</label>
                             <input type="text" name="chronicles_cta_btn_text" value="{{ $settings['chronicles_cta_btn_text'] ?? 'Play Now' }}"
+                                class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">CTA Button URL</label>
+                            <input type="text" name="chronicles_cta_btn_url" value="{{ $settings['chronicles_cta_btn_url'] ?? '/downloads' }}"
                                 class="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200">
                         </div>
                     </div>

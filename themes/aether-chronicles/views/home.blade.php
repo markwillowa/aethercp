@@ -10,6 +10,18 @@
         $onlineCount = 1248;
     }
 
+    // Flexible asset resolver for Web URLs, custom root paths, or theme asset defaults
+    $resolveAsset = function ($key, $defaultPath) {
+        $val = \App\Models\SiteSetting::get($key);
+        if (!empty($val)) {
+            if (\Illuminate\Support\Str::startsWith($val, ['http://', 'https://', '//', '/'])) {
+                return $val;
+            }
+            return route('theme.asset', ['theme' => 'aether-chronicles', 'path' => $val]);
+        }
+        return route('theme.asset', ['theme' => 'aether-chronicles', 'path' => $defaultPath]);
+    };
+
     $serverName = \App\Models\SiteSetting::get('server_name', 'Aether Chronicles');
     $serverType = \App\Models\SiteSetting::get('chronicles_server_type', 'Pre-Renewal');
     $rateBase = \App\Models\SiteSetting::get('rate_base', '100x');
@@ -20,38 +32,30 @@
     $promoTitle = \App\Models\SiteSetting::get('chronicles_promo_title', 'Experience the True Ragnarok!');
     $promoDesc = \App\Models\SiteSetting::get('chronicles_promo_desc', 'Join thousands of players in an epic adventure across Rune-Midgard!');
     $promoBadge = \App\Models\SiteSetting::get('chronicles_badge', 'Episode XIII: Noghaltz');
-    $promoBg = \App\Models\SiteSetting::get('chronicles_promo_bg');
-    if (empty($promoBg)) {
-        $promoBg = route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/promo_banner_clean.jpg']);
-    }
+    $promoBg = $resolveAsset('chronicles_promo_bg', 'images/promo_banner_clean.jpg');
 
     $feat1Title = \App\Models\SiteSetting::get('chronicles_feat1_title', 'Epic WoE Battles');
     $feat1Desc = \App\Models\SiteSetting::get('chronicles_feat1_desc', 'Fight for your guild glory!');
     $feat1Link = \App\Models\SiteSetting::get('chronicles_feat1_link', route('woe.index'));
-    $feat1Img = \App\Models\SiteSetting::get('chronicles_feat1_img');
-    if (empty($feat1Img)) {
-        $feat1Img = route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/feat_woe_boss.jpg']);
-    }
+    $feat1Img = $resolveAsset('chronicles_feat1_img', 'images/feat_woe_boss.jpg');
 
     $screenshotTitle = \App\Models\SiteSetting::get('chronicles_screenshot_title', 'Screenshots');
-    $screenshotImg = \App\Models\SiteSetting::get('chronicles_screenshot_img');
-    if (empty($screenshotImg)) {
-        $screenshotImg = route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/screenshot_prontera.jpg']);
-    }
+    $screenshotImg = $resolveAsset('chronicles_screenshot_img', 'images/screenshot_prontera.jpg');
     $screenshotUrl = \App\Models\SiteSetting::get('chronicles_screenshot_url', route('news.index'));
+
+    $angelingBadge = $resolveAsset('chronicles_angeling_img', 'images/angeling_status_badge.png');
+    $communityImg = $resolveAsset('chronicles_community_img', 'images/community_king_poring.jpg');
+    $bottomStripBg = $resolveAsset('chronicles_bottom_strip_bg', 'images/bottom_strip_clean.jpg');
+    $bottomMascotImg = $resolveAsset('chronicles_bottom_mascot_img', 'images/angeling_avatar.png');
 
     $ctaTitle = \App\Models\SiteSetting::get('chronicles_cta_title', 'Join the Adventure Today!');
     $ctaDesc = \App\Models\SiteSetting::get('chronicles_cta_desc', 'Be part of our growing Ragnarok community.');
     $ctaBtnText = \App\Models\SiteSetting::get('chronicles_cta_btn_text', 'Play Now');
+    $ctaBtnUrl = \App\Models\SiteSetting::get('chronicles_cta_btn_url', route('downloads.index'));
 
     $discordUrl = \App\Models\SiteSetting::get('discord_url', 'https://discord.gg/ragnarok');
     $facebookUrl = \App\Models\SiteSetting::get('facebook_url', '#');
     $youtubeUrl = \App\Models\SiteSetting::get('youtube_url', '#');
-
-    $angelingBadge = \App\Models\SiteSetting::get('chronicles_angeling_img');
-    if (empty($angelingBadge)) {
-        $angelingBadge = route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/angeling_status_badge.jpg']);
-    }
 @endphp
 
 <div class="chronicles-container py-3">
@@ -98,15 +102,18 @@
                 </div>
             </div>
 
-            <!-- 2. SERVER STATUS (With Angeling Mascot) -->
+            <!-- 2. SERVER STATUS (With Official Angeling Mascot) -->
             <div class="chronicles-panel">
                 <div class="chronicles-panel-header">
                     <span class="chronicles-panel-title flex items-center gap-1.5">
                         <img src="{{ $angelingBadge }}" alt="Angeling" 
-                             class="w-5 h-5 rounded-full object-cover border border-[#D4AF37]/60 shadow">
+                             class="w-6 h-6 rounded-full object-cover border border-[#D4AF37]/70 shadow">
                         <span>Server Status</span>
                     </span>
-                    <span class="chronicles-status-online text-[9px] uppercase tracking-wider">Realm Online</span>
+                    <span class="chronicles-status-online text-[9px] uppercase tracking-wider flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-ping"></span>
+                        <span>Online</span>
+                    </span>
                 </div>
                 <div>
                     <div class="chronicles-spec-row">
@@ -185,8 +192,7 @@
 
             <!-- 4. JOIN OUR COMMUNITY! (King Poring) -->
             <div class="chronicles-panel">
-                <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/community_king_poring.jpg']) }}" 
-                     alt="King Poring Community" class="chronicles-community-img">
+                <img src="{{ $communityImg }}" alt="King Poring Community" class="chronicles-community-img">
                 <div class="chronicles-community-bar">
                     <span class="font-cinzel text-[10px] text-[#F3E5AB] font-bold block uppercase tracking-wider mb-1.5">
                         Join Our Community!
@@ -212,7 +218,7 @@
              ================================================================== -->
         <main class="chronicles-right-main">
 
-            <!-- ROW 1: Large Clean Promo Banner (~72%) + Featured/Screenshots (~28%) -->
+            <!-- ROW 1: Large Clean Promo Banner + Featured/Screenshots (Widths 1fr & 240px) -->
             <section class="chronicles-top-row">
 
                 <!-- MAIN PROMOTIONAL BANNER (Clean background with Rogue girl on right, HTML text on left) -->
@@ -254,7 +260,7 @@
                     </div>
                 </div>
 
-                <!-- RIGHT SIDEBAR STACK: Featured & Screenshots -->
+                <!-- RIGHT SIDEBAR STACK: Featured & Screenshots (240px wide) -->
                 <div class="chronicles-sidebar-stack">
 
                     <!-- Featured (WoE) -->
@@ -299,7 +305,7 @@
 
             </section>
 
-            <!-- ROW 2: Latest News & Announcements (Actual Database News) + Top Rankings -->
+            <!-- ROW 2: Latest News & Announcements + Top Rankings (Widths 1fr & 240px — Exact Alignment) -->
             <section class="chronicles-mid-row">
 
                 <!-- LATEST NEWS & ANNOUNCEMENTS (Aged Parchment Style with Actual Database Records) -->
@@ -314,7 +320,7 @@
                         </a>
                     </div>
 
-                    <div class="chronicles-parchment-box flex-1">
+                    <div class="chronicles-parchment-box flex-1 flex flex-col justify-around">
                         @forelse($news as $item)
                             <a href="{{ route('news.show', $item->slug) }}" class="chronicles-news-item">
                                 <div class="relative shrink-0">
@@ -351,7 +357,7 @@
                     </div>
                 </div>
 
-                <!-- TOP RANKINGS -->
+                <!-- TOP RANKINGS (240px wide — Matches Featured Stack above) -->
                 <div class="chronicles-panel flex flex-col">
                     <div class="chronicles-panel-header">
                         <span class="chronicles-panel-title">
@@ -390,7 +396,6 @@
                                 <span class="font-mono text-[#FFD700] font-bold text-xs shrink-0">Lv. {{ $p->base_level ?? 99 }}</span>
                             </div>
                         @empty
-                            <!-- Default Fallback Mock Rows -->
                             <div class="chronicles-rank-row">
                                 <div class="flex items-center gap-1.5">
                                     <span class="text-xs text-[#FFD700]">👑</span>
@@ -447,9 +452,9 @@
     </div>
 
     <!-- ======================================================================
-         BOTTOM FULL-WIDTH STRIP: Server Features, Join Adventure Today, Quick Links
+         BOTTOM FULL-WIDTH STRIP: Clean Scenic Background (NO Baked-In Duplicate Text)
          ====================================================================== -->
-    <section class="chronicles-bottom-strip" style="background-image: url('{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/bottom_strip_bg.jpg']) }}');">
+    <section class="chronicles-bottom-strip" style="background-image: url('{{ $bottomStripBg }}');">
         
         <!-- Left: Server Features -->
         <div class="chronicles-bottom-col">
@@ -466,12 +471,12 @@
             <div>
                 <h4 class="font-cinzel text-xs font-bold text-[#F3E5AB] uppercase mb-0.5">{{ $ctaTitle }}</h4>
                 <p class="text-[10px] text-[#C8BDAA] mb-2">{{ $ctaDesc }}</p>
-                <a href="{{ route('downloads.index') }}" class="chronicles-btn-playnow text-xs py-1 px-4">
+                <a href="{{ $ctaBtnUrl }}" class="chronicles-btn-playnow text-xs py-1 px-4">
                     <span>{{ $ctaBtnText }}</span>
                     <span>▸</span>
                 </a>
             </div>
-            <img src="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/mascot_angeling.jpg']) }}" 
+            <img src="{{ $bottomMascotImg }}" 
                  alt="Flying Angeling Mascot" class="chronicles-angeling-mascot">
         </div>
 

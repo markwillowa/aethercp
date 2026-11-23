@@ -78,10 +78,7 @@ body.chronicles-theme {
 }
 
 .chronicles-header-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, rgba(18, 14, 23, 0.75) 0%, rgba(18, 14, 23, 0.2) 50%, rgba(18, 14, 23, 0.1) 100%);
-    pointer-events: none;
+    display: none;
 }
 
 .chronicles-logo-badge {
@@ -385,10 +382,10 @@ body.chronicles-theme {
     gap: 12px;
 }
 
-/* Top Row: Promo Banner (~72%) + Featured/Screenshots (~28%) */
+/* Top Row: Promo Banner (~74%) + Featured/Screenshots (~26%) */
 .chronicles-top-row {
     display: grid;
-    grid-template-columns: 1fr 220px;
+    grid-template-columns: 1fr 240px;
     gap: 10px;
     align-items: stretch;
 }

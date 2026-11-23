@@ -14,10 +14,16 @@
     <!-- Aether Chronicles Classic MMORPG Theme Stylesheet -->
     @php
         $cssAssetPath = base_path('themes/aether-chronicles/assets/theme.css');
-        $cssVer = file_exists($cssAssetPath) ? filemtime($cssAssetPath) : '4.0';
-        $headerBg = \App\Models\SiteSetting::get('chronicles_header_bg');
-        if (empty($headerBg)) {
-            $headerBg = route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/header_chronicles_hero_hd.jpg']);
+        $cssVer = file_exists($cssAssetPath) ? filemtime($cssAssetPath) : '5.0';
+        $headerBgVal = \App\Models\SiteSetting::get('chronicles_header_bg');
+        if (!empty($headerBgVal)) {
+            if (\Illuminate\Support\Str::startsWith($headerBgVal, ['http://', 'https://', '//', '/'])) {
+                $headerBg = $headerBgVal;
+            } else {
+                $headerBg = route('theme.asset', ['theme' => 'aether-chronicles', 'path' => $headerBgVal]);
+            }
+        } else {
+            $headerBg = route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'images/header_chronicles_hero_clean.jpg']);
         }
     @endphp
     <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => 'aether-chronicles', 'path' => 'theme.css']) }}?v={{ $cssVer }}">
