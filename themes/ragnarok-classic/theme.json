@@ -1,0 +1,29 @@
+{
+    "name": "Ragnarok Classic",
+    "slug": "ragnarok-classic",
+    "description": "Authentic classic Ragnarok Online (2003–2008) retro theme with warm parchment, medieval wood and stone borders, Prontera heraldry, and nostalgic 3-column layout.",
+    "version": "1.0.0",
+    "author": "AetherCP Design Guild",
+    "license": "MIT",
+    "parent": "ragnarok-classic",
+    "is_light": true,
+    "colors": {
+        "primary": "#315B88",
+        "primary_dark": "#1D3553",
+        "accent": "#B89553",
+        "gold_light": "#C8A66A",
+        "background": "#E9D8B5",
+        "surface": "#F5EBD5",
+        "wood": "#493322",
+        "stone": "#B7A68D",
+        "border": "#65482D",
+        "text_main": "#3A2A1C",
+        "text_secondary": "#77644E",
+        "text_light": "#F8EBD2"
+    },
+    "typography": {
+        "heading": "Georgia, 'Times New Roman', serif",
+        "body": "Tahoma, Arial, sans-serif"
+    }
+}
+
