@@ -193,22 +193,32 @@ class AdminController extends Controller
         return view('admin.donations', compact('donations'));
     }
 
-    public function updateDonationStatus(Request $request, int $id)
+    public function updateDonationStatus(Request $request, int $id, \App\Services\Donation\InGameRewardService $rewardService)
     {
         $request->validate([
             'status' => 'required|in:approved,rejected,pending',
         ]);
 
         $donation = Donation::findOrFail($id);
+        $newStatus = $request->input('status');
+
         $donation->update([
-            'status' => $request->input('status'),
+            'status' => $newStatus,
             'verified_by' => auth()->id(),
             'verified_at' => now(),
         ]);
 
-        ActivityLog::log('admin.donation_status', "Updated donation #{$id} status to {$request->input('status')}", $donation->account_id);
+        $rewardMsg = '';
+        if ($newStatus === 'approved') {
+            $fulfillment = $rewardService->fulfillDonation($donation);
+            if (!empty($fulfillment['messages'])) {
+                $rewardMsg = ' ' . implode(' ', $fulfillment['messages']);
+            }
+        }
 
-        return back()->with('success', "Donation transaction #{$id} updated to {$request->input('status')}.");
+        ActivityLog::log('admin.donation_status', "Updated donation #{$id} status to {$newStatus}.{$rewardMsg}", $donation->account_id);
+
+        return back()->with('success', "Donation transaction #{$id} updated to {$newStatus}.{$rewardMsg}");
     }
 
     public function activityLogs()

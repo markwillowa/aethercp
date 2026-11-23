@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->validateCsrfTokens(except: [
+            'donations/paypal/ipn',
+        ]);
         $middleware->web(append: [
             \App\Http\Middleware\ThemeMiddleware::class,
             \App\Http\Middleware\EnsureInstalled::class,

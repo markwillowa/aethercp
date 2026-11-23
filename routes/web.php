@@ -62,6 +62,10 @@ Route::middleware('module:downloads')->group(function () {
 Route::middleware('module:donations')->group(function () {
     Route::get('/donations', [DonationController::class, 'index'])->name('donations.index');
     Route::post('/donations/submit', [DonationController::class, 'submitManual'])->name('donations.submit')->middleware('auth');
+    Route::post('/donations/paypal/checkout/{package}', [DonationController::class, 'checkoutPayPal'])->name('donations.paypal.checkout')->middleware('auth');
+    Route::post('/donations/paypal/ipn', [DonationController::class, 'paypalIpn'])->name('donations.paypal.ipn');
+    Route::get('/donations/paypal/success', [DonationController::class, 'paypalSuccess'])->name('donations.paypal.success');
+    Route::get('/donations/paypal/cancel', [DonationController::class, 'paypalCancel'])->name('donations.paypal.cancel');
 });
 
 // Dynamic Theme Assets Route

@@ -12,10 +12,15 @@ class Donation extends Model
         'amount',
         'currency',
         'points_awarded',
+        'points_delivered',
+        'items_delivered',
         'payment_method',
         'transaction_reference',
+        'payer_email',
+        'payer_id',
         'status',
         'notes',
+        'ipn_data',
         'verified_by',
         'verified_at',
     ];
@@ -23,6 +28,8 @@ class Donation extends Model
     protected $casts = [
         'amount' => 'decimal:2',
         'points_awarded' => 'integer',
+        'points_delivered' => 'boolean',
+        'items_delivered' => 'boolean',
         'account_id' => 'integer',
         'verified_at' => 'datetime',
     ];
