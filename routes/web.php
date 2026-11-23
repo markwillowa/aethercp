@@ -1,0 +1,121 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Account\AccountController;
+use App\Http\Controllers\Public\NewsController;
+use App\Http\Controllers\Public\RankingController;
+use App\Http\Controllers\Public\ItemDbController;
+use App\Http\Controllers\Public\DownloadController;
+use App\Http\Controllers\Public\DonationController;
+use App\Http\Controllers\Admin\AdminController;
+
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// News & CMS
+Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+Route::get('/news/{slug}', [NewsController::class, 'show'])->name('news.show');
+
+// Rankings
+Route::get('/rankings', [RankingController::class, 'index'])->name('rankings.index');
+
+// Guilds & Emblems
+Route::get('/guilds', [\App\Http\Controllers\Public\GuildController::class, 'index'])->name('guilds.index');
+Route::get('/guilds/{id}', [\App\Http\Controllers\Public\GuildController::class, 'show'])->name('guilds.show')->where('id', '[0-9]+');
+Route::get('/guilds/{id}/emblem', [\App\Http\Controllers\Public\GuildController::class, 'emblem'])->name('guilds.emblem')->where('id', '[0-9]+');
+
+// Characters & Online Roster
+Route::get('/characters/{name}', [\App\Http\Controllers\Public\CharacterViewController::class, 'show'])->name('characters.show');
+Route::get('/online', [\App\Http\Controllers\Public\CharacterViewController::class, 'online'])->name('characters.online');
+
+// War of Emperium
+Route::get('/woe', [\App\Http\Controllers\Public\WoeController::class, 'index'])->name('woe.index');
+
+// Item Database
+Route::get('/database/items', [ItemDbController::class, 'index'])->name('itemdb.index');
+Route::get('/database/items/{id}', [ItemDbController::class, 'show'])->name('itemdb.show');
+
+// Downloads
+Route::get('/downloads', [DownloadController::class, 'index'])->name('downloads.index');
+
+// Donations
+Route::get('/donations', [DonationController::class, 'index'])->name('donations.index');
+Route::post('/donations/submit', [DonationController::class, 'submitManual'])->name('donations.submit')->middleware('auth');
+
+/*
+|--------------------------------------------------------------------------
+| Guest Authentication Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Authenticated User Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::prefix('account')->name('account.')->group(function () {
+        Route::get('/profile', [AccountController::class, 'profile'])->name('profile');
+        Route::post('/password', [AccountController::class, 'changePassword'])->name('password');
+        Route::post('/email', [AccountController::class, 'changeEmail'])->name('email');
+        Route::post('/pincode', [AccountController::class, 'changePincode'])->name('pincode');
+        Route::get('/characters', [AccountController::class, 'characters'])->name('characters');
+        Route::post('/characters/{id}/unstuck', [AccountController::class, 'unstuck'])->name('unstuck');
+        Route::delete('/characters/{id}', [AccountController::class, 'deleteCharacter'])->name('characters.delete');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Admin Control Panel Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    // Account Management
+    Route::get('/accounts', [AdminController::class, 'accounts'])->name('accounts');
+    Route::post('/accounts/{id}/ban', [AdminController::class, 'toggleBan'])->name('accounts.ban');
+
+    // Character Management
+    Route::get('/characters', [AdminController::class, 'characters'])->name('characters');
+
+    // Guild Management
+    Route::get('/guilds', [AdminController::class, 'guilds'])->name('guilds');
+
+    // News & Content
+    Route::get('/news', [AdminController::class, 'news'])->name('news.index');
+    Route::get('/news/create', [AdminController::class, 'createNews'])->name('news.create');
+    Route::post('/news', [AdminController::class, 'storeNews'])->name('news.store');
+    Route::delete('/news/{id}', [AdminController::class, 'deleteNews'])->name('news.delete');
+
+    // Donations
+    Route::get('/donations', [AdminController::class, 'donations'])->name('donations');
+    Route::post('/donations/{id}/status', [AdminController::class, 'updateDonationStatus'])->name('donations.status');
+
+    // Modules & Themes
+    Route::get('/modules', [AdminController::class, 'modules'])->name('modules');
+    Route::post('/modules/{key}/toggle', [AdminController::class, 'toggleModule'])->name('modules.toggle');
+    Route::get('/themes', [AdminController::class, 'themes'])->name('themes');
+    Route::post('/themes/{theme}/activate', [AdminController::class, 'activateTheme'])->name('themes.activate');
+
+    // Logs & Settings
+    Route::get('/logs', [AdminController::class, 'activityLogs'])->name('logs');
+    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+    Route::post('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
+});

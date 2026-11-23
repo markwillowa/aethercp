@@ -1,0 +1,57 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    
+    --color-aether-bg: #070a13;
+    --color-aether-surface: #0f172a;
+    --color-aether-surface-hover: #1e293b;
+    --color-aether-card: #0d1527;
+    --color-aether-border: #1e293b;
+    --color-aether-border-cyan: #0e7490;
+    
+    --color-aether-cyan: #06b6d4;
+    --color-aether-blue: #3b82f6;
+    --color-aether-purple: #8b5cf6;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #070a13;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #0e7490;
+}
+
+/* Subtle Glow & MMORPG UI Utilities */
+.aether-glow-cyan {
+    box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.25);
+}
+
+.aether-glow-blue {
+    box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.25);
+}
+
+.aether-glass {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(30, 41, 59, 0.8);
+}
+
+.aether-gradient-text {
+    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

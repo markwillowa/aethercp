@@ -1,0 +1,206 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+    <!-- Hero Banner -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-slate-900/90 to-cyan-950/40 border border-slate-800 p-8 sm:p-12 shadow-2xl">
+        <div class="relative z-10 max-w-2xl space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                <span>Next-Gen Ragnarok Online Experience</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                Welcome to <span class="aether-gradient-text">{{ config('aether.server_name', 'Freynix RO') }}</span>
+            </h1>
+            <p class="text-base sm:text-lg text-slate-300 leading-relaxed">
+                Step into a high-rate renewal world crafted for balanced competition, intense War of Emperium, and deep end-game instance progression.
+            </p>
+            <div class="pt-2 flex flex-wrap items-center gap-3">
+                <a href="{{ route('register') }}" class="px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:from-cyan-400 hover:to-blue-500 shadow-lg shadow-cyan-500/25 transition-all flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i>
+                    <span>Create Free Account</span>
+                </a>
+                <a href="{{ route('downloads.index') }}" class="px-6 py-3 rounded-xl font-semibold bg-slate-800/80 hover:bg-slate-700/80 text-white border border-slate-700 transition-colors flex items-center gap-2">
+                    <i data-lucide="download" class="w-4 h-4 text-cyan-400"></i>
+                    <span>Download Game Client</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Decorative fantasy badge graphic -->
+        <div class="absolute -right-12 -bottom-12 opacity-15 pointer-events-none hidden lg:block">
+            <i data-lucide="shield" class="w-96 h-96 text-cyan-400"></i>
+        </div>
+    </div>
+
+    <!-- Quick Meta Server Rates Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm">
+            <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+                <span>Base Experience</span>
+                <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i>
+            </div>
+            <p class="text-2xl font-bold text-white">{{ config('aether.rates.base') }}</p>
+            <p class="text-[11px] text-slate-500 mt-1">Accelerated Leveling</p>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm">
+            <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+                <span>Job Experience</span>
+                <i data-lucide="award" class="w-4 h-4 text-blue-400"></i>
+            </div>
+            <p class="text-2xl font-bold text-white">{{ config('aether.rates.job') }}</p>
+            <p class="text-[11px] text-slate-500 mt-1">4th Job Progression</p>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm">
+            <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+                <span>Item Drop Rate</span>
+                <i data-lucide="package" class="w-4 h-4 text-emerald-400"></i>
+            </div>
+            <p class="text-2xl font-bold text-white">{{ config('aether.rates.drop') }}</p>
+            <p class="text-[11px] text-slate-500 mt-1">Fair Equipment Drops</p>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm">
+            <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+                <span>Card Drop Rate</span>
+                <i data-lucide="layers" class="w-4 h-4 text-purple-400"></i>
+            </div>
+            <p class="text-2xl font-bold text-white">{{ config('aether.rates.card') }}</p>
+            <p class="text-[11px] text-slate-500 mt-1">Normal & MVP Cards</p>
+        </div>
+    </div>
+
+    <!-- Main Content Grid: Latest News (Left) + Server Widgets (Right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- News Section (2 Cols) -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="newspaper" class="w-5 h-5 text-cyan-400"></i>
+                    <h2 class="text-xl font-bold text-white">Latest Announcements & Updates</h2>
+                </div>
+                <a href="{{ route('news.index') }}" class="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-medium">
+                    <span>View All</span>
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </a>
+            </div>
+
+            <div class="space-y-4">
+                @forelse($news as $article)
+                    <article class="bg-slate-900/50 border border-slate-800 hover:border-slate-700/80 rounded-2xl p-6 transition-all duration-200">
+                        <div class="flex items-center gap-2.5 mb-2.5">
+                            @if($article->is_pinned)
+                                <span class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                                    Pinned
+                                </span>
+                            @endif
+                            <span class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-slate-800 text-slate-300">
+                                {{ $article->category }}
+                            </span>
+                            <span class="text-xs text-slate-500">{{ $article->published_at?->diffForHumans() }}</span>
+                        </div>
+
+                        <h3 class="text-lg font-bold text-white mb-2 hover:text-cyan-400 transition-colors">
+                            <a href="{{ route('news.show', $article->slug) }}">{{ $article->title }}</a>
+                        </h3>
+
+                        <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                            {{ $article->summary }}
+                        </p>
+
+                        <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-800/60">
+                            <span class="flex items-center gap-1.5">
+                                <i data-lucide="user" class="w-3.5 h-3.5 text-slate-500"></i>
+                                Posted by {{ $article->author_name }}
+                            </span>
+                            <a href="{{ route('news.show', $article->slug) }}" class="text-cyan-400 hover:underline flex items-center gap-1 font-medium">
+                                <span>Read Full Article</span>
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+                    </article>
+                @empty
+                    <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-8 text-center text-slate-400">
+                        <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 text-slate-600"></i>
+                        <p>No news articles published yet.</p>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Sidebar Widgets (1 Col) -->
+        <div class="space-y-6">
+            <!-- Server Status Card -->
+            <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-4">
+                <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+                    <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white">Live Cluster Status</h3>
+                </div>
+
+                <div class="space-y-2.5 text-xs">
+                    @foreach(['login' => 'Login Server', 'char' => 'Character Server', 'map' => 'Map Cluster'] as $type => $label)
+                        @php
+                            $status = app(\App\Contracts\EmulatorInterface::class)->checkServerStatus($type);
+                        @endphp
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                            <span class="font-medium text-slate-300">{{ $label }}</span>
+                            <div class="flex items-center gap-2">
+                                @if($status['online'])
+                                    <span class="text-[10px] text-slate-400">{{ $status['latency_ms'] }}ms</span>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-500/30">ONLINE</span>
+                                @else
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-950/80 text-red-400 border border-red-500/30">OFFLINE</span>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Top 5 Players Preview -->
+            <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-white">Top Adventurers</h3>
+                    </div>
+                    <a href="{{ route('rankings.index') }}" class="text-xs text-cyan-400 hover:underline">Full Ladder</a>
+                </div>
+
+                <div class="space-y-2">
+                    @forelse($topPlayers as $idx => $player)
+                        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950/50 hover:bg-slate-800/40 transition-colors text-xs">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] {{ $idx === 0 ? 'bg-amber-400 text-slate-950' : ($idx === 1 ? 'bg-slate-300 text-slate-950' : ($idx === 2 ? 'bg-amber-700 text-white' : 'bg-slate-800 text-slate-400')) }}">
+                                    {{ $idx + 1 }}
+                                </span>
+                                <span class="font-semibold text-slate-200">{{ $player->name }}</span>
+                            </div>
+                            <span class="text-cyan-400 font-bold">Lv. {{ $player->base_level }}</span>
+                        </div>
+                    @empty
+                        <p class="text-xs text-slate-500 text-center py-2">No player rankings recorded.</p>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- Join Community Banner -->
+            <div class="rounded-2xl p-5 bg-gradient-to-br from-indigo-950/80 to-slate-900 border border-indigo-500/30 space-y-3">
+                <div class="flex items-center gap-2 text-indigo-300 font-bold text-sm">
+                    <i data-lucide="message-square" class="w-4 h-4"></i>
+                    <span>Official Discord</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Join our vibrant Ragnarok community for guild recruitment, live market trading, and patch announcements.
+                </p>
+                <a href="{{ config('aether.community.discord') }}" target="_blank" rel="noopener" class="block text-center py-2 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md transition-colors">
+                    Join Discord Server
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+

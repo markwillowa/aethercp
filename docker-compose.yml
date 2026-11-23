@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  aether-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aether_control_panel
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      APP_NAME: AetherCP
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: http://localhost:8080
+      DB_CONNECTION: mysql
+      DB_HOST: aether-db
+      DB_PORT: 3306
+      DB_DATABASE: aether_cp
+      DB_USERNAME: aether
+      DB_PASSWORD: aether_secret_pass
+      RO_DB_HOST: aether-db
+      RO_DB_PORT: 3306
+      RO_DB_DATABASE: ragnarok
+      RO_DB_USERNAME: aether
+      RO_DB_PASSWORD: aether_secret_pass
+    depends_on:
+      - aether-db
+    volumes:
+      - ./storage:/var/www/html/storage
+    networks:
+      - aether-network
+
+  aether-db:
+    image: mariadb:10.11
+    container_name: aether_database
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret_password
+      MYSQL_DATABASE: aether_cp
+      MYSQL_USER: aether
+      MYSQL_PASSWORD: aether_secret_pass
+    volumes:
+      - aether-db-data:/var/lib/mysql
+    networks:
+      - aether-network
+
+networks:
+  aether-network:
+    driver: bridge
+
+volumes:
+  aether-db-data:
+
