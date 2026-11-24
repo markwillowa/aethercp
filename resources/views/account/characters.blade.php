@@ -22,13 +22,34 @@
     @else
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($characters as $char)
+                @php
+                    $charGuild = (!empty($char->guild_id) && $char->guild_id > 0)
+                        ? \Illuminate\Support\Facades\DB::connection('ragnarok')->table('guild')->where('guild_id', $char->guild_id)->select('guild_id', 'name', 'emblem_len')->first()
+                        : null;
+                    $spriteUrl = \App\Services\Emulator\JobHelper::getSpriteUrl((int) $char->class, (string) ($char->sex ?? 'M'));
+                @endphp
                 <div class="bg-slate-900/70 border border-slate-800 hover:border-slate-700/80 rounded-2xl p-6 backdrop-blur-sm transition-all duration-200 space-y-4">
-                    <div class="flex items-start justify-between">
-                        <div>
-                            <h3 class="text-lg font-bold text-white">{{ $char->name }}</h3>
-                            <p class="text-xs text-cyan-400 font-semibold">{{ \App\Services\Emulator\JobHelper::getName($char->class) }}</p>
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex items-center gap-3.5 min-w-0">
+                            <div class="w-14 h-14 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 overflow-hidden">
+                                <img src="{{ $spriteUrl }}" alt="{{ \App\Services\Emulator\JobHelper::getName($char->class) }}" class="w-12 h-12 object-contain" onerror="this.style.display='none';">
+                            </div>
+                            <div class="min-w-0">
+                                <a href="{{ route('characters.show', $char->name) }}" class="text-lg font-bold text-white hover:text-cyan-400 transition-colors truncate block">{{ $char->name }}</a>
+                                <p class="text-xs text-cyan-400 font-semibold">{{ \App\Services\Emulator\JobHelper::getName($char->class) }}</p>
+                                @if($charGuild)
+                                    <a href="{{ route('guilds.show', $charGuild->guild_id) }}" class="inline-flex items-center gap-1 text-[11px] text-slate-300 hover:text-cyan-300 mt-0.5">
+                                        @if(!empty($charGuild->emblem_len) && $charGuild->emblem_len > 0)
+                                            <img src="{{ route('guilds.emblem', $charGuild->guild_id) }}" alt="" class="w-3.5 h-3.5 object-contain">
+                                        @else
+                                            <i data-lucide="shield" class="w-3 h-3 text-cyan-400"></i>
+                                        @endif
+                                        <span>{{ $charGuild->name }}</span>
+                                    </a>
+                                @endif
+                            </div>
                         </div>
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider {{ $char->online > 0 ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-400' }}">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shrink-0 {{ $char->online > 0 ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-400' }}">
                             {{ $char->online > 0 ? 'Online' : 'Offline' }}
                         </span>
                     </div>

@@ -280,6 +280,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/badges/assign', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'assign'])->name('badges.assign');
     Route::post('/badges/assignments/{id}/revoke', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'revoke'])->name('badges.revoke');
     Route::post('/badges/recalculate', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'recalculate'])->name('badges.recalculate');
+
+    // Milestone Reward System
+    Route::get('/rewards', [\App\Http\Controllers\Admin\AdminRewardController::class, 'index'])->name('rewards.index');
+    Route::post('/rewards', [\App\Http\Controllers\Admin\AdminRewardController::class, 'store'])->name('rewards.store');
+    Route::post('/rewards/{id}/toggle', [\App\Http\Controllers\Admin\AdminRewardController::class, 'toggle'])->name('rewards.toggle');
+    Route::post('/rewards/issuances/{id}/retry', [\App\Http\Controllers\Admin\AdminRewardController::class, 'retry'])->name('rewards.retry');
 });
 
 /*

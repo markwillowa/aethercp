@@ -16,14 +16,14 @@
     <!-- Main Character Card -->
     <div class="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div class="flex items-center gap-5">
-            <div class="w-20 h-20 rounded-2xl bg-slate-950 border border-slate-700 flex items-center justify-center shadow-lg overflow-hidden shrink-0">
-                <img src="{{ $jobSpriteUrl }}" alt="{{ \App\Services\Emulator\JobHelper::getName($char->class) }}" class="w-16 h-16 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <span style="display: none;" class="w-full h-full bg-gradient-to-tr from-cyan-500 to-blue-600 items-center justify-center text-2xl font-black text-slate-950">
+            <div class="w-24 h-24 rounded-2xl bg-slate-950 border border-cyan-500/30 flex flex-col items-center justify-center shadow-lg overflow-hidden shrink-0 relative p-1">
+                <img src="{{ $jobSpriteUrl }}" alt="{{ \App\Services\Emulator\JobHelper::getName($char->class) }}" class="w-20 h-20 object-contain drop-shadow-[0_4px_10px_rgba(6,182,212,0.3)]" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <span style="display: none;" class="w-full h-full bg-gradient-to-tr from-cyan-500 to-blue-600 items-center justify-center text-2xl font-black text-slate-950 rounded-xl">
                     {{ strtoupper(substr($char->name, 0, 1)) }}
                 </span>
             </div>
             <div>
-                <div class="flex items-center gap-3">
+                <div class="flex flex-wrap items-center gap-3">
                     <h2 class="text-2xl font-extrabold text-white">{{ $char->name }}</h2>
                     <span class="px-2.5 py-0.5 rounded text-xs font-semibold border {{ \App\Services\Emulator\JobHelper::getBadgeColor($char->class) }}">
                         {{ \App\Services\Emulator\JobHelper::getName($char->class) }}
@@ -32,13 +32,20 @@
                         {{ $char->online > 0 ? 'Online' : 'Offline' }}
                     </span>
                 </div>
-                <p class="text-xs text-slate-400 mt-1 flex items-center gap-2">
+                <p class="text-xs text-slate-400 mt-1.5 flex flex-wrap items-center gap-2">
                     <span>Base Level: <strong class="text-cyan-400">{{ $char->base_level }}</strong></span>
                     <span>•</span>
                     <span>Job Level: <strong class="text-blue-400">{{ $char->job_level }}</strong></span>
                     @if($guild)
                         <span>•</span>
-                        <span>Guild: <a href="{{ route('guilds.show', $guild->guild_id) }}" class="text-cyan-300 font-semibold hover:underline">{{ $guild->name }}</a></span>
+                        <a href="{{ route('guilds.show', $guild->guild_id) }}" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-cyan-500/40 text-cyan-300 font-semibold transition-colors">
+                            @if(!empty($guild->emblem_len) && $guild->emblem_len > 0)
+                                <img src="{{ route('guilds.emblem', $guild->guild_id) }}" alt="{{ $guild->name }}" class="w-4 h-4 object-contain">
+                            @else
+                                <i data-lucide="shield" class="w-3.5 h-3.5 text-cyan-400"></i>
+                            @endif
+                            <span>{{ $guild->name }}</span>
+                        </a>
                     @endif
                 </p>
                 @if(!empty($badges))

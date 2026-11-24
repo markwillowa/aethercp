@@ -395,7 +395,7 @@ class BadgeService
             return null;
         }
 
-        return BadgeAssignment::create([
+        $assignment = BadgeAssignment::create([
             'badge_id' => $def->id,
             'target_type' => $targetType,
             'target_id' => $targetId,
@@ -409,6 +409,10 @@ class BadgeService
             'notes' => $notes,
             'awarded_at' => now(),
         ]);
+
+        app(RewardService::class)->evaluateAndIssueForBadgeAssignment($assignment);
+
+        return $assignment;
     }
 
     protected function assignTierBadge(BadgeTier $tier, int $charId): ?BadgeAssignment
@@ -434,7 +438,7 @@ class BadgeService
                 'revoked_at' => now(),
             ]);
 
-        return BadgeAssignment::create([
+        $assignment = BadgeAssignment::create([
             'badge_tier_id' => $tier->id,
             'target_type' => 'character',
             'target_id' => $charId,
@@ -447,5 +451,9 @@ class BadgeService
             'assigned_by' => 'system',
             'awarded_at' => now(),
         ]);
+
+        app(RewardService::class)->evaluateAndIssueForBadgeAssignment($assignment);
+
+        return $assignment;
     }
 }
