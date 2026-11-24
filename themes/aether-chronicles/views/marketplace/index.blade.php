@@ -729,9 +729,11 @@
                         <thead>
                             <tr class="border-b border-[#3E2E4E] bg-[#241A2F]/90 text-[#F3E5AB] font-cinzel">
                                 <th class="py-3.5 px-4">TX Code</th>
-                                <th class="py-3.5 px-4">Item</th>
+                                <th class="py-3.5 px-4">Item &amp; Specifications</th>
                                 <th class="py-3.5 px-4">Role</th>
                                 <th class="py-3.5 px-4">Counterparty</th>
+                                <th class="py-3.5 px-4">Quantity</th>
+                                <th class="py-3.5 px-4">Unit Price</th>
                                 <th class="py-3.5 px-4">Gross Total</th>
                                 <th class="py-3.5 px-4">Tax Fee</th>
                                 <th class="py-3.5 px-4">Net Total</th>
@@ -742,13 +744,40 @@
                             @forelse($history as $tx)
                                 @php
                                     $isBuyer = ($tx->buyer_user_id === auth()->id());
+                                    $unitPrice = ($tx->quantity > 0) ? ($tx->gross_amount / $tx->quantity) : $tx->gross_amount;
                                 @endphp
                                 <tr class="hover:bg-[#251A33]/70 transition-colors">
                                     <td class="py-3.5 px-4 font-mono font-bold text-[#E5B358]">{{ $tx->transaction_code }}</td>
                                     <td class="py-3.5 px-4">
-                                        <div class="flex items-center gap-2.5">
-                                            <img src="{{ $tx->item->icon_url }}" alt="Item" class="w-7 h-7 object-contain rounded bg-[#140E1B] border border-[#4A3A5A] p-0.5" onerror="this.src='/images/item-placeholder.png'">
-                                            <span class="font-bold text-white font-cinzel">{{ $tx->quantity }}x {{ $tx->item->formatted_name }}</span>
+                                        <div class="flex items-center gap-3">
+                                            <img src="{{ $tx->item->icon_url ?? '/images/item-placeholder.png' }}" alt="Item" class="w-8 h-8 object-contain rounded bg-[#140E1B] border border-[#4A3A5A] p-0.5 shrink-0" onerror="this.src='/images/item-placeholder.png'">
+                                            <div class="space-y-0.5">
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <span class="font-bold text-white font-cinzel">{{ $tx->item->formatted_name ?? ('Item #' . $tx->item_id) }}</span>
+                                                    @if(!empty($tx->item->slots) && $tx->item->slots > 0)
+                                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[9px] font-black font-mono tracking-wider bg-[#2B1E38] text-[#FFE894] border border-[#D4AF37]/60 shadow-sm">
+                                                            <i data-lucide="layers" class="w-2.5 h-2.5 text-[#FFD700]"></i>
+                                                            <span>{{ $tx->item->slots }} {{ Str::plural('SLOT', $tx->item->slots) }}</span>
+                                                        </span>
+                                                    @endif
+                                                    @if(!empty($tx->item->type))
+                                                        <span class="px-1.5 py-0.5 rounded text-[9px] font-medium bg-[#241A2F] text-[#C8BDAA] border border-[#4A3A5A]">
+                                                            {{ $tx->item->type }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                @if(!empty($tx->item->cards))
+                                                    <div class="flex items-center gap-1 flex-wrap">
+                                                        @foreach($tx->item->cards as $c)
+                                                            <span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-medium bg-[#361F2E] border border-rose-500/40 text-[#F5C2D7]">
+                                                                <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                                                                <span>{{ $c['name'] ?? 'Card' }}</span>
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                                <p class="text-[10px] text-slate-400 mt-0.5 font-mono">ID #{{ $tx->item_id }}</p>
+                                            </div>
                                         </div>
                                     </td>
                                     <td class="py-3.5 px-4">
@@ -758,8 +787,14 @@
                                             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">Seller</span>
                                         @endif
                                     </td>
-                                    <td class="py-3.5 px-4 text-[#EDE4D2]">
+                                    <td class="py-3.5 px-4 text-[#EDE4D2] font-medium">
                                         {{ $isBuyer ? $tx->seller_char_name : $tx->buyer_char_name }}
+                                    </td>
+                                    <td class="py-3.5 px-4 font-bold text-white font-mono">
+                                        {{ number_format($tx->quantity) }}
+                                    </td>
+                                    <td class="py-3.5 px-4 font-mono font-medium {{ $tx->currency_type === 'zeny' ? 'text-amber-300' : 'text-purple-300' }}">
+                                        {{ number_format($unitPrice) }} {{ $tx->currency_type === 'zeny' ? 'Z' : 'CP' }}
                                     </td>
                                     <td class="py-3.5 px-4 font-bold font-mono {{ $tx->currency_type === 'zeny' ? 'text-amber-300' : 'text-purple-300' }}">
                                         {{ number_format($tx->gross_amount) }} {{ $tx->currency_type === 'zeny' ? 'Z' : 'CP' }}
@@ -770,13 +805,13 @@
                                     <td class="py-3.5 px-4 font-bold text-emerald-300 font-mono">
                                         {{ number_format($isBuyer ? $tx->gross_amount : $tx->net_seller_proceeds) }}
                                     </td>
-                                    <td class="py-3.5 px-4 text-slate-400">
+                                    <td class="py-3.5 px-4 text-slate-400 font-mono text-[11px]">
                                         {{ $tx->created_at->format('M d, Y H:i') }}
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center py-12 text-[#C8BDAA] font-cinzel">
+                                    <td colspan="10" class="text-center py-12 text-[#C8BDAA] font-cinzel">
                                         No transactions have been recorded under your account yet.
                                     </td>
                                 </tr>

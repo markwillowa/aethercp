@@ -40,6 +40,21 @@ class MarketplaceListing extends Model
         'cancelled_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'amount',
+        'stock',
+    ];
+
+    public function getAmountAttribute(): int
+    {
+        return (int) ($this->remaining_quantity ?? $this->quantity ?? 1);
+    }
+
+    public function getStockAttribute(): int
+    {
+        return (int) ($this->remaining_quantity ?? $this->quantity ?? 1);
+    }
+
     public function item(): BelongsTo
     {
         return $this->belongsTo(MarketplaceItem::class, 'item_id');

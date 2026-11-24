@@ -232,6 +232,10 @@ class MarketplaceController extends Controller
 
     public function createListing(Request $request)
     {
+        if (!$request->filled('item_id') && $request->filled('custody_item_id')) {
+            $request->merge(['item_id' => $request->input('custody_item_id')]);
+        }
+
         $request->validate([
             'item_id' => 'required|integer',
             'currency_type' => 'required|in:zeny,cashpoints',
@@ -242,6 +246,15 @@ class MarketplaceController extends Controller
 
         $user = Auth::user();
         $activeCharId = (int) session('active_marketplace_char_id');
+
+        // Automatically resolve active character if not set in session
+        if ($activeCharId <= 0) {
+            $characters = $this->characterRepo->findByAccountId($user->account_id);
+            if (!empty($characters) && count($characters) > 0) {
+                $activeCharId = (int) $characters[0]->char_id;
+                session(['active_marketplace_char_id' => $activeCharId]);
+            }
+        }
 
         try {
             $listing = $this->escrowService->createListing(
@@ -278,6 +291,14 @@ class MarketplaceController extends Controller
         $user = Auth::user();
         $activeCharId = (int) session('active_marketplace_char_id');
 
+        if ($activeCharId <= 0) {
+            $characters = $this->characterRepo->findByAccountId($user->account_id);
+            if (!empty($characters) && count($characters) > 0) {
+                $activeCharId = (int) $characters[0]->char_id;
+                session(['active_marketplace_char_id' => $activeCharId]);
+            }
+        }
+
         try {
             $this->escrowService->withdrawToStorage($user, $activeCharId, $id);
             return redirect()->route('marketplace.index', ['tab' => 'storage'])
@@ -295,6 +316,14 @@ class MarketplaceController extends Controller
 
         $user = Auth::user();
         $activeCharId = (int) session('active_marketplace_char_id');
+
+        if ($activeCharId <= 0) {
+            $characters = $this->characterRepo->findByAccountId($user->account_id);
+            if (!empty($characters) && count($characters) > 0) {
+                $activeCharId = (int) $characters[0]->char_id;
+                session(['active_marketplace_char_id' => $activeCharId]);
+            }
+        }
 
         try {
             $tx = $this->escrowService->purchaseListing(

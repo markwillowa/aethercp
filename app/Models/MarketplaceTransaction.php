@@ -62,4 +62,24 @@ class MarketplaceTransaction extends Model
     {
         return $this->belongsTo(User::class, 'buyer_user_id');
     }
+
+    public function getTxCodeAttribute(): string
+    {
+        return $this->transaction_code ?? '';
+    }
+
+    public function getAmountAttribute(): int
+    {
+        return (int) ($this->quantity ?? 1);
+    }
+
+    public function getTotalPriceAttribute(): int
+    {
+        return (int) ($this->gross_amount ?? 0);
+    }
+
+    public function getItemNameAttribute(): string
+    {
+        return $this->item ? ($this->item->formatted_name ?? $this->item->item_name ?? 'Unknown Item') : 'Unknown Item';
+    }
 }

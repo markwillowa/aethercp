@@ -344,8 +344,8 @@
 
                                     <!-- Stock Available -->
                                     <td class="py-3.5 px-4 text-center whitespace-nowrap">
-                                        <span class="px-2 py-0.5 rounded-md text-xs font-mono font-bold bg-slate-950 border border-slate-800 text-slate-200">
-                                            {{ number_format($listing->amount) }}
+                                        <span class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-slate-950 border border-slate-800 text-cyan-300">
+                                            {{ number_format($listing->remaining_quantity ?? $listing->quantity ?? $listing->amount ?? 1) }}
                                         </span>
                                     </td>
 
@@ -365,14 +365,14 @@
                                     <!-- Total Buyout Price -->
                                     <td class="py-3.5 px-4 whitespace-nowrap">
                                         <div class="flex items-center gap-1 font-mono font-bold text-sm {{ $listing->currency_type === 'zeny' ? 'text-amber-300' : 'text-purple-300' }}">
-                                            <span>{{ number_format($listing->total_price) }}</span>
+                                            <span>{{ number_format($listing->unit_price * ($listing->remaining_quantity ?? $listing->quantity ?? $listing->amount ?? 1)) }}</span>
                                             <span class="text-[10px] opacity-75">{{ $listing->currency_type === 'zeny' ? 'Z' : 'CP' }}</span>
                                         </div>
                                     </td>
 
                                     <!-- Action Button -->
                                     <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        @if($listing->account_id === auth()->user()->account_id)
+                                        @if(($listing->seller_account_id ?? $listing->account_id) === auth()->user()->account_id || ($listing->seller_user_id ?? 0) === auth()->id())
                                             <span class="text-[10px] font-mono font-semibold uppercase text-slate-500 bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">
                                                 My Consignment
                                             </span>
@@ -616,8 +616,8 @@
                                         <h4 class="font-bold text-white text-xs">{{ $mList->item->formatted_name }}</h4>
                                         <span class="text-[10px] text-slate-500 font-mono">{{ $mList->listing_code }}</span>
                                     </td>
-                                    <td class="py-3.5 px-4 text-center font-mono font-bold text-slate-200">
-                                        {{ number_format($mList->amount) }}
+                                    <td class="py-3.5 px-4 text-center font-mono font-bold text-cyan-300">
+                                        {{ number_format($mList->remaining_quantity ?? $mList->quantity ?? $mList->amount ?? 1) }}
                                     </td>
                                     <td class="py-3.5 px-4 font-mono font-bold {{ $mList->currency_type === 'zeny' ? 'text-amber-300' : 'text-purple-300' }}">
                                         {{ number_format($mList->unit_price) }} {{ $mList->currency_type === 'zeny' ? 'Z' : 'CP' }}
@@ -665,39 +665,124 @@
                         <thead>
                             <tr class="border-b border-slate-800 bg-slate-950/80 text-slate-400 text-[11px] font-semibold uppercase tracking-wider">
                                 <th class="py-3.5 px-4">TX Code</th>
-                                <th class="py-3.5 px-4">Item</th>
-                                <th class="py-3.5 px-4">Role</th>
-                                <th class="py-3.5 px-4 text-right">Total Price</th>
-                                <th class="py-3.5 px-4 text-right">Date</th>
+                                <th class="py-3.5 px-4">Item &amp; Specifications</th>
+                                <th class="py-3.5 px-4 text-center">Role</th>
+                                <th class="py-3.5 px-4">Counterparty</th>
+                                <th class="py-3.5 px-4 text-center">Quantity</th>
+                                <th class="py-3.5 px-4 text-right">Unit Price</th>
+                                <th class="py-3.5 px-4 text-right">Total Amount</th>
+                                <th class="py-3.5 px-4 text-right">Date &amp; Time</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-800">
                             @forelse($history as $tx)
+                                @php
+                                    $isBuyer = ($tx->buyer_user_id === auth()->id() || $tx->buyer_account_id === auth()->user()->account_id);
+                                    $txItem = $tx->item;
+                                    $itemIcon = $txItem ? ($txItem->icon_url ?? "https://static.divine-pride.net/images/items/item/{$txItem->nameid}.png") : "https://static.divine-pride.net/images/items/item/{$tx->item_id}.png";
+                                    $itemName = $txItem ? ($txItem->formatted_name ?? $txItem->item_name ?? "Item #{$txItem->nameid}") : ($tx->item_name ?? "Item #{$tx->item_id}");
+                                    $itemSlots = $txItem ? ($txItem->slots ?? 0) : 0;
+                                    $itemCards = $txItem ? ($txItem->cards ?? []) : [];
+                                @endphp
                                 <tr class="hover:bg-slate-800/40 transition-colors">
-                                    <td class="py-3.5 px-4 font-mono text-[11px] text-cyan-400">{{ $tx->tx_code }}</td>
-                                    <td class="py-3.5 px-4 font-semibold text-white">{{ $tx->item_name }} (x{{ $tx->amount }})</td>
+                                    <td class="py-3.5 px-4 font-mono font-semibold text-cyan-400 whitespace-nowrap">
+                                        {{ $tx->transaction_code ?? $tx->tx_code }}
+                                    </td>
                                     <td class="py-3.5 px-4">
-                                        @if($tx->buyer_account_id === auth()->user()->account_id)
-                                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-950 text-cyan-400 border border-cyan-500/30">Buyer</span>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 p-1">
+                                                <img src="{{ $itemIcon }}" alt="Item" class="w-6 h-6 object-contain" onerror="this.src='/images/item-placeholder.png'">
+                                            </div>
+                                            <div>
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <h4 class="font-bold text-white text-xs">{{ $itemName }}</h4>
+                                                    @if($itemSlots > 0)
+                                                        <span class="px-1.5 py-0.2 rounded text-[9px] font-bold font-mono bg-cyan-950 text-cyan-300 border border-cyan-500/30">
+                                                            {{ $itemSlots }}S
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                @if(!empty($itemCards))
+                                                    <div class="flex items-center gap-1 mt-0.5 flex-wrap">
+                                                        @foreach($itemCards as $cCard)
+                                                            <span class="px-1.5 py-0.2 rounded text-[8px] bg-rose-950/60 border border-rose-500/40 text-rose-300">
+                                                                ◆ {{ $cCard['name'] ?? 'Card' }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                                <span class="text-[10px] text-slate-500 font-mono">
+                                                    ID #{{ $txItem->nameid ?? $tx->item_id }}
+                                                    @if($txItem && $txItem->item_type)
+                                                        • <span class="text-slate-400">{{ $txItem->item_type }}</span>
+                                                    @endif
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                                        @if($isBuyer)
+                                            <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                                                Buyer
+                                            </span>
                                         @else
-                                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-950 text-emerald-400 border border-emerald-500/30">Seller</span>
+                                            <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                                                Seller
+                                            </span>
                                         @endif
                                     </td>
-                                    <td class="py-3.5 px-4 text-right font-mono font-bold {{ $tx->currency_type === 'zeny' ? 'text-amber-300' : 'text-purple-300' }}">
-                                        {{ number_format($tx->total_price) }} {{ $tx->currency_type === 'zeny' ? 'Z' : 'CP' }}
+                                    <td class="py-3.5 px-4 whitespace-nowrap">
+                                        @if($isBuyer)
+                                            <div class="flex items-center gap-1.5 text-xs text-slate-300">
+                                                <i data-lucide="user" class="w-3.5 h-3.5 text-slate-500"></i>
+                                                <span class="font-medium">{{ $tx->seller_char_name ?? 'Player' }}</span>
+                                            </div>
+                                        @else
+                                            <div class="flex items-center gap-1.5 text-xs text-slate-300">
+                                                <i data-lucide="user-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                                <span class="font-medium">{{ $tx->buyer_char_name ?? 'Player' }}</span>
+                                            </div>
+                                        @endif
                                     </td>
-                                    <td class="py-3.5 px-4 text-right font-mono text-slate-400">{{ $tx->created_at->format('M d, Y H:i') }}</td>
+                                    <td class="py-3.5 px-4 text-center font-mono font-bold text-slate-200 whitespace-nowrap">
+                                        {{ number_format($tx->quantity ?? $tx->amount ?? 1) }}
+                                    </td>
+                                    <td class="py-3.5 px-4 text-right font-mono font-semibold text-slate-300 whitespace-nowrap">
+                                        {{ number_format($tx->unit_price) }} <span class="text-[10px] opacity-75">{{ $tx->currency_type === 'zeny' ? 'Z' : 'CP' }}</span>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                                        <div class="font-mono font-bold text-sm {{ $tx->currency_type === 'zeny' ? 'text-amber-300' : 'text-purple-300' }}">
+                                            {{ number_format($tx->gross_amount ?? $tx->total_price) }} <span class="text-[10px]">{{ $tx->currency_type === 'zeny' ? 'Z' : 'CP' }}</span>
+                                        </div>
+                                        @if(!$isBuyer && ($tx->tax_amount ?? 0) > 0)
+                                            <div class="text-[10px] text-slate-400 mt-0.5 font-mono">
+                                                Net: <span class="text-emerald-400 font-semibold">{{ number_format($tx->net_seller_proceeds) }}</span>
+                                                <span class="text-rose-400">(-{{ number_format($tx->tax_amount) }})</span>
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td class="py-3.5 px-4 text-right text-slate-400 font-mono text-[11px] whitespace-nowrap">
+                                        {{ $tx->created_at->format('M d, Y H:i') }}
+                                        <span class="text-[10px] text-slate-500 block">{{ $tx->created_at->diffForHumans() }}</span>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="py-10 text-center text-slate-400">
-                                        No transaction history found for your account.
+                                    <td colspan="8" class="py-12 text-center text-slate-400">
+                                        <i data-lucide="history" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i>
+                                        <p class="font-bold text-slate-300">No transactions recorded yet</p>
+                                        <p class="text-xs text-slate-500 mt-1">Purchases and sales made in the trade house will appear here with complete audit trail.</p>
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
+                @if($history instanceof \Illuminate\Pagination\LengthAwarePaginator && $history->hasPages())
+                    <div class="p-4 border-t border-slate-800 bg-slate-950/60">
+                        {{ $history->links() }}
+                    </div>
+                @endif
             </div>
         </div>
     @endif
@@ -731,8 +816,11 @@
                     </div>
 
                     <div>
-                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Quantity to Purchase</label>
-                        <input type="number" name="quantity" x-model.number="buyQuantity" min="1" :max="selectedListing.amount" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500">
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Quantity to Purchase</label>
+                            <span class="text-[11px] text-slate-400">Available Stock: <strong class="text-cyan-400 font-mono" x-text="selectedListing.remaining_quantity || selectedListing.quantity || selectedListing.amount || 1"></strong></span>
+                        </div>
+                        <input type="number" name="quantity" x-model.number="buyQuantity" min="1" :max="selectedListing.remaining_quantity || selectedListing.quantity || selectedListing.amount || 1" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500">
                     </div>
 
                     <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
@@ -863,6 +951,7 @@
             <template x-if="selectedCustodyItem">
                 <form action="{{ route('marketplace.list') }}" method="POST" class="space-y-4">
                     @csrf
+                    <input type="hidden" name="item_id" :value="selectedCustodyItem.id">
                     <input type="hidden" name="custody_item_id" :value="selectedCustodyItem.id">
 
                     <div class="flex items-center justify-between pb-3 border-b border-slate-800">
