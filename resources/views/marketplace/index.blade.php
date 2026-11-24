@@ -126,6 +126,20 @@
         </div>
     @endif
 
+    @if($errors->any())
+        <div class="p-4 rounded-xl bg-rose-950/60 border border-rose-500/50 text-rose-300 text-xs flex items-center gap-3 shadow-lg">
+            <i data-lucide="alert-triangle" class="w-5 h-5 shrink-0 text-rose-400"></i>
+            <div>
+                <span class="font-bold block">Validation Error:</span>
+                <ul class="list-disc list-inside mt-0.5 space-y-0.5">
+                    @foreach($errors->all() as $err)
+                        <li>{{ $err }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
+
     <!-- 2. Navigation Tabs -->
     <div class="flex items-center gap-2 border-b border-slate-800 pb-2 overflow-x-auto">
         <a href="{{ route('marketplace.index', ['tab' => 'browse']) }}" 
@@ -741,6 +755,7 @@
             <template x-if="selectedStorageItem">
                 <form action="{{ route('marketplace.transfer') }}" method="POST" class="space-y-4">
                     @csrf
+                    <input type="hidden" name="storage_id" :value="selectedStorageItem.storage_id">
                     <input type="hidden" name="nameid" :value="selectedStorageItem.nameid">
                     <input type="hidden" name="source" value="storage">
 
@@ -754,14 +769,83 @@
                         </button>
                     </div>
 
-                    <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-                        <h4 class="font-bold text-white text-sm" x-text="selectedStorageItem.name_japanese || ('Item #' + selectedStorageItem.nameid)"></h4>
-                        <span class="text-xs text-slate-400">Storage Quantity: <strong class="text-slate-200" x-text="selectedStorageItem.amount"></strong></span>
+                    <!-- Item Details Card -->
+                    <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
+                        <div class="flex items-start gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0 p-1">
+                                <img :src="selectedStorageItem.icon_url" alt="Item" class="w-8 h-8 object-contain" onerror="this.src='/images/item-placeholder.png'">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-bold text-white text-sm" x-text="selectedStorageItem.formatted_name || selectedStorageItem.name"></h4>
+                                <div class="flex items-center gap-2 mt-1 flex-wrap">
+                                    <span class="text-[10px] text-cyan-400 font-mono" x-text="'ID #' + selectedStorageItem.nameid"></span>
+                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-medium" x-text="selectedStorageItem.type + (selectedStorageItem.subtype ? ' • ' + selectedStorageItem.subtype : '')"></span>
+                                    <template x-if="selectedStorageItem.slots > 0">
+                                        <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30 font-bold font-mono" x-text="selectedStorageItem.slots + ' SLOTS'"></span>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Combat Stats (Attack, Defense, Weight, Req Level) -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-800 text-[11px]" x-show="selectedStorageItem.attack > 0 || selectedStorageItem.defense > 0 || selectedStorageItem.weight > 0 || selectedStorageItem.equip_level_min > 0">
+                            <template x-if="selectedStorageItem.attack > 0">
+                                <div class="bg-slate-900/80 p-1.5 rounded-lg border border-slate-800">
+                                    <span class="text-slate-500 block text-[9px] uppercase font-semibold">Atk</span>
+                                    <span class="font-mono font-bold text-slate-200" x-text="selectedStorageItem.attack"></span>
+                                </div>
+                            </template>
+                            <template x-if="selectedStorageItem.defense > 0">
+                                <div class="bg-slate-900/80 p-1.5 rounded-lg border border-slate-800">
+                                    <span class="text-slate-500 block text-[9px] uppercase font-semibold">Def</span>
+                                    <span class="font-mono font-bold text-slate-200" x-text="selectedStorageItem.defense"></span>
+                                </div>
+                            </template>
+                            <template x-if="selectedStorageItem.weight > 0">
+                                <div class="bg-slate-900/80 p-1.5 rounded-lg border border-slate-800">
+                                    <span class="text-slate-500 block text-[9px] uppercase font-semibold">Weight</span>
+                                    <span class="font-mono font-bold text-slate-200" x-text="selectedStorageItem.weight"></span>
+                                </div>
+                            </template>
+                            <template x-if="selectedStorageItem.equip_level_min > 0">
+                                <div class="bg-slate-900/80 p-1.5 rounded-lg border border-slate-800">
+                                    <span class="text-slate-500 block text-[9px] uppercase font-semibold">Req Lv</span>
+                                    <span class="font-mono font-bold text-slate-200" x-text="selectedStorageItem.equip_level_min"></span>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Compounded Cards -->
+                        <template x-if="selectedStorageItem.cards && selectedStorageItem.cards.length > 0">
+                            <div class="pt-2 border-t border-slate-800 space-y-1">
+                                <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Compounded Cards:</span>
+                                <div class="space-y-1">
+                                    <template x-for="card in selectedStorageItem.cards" :key="card.slot">
+                                        <div class="flex items-center gap-1.5 text-[11px] text-rose-300 bg-rose-950/40 border border-rose-500/30 px-2 py-1 rounded-lg">
+                                            <span class="font-bold text-[9px] px-1 py-0.2 rounded bg-rose-900/60 font-mono" x-text="'SLOT ' + card.slot"></span>
+                                            <span class="font-medium" x-text="card.name"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Storage Availability -->
+                        <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                            <span>Available in Kafra Storage:</span>
+                            <span class="font-mono font-bold text-slate-100" x-text="new Intl.NumberFormat().format(selectedStorageItem.amount)"></span>
+                        </div>
                     </div>
 
                     <div>
-                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Transfer Amount</label>
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Transfer Quantity</label>
                         <input type="number" name="amount" x-model.number="transferAmount" min="1" :max="selectedStorageItem.amount" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500">
+                        <span class="text-[10px] text-slate-500 mt-1 block">Maximum amount transferable from this stack: <strong class="text-slate-300" x-text="selectedStorageItem.amount"></strong></span>
+                    </div>
+
+                    <div class="p-3 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-300 flex items-center gap-2">
+                        <i data-lucide="shield-check" class="w-4 h-4 shrink-0 text-cyan-400"></i>
+                        <span>Item will be held in secure escrow custody and can be consigned or returned anytime.</span>
                     </div>
 
                     <div class="flex justify-end gap-3 pt-2">

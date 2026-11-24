@@ -218,7 +218,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/marketplace', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'index'])->name('marketplace.index');
     Route::post('/marketplace/settings', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'updateSettings'])->name('marketplace.settings');
     Route::post('/marketplace/cancel/{id}', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'cancelListing'])->name('marketplace.cancel');
+    Route::post('/marketplace/moderate/{id}', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'cancelListing'])->name('marketplace.moderate');
     Route::post('/marketplace/return/{id}', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'returnItem'])->name('marketplace.return');
+    Route::post('/marketplace/refund/{id}', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'returnItem'])->name('marketplace.custody.refund');
 
     // Support Center Management
     Route::get('/support', [\App\Http\Controllers\Admin\AdminSupportController::class, 'index'])->name('support.index');

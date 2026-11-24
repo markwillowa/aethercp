@@ -884,15 +884,45 @@
                 <form action="{{ route('marketplace.transfer') }}" method="POST" class="space-y-4">
                     @csrf
                     <input type="hidden" name="storage_id" :value="selectedStorageItem.storage_id">
+                    <input type="hidden" name="nameid" :value="selectedStorageItem.nameid">
 
                     <div class="p-3.5 rounded-xl bg-[#140E1B] border border-[#352643] space-y-2">
                         <div class="flex items-center gap-3">
                             <img :src="selectedStorageItem.icon_url" class="w-10 h-10 object-contain rounded bg-[#251A33] p-1 border border-[#4A3A5A]">
                             <div>
                                 <h4 class="font-bold text-[#FFD700] font-cinzel text-sm" x-text="selectedStorageItem.formatted_name || selectedStorageItem.name"></h4>
-                                <p class="text-[11px] text-slate-400" x-text="'Category: ' + selectedStorageItem.type"></p>
+                                <p class="text-[11px] text-slate-400" x-text="'Category: ' + selectedStorageItem.type + (selectedStorageItem.subtype ? ' • ' + selectedStorageItem.subtype : '')"></p>
                             </div>
                         </div>
+
+                        <!-- Combat Stats (Attack, Defense, Weight, Req Level) -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-[#2F233B] text-[11px]" x-show="selectedStorageItem.attack > 0 || selectedStorageItem.defense > 0 || selectedStorageItem.weight > 0 || selectedStorageItem.equip_level_min > 0">
+                            <template x-if="selectedStorageItem.attack > 0">
+                                <div class="bg-[#1C1425] p-1.5 rounded border border-[#3E2F4D]">
+                                    <span class="text-[#8D7D9A] block text-[9px] uppercase font-bold">Atk</span>
+                                    <span class="font-mono font-bold text-[#FFE894]" x-text="selectedStorageItem.attack"></span>
+                                </div>
+                            </template>
+                            <template x-if="selectedStorageItem.defense > 0">
+                                <div class="bg-[#1C1425] p-1.5 rounded border border-[#3E2F4D]">
+                                    <span class="text-[#8D7D9A] block text-[9px] uppercase font-bold">Def</span>
+                                    <span class="font-mono font-bold text-[#FFE894]" x-text="selectedStorageItem.defense"></span>
+                                </div>
+                            </template>
+                            <template x-if="selectedStorageItem.weight > 0">
+                                <div class="bg-[#1C1425] p-1.5 rounded border border-[#3E2F4D]">
+                                    <span class="text-[#8D7D9A] block text-[9px] uppercase font-bold">Weight</span>
+                                    <span class="font-mono font-bold text-[#FFE894]" x-text="selectedStorageItem.weight"></span>
+                                </div>
+                            </template>
+                            <template x-if="selectedStorageItem.equip_level_min > 0">
+                                <div class="bg-[#1C1425] p-1.5 rounded border border-[#3E2F4D]">
+                                    <span class="text-[#8D7D9A] block text-[9px] uppercase font-bold">Req Lv</span>
+                                    <span class="font-mono font-bold text-[#FFE894]" x-text="selectedStorageItem.equip_level_min"></span>
+                                </div>
+                            </template>
+                        </div>
+
                         <template x-if="selectedStorageItem.slots > 0">
                             <div class="pt-2 border-t border-[#2F233B] flex items-center justify-between text-[11px]">
                                 <span class="inline-flex items-center gap-1 font-bold font-mono text-[#FFE894] bg-[#2B1E38] px-2 py-0.5 rounded border border-[#D4AF37]/50">
@@ -900,6 +930,21 @@
                                     <span x-text="selectedStorageItem.slots + ' Card Slots'"></span>
                                 </span>
                                 <span class="text-slate-300 font-mono text-[10px]" x-text="selectedStorageItem.card_count > 0 ? selectedStorageItem.card_count + ' Compounded' : 'Uncarded'"></span>
+                            </div>
+                        </template>
+
+                        <!-- Compounded Cards -->
+                        <template x-if="selectedStorageItem.cards && selectedStorageItem.cards.length > 0">
+                            <div class="pt-2 border-t border-[#2F233B] space-y-1">
+                                <span class="text-[10px] text-[#A898B5] font-semibold uppercase tracking-wider block font-cinzel">Compounded Cards:</span>
+                                <div class="space-y-1">
+                                    <template x-for="card in selectedStorageItem.cards" :key="card.slot">
+                                        <div class="flex items-center gap-1.5 text-[11px] text-[#FFE894] bg-[#22162E] border border-[#5A456B] px-2 py-1 rounded">
+                                            <span class="font-bold text-[9px] px-1 py-0.2 rounded bg-[#352347] font-mono" x-text="'SLOT ' + card.slot"></span>
+                                            <span class="font-medium" x-text="card.name"></span>
+                                        </div>
+                                    </template>
+                                </div>
                             </div>
                         </template>
                     </div>

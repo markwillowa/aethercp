@@ -182,18 +182,44 @@ class MarketplaceController extends Controller
     public function transfer(Request $request)
     {
         $request->validate([
-            'storage_id' => 'required|integer',
+            'storage_id' => 'nullable|integer',
+            'nameid' => 'nullable|integer',
             'amount' => 'required|integer|min:1',
         ]);
 
         $user = Auth::user();
         $activeCharId = (int) session('active_marketplace_char_id');
 
+        // Automatically resolve active character if not set in session
+        if ($activeCharId <= 0) {
+            $characters = $this->characterRepo->findByAccountId($user->account_id);
+            if (!empty($characters) && count($characters) > 0) {
+                $activeCharId = (int) $characters[0]->char_id;
+                session(['active_marketplace_char_id' => $activeCharId]);
+            }
+        }
+
+        $storageId = (int) $request->input('storage_id');
+        if ($storageId <= 0 && $request->filled('nameid')) {
+            $nameid = (int) $request->input('nameid');
+            $storageRow = \Illuminate\Support\Facades\DB::connection('ragnarok')->table('storage')
+                ->where('account_id', $user->account_id)
+                ->where('nameid', $nameid)
+                ->first();
+            if ($storageRow) {
+                $storageId = (int) $storageRow->id;
+            }
+        }
+
+        if ($storageId <= 0) {
+            return back()->with('error', 'The selected item was not found in your Kafra storage.');
+        }
+
         try {
             $item = $this->escrowService->transferToCustody(
                 $user,
                 $activeCharId,
-                (int) $request->input('storage_id'),
+                $storageId,
                 (int) $request->input('amount')
             );
 
