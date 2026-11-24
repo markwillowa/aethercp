@@ -175,7 +175,16 @@
                                     @endif
                                 </td>
                                 <td class="py-3.5 px-4 text-right font-mono">
-                                    @if(!empty($row['achievement_label']))
+                                    @if(!empty($row['badges']))
+                                        <div class="inline-flex flex-wrap justify-end gap-1">
+                                            @foreach(array_slice($row['badges'], 0, 2) as $badge)
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-sans font-bold border"
+                                                      style="color: {{ $badge['color'] }}; border-color: {{ $badge['color'] }}66; background-color: {{ $badge['color'] }}1f;">
+                                                    {{ $badge['label'] }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    @elseif(!empty($row['achievement_label']))
                                         <span class="px-2 py-0.5 rounded text-[10px] font-sans font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
                                             {{ $row['achievement_label'] }}
                                         </span>

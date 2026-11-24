@@ -270,6 +270,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/rankings/settings', [\App\Http\Controllers\Admin\AdminRankingController::class, 'updateSettings'])->name('rankings.settings');
     Route::post('/rankings/sync', [\App\Http\Controllers\Admin\AdminRankingController::class, 'syncNow'])->name('rankings.sync');
     Route::post('/rankings/token', [\App\Http\Controllers\Admin\AdminRankingController::class, 'regenerateToken'])->name('rankings.token');
+
+    // Badge & Tier Management
+    Route::get('/badges', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'index'])->name('badges.index');
+    Route::post('/badges', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'store'])->name('badges.store');
+    Route::put('/badges/{id}', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'update'])->name('badges.update');
+    Route::post('/badges/{id}/toggle', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'toggle'])->name('badges.toggle');
+    Route::post('/badges/tiers', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'updateTiers'])->name('badges.tiers');
+    Route::post('/badges/assign', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'assign'])->name('badges.assign');
+    Route::post('/badges/assignments/{id}/revoke', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'revoke'])->name('badges.revoke');
+    Route::post('/badges/recalculate', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'recalculate'])->name('badges.recalculate');
 });
 
 /*

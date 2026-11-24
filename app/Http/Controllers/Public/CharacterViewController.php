@@ -61,8 +61,10 @@ class CharacterViewController extends Controller
 
         $statColumns = $this->emulator->getStatColumns();
         $jobSpriteUrl = JobHelper::getSpriteUrl((int) $char->class, (string) ($char->sex ?? 'M'));
+        $badgesMap = app(\App\Services\Ranking\BadgeService::class)->getActiveBadgesForTargets('character', [(int) $char->char_id]);
+        $badges = $badgesMap[(int) $char->char_id] ?? [];
 
-        return view('characters.show', compact('char', 'guild', 'equippedItems', 'statColumns', 'jobSpriteUrl'));
+        return view('characters.show', compact('char', 'guild', 'equippedItems', 'statColumns', 'jobSpriteUrl', 'badges'));
     }
 
     public function online(Request $request)

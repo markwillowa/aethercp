@@ -78,6 +78,12 @@ class RankingSyncService
             $event->save();
 
             if ($result['status'] === 'processed') {
+                if ($event->char_id) {
+                    app(BadgeService::class)->evaluateCharacterBadges((int) $event->char_id);
+                }
+                if (in_array($eventType, ['guild_level', 'guild_castle', 'guild_member'], true)) {
+                    app(BadgeService::class)->evaluateGuildBadges();
+                }
                 $this->rankingEngine->invalidateCache();
             }
 
@@ -340,7 +346,8 @@ class RankingSyncService
                 }
             }
 
-            // 3. Invalidate leaderboard cache so guilds/castles/levels reflect live DB
+            // 3. Recalculate badges & invalidate leaderboard cache so guilds/castles/levels reflect live DB
+            app(BadgeService::class)->recalculateAll();
             $this->rankingEngine->invalidateCache();
 
             $status = 'success';

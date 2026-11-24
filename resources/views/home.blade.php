@@ -391,12 +391,12 @@
                 </div>
 
                 <!-- 5 Ranking Category Tabs -->
-                <div class="grid grid-cols-5 gap-1 p-1 rounded-xl bg-slate-950/80 border border-slate-800/80">
+                <div class="p-1 rounded-xl bg-slate-950/80 border border-slate-800/80" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.25rem;">
                     <template x-for="tab in tabs" :key="tab.key">
                         <button type="button"
                                 @click="selectTab(tab.key)"
                                 :class="activeTab === tab.key ? 'bg-cyan-500 text-slate-950 font-bold shadow' : 'text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium'"
-                                class="py-1.5 px-1 rounded-lg text-[11px] transition-all text-center cursor-pointer"
+                                class="py-1.5 px-1 rounded-lg text-[11px] transition-all text-center cursor-pointer w-full"
                                 x-text="tab.label"></button>
                     </template>
                 </div>
@@ -449,9 +449,14 @@
                                 </template>
 
                                 <div class="min-w-0">
-                                    <div class="flex items-center gap-1.5">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
                                         <a :href="item.profile_url" class="font-semibold text-slate-200 hover:text-cyan-400 truncate transition-colors" x-text="item.name"></a>
-                                        <template x-if="item.achievement_label || item.badge_label">
+                                        <template x-if="item.badges && item.badges.length > 0">
+                                            <span class="px-1.5 py-0.5 rounded text-[9px] font-bold border shrink-0"
+                                                  :style="`color: ${item.badges[0].color}; border-color: ${item.badges[0].color}66; background-color: ${item.badges[0].color}1f;`"
+                                                  x-text="item.badges[0].label"></span>
+                                        </template>
+                                        <template x-if="(!item.badges || item.badges.length === 0) && (item.achievement_label || item.badge_label)">
                                             <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 shrink-0"
                                                   x-text="item.achievement_label || item.badge_label"></span>
                                         </template>

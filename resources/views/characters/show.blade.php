@@ -41,6 +41,21 @@
                         <span>Guild: <a href="{{ route('guilds.show', $guild->guild_id) }}" class="text-cyan-300 font-semibold hover:underline">{{ $guild->name }}</a></span>
                     @endif
                 </p>
+                @if(!empty($badges))
+                    <div class="flex flex-wrap items-center gap-1.5 mt-2.5">
+                        @foreach($badges as $b)
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold border"
+                                  style="color: {{ $b['color'] }}; border-color: {{ $b['color'] }}66; background-color: {{ $b['color'] }}1f;">
+                                @if(!empty($b['icon_url']))
+                                    <img src="{{ $b['icon_url'] }}" alt="" class="w-3 h-3 object-contain">
+                                @else
+                                    <i data-lucide="{{ $b['icon'] ?? 'award' }}" class="w-3 h-3"></i>
+                                @endif
+                                <span>{{ $b['label'] }}</span>
+                            </span>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
 

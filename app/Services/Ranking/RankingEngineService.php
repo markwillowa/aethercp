@@ -642,6 +642,45 @@ class RankingEngineService
 
     protected function wrapPayload(string $category, array $items, int $total, int $perPage, int $page): array
     {
+        if (!empty($items) && Schema::hasTable('badge_assignments')) {
+            $isGuild = $category === 'guild';
+            $targetType = $isGuild ? 'guild' : 'character';
+            $idKey = $isGuild ? 'guild_id' : 'char_id';
+            $ids = array_values(array_filter(array_column($items, $idKey)));
+
+            if (!empty($ids)) {
+                $assignments = DB::table('badge_assignments as ba')
+                    ->leftJoin('badge_definitions as bd', 'ba.badge_id', '=', 'bd.id')
+                    ->where('ba.target_type', $targetType)
+                    ->whereIn('ba.target_id', $ids)
+                    ->where('ba.is_active', true)
+                    ->select('ba.target_id', 'ba.category', 'ba.label', 'ba.stars', 'ba.color', 'bd.icon_type', 'bd.icon', 'bd.visual_style', 'bd.priority')
+                    ->orderByDesc('bd.priority')
+                    ->orderByDesc('ba.stars')
+                    ->get()
+                    ->groupBy('target_id');
+
+                foreach ($items as &$item) {
+                    $tid = $item[$idKey] ?? null;
+                    if ($tid && $assignments->has($tid)) {
+                        $item['badges'] = $assignments->get($tid)->map(function ($b) {
+                            return [
+                                'category' => $b->category,
+                                'label' => $b->label,
+                                'stars' => $b->stars,
+                                'color' => $b->color ?: '#06b6d4',
+                                'icon_type' => $b->icon_type ?: 'lucide',
+                                'icon' => $b->icon ?: ($b->stars ? 'star' : 'award'),
+                                'icon_url' => ($b->icon_type === 'image' && !empty($b->icon)) ? asset($b->icon) : null,
+                                'visual_style' => $b->visual_style ?: 'solid',
+                            ];
+                        })->values()->all();
+                    }
+                }
+                unset($item);
+            }
+        }
+
         return [
             'category' => $category,
             'items' => $items,
