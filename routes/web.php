@@ -267,27 +267,29 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::post('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
 
-    // Ranking Engine & Synchronization Management
-    Route::get('/rankings', [\App\Http\Controllers\Admin\AdminRankingController::class, 'index'])->name('rankings.index');
-    Route::post('/rankings/settings', [\App\Http\Controllers\Admin\AdminRankingController::class, 'updateSettings'])->name('rankings.settings');
-    Route::post('/rankings/sync', [\App\Http\Controllers\Admin\AdminRankingController::class, 'syncNow'])->name('rankings.sync');
-    Route::post('/rankings/token', [\App\Http\Controllers\Admin\AdminRankingController::class, 'regenerateToken'])->name('rankings.token');
+    // Ranking Engine, Badges, Rewards & Synchronization Management (Gated by 'rankings' module)
+    Route::middleware('module:rankings')->group(function () {
+        Route::get('/rankings', [\App\Http\Controllers\Admin\AdminRankingController::class, 'index'])->name('rankings.index');
+        Route::post('/rankings/settings', [\App\Http\Controllers\Admin\AdminRankingController::class, 'updateSettings'])->name('rankings.settings');
+        Route::post('/rankings/sync', [\App\Http\Controllers\Admin\AdminRankingController::class, 'syncNow'])->name('rankings.sync');
+        Route::post('/rankings/token', [\App\Http\Controllers\Admin\AdminRankingController::class, 'regenerateToken'])->name('rankings.token');
 
-    // Badge & Tier Management
-    Route::get('/badges', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'index'])->name('badges.index');
-    Route::post('/badges', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'store'])->name('badges.store');
-    Route::put('/badges/{id}', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'update'])->name('badges.update');
-    Route::post('/badges/{id}/toggle', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'toggle'])->name('badges.toggle');
-    Route::post('/badges/tiers', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'updateTiers'])->name('badges.tiers');
-    Route::post('/badges/assign', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'assign'])->name('badges.assign');
-    Route::post('/badges/assignments/{id}/revoke', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'revoke'])->name('badges.revoke');
-    Route::post('/badges/recalculate', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'recalculate'])->name('badges.recalculate');
+        // Badge & Tier Management
+        Route::get('/badges', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'index'])->name('badges.index');
+        Route::post('/badges', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'store'])->name('badges.store');
+        Route::put('/badges/{id}', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'update'])->name('badges.update');
+        Route::post('/badges/{id}/toggle', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'toggle'])->name('badges.toggle');
+        Route::post('/badges/tiers', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'updateTiers'])->name('badges.tiers');
+        Route::post('/badges/assign', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'assign'])->name('badges.assign');
+        Route::post('/badges/assignments/{id}/revoke', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'revoke'])->name('badges.revoke');
+        Route::post('/badges/recalculate', [\App\Http\Controllers\Admin\AdminBadgeController::class, 'recalculate'])->name('badges.recalculate');
 
-    // Milestone Reward System
-    Route::get('/rewards', [\App\Http\Controllers\Admin\AdminRewardController::class, 'index'])->name('rewards.index');
-    Route::post('/rewards', [\App\Http\Controllers\Admin\AdminRewardController::class, 'store'])->name('rewards.store');
-    Route::post('/rewards/{id}/toggle', [\App\Http\Controllers\Admin\AdminRewardController::class, 'toggle'])->name('rewards.toggle');
-    Route::post('/rewards/issuances/{id}/retry', [\App\Http\Controllers\Admin\AdminRewardController::class, 'retry'])->name('rewards.retry');
+        // Milestone Reward System
+        Route::get('/rewards', [\App\Http\Controllers\Admin\AdminRewardController::class, 'index'])->name('rewards.index');
+        Route::post('/rewards', [\App\Http\Controllers\Admin\AdminRewardController::class, 'store'])->name('rewards.store');
+        Route::post('/rewards/{id}/toggle', [\App\Http\Controllers\Admin\AdminRewardController::class, 'toggle'])->name('rewards.toggle');
+        Route::post('/rewards/issuances/{id}/retry', [\App\Http\Controllers\Admin\AdminRewardController::class, 'retry'])->name('rewards.retry');
+    });
 });
 
 /*
@@ -295,7 +297,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 | Authenticated Emulator Event Ingestion Bridge
 |--------------------------------------------------------------------------
 */
-Route::prefix('api/emulator')->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])->group(function () {
+Route::prefix('api/emulator')->middleware('module:rankings')->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])->group(function () {
     Route::post('/events', [\App\Http\Controllers\Api\EmulatorEventController::class, 'store'])->name('api.emulator.events.store');
     Route::post('/events/batch', [\App\Http\Controllers\Api\EmulatorEventController::class, 'batch'])->name('api.emulator.events.batch');
 });

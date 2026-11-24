@@ -95,20 +95,21 @@ class CharacterViewController extends Controller
 
         $statColumns = $this->emulator->getStatColumns();
         $jobSpriteUrl = JobHelper::getSpriteUrl((int) $char->class, (string) ($char->sex ?? 'M'));
+        $rankingsEnabled = app(\App\Services\Module\ModuleManager::class)->isEnabled('rankings');
 
-        $badges = ($privacy->show_badges || $isOwnerOrAdmin)
+        $badges = ($rankingsEnabled && ($privacy->show_badges || $isOwnerOrAdmin))
             ? ($this->badgeService->getActiveBadgesForTargets('character', [(int) $char->char_id])[(int) $char->char_id] ?? [])
             : [];
 
-        $rankingSummary = ($privacy->show_rankings || $privacy->show_stats || $isOwnerOrAdmin)
+        $rankingSummary = ($rankingsEnabled && ($privacy->show_rankings || $privacy->show_stats || $isOwnerOrAdmin))
             ? $this->rankingEngine->getCharacterRankingSummary((int) $char->char_id)
             : ['positions' => [], 'stats' => null, 'history' => collect()];
 
-        $achievements = ($privacy->show_achievements || $isOwnerOrAdmin) && Schema::hasTable('player_achievements')
+        $achievements = ($rankingsEnabled && ($privacy->show_achievements || $isOwnerOrAdmin) && Schema::hasTable('player_achievements'))
             ? PlayerAchievement::where('char_id', $char->char_id)->orderByDesc('earned_at')->get()
             : collect();
 
-        $rewardsEarnedCount = Schema::hasTable('reward_issuances')
+        $rewardsEarnedCount = ($rankingsEnabled && Schema::hasTable('reward_issuances'))
             ? RewardIssuance::where('char_id', $char->char_id)->where('status', 'delivered')->count()
             : 0;
 
@@ -118,6 +119,7 @@ class CharacterViewController extends Controller
             'equippedItems',
             'statColumns',
             'jobSpriteUrl',
+            'rankingsEnabled',
             'badges',
             'privacy',
             'isOwnerOrAdmin',

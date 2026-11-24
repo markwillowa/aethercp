@@ -1,16 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6" x-data="{ tab: 'overview' }">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6" x-data="{ tab: '{{ $rankingsEnabled ? 'overview' : 'character' }}' }">
     <div class="flex items-center justify-between border-b border-slate-800 pb-4">
         <div>
             <h1 class="text-2xl font-bold text-white">Adventurer Profile</h1>
-            <p class="text-xs text-slate-400 mt-1">Character recognition, rankings, earned badges, equipment, and verified achievements.</p>
+            <p class="text-xs text-slate-400 mt-1">
+                {{ $rankingsEnabled ? 'Character recognition, rankings, earned badges, equipment, and verified achievements.' : 'Public character statistics, equipment, and guild standing.' }}
+            </p>
         </div>
-        <a href="{{ route('rankings.index') }}" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-medium">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            <span>Back to Rankings</span>
-        </a>
+        @if($rankingsEnabled)
+            <a href="{{ route('rankings.index') }}" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-medium">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>Back to Rankings</span>
+            </a>
+        @endif
     </div>
 
     <!-- Main Character Header Card -->
@@ -88,24 +92,27 @@
 
     <!-- Profile Section Tabs -->
     <div class="flex flex-wrap gap-2">
-        <button type="button" @click="tab = 'overview'" :class="tab === 'overview' ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800'" class="px-4 py-2 rounded-xl text-xs transition-colors">Overview</button>
+        @if($rankingsEnabled)
+            <button type="button" @click="tab = 'overview'" :class="tab === 'overview' ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800'" class="px-4 py-2 rounded-xl text-xs transition-colors">Overview</button>
+        @endif
         @if($privacy->show_char_info || $isOwnerOrAdmin)
             <button type="button" @click="tab = 'character'" :class="tab === 'character' ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800'" class="px-4 py-2 rounded-xl text-xs transition-colors">Character &amp; Gear</button>
         @endif
-        @if($privacy->show_rankings || $isOwnerOrAdmin)
+        @if($rankingsEnabled && ($privacy->show_rankings || $isOwnerOrAdmin))
             <button type="button" @click="tab = 'rankings'" :class="tab === 'rankings' ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800'" class="px-4 py-2 rounded-xl text-xs transition-colors">Rankings &amp; History</button>
         @endif
-        @if($privacy->show_badges || $isOwnerOrAdmin)
+        @if($rankingsEnabled && ($privacy->show_badges || $isOwnerOrAdmin))
             <button type="button" @click="tab = 'badges'" :class="tab === 'badges' ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800'" class="px-4 py-2 rounded-xl text-xs transition-colors">Badges ({{ count($badges) }})</button>
         @endif
-        @if($privacy->show_achievements || $isOwnerOrAdmin)
+        @if($rankingsEnabled && ($privacy->show_achievements || $isOwnerOrAdmin))
             <button type="button" @click="tab = 'achievements'" :class="tab === 'achievements' ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800'" class="px-4 py-2 rounded-xl text-xs transition-colors">Achievements ({{ $achievements->count() }})</button>
         @endif
-        @if($privacy->show_stats || $isOwnerOrAdmin)
+        @if($rankingsEnabled && ($privacy->show_stats || $isOwnerOrAdmin))
             <button type="button" @click="tab = 'stats'" :class="tab === 'stats' ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800'" class="px-4 py-2 rounded-xl text-xs transition-colors">Statistics</button>
         @endif
     </div>
 
+    @if($rankingsEnabled)
     <!-- TAB: OVERVIEW -->
     <div x-show="tab === 'overview'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         @if($privacy->show_rankings || $isOwnerOrAdmin)
@@ -153,6 +160,7 @@
             </div>
         @endif
     </div>
+    @endif
 
     <!-- TAB: CHARACTER & GEAR -->
     @if($privacy->show_char_info || $isOwnerOrAdmin)
@@ -248,7 +256,7 @@
     @endif
 
     <!-- TAB: RANKINGS & HISTORY -->
-    @if($privacy->show_rankings || $isOwnerOrAdmin)
+    @if($rankingsEnabled && ($privacy->show_rankings || $isOwnerOrAdmin))
         <div x-show="tab === 'rankings'" style="display: none;" class="bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-800 bg-slate-950/60">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-white">Verified Ranking Event History</h3>
@@ -277,7 +285,7 @@
     @endif
 
     <!-- TAB: BADGES -->
-    @if($privacy->show_badges || $isOwnerOrAdmin)
+    @if($rankingsEnabled && ($privacy->show_badges || $isOwnerOrAdmin))
         <div x-show="tab === 'badges'" style="display: none;" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @forelse($badges as $b)
                 <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 flex items-center gap-4">
@@ -303,7 +311,7 @@
     @endif
 
     <!-- TAB: ACHIEVEMENTS -->
-    @if($privacy->show_achievements || $isOwnerOrAdmin)
+    @if($rankingsEnabled && ($privacy->show_achievements || $isOwnerOrAdmin))
         <div x-show="tab === 'achievements'" style="display: none;" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             @forelse($achievements as $ach)
                 <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 flex items-start gap-4">
@@ -326,7 +334,7 @@
     @endif
 
     <!-- TAB: STATISTICS -->
-    @if($privacy->show_stats || $isOwnerOrAdmin)
+    @if($rankingsEnabled && ($privacy->show_stats || $isOwnerOrAdmin))
         @php
             $st = $rankingSummary['stats'] ?? null;
             $pvpKills = (int) ($st->pvp_kills ?? 0);
