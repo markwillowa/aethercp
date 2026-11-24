@@ -24,19 +24,28 @@
             </p>
 
             <!-- Search Console -->
-            <form action="{{ route('faq.index') }}" method="GET" class="pt-2">
-                <div class="relative max-w-xl mx-auto">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
-                        <i data-lucide="search" class="w-4 h-4 text-[#C9A96E]"></i>
+            <form action="{{ route('faq.index') }}" method="GET" class="pt-3 max-w-xl mx-auto">
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                    <div class="relative flex-1" style="position: relative;">
+                        <div style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; z-index: 10;">
+                            <i data-lucide="search" class="w-4 h-4 text-[#C9A96E]"></i>
+                        </div>
+                        <input type="text" name="q" value="{{ $searchTerm }}" placeholder="Search questions, keywords, commands (e.g. rates, patcher, accounts)..." 
+                               style="width: 100%; height: 46px; padding-left: 44px !important; padding-right: 16px !important; background-color: #110B17; border: 1px solid #6B537F; border-radius: 12px; color: #F3E5AB; font-size: 13px;"
+                               class="focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all shadow-inner placeholder:text-[#8D7D9A]">
                     </div>
-                    <input type="text" name="q" value="{{ $searchTerm }}" placeholder="Search questions, keywords, commands (e.g. rates, patcher, accounts)..." 
-                           style="padding-left: 3.25rem !important; padding-right: 6.5rem !important; height: 48px;"
-                           class="w-full bg-[#110B17] border border-[#6B537F] rounded-2xl text-xs sm:text-sm font-medium text-[#F3E5AB] placeholder:text-[#8D7D9A] focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all shadow-inner">
-                    <div class="absolute inset-y-0 right-1.5 flex items-center">
-                        <button type="submit" class="chronicles-btn-gold py-2 px-4 text-xs cursor-pointer flex items-center gap-1 shadow">
-                            <span>Search</span>
-                        </button>
-                    </div>
+                    <button type="submit" class="chronicles-btn-gold shrink-0 cursor-pointer" 
+                            style="height: 46px; padding: 0 24px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                        <span>Search</span>
+                    </button>
+                    @if($searchTerm)
+                        <a href="{{ route('faq.index') }}" class="chronicles-btn-dark shrink-0 cursor-pointer" 
+                           style="height: 46px; padding: 0 16px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" title="Reset Search">
+                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                            <span>Clear</span>
+                        </a>
+                    @endif
                 </div>
             </form>
         </div>
