@@ -271,12 +271,8 @@
                                     <!-- Item Name, Icon, Refine & Sockets -->
                                     <td class="py-3.5 px-4">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 relative shadow-inner">
-                                                @if(!empty($listing->item->item_data['image_url']))
-                                                    <img src="{{ $listing->item->item_data['image_url'] }}" alt="{{ $listing->item->formatted_name }}" class="w-7 h-7 object-contain" loading="lazy">
-                                                @else
-                                                    <i data-lucide="package" class="w-5 h-5 text-cyan-400"></i>
-                                                @endif
+                                            <div class="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 relative shadow-inner overflow-hidden p-1">
+                                                <img src="{{ $listing->item->icon_url ?? ('https://static.divine-pride.net/images/items/item/' . $listing->item->nameid . '.png') }}" alt="{{ $listing->item->formatted_name }}" class="w-7 h-7 object-contain" loading="lazy" onerror="this.onerror=null; this.src='https://static.divine-pride.net/images/items/item/{{ $listing->item->nameid }}.png';">
 
                                                 @if($listing->item->refine > 0)
                                                     <span class="absolute -top-1 -right-1 px-1 rounded text-[9px] font-bold font-mono bg-cyan-600 text-white shadow">
@@ -541,8 +537,8 @@
                                 <tr class="hover:bg-slate-800/40 transition-colors">
                                     <td class="py-3.5 px-4">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-9 h-9 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
-                                                <i data-lucide="package" class="w-5 h-5 text-cyan-400"></i>
+                                            <div class="w-9 h-9 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 overflow-hidden p-1 shadow-inner">
+                                                <img src="{{ $cItem->icon_url ?? ('https://static.divine-pride.net/images/items/item/' . $cItem->nameid . '.png') }}" alt="{{ $cItem->formatted_name }}" class="w-6 h-6 object-contain" onerror="this.onerror=null; this.src='https://static.divine-pride.net/images/items/item/{{ $cItem->nameid }}.png';">
                                             </div>
                                             <div>
                                                 <h4 class="font-bold text-white text-xs">{{ $cItem->formatted_name }}</h4>

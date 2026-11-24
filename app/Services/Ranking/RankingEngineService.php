@@ -648,12 +648,22 @@ class RankingEngineService
             $idKey = $isGuild ? 'guild_id' : 'char_id';
             $ids = array_values(array_filter(array_column($items, $idKey)));
 
+            $catFilter = match ($category) {
+                'base' => ['level', 'base'],
+                'job' => ['job'],
+                'pvp' => ['pvp'],
+                'mvp' => ['mvp'],
+                'guild' => ['guild'],
+                default => [$category],
+            };
+
             if (!empty($ids)) {
                 $assignments = DB::table('badge_assignments as ba')
                     ->leftJoin('badge_definitions as bd', 'ba.badge_id', '=', 'bd.id')
                     ->where('ba.target_type', $targetType)
                     ->whereIn('ba.target_id', $ids)
                     ->where('ba.is_active', true)
+                    ->whereIn('ba.category', $catFilter)
                     ->select('ba.target_id', 'ba.category', 'ba.label', 'ba.stars', 'ba.color', 'bd.icon_type', 'bd.icon', 'bd.visual_style', 'bd.priority')
                     ->orderByDesc('bd.priority')
                     ->orderByDesc('ba.stars')

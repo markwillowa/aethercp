@@ -24,9 +24,15 @@
 
     <!-- Item Card Sheet -->
     <div class="p-6 sm:p-8 rounded-2xl border border-slate-800 bg-slate-900/80 shadow-2xl space-y-6">
-        <div class="flex items-center gap-4 border-b border-slate-800 pb-5">
-            <div class="w-16 h-16 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 shadow-inner">
-                <i data-lucide="shield" class="w-8 h-8 text-cyan-400"></i>
+        <div class="flex items-center gap-5 border-b border-slate-800 pb-5">
+            <div class="w-24 h-24 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 shadow-inner overflow-hidden p-2 relative group">
+                <img src="https://static.divine-pride.net/images/items/collection/{{ $item->id }}.png"
+                     alt="{{ $item->name_english ?? $item->name_japanese }}"
+                     class="max-h-20 max-w-full object-contain relative z-10 transition-transform group-hover:scale-110 duration-200"
+                     onerror="this.onerror=null; this.src='https://static.divine-pride.net/images/items/item/{{ $item->id }}.png';">
+                <div class="absolute bottom-1.5 right-1.5 z-10 w-7 h-7 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center p-0.5 shadow">
+                    <img src="https://static.divine-pride.net/images/items/item/{{ $item->id }}.png" alt="" class="w-5 h-5 object-contain" onerror="this.style.display='none';">
+                </div>
             </div>
             <div>
                 <h2 class="text-xl font-bold text-white">

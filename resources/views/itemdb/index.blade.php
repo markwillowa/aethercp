@@ -74,36 +74,59 @@
                 <span>Page {{ $results['page'] }} of {{ $results['last_page'] }}</span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 @forelse($results['items'] as $item)
-                    <div class="bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 rounded-2xl p-5 shadow-lg transition-all flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
-                            <i data-lucide="package" class="w-6 h-6 text-cyan-400"></i>
-                        </div>
-                        <div class="flex-grow min-w-0">
-                            <div class="flex items-center justify-between gap-2">
-                                <h3 class="font-bold text-white text-sm truncate hover:text-cyan-400 transition-colors">
-                                    <a href="{{ route('itemdb.show', $item->id) }}">{{ $item->name_english }}</a>
-                                </h3>
-                                <div class="flex items-center gap-1 shrink-0">
+                    <div class="bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 rounded-2xl p-5 shadow-lg transition-all flex flex-col justify-between space-y-3 group">
+                        <div>
+                            <!-- Top Ribbon -->
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[10px] font-mono text-cyan-400 font-bold">#{{ $item->id }}</span>
+                                <div class="flex items-center gap-1">
                                     @if(!empty($item->slots) && $item->slots > 0)
-                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-950/60 text-cyan-400 border border-cyan-500/30">
-                                            [{{ $item->slots }}]
+                                        <span class="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-cyan-950/60 text-cyan-400 border border-cyan-500/30">
+                                            [{{ $item->slots }} {{ Str::plural('Slot', $item->slots) }}]
                                         </span>
                                     @endif
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-300">
-                                        #{{ $item->id }}
+                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-medium bg-slate-800 text-slate-300">
+                                        {{ $item->type ?? 'Item' }}
                                     </span>
                                 </div>
                             </div>
-                            <p class="text-xs text-cyan-400/90 font-medium mt-0.5">{{ $item->type ?? 'Item' }}</p>
-                            <p class="text-xs text-slate-400 mt-2 line-clamp-2">
-                                Weight: {{ $item->weight ?? 0 }} | Slots: {{ $item->slots ?? 0 }} | Price: {{ number_format($item->price_buy ?? 0) }} Z
-                            </p>
+
+                            <!-- Item Image Frame (similar to mob database) -->
+                            <div class="w-full h-32 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center p-3 relative overflow-hidden mb-3 group-hover:border-cyan-500/30 transition-colors">
+                                <img src="https://static.divine-pride.net/images/items/collection/{{ $item->id }}.png"
+                                     alt="{{ $item->name_english }}"
+                                     class="max-h-24 max-w-full object-contain relative z-10 transition-transform group-hover:scale-110 duration-200"
+                                     onerror="this.onerror=null; this.src='https://static.divine-pride.net/images/items/item/{{ $item->id }}.png';">
+                                <div class="absolute bottom-2 right-2 z-10 w-6 h-6 rounded bg-slate-900/90 border border-slate-800 flex items-center justify-center p-0.5 shadow">
+                                    <img src="https://static.divine-pride.net/images/items/item/{{ $item->id }}.png" alt="" class="w-4 h-4 object-contain" onerror="this.style.display='none';">
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="font-bold text-white text-sm group-hover:text-cyan-400 transition-colors truncate">
+                                    <a href="{{ route('itemdb.show', $item->id) }}">{{ $item->name_english }}</a>
+                                </h3>
+                                <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-1 font-mono">
+                                    <span>Wt: {{ number_format(($item->weight ?? 0) / 10, 1) }}</span>
+                                    @if(!empty($item->price_buy) && $item->price_buy > 0)
+                                        <span>•</span>
+                                        <span class="text-amber-400">{{ number_format($item->price_buy) }} Z</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-800/80">
+                            <a href="{{ route('itemdb.show', $item->id) }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-950 hover:bg-cyan-500 hover:text-slate-950 text-cyan-400 text-xs font-semibold border border-slate-800 hover:border-cyan-400 transition-all flex items-center justify-center gap-1">
+                                <span>Inspect Details</span>
+                                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                            </a>
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-2 bg-slate-900/60 border border-slate-800 rounded-2xl p-10 text-center text-slate-400 space-y-2">
+                    <div class="col-span-full bg-slate-900/60 border border-slate-800 rounded-2xl p-10 text-center text-slate-400 space-y-2">
                         <i data-lucide="search-x" class="w-10 h-10 text-slate-600 mx-auto"></i>
                         <p class="text-sm font-bold text-white">No items matched your search query</p>
                         <p class="text-xs text-slate-400">Try searching with a broader keyword or different category filter.</p>
