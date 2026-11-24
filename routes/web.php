@@ -90,6 +90,19 @@ Route::middleware(['auth', 'module:marketplace'])->prefix('marketplace')->name('
     Route::post('/buy/{id}', [\App\Http\Controllers\Public\MarketplaceController::class, 'buy'])->name('buy');
 });
 
+// Support Center & Ticket Management
+Route::middleware(['auth', 'module:support'])->prefix('support')->name('support.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Public\SupportController::class, 'index'])->name('index');
+    Route::get('/my-tickets', [\App\Http\Controllers\Public\SupportController::class, 'myTickets'])->name('my-tickets');
+    Route::get('/create', [\App\Http\Controllers\Public\SupportController::class, 'create'])->name('create');
+    Route::post('/create', [\App\Http\Controllers\Public\SupportController::class, 'store'])->name('store');
+    Route::get('/tickets/{reference}', [\App\Http\Controllers\Public\SupportController::class, 'show'])->name('show');
+    Route::post('/tickets/{reference}/reply', [\App\Http\Controllers\Public\SupportController::class, 'reply'])->name('reply');
+    Route::post('/tickets/{reference}/close', [\App\Http\Controllers\Public\SupportController::class, 'close'])->name('close');
+    Route::post('/tickets/{reference}/reopen', [\App\Http\Controllers\Public\SupportController::class, 'reopen'])->name('reopen');
+    Route::get('/tickets/{reference}/attachments/{attachmentId}', [\App\Http\Controllers\Public\SupportController::class, 'downloadAttachment'])->name('attachment');
+});
+
 // Dynamic Theme Assets Route
 Route::get('/themes/{theme}/assets/{path}', function (string $theme, string $path) {
     $filePath = base_path("themes/{$theme}/assets/{$path}");
@@ -196,6 +209,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/marketplace/settings', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'updateSettings'])->name('marketplace.settings');
     Route::post('/marketplace/cancel/{id}', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'cancelListing'])->name('marketplace.cancel');
     Route::post('/marketplace/return/{id}', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'returnItem'])->name('marketplace.return');
+
+    // Support Center Management
+    Route::get('/support', [\App\Http\Controllers\Admin\AdminSupportController::class, 'index'])->name('support.index');
+    Route::get('/support/settings', [\App\Http\Controllers\Admin\AdminSupportController::class, 'settings'])->name('support.settings');
+    Route::post('/support/settings', [\App\Http\Controllers\Admin\AdminSupportController::class, 'updateSettings'])->name('support.settings.update');
+    Route::get('/support/tickets/{id}', [\App\Http\Controllers\Admin\AdminSupportController::class, 'show'])->name('support.show');
+    Route::post('/support/tickets/{id}/reply', [\App\Http\Controllers\Admin\AdminSupportController::class, 'reply'])->name('support.reply');
+    Route::post('/support/tickets/{id}/update', [\App\Http\Controllers\Admin\AdminSupportController::class, 'update'])->name('support.update');
+    Route::get('/support/tickets/{id}/attachments/{attachmentId}', [\App\Http\Controllers\Admin\AdminSupportController::class, 'downloadAttachment'])->name('support.attachment');
 
     // Item Database Search for Admin Selectors
     Route::get('/items/search', [AdminController::class, 'searchItems'])->name('items.search');

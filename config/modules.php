@@ -69,6 +69,12 @@ return [
             'version' => '1.0.0',
             'enabled' => true,
         ],
+        'support' => [
+            'name' => 'Support Center & Tickets',
+            'description' => 'Two-way player support ticket management system with attachments and staff assignment.',
+            'version' => '1.0.0',
+            'enabled' => true,
+        ],
     ],
 ];
 

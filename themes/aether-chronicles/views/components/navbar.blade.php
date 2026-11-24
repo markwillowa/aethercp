@@ -111,6 +111,14 @@
             <i data-lucide="gem" class="w-3.5 h-3.5"></i>
             <span>DONATE</span>
         </a>
+
+        <!-- SUPPORT -->
+        @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
+            <a href="{{ route('support.index') }}" class="chronicles-nav-item {{ request()->routeIs('support.*') ? 'active' : '' }}">
+                <i data-lucide="life-buoy" class="w-3.5 h-3.5"></i>
+                <span>SUPPORT</span>
+            </a>
+        @endif
     </div>
 
     <!-- Far Right: Prominent Ornate Gold "Play Now" CTA Button -->

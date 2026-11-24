@@ -53,6 +53,11 @@
                 <a href="{{ route('donations.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('donations.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Donations
                 </a>
+                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
+                    <a href="{{ route('support.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('support.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                        Support
+                    </a>
+                @endif
             </div>
 
             <!-- Right Side Auth / User Controls -->

@@ -266,6 +266,10 @@
                         <i data-lucide="shopping-bag" class="w-4 h-4"></i>
                         <span>Player Marketplace</span>
                     </a>
+                    <a href="{{ route('admin.support.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.support*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                        <i data-lucide="life-buoy" class="w-4 h-4"></i>
+                        <span>Support Center</span>
+                    </a>
                     <a href="{{ route('admin.donations') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ (request()->routeIs('admin.donations') && !request()->routeIs('admin.donations.packages*')) ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
                         <i data-lucide="credit-card" class="w-4 h-4"></i>
                         <span>Donation Approvals</span>
