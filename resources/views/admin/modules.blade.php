@@ -49,6 +49,11 @@
                                     <i data-lucide="settings" class="w-3.5 h-3.5"></i>
                                     Manage
                                 </a>
+                            @elseif($key === 'database' || $key === 'itemdb')
+                                <a href="{{ route('admin.importer') }}" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center gap-1 transition-colors">
+                                    <i data-lucide="database" class="w-3.5 h-3.5"></i>
+                                    Importer
+                                </a>
                             @endif
                             <form method="POST" action="{{ route('admin.modules.toggle', $key) }}">
                                 @csrf

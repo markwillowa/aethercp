@@ -28,8 +28,8 @@
                         Rankings
                     </a>
                 @endif
-                @if($modMgr->isEnabled('itemdb'))
-                    <a href="{{ route('itemdb.index') }}" class="prestige-nav-link {{ request()->routeIs('itemdb.*') ? 'active' : '' }}">
+                @if($modMgr->isEnabled('database'))
+                    <a href="{{ route('itemdb.index') }}" class="prestige-nav-link {{ request()->routeIs('itemdb.*') || request()->routeIs('database.*') ? 'active' : '' }}">
                         Database
                     </a>
                 @endif
@@ -128,7 +128,7 @@
             @if($modMgr->isEnabled('guild'))
                 <a href="{{ route('guilds.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Guilds</a>
             @endif
-            @if($modMgr->isEnabled('itemdb'))
+            @if($modMgr->isEnabled('database'))
                 <a href="{{ route('itemdb.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Item Codex</a>
             @endif
             @if($modMgr->isEnabled('news'))

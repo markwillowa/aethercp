@@ -33,6 +33,7 @@
             </div>
 
             <!-- Col 2: Navigation Links -->
+            @php $rcModMgr = app(\App\Services\Module\ModuleManager::class); @endphp
             <div>
                 <h4 class="text-xs font-serif font-bold uppercase tracking-wider text-[#FFDA89] mb-3 border-b border-[#4A3220] pb-1.5 flex items-center gap-1.5">
                     <i data-lucide="compass" class="w-3.5 h-3.5 text-[#E6C280]"></i>
@@ -40,10 +41,18 @@
                 </h4>
                 <ul class="space-y-1.5 text-xs text-[#C5B090]">
                     <li><a href="{{ route('home') }}" class="hover:text-[#FFDA89] transition-colors flex items-center gap-1"><i data-lucide="chevron-right" class="w-3 h-3 text-[#7D5D39]"></i> Server Home</a></li>
-                    <li><a href="{{ route('news.index') }}" class="hover:text-[#FFDA89] transition-colors flex items-center gap-1"><i data-lucide="chevron-right" class="w-3 h-3 text-[#7D5D39]"></i> Prontera News</a></li>
-                    <li><a href="{{ route('downloads.index') }}" class="hover:text-[#FFDA89] transition-colors flex items-center gap-1"><i data-lucide="chevron-right" class="w-3 h-3 text-[#7D5D39]"></i> Game Downloads</a></li>
-                    <li><a href="{{ route('rankings.index') }}" class="hover:text-[#FFDA89] transition-colors flex items-center gap-1"><i data-lucide="chevron-right" class="w-3 h-3 text-[#7D5D39]"></i> Hall of Fame</a></li>
-                    <li><a href="{{ route('itemdb.index') }}" class="hover:text-[#FFDA89] transition-colors flex items-center gap-1"><i data-lucide="chevron-right" class="w-3 h-3 text-[#7D5D39]"></i> Item Compendium</a></li>
+                    @if($rcModMgr->isEnabled('news'))
+                        <li><a href="{{ route('news.index') }}" class="hover:text-[#FFDA89] transition-colors flex items-center gap-1"><i data-lucide="chevron-right" class="w-3 h-3 text-[#7D5D39]"></i> Prontera News</a></li>
+                    @endif
+                    @if($rcModMgr->isEnabled('downloads'))
+                        <li><a href="{{ route('downloads.index') }}" class="hover:text-[#FFDA89] transition-colors flex items-center gap-1"><i data-lucide="chevron-right" class="w-3 h-3 text-[#7D5D39]"></i> Game Downloads</a></li>
+                    @endif
+                    @if($rcModMgr->isEnabled('rankings'))
+                        <li><a href="{{ route('rankings.index') }}" class="hover:text-[#FFDA89] transition-colors flex items-center gap-1"><i data-lucide="chevron-right" class="w-3 h-3 text-[#7D5D39]"></i> Hall of Fame</a></li>
+                    @endif
+                    @if($rcModMgr->isEnabled('database'))
+                        <li><a href="{{ route('itemdb.index') }}" class="hover:text-[#FFDA89] transition-colors flex items-center gap-1"><i data-lucide="chevron-right" class="w-3 h-3 text-[#7D5D39]"></i> Compendium</a></li>
+                    @endif
                 </ul>
             </div>
 

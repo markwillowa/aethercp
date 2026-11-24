@@ -71,7 +71,7 @@
         </div>
 
         <!-- DATABASE (with Item, Monster, Map, Card Dropdown) -->
-        @if($cModMgr->isEnabled('itemdb'))
+        @if($cModMgr->isEnabled('database'))
         <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false" @click.away="open = false" style="position: relative; z-index: 150;">
             <button type="button" @click="open = !open" class="chronicles-nav-item flex items-center gap-1 cursor-pointer {{ request()->routeIs('itemdb.*') || request()->routeIs('database.*') ? 'active' : '' }}" :class="open ? 'active' : ''">
                 <i data-lucide="database" class="w-3.5 h-3.5"></i>

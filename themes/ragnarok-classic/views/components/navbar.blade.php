@@ -128,8 +128,8 @@
                     <i data-lucide="swords" class="w-3.5 h-3.5"></i>
                     <span>WoE</span>
                 </a>
-                @if($modMgr->isEnabled('itemdb'))
-                <a href="{{ route('itemdb.index') }}" class="ro-nav-item {{ request()->routeIs('itemdb.*') ? 'active' : '' }}">
+                @if($modMgr->isEnabled('database'))
+                <a href="{{ route('itemdb.index') }}" class="ro-nav-item {{ request()->routeIs('itemdb.*') || request()->routeIs('database.*') ? 'active' : '' }}">
                     <i data-lucide="database" class="w-3.5 h-3.5"></i>
                     <span>Database</span>
                 </a>
@@ -162,7 +162,7 @@
             <a href="{{ route('guilds.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">Guild Roster</a>
             @endif
             <a href="{{ route('woe.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">War of Emperium</a>
-            @if($modMgr->isEnabled('itemdb'))
+            @if($modMgr->isEnabled('database'))
             <a href="{{ route('itemdb.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">Item Compendium</a>
             @endif
             @if($modMgr->isEnabled('donations'))

@@ -43,13 +43,20 @@
             </div>
 
             <!-- Navigation Links -->
+            @php $pfModMgr = app(\App\Services\Module\ModuleManager::class); @endphp
             <div class="space-y-3">
                 <h4 class="text-xs uppercase tracking-wider font-bold text-white font-cinzel">Navigation</h4>
                 <ul class="space-y-2 text-xs text-[#AAB3C1] list-none p-0 m-0">
                     <li><a href="{{ route('home') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Home Realm</a></li>
-                    <li><a href="{{ route('news.index') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Announcements</a></li>
-                    <li><a href="{{ route('rankings.index') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Hall of Fame</a></li>
-                    <li><a href="{{ route('guilds.index') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Guild Directory</a></li>
+                    @if($pfModMgr->isEnabled('news'))
+                        <li><a href="{{ route('news.index') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Announcements</a></li>
+                    @endif
+                    @if($pfModMgr->isEnabled('rankings'))
+                        <li><a href="{{ route('rankings.index') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Hall of Fame</a></li>
+                    @endif
+                    @if($pfModMgr->isEnabled('guild'))
+                        <li><a href="{{ route('guilds.index') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Guild Directory</a></li>
+                    @endif
                     <li><a href="{{ route('woe.index') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">War of Emperium</a></li>
                 </ul>
             </div>
@@ -58,10 +65,18 @@
             <div class="space-y-3">
                 <h4 class="text-xs uppercase tracking-wider font-bold text-white font-cinzel">Resources</h4>
                 <ul class="space-y-2 text-xs text-[#AAB3C1] list-none p-0 m-0">
-                    <li><a href="{{ route('itemdb.index') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Item Database</a></li>
-                    <li><a href="{{ route('downloads.index') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Client Downloads</a></li>
-                    <li><a href="{{ route('donations.index') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Cash Shop Points</a></li>
-                    <li><a href="{{ route('characters.online') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Active Adventurers</a></li>
+                    @if($pfModMgr->isEnabled('database'))
+                        <li><a href="{{ route('itemdb.index') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Database</a></li>
+                    @endif
+                    @if($pfModMgr->isEnabled('downloads'))
+                        <li><a href="{{ route('downloads.index') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Client Downloads</a></li>
+                    @endif
+                    @if($pfModMgr->isEnabled('donations'))
+                        <li><a href="{{ route('donations.index') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Cash Shop Points</a></li>
+                    @endif
+                    @if($pfModMgr->isEnabled('character'))
+                        <li><a href="{{ route('characters.online') }}" class="hover:text-[#C6A76A] transition-colors text-decoration-none">Active Adventurers</a></li>
+                    @endif
                 </ul>
             </div>
 

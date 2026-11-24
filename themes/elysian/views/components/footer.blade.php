@@ -27,6 +27,7 @@
             </div>
 
             <!-- Col 2: Navigation Links with Amber Hovers -->
+            @php $elysianModMgr = app(\App\Services\Module\ModuleManager::class); @endphp
             <div>
                 <h4 class="text-xs font-semibold uppercase tracking-wider text-amber-400 mb-3 flex items-center gap-1.5">
                     <i data-lucide="compass" class="w-3.5 h-3.5"></i>
@@ -34,10 +35,18 @@
                 </h4>
                 <ul class="space-y-2 text-sm text-slate-300">
                     <li><a href="{{ route('home') }}" class="hover:text-amber-300 transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3 h-3 text-amber-500/60"></i> Server Home</a></li>
-                    <li><a href="{{ route('news.index') }}" class="hover:text-amber-300 transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3 h-3 text-amber-500/60"></i> Chronicle Dispatches</a></li>
-                    <li><a href="{{ route('rankings.index') }}" class="hover:text-amber-300 transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3 h-3 text-amber-500/60"></i> Hall of Fame</a></li>
-                    <li><a href="{{ route('itemdb.index') }}" class="hover:text-amber-300 transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3 h-3 text-amber-500/60"></i> Compendium Database</a></li>
-                    <li><a href="{{ route('downloads.index') }}" class="hover:text-amber-300 transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3 h-3 text-amber-500/60"></i> Game Downloads</a></li>
+                    @if($elysianModMgr->isEnabled('news'))
+                        <li><a href="{{ route('news.index') }}" class="hover:text-amber-300 transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3 h-3 text-amber-500/60"></i> Chronicle Dispatches</a></li>
+                    @endif
+                    @if($elysianModMgr->isEnabled('rankings'))
+                        <li><a href="{{ route('rankings.index') }}" class="hover:text-amber-300 transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3 h-3 text-amber-500/60"></i> Hall of Fame</a></li>
+                    @endif
+                    @if($elysianModMgr->isEnabled('database'))
+                        <li><a href="{{ route('itemdb.index') }}" class="hover:text-amber-300 transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3 h-3 text-amber-500/60"></i> Compendium Database</a></li>
+                    @endif
+                    @if($elysianModMgr->isEnabled('downloads'))
+                        <li><a href="{{ route('downloads.index') }}" class="hover:text-amber-300 transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3 h-3 text-amber-500/60"></i> Game Downloads</a></li>
+                    @endif
                 </ul>
             </div>
 

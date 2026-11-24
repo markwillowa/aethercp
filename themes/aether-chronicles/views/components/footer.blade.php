@@ -13,23 +13,34 @@
             </div>
 
             <!-- Center: Bottom Nav Links -->
+            @php $fModMgr = app(\App\Services\Module\ModuleManager::class); @endphp
             <div class="flex flex-wrap items-center justify-center gap-3 text-xs font-cinzel">
                 <a href="{{ route('home') }}">Home</a>
-                <span class="text-[#564766]">|</span>
-                <a href="{{ route('news.index') }}">News</a>
-                <span class="text-[#564766]">|</span>
-                <a href="{{ route('rankings.index') }}">Rankings</a>
-                <span class="text-[#564766]">|</span>
-                <a href="{{ route('guilds.index') }}">Guilds</a>
-                <span class="text-[#564766]">|</span>
-                <a href="{{ route('itemdb.index') }}">Database</a>
-                <span class="text-[#564766]">|</span>
-                <a href="{{ route('downloads.index') }}">Downloads</a>
-                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('faq'))
+                @if($fModMgr->isEnabled('news'))
+                    <span class="text-[#564766]">|</span>
+                    <a href="{{ route('news.index') }}">News</a>
+                @endif
+                @if($fModMgr->isEnabled('rankings'))
+                    <span class="text-[#564766]">|</span>
+                    <a href="{{ route('rankings.index') }}">Rankings</a>
+                @endif
+                @if($fModMgr->isEnabled('guild'))
+                    <span class="text-[#564766]">|</span>
+                    <a href="{{ route('guilds.index') }}">Guilds</a>
+                @endif
+                @if($fModMgr->isEnabled('database'))
+                    <span class="text-[#564766]">|</span>
+                    <a href="{{ route('itemdb.index') }}">Database</a>
+                @endif
+                @if($fModMgr->isEnabled('downloads'))
+                    <span class="text-[#564766]">|</span>
+                    <a href="{{ route('downloads.index') }}">Downloads</a>
+                @endif
+                @if($fModMgr->isEnabled('faq'))
                     <span class="text-[#564766]">|</span>
                     <a href="{{ route('faq.index') }}">FAQ</a>
                 @endif
-                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
+                @if($fModMgr->isEnabled('support'))
                     <span class="text-[#564766]">|</span>
                     <a href="{{ route('support.index') }}">Support</a>
                 @endif

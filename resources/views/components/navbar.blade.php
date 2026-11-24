@@ -47,7 +47,7 @@
                 <a href="{{ route('woe.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('woe.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     WoE
                 </a>
-                @if($modMgr->isEnabled('itemdb'))
+                @if($modMgr->isEnabled('database'))
                     <a href="{{ route('itemdb.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('itemdb.*') || request()->routeIs('database.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                         Database
                     </a>
@@ -158,7 +158,7 @@
             <a href="{{ route('characters.online') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Online</a>
         @endif
         <a href="{{ route('woe.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">WoE</a>
-        @if($modMgr->isEnabled('itemdb'))
+        @if($modMgr->isEnabled('database'))
             <a href="{{ route('itemdb.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Database</a>
         @endif
         @if($modMgr->isEnabled('marketplace'))

@@ -47,8 +47,8 @@ Route::middleware('module:guild')->group(function () {
     Route::get('/woe', [\App\Http\Controllers\Public\WoeController::class, 'index'])->name('woe.index');
 });
 
-// Item & Game Database Center
-Route::middleware('module:itemdb')->group(function () {
+// Item, Monster, Map & Game Database Center
+Route::middleware('module:database')->group(function () {
     Route::get('/database/items', [ItemDbController::class, 'index'])->name('itemdb.index');
     Route::get('/database', [ItemDbController::class, 'index'])->name('database.items');
     Route::get('/database/items/{id}', [ItemDbController::class, 'show'])->name('itemdb.show');

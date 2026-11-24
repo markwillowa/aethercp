@@ -47,8 +47,8 @@
                 <a href="{{ route('woe.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('woe.*') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     WoE
                 </a>
-                @if($modMgr->isEnabled('itemdb'))
-                <a href="{{ route('itemdb.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('itemdb.*') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                @if($modMgr->isEnabled('database'))
+                <a href="{{ route('itemdb.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('itemdb.*') || request()->routeIs('database.*') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Database
                 </a>
                 @endif
@@ -157,7 +157,7 @@
         <a href="{{ route('characters.online') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Online</a>
         @endif
         <a href="{{ route('woe.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">WoE</a>
-        @if($modMgr->isEnabled('itemdb'))
+        @if($modMgr->isEnabled('database'))
         <a href="{{ route('itemdb.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Database</a>
         @endif
         @if($modMgr->isEnabled('downloads'))

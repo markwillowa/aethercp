@@ -22,6 +22,9 @@ class ModuleManager
 
         foreach ($configured as $key => $mod) {
             $enabledSetting = SiteSetting::get("module_enabled_{$key}", null);
+            if ($key === 'database' && $enabledSetting === null) {
+                $enabledSetting = SiteSetting::get("module_enabled_itemdb", null);
+            }
             $isEnabled = $enabledSetting !== null ? (bool) $enabledSetting : (bool) ($mod['enabled'] ?? true);
 
             $modules[$key] = array_merge($mod, [
@@ -64,6 +67,16 @@ class ModuleManager
     public function isEnabled(string $key): bool
     {
         $modules = $this->getModules();
+        if ($key === 'itemdb' || $key === 'database') {
+            if (isset($modules['database'])) {
+                return (bool) $modules['database']['enabled'];
+            }
+            if (isset($modules['itemdb'])) {
+                return (bool) $modules['itemdb']['enabled'];
+            }
+            return true;
+        }
+
         return isset($modules[$key]) && (bool) $modules[$key]['enabled'];
     }
 
@@ -71,7 +84,13 @@ class ModuleManager
     {
         $modules = $this->getModules();
         if (!isset($modules[$key])) {
-            return false;
+            if ($key === 'itemdb' && isset($modules['database'])) {
+                $key = 'database';
+            } elseif ($key === 'database' && isset($modules['itemdb'])) {
+                $key = 'itemdb';
+            } else {
+                return false;
+            }
         }
 
         // Prevent disabling protected core modules like account system
@@ -83,6 +102,11 @@ class ModuleManager
         $newState = !$currentState;
 
         SiteSetting::set("module_enabled_{$key}", $newState ? '1' : '0');
+        if ($key === 'database') {
+            SiteSetting::set("module_enabled_itemdb", $newState ? '1' : '0');
+        } elseif ($key === 'itemdb') {
+            SiteSetting::set("module_enabled_database", $newState ? '1' : '0');
+        }
 
         return $newState;
     }

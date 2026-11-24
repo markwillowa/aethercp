@@ -39,9 +39,9 @@ return [
             'version' => '1.0.0',
             'enabled' => true,
         ],
-        'itemdb' => [
-            'name' => 'Item Database',
-            'description' => 'Searchable item directory with sprites and descriptions.',
+        'database' => [
+            'name' => 'Database',
+            'description' => 'Comprehensive game database covering items, monsters, and maps.',
             'version' => '1.0.0',
             'enabled' => true,
         ],
