@@ -1,3 +1,6 @@
+@php
+    $modMgr = app(\App\Services\Module\ModuleManager::class);
+@endphp
 <nav x-data="{ mobileOpen: false, userDropdown: false }" class="relative z-30 shadow-md">
     <!-- Middle Brand Banner (Classic Ragnarok Medieval Crest) -->
     <div class="ro-brand-banner px-4 sm:px-6">
@@ -39,10 +42,12 @@
                                     <i data-lucide="user-check" class="w-3.5 h-3.5 text-[#315B88]"></i>
                                     <span>My Account</span>
                                 </a>
+                                @if($modMgr->isEnabled('character'))
                                 <a href="{{ route('account.characters') }}" class="flex items-center gap-2 px-3 py-1.5 text-xs text-[#3A2A1C] hover:bg-[#EBD6B3] rounded transition-colors">
                                     <i data-lucide="users" class="w-3.5 h-3.5 text-[#315B88]"></i>
                                     <span>My Characters</span>
                                 </a>
+                                @endif
                                 @if(auth()->user()->isAdmin())
                                     <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-3 py-1.5 text-xs text-[#8C5E1E] font-bold hover:bg-[#EBD6B3] rounded transition-colors">
                                         <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-[#8C5E1E]"></i>
@@ -89,52 +94,80 @@
                     <i data-lucide="home" class="w-3.5 h-3.5"></i>
                     <span>Home</span>
                 </a>
+                @if($modMgr->isEnabled('news'))
                 <a href="{{ route('news.index') }}" class="ro-nav-item {{ request()->routeIs('news.*') ? 'active' : '' }}">
                     <i data-lucide="newspaper" class="w-3.5 h-3.5"></i>
                     <span>News</span>
                 </a>
+                @endif
+                @if($modMgr->isEnabled('downloads'))
                 <a href="{{ route('downloads.index') }}" class="ro-nav-item {{ request()->routeIs('downloads.*') ? 'active' : '' }}">
                     <i data-lucide="download" class="w-3.5 h-3.5"></i>
                     <span>Downloads</span>
                 </a>
+                @endif
+                @if($modMgr->isEnabled('rankings'))
                 <a href="{{ route('rankings.index') }}" class="ro-nav-item {{ request()->routeIs('rankings.*') ? 'active' : '' }}">
                     <i data-lucide="award" class="w-3.5 h-3.5"></i>
                     <span>Rankings</span>
                 </a>
+                @endif
+                @if($modMgr->isEnabled('character'))
                 <a href="{{ route('characters.online') }}" class="ro-nav-item {{ request()->routeIs('characters.online') ? 'active' : '' }}">
                     <i data-lucide="users" class="w-3.5 h-3.5"></i>
                     <span>Online</span>
                 </a>
+                @endif
+                @if($modMgr->isEnabled('guild'))
                 <a href="{{ route('guilds.index') }}" class="ro-nav-item {{ request()->routeIs('guilds.*') ? 'active' : '' }}">
                     <i data-lucide="shield" class="w-3.5 h-3.5"></i>
                     <span>Guilds</span>
                 </a>
+                @endif
                 <a href="{{ route('woe.index') }}" class="ro-nav-item {{ request()->routeIs('woe.*') ? 'active' : '' }}">
                     <i data-lucide="swords" class="w-3.5 h-3.5"></i>
                     <span>WoE</span>
                 </a>
+                @if($modMgr->isEnabled('itemdb'))
                 <a href="{{ route('itemdb.index') }}" class="ro-nav-item {{ request()->routeIs('itemdb.*') ? 'active' : '' }}">
                     <i data-lucide="database" class="w-3.5 h-3.5"></i>
                     <span>Database</span>
                 </a>
+                @endif
+                @if($modMgr->isEnabled('donations'))
                 <a href="{{ route('donations.index') }}" class="ro-nav-item {{ request()->routeIs('donations.*') ? 'active' : '' }}">
                     <i data-lucide="heart-handshake" class="w-3.5 h-3.5"></i>
                     <span>Donations</span>
                 </a>
+                @endif
             </div>
         </div>
 
         <!-- Mobile Drawer Navigation (Only on Mobile) -->
         <div x-show="mobileOpen" x-transition class="ro-mobile-only flex-col bg-[#2D1D13] border-t border-[#65482D] py-2 px-4 space-y-1">
             <a href="{{ route('home') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">Home</a>
+            @if($modMgr->isEnabled('news'))
             <a href="{{ route('news.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">News & Updates</a>
+            @endif
+            @if($modMgr->isEnabled('downloads'))
             <a href="{{ route('downloads.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">Game Client Downloads</a>
+            @endif
+            @if($modMgr->isEnabled('rankings'))
             <a href="{{ route('rankings.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">Player Rankings</a>
+            @endif
+            @if($modMgr->isEnabled('character'))
             <a href="{{ route('characters.online') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">Online Adventurers</a>
+            @endif
+            @if($modMgr->isEnabled('guild'))
             <a href="{{ route('guilds.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">Guild Roster</a>
+            @endif
             <a href="{{ route('woe.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">War of Emperium</a>
+            @if($modMgr->isEnabled('itemdb'))
             <a href="{{ route('itemdb.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">Item Compendium</a>
+            @endif
+            @if($modMgr->isEnabled('donations'))
             <a href="{{ route('donations.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">Support & Donations</a>
+            @endif
         </div>
     </div>
 </nav>

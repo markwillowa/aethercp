@@ -32,7 +32,7 @@ class RankingRepository implements RankingRepositoryInterface
     {
         $ttl = (int) config('aether.cache.rankings', 300);
 
-        return Cache::remember("aether_ranking_base_level_{$limit}", $ttl, function () use ($limit) {
+        $data = Cache::remember("aether_ranking_base_level_{$limit}", $ttl, function () use ($limit) {
             $query = DB::connection('ragnarok')
                 ->table(DB::raw($this->getCharTable()))
                 ->select('char_id', 'name', 'class', 'base_level', 'job_level', 'base_exp');
@@ -49,15 +49,18 @@ class RankingRepository implements RankingRepositoryInterface
                 ->orderBy('base_exp', 'desc')
                 ->limit($limit)
                 ->get()
-                ->toArray();
+                ->map(fn($r) => (array) $r)
+                ->all();
         });
+
+        return array_map(fn($item) => (object) (is_array($item) ? $item : (array) $item), $data);
     }
 
     public function getJobLevelRanking(int $limit = 25): array
     {
         $ttl = (int) config('aether.cache.rankings', 300);
 
-        return Cache::remember("aether_ranking_job_level_{$limit}", $ttl, function () use ($limit) {
+        $data = Cache::remember("aether_ranking_job_level_{$limit}", $ttl, function () use ($limit) {
             $query = DB::connection('ragnarok')
                 ->table(DB::raw($this->getCharTable()))
                 ->select('char_id', 'name', 'class', 'base_level', 'job_level', 'job_exp');
@@ -74,15 +77,18 @@ class RankingRepository implements RankingRepositoryInterface
                 ->orderBy('job_exp', 'desc')
                 ->limit($limit)
                 ->get()
-                ->toArray();
+                ->map(fn($r) => (array) $r)
+                ->all();
         });
+
+        return array_map(fn($item) => (object) (is_array($item) ? $item : (array) $item), $data);
     }
 
     public function getZenyRanking(int $limit = 25): array
     {
         $ttl = (int) config('aether.cache.rankings', 300);
 
-        return Cache::remember("aether_ranking_zeny_{$limit}", $ttl, function () use ($limit) {
+        $data = Cache::remember("aether_ranking_zeny_{$limit}", $ttl, function () use ($limit) {
             $query = DB::connection('ragnarok')
                 ->table(DB::raw($this->getCharTable()))
                 ->select('char_id', 'name', 'class', 'base_level', 'zeny');
@@ -98,15 +104,18 @@ class RankingRepository implements RankingRepositoryInterface
             return $query->orderBy('zeny', 'desc')
                 ->limit($limit)
                 ->get()
-                ->toArray();
+                ->map(fn($r) => (array) $r)
+                ->all();
         });
+
+        return array_map(fn($item) => (object) (is_array($item) ? $item : (array) $item), $data);
     }
 
     public function getMvpRanking(int $limit = 25): array
     {
         $ttl = (int) config('aether.cache.rankings', 300);
 
-        return Cache::remember("aether_ranking_mvp_{$limit}", $ttl, function () use ($limit) {
+        $data = Cache::remember("aether_ranking_mvp_{$limit}", $ttl, function () use ($limit) {
             $query = DB::connection('ragnarok')
                 ->table(DB::raw($this->getCharTable()))
                 ->select('char_id', 'name', 'class', 'base_level', 'fame');
@@ -122,15 +131,18 @@ class RankingRepository implements RankingRepositoryInterface
             return $query->orderBy('fame', 'desc')
                 ->limit($limit)
                 ->get()
-                ->toArray();
+                ->map(fn($r) => (array) $r)
+                ->all();
         });
+
+        return array_map(fn($item) => (object) (is_array($item) ? $item : (array) $item), $data);
     }
 
     public function getGuildRanking(int $limit = 25): array
     {
         $ttl = (int) config('aether.cache.rankings', 300);
 
-        return Cache::remember("aether_ranking_guild_{$limit}", $ttl, function () use ($limit) {
+        $data = Cache::remember("aether_ranking_guild_{$limit}", $ttl, function () use ($limit) {
             return DB::connection('ragnarok')
                 ->table($this->getGuildTable())
                 ->select('guild_id', 'name', 'master', 'guild_lv', 'connect_member', 'max_member', 'average_lv', 'exp')
@@ -138,8 +150,11 @@ class RankingRepository implements RankingRepositoryInterface
                 ->orderBy('exp', 'desc')
                 ->limit($limit)
                 ->get()
-                ->toArray();
+                ->map(fn($r) => (array) $r)
+                ->all();
         });
+
+        return array_map(fn($item) => (object) (is_array($item) ? $item : (array) $item), $data);
     }
 }
 

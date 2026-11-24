@@ -2,6 +2,7 @@
 
 @section('content')
 @php
+    $cModMgr = app(\App\Services\Module\ModuleManager::class);
     $loginOnline = !empty($serverStatus['login']['online']);
     $charOnline = !empty($serverStatus['char']['online']);
     $mapOnline = !empty($serverStatus['map']['online']);
@@ -112,6 +113,7 @@
              ================================================================== -->
         <aside class="chronicles-sidebar">
 
+            @if($cModMgr->isEnabled('server_info'))
             <!-- 1. SERVER INFORMATION -->
             <div class="chronicles-panel">
                 <div class="chronicles-panel-header">
@@ -198,6 +200,7 @@
                     </div>
                 </div>
             </div>
+            @endif
 
             <!-- 3. ACCOUNT MENU -->
             <div class="chronicles-panel">
@@ -213,10 +216,12 @@
                             <i data-lucide="user"></i>
                             <span>My Account</span>
                         </a>
+                        @if($cModMgr->isEnabled('character'))
                         <a href="{{ route('account.characters') }}" class="chronicles-menu-link">
                             <i data-lucide="users"></i>
                             <span>My Characters</span>
                         </a>
+                        @endif
                         @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('marketplace'))
                             <a href="{{ route('marketplace.index') }}" class="chronicles-menu-link">
                                 <i data-lucide="scale"></i>
@@ -312,10 +317,12 @@
                                 <span>Register Now</span>
                                 <span>▸</span>
                             </a>
+                            @if($cModMgr->isEnabled('downloads'))
                             <a href="{{ route('downloads.index') }}" class="chronicles-btn-dark">
                                 <i data-lucide="download" class="w-3 h-3"></i>
                                 <span>Download Client</span>
                             </a>
+                            @endif
                         </div>
 
                         <!-- Dots Indicator -->
@@ -350,6 +357,7 @@
                         </div>
                     </div>
 
+                    @if($cModMgr->isEnabled('gallery'))
                     <!-- Screenshots (Managed in Admin, Rotates randomly every 15s, links to /gallery) -->
                     <div class="chronicles-panel flex-1 flex flex-col justify-between"
                          x-data="{
@@ -388,6 +396,7 @@
                             </a>
                         </div>
                     </div>
+                    @endif
 
                 </div>
 
@@ -396,6 +405,7 @@
             <!-- ROW 2: Latest News & Announcements + Top Rankings (Widths 1fr & 240px — Exact Alignment) -->
             <section class="chronicles-mid-row">
 
+                @if($cModMgr->isEnabled('news'))
                 <!-- LATEST NEWS & ANNOUNCEMENTS (Aged Parchment Style with Actual Database Records) -->
                 <div class="chronicles-panel flex flex-col">
                     <div class="chronicles-panel-header">
@@ -444,7 +454,9 @@
                         @endforelse
                     </div>
                 </div>
+                @endif
 
+                @if($cModMgr->isEnabled('rankings'))
                 <!-- TOP RANKINGS (Client-Side Switchable Tabs, Current Live Database Data Only) -->
                 <div class="chronicles-panel flex flex-col" x-data="{ activeRankTab: 'base' }">
                     <div class="chronicles-panel-header">
@@ -557,6 +569,7 @@
                         @endforelse
                     </div>
                 </div>
+                @endif
 
             </section>
 
@@ -597,20 +610,24 @@
         <div class="chronicles-bottom-col">
             <h4>Quick Links</h4>
             <ul>
-                <li><a href="{{ route('downloads.index') }}">&raquo; Client Downloads</a></li>
-                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('faq'))
+                @if($cModMgr->isEnabled('downloads'))
+                    <li><a href="{{ route('downloads.index') }}">&raquo; Client Downloads</a></li>
+                @endif
+                @if($cModMgr->isEnabled('faq'))
                     <li><a href="{{ route('faq.index') }}">&raquo; Knowledge Base &amp; FAQ</a></li>
                 @endif
-                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
+                @if($cModMgr->isEnabled('support'))
                     <li><a href="{{ route('support.index') }}">&raquo; Support Center</a></li>
                 @endif
-                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('marketplace'))
+                @if($cModMgr->isEnabled('marketplace'))
                     <li><a href="{{ route('marketplace.index') }}">&raquo; Player Marketplace</a></li>
                 @endif
-                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('gallery'))
+                @if($cModMgr->isEnabled('gallery'))
                     <li><a href="{{ route('gallery.index') }}">&raquo; Media Gallery</a></li>
                 @endif
-                <li><a href="{{ route('server.status') }}">&raquo; Server Status</a></li>
+                @if($cModMgr->isEnabled('server_info'))
+                    <li><a href="{{ route('server.status') }}">&raquo; Server Status</a></li>
+                @endif
             </ul>
         </div>
 

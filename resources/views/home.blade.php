@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @php
+    $modMgr = app(\App\Services\Module\ModuleManager::class);
     $galleryScreenshots = [];
     $rawGallery = \App\Models\SiteSetting::get('chronicles_gallery_data');
     if (!empty($rawGallery)) {
@@ -55,10 +56,12 @@
                     <i data-lucide="user-plus" class="w-4 h-4"></i>
                     <span>Create Free Account</span>
                 </a>
+                @if($modMgr->isEnabled('downloads'))
                 <a href="{{ route('downloads.index') }}" class="px-6 py-3 rounded-xl font-semibold bg-slate-800/80 hover:bg-slate-700/80 text-white border border-slate-700 transition-colors flex items-center gap-2">
                     <i data-lucide="download" class="w-4 h-4 text-cyan-400"></i>
                     <span>Download Game Client</span>
                 </a>
+                @endif
             </div>
         </div>
 
@@ -109,6 +112,7 @@
 
     <!-- Main Content Grid: Latest News (Left) + Server Widgets (Right) -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        @if($modMgr->isEnabled('news'))
         <!-- News Section (2 Cols) -->
         <div class="lg:col-span-2 space-y-6">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -164,9 +168,10 @@
                 @endforelse
             </div>
         </div>
+        @endif
 
         <!-- Sidebar Widgets (1 Col) -->
-        <div class="space-y-6">
+        <div class="{{ $modMgr->isEnabled('news') ? 'space-y-6' : 'lg:col-span-3 space-y-6' }}">
             <!-- Account Portal Widget -->
             <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-4">
                 <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
@@ -194,6 +199,7 @@
                                 </span>
                                 <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500"></i>
                             </a>
+                            @if($modMgr->isEnabled('character'))
                             <a href="{{ route('account.characters') }}" class="flex items-center justify-between p-2 rounded-xl bg-slate-950/50 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 transition-colors">
                                 <span class="flex items-center gap-2">
                                     <i data-lucide="users" class="w-3.5 h-3.5 text-blue-400"></i>
@@ -201,6 +207,7 @@
                                 </span>
                                 <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500"></i>
                             </a>
+                            @endif
                             @if(auth()->user()->isAdmin())
                                 <a href="{{ route('admin.dashboard') }}" class="flex items-center justify-between p-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 transition-colors">
                                     <span class="flex items-center gap-2">
@@ -229,6 +236,7 @@
                 @endauth
             </div>
 
+            @if($modMgr->isEnabled('server_info'))
             <!-- Server Status Card -->
             <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -261,7 +269,9 @@
                     @endforeach
                 </div>
             </div>
+            @endif
 
+            @if($modMgr->isEnabled('gallery'))
             <!-- Media & Screenshots Gallery Widget (Randomly changes every 15 seconds) -->
             <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-3"
                  x-data="{
@@ -311,7 +321,9 @@
                     </a>
                 </div>
             </div>
+            @endif
 
+            @if($modMgr->isEnabled('rankings'))
             <!-- Top 5 Players Preview -->
             <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -324,20 +336,25 @@
 
                 <div class="space-y-2">
                     @forelse($topPlayers as $idx => $player)
+                        @php
+                            $pName = is_array($player) ? ($player['name'] ?? 'Adventurer') : ($player->name ?? 'Adventurer');
+                            $pLevel = is_array($player) ? ($player['base_level'] ?? 1) : ($player->base_level ?? 1);
+                        @endphp
                         <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950/50 hover:bg-slate-800/40 transition-colors text-xs">
                             <div class="flex items-center gap-2.5">
                                 <span class="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] {{ $idx === 0 ? 'bg-amber-400 text-slate-950' : ($idx === 1 ? 'bg-slate-300 text-slate-950' : ($idx === 2 ? 'bg-amber-700 text-white' : 'bg-slate-800 text-slate-400')) }}">
                                     {{ $idx + 1 }}
                                 </span>
-                                <span class="font-semibold text-slate-200">{{ $player->name }}</span>
+                                <span class="font-semibold text-slate-200">{{ $pName }}</span>
                             </div>
-                            <span class="text-cyan-400 font-bold">Lv. {{ $player->base_level }}</span>
+                            <span class="text-cyan-400 font-bold">Lv. {{ $pLevel }}</span>
                         </div>
                     @empty
                         <p class="text-xs text-slate-500 text-center py-2">No player rankings recorded.</p>
                     @endforelse
                 </div>
             </div>
+            @endif
 
             <!-- Join Community Banner -->
             <div class="rounded-2xl p-5 bg-gradient-to-br from-indigo-950/80 to-slate-900 border border-indigo-500/30 space-y-3">

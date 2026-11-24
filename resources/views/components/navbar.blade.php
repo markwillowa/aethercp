@@ -1,3 +1,6 @@
+@php
+    $modMgr = app(\App\Services\Module\ModuleManager::class);
+@endphp
 <nav x-data="{ mobileOpen: false, userDropdown: false }" class="relative z-20 border-b border-slate-800 bg-[#0b0f19]/90 backdrop-blur-md sticky top-0">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
@@ -21,32 +24,49 @@
                 <a href="{{ route('home') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('home') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Home
                 </a>
-                <a href="{{ route('news.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('news.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
-                    News
-                </a>
-                <a href="{{ route('guilds.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('guilds.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
-                    Guilds
-                </a>
-                <a href="{{ route('server.status') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('server.status') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
-                    Status
-                </a>
-                <a href="{{ route('characters.online') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('characters.online') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
-                    Online
-                </a>
+                @if($modMgr->isEnabled('news'))
+                    <a href="{{ route('news.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('news.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                        News
+                    </a>
+                @endif
+                @if($modMgr->isEnabled('guild'))
+                    <a href="{{ route('guilds.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('guilds.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                        Guilds
+                    </a>
+                @endif
+                @if($modMgr->isEnabled('server_info'))
+                    <a href="{{ route('server.status') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('server.status') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                        Status
+                    </a>
+                @endif
+                @if($modMgr->isEnabled('character'))
+                    <a href="{{ route('characters.online') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('characters.online') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                        Online
+                    </a>
+                @endif
                 <a href="{{ route('woe.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('woe.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     WoE
                 </a>
-                <a href="{{ route('itemdb.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('itemdb.*') || request()->routeIs('database.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
-                    Database
-                </a>
-                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('marketplace'))
+                @if($modMgr->isEnabled('itemdb'))
+                    <a href="{{ route('itemdb.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('itemdb.*') || request()->routeIs('database.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                        Database
+                    </a>
+                @endif
+                @if($modMgr->isEnabled('marketplace'))
                     <a href="{{ route('marketplace.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('marketplace.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                         Marketplace
                     </a>
                 @endif
-                <a href="{{ route('donations.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('donations.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
-                    Donations
-                </a>
+                @if($modMgr->isEnabled('donations'))
+                    <a href="{{ route('donations.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('donations.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                        Donations
+                    </a>
+                @endif
+                @if($modMgr->isEnabled('faq'))
+                    <a href="{{ route('faq.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('faq.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                        FAQ
+                    </a>
+                @endif
             </div>
 
             <!-- Right Side Auth / User Controls -->
@@ -128,19 +148,29 @@
     <!-- Mobile Drawer -->
     <div x-show="mobileOpen" x-transition class="md:hidden border-b border-slate-800 bg-slate-950/95 px-4 pt-2 pb-4 space-y-1">
         <a href="{{ route('home') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Home</a>
-        <a href="{{ route('news.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">News</a>
-        <a href="{{ route('guilds.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Guilds</a>
-        <a href="{{ route('characters.online') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Online</a>
+        @if($modMgr->isEnabled('news'))
+            <a href="{{ route('news.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">News</a>
+        @endif
+        @if($modMgr->isEnabled('guild'))
+            <a href="{{ route('guilds.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Guilds</a>
+        @endif
+        @if($modMgr->isEnabled('character'))
+            <a href="{{ route('characters.online') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Online</a>
+        @endif
         <a href="{{ route('woe.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">WoE</a>
-        <a href="{{ route('itemdb.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Database</a>
-        @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('marketplace'))
+        @if($modMgr->isEnabled('itemdb'))
+            <a href="{{ route('itemdb.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Database</a>
+        @endif
+        @if($modMgr->isEnabled('marketplace'))
             <a href="{{ route('marketplace.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Marketplace</a>
         @endif
-        <a href="{{ route('donations.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Donations</a>
-        @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('faq'))
+        @if($modMgr->isEnabled('donations'))
+            <a href="{{ route('donations.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Donations</a>
+        @endif
+        @if($modMgr->isEnabled('faq'))
             <a href="{{ route('faq.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">FAQ</a>
         @endif
-        @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
+        @if($modMgr->isEnabled('support'))
             <a href="{{ route('support.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Support</a>
         @endif
 

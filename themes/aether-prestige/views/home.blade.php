@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $pModMgr = app(\App\Services\Module\ModuleManager::class);
+@endphp
 <div>
     <!-- ======================================================================
          SECTION A: CINEMATIC HERO (Pixel-Accurate to Reference Image)
@@ -161,6 +164,7 @@
          CONTENT SECTIONS (Below Hero)
          ====================================================================== -->
     <div class="prestige-container prestige-sections-wrap">
+        @if($pModMgr->isEnabled('server_info'))
         <!-- SECTION 1: LIVE SERVER STATUS TELEMETRY -->
         @php
             $emulator = app(\App\Contracts\EmulatorInterface::class);
@@ -237,6 +241,7 @@
                 </div>
             </div>
         </section>
+        @endif
 
         <!-- SECTION 2: SERVER FEATURES -->
         <section id="features">
@@ -333,8 +338,10 @@
             </div>
         </section>
 
+        @if($pModMgr->isEnabled('news') || $pModMgr->isEnabled('rankings'))
         <!-- SECTION 3: SPLIT GRID (News Left, Hall of Fame Right) -->
-        <section class="prestige-grid-split">
+        <section class="prestige-grid-split" style="{{ !$pModMgr->isEnabled('rankings') ? 'grid-template-columns: 1fr;' : (!$pModMgr->isEnabled('news') ? 'grid-template-columns: 1fr;' : '') }}">
+            @if($pModMgr->isEnabled('news'))
             <!-- News (Left) -->
             <div class="space-y-6">
                 <div class="flex items-center justify-between border-b border-white/[0.08] pb-4">
@@ -386,7 +393,9 @@
                     @endforelse
                 </div>
             </div>
+            @endif
 
+            @if($pModMgr->isEnabled('rankings'))
             <!-- Hall of Fame (Right) -->
             <div class="space-y-6">
                 <div class="flex items-center justify-between border-b border-white/[0.08] pb-4">
@@ -445,7 +454,9 @@
                     </div>
                 </div>
             </div>
+            @endif
         </section>
+        @endif
 
         <!-- SECTION 4: CALL TO ACTION BANNER -->
         <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#101725] via-[#1B2432] to-[#101725] border border-[#C6A76A]/30 p-8 sm:p-12 shadow-2xl">
@@ -465,10 +476,12 @@
                         <i data-lucide="user-plus" class="w-4 h-4"></i>
                         <span>{{ \App\Models\SiteSetting::get('home_cta_btn1_text', 'Create Account') }}</span>
                     </a>
+                    @if($pModMgr->isEnabled('downloads'))
                     <a href="{{ route('downloads.index') }}" class="prestige-btn-outline">
                         <i data-lucide="download" class="w-4 h-4 text-[#C6A76A]"></i>
                         <span>{{ \App\Models\SiteSetting::get('home_cta_btn2_text', 'Download Client') }}</span>
                     </a>
+                    @endif
                     @if($dcUrl)
                         <a href="{{ $dcUrl }}" target="_blank" rel="noopener" class="prestige-btn-outline">
                             <i data-lucide="message-square" class="w-4 h-4 text-[#2DD4BF]"></i>

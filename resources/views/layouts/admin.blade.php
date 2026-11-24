@@ -209,7 +209,7 @@
         <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => $currentTheme['slug'], 'path' => 'theme.css']) }}?v={{ $cssVer }}">
     @endif
 </head>
-<body class="{{ $isChronicles ? 'bg-[#120D18] text-[#EDE4D2]' : (!empty($currentTheme['is_light']) ? 'bg-[#EDE2C7] text-[#3A2A1C]' : 'bg-[#070a13] text-slate-200') }} min-h-screen flex flex-col font-sans antialiased">
+<body x-data="{ devDonationOpen: false }" @open-dev-donation-modal.window="devDonationOpen = true" class="{{ $isChronicles ? 'bg-[#120D18] text-[#EDE4D2]' : (!empty($currentTheme['is_light']) ? 'bg-[#EDE2C7] text-[#3A2A1C]' : 'bg-[#070a13] text-slate-200') }} min-h-screen flex flex-col font-sans antialiased">
     <!-- Top Admin Bar -->
     <header class="admin-header border-b {{ $isChronicles ? 'border-[#5A456C] bg-[#1B1324]' : (!empty($currentTheme['is_light']) ? 'border-[#8C6A2D] bg-[#2D1D13]' : 'border-slate-800 bg-[#0b0f19]') }} sticky top-0 z-30">
         <div class="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -246,6 +246,9 @@
 
     <div class="flex-grow flex">
         <!-- Sidebar Navigation -->
+        @php
+            $modMgr = app(\App\Services\Module\ModuleManager::class);
+        @endphp
         <aside class="admin-sidebar w-64 border-r {{ $isChronicles ? 'border-[#4A3A5A] bg-[#160F1F] text-[#C8BDAA]' : (!empty($currentTheme['is_light']) ? 'border-[#8C6A2D] bg-[#22140B] text-[#E7D5BE]' : 'border-slate-800 bg-[#070a13] text-slate-400') }} p-4 space-y-6 hidden md:block shrink-0">
             <div>
                 <p class="text-[10px] font-bold uppercase tracking-wider {{ $isChronicles ? 'text-[#D4AF37] font-cinzel border-b border-[#3E2E4E] pb-1' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500') }} px-3 mb-2">Operations</p>
@@ -258,54 +261,77 @@
                         <i data-lucide="users" class="w-4 h-4"></i>
                         <span>Game Accounts</span>
                     </a>
-                    <a href="{{ route('admin.characters') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.characters*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="sword" class="w-4 h-4"></i>
-                        <span>Characters</span>
-                    </a>
-                    <a href="{{ route('admin.guilds') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.guilds*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="shield" class="w-4 h-4"></i>
-                        <span>Guilds</span>
-                    </a>
+                    @if($modMgr->isEnabled('character'))
+                        <a href="{{ route('admin.characters') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.characters*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="sword" class="w-4 h-4"></i>
+                            <span>Characters</span>
+                        </a>
+                    @endif
+                    @if($modMgr->isEnabled('guild'))
+                        <a href="{{ route('admin.guilds') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.guilds*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="shield" class="w-4 h-4"></i>
+                            <span>Guilds</span>
+                        </a>
+                    @endif
                 </div>
             </div>
 
+            @php
+                $hasContentRevenue = $modMgr->isEnabled('news') || $modMgr->isEnabled('downloads') || $modMgr->isEnabled('gallery') || $modMgr->isEnabled('marketplace') || $modMgr->isEnabled('support') || $modMgr->isEnabled('faq') || $modMgr->isEnabled('donations');
+            @endphp
+            @if($hasContentRevenue)
             <div>
                 <p class="text-[10px] font-bold uppercase tracking-wider {{ $isChronicles ? 'text-[#D4AF37] font-cinzel border-b border-[#3E2E4E] pb-1' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500') }} px-3 mb-2">Content &amp; Revenue</p>
                 <div class="space-y-1 text-xs">
-                    <a href="{{ route('admin.news.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.news*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="newspaper" class="w-4 h-4"></i>
-                        <span>News &amp; Articles</span>
-                    </a>
-                    <a href="{{ route('admin.downloads.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.downloads*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="download-cloud" class="w-4 h-4"></i>
-                        <span>Downloads Editor</span>
-                    </a>
-                    <a href="{{ route('admin.gallery.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.gallery*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="image" class="w-4 h-4"></i>
-                        <span>Gallery Manager</span>
-                    </a>
-                    <a href="{{ route('admin.marketplace.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.marketplace*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                        <span>Player Marketplace</span>
-                    </a>
-                    <a href="{{ route('admin.support.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.support*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="life-buoy" class="w-4 h-4"></i>
-                        <span>Support Center</span>
-                    </a>
-                    <a href="{{ route('admin.faq.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.faq*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="help-circle" class="w-4 h-4"></i>
-                        <span>FAQ &amp; Knowledge Base</span>
-                    </a>
-                    <a href="{{ route('admin.donations') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ (request()->routeIs('admin.donations') && !request()->routeIs('admin.donations.packages*')) ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="credit-card" class="w-4 h-4"></i>
-                        <span>Donation Approvals</span>
-                    </a>
-                    <a href="{{ route('admin.donations.packages') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.donations.packages*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="gift" class="w-4 h-4"></i>
-                        <span>Packages &amp; Rewards</span>
-                    </a>
+                    @if($modMgr->isEnabled('news'))
+                        <a href="{{ route('admin.news.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.news*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="newspaper" class="w-4 h-4"></i>
+                            <span>News &amp; Articles</span>
+                        </a>
+                    @endif
+                    @if($modMgr->isEnabled('downloads'))
+                        <a href="{{ route('admin.downloads.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.downloads*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="download-cloud" class="w-4 h-4"></i>
+                            <span>Downloads Editor</span>
+                        </a>
+                    @endif
+                    @if($modMgr->isEnabled('gallery'))
+                        <a href="{{ route('admin.gallery.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.gallery*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="image" class="w-4 h-4"></i>
+                            <span>Gallery Manager</span>
+                        </a>
+                    @endif
+                    @if($modMgr->isEnabled('marketplace'))
+                        <a href="{{ route('admin.marketplace.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.marketplace*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                            <span>Player Marketplace</span>
+                        </a>
+                    @endif
+                    @if($modMgr->isEnabled('support'))
+                        <a href="{{ route('admin.support.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.support*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="life-buoy" class="w-4 h-4"></i>
+                            <span>Support Center</span>
+                        </a>
+                    @endif
+                    @if($modMgr->isEnabled('faq'))
+                        <a href="{{ route('admin.faq.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.faq*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="help-circle" class="w-4 h-4"></i>
+                            <span>FAQ &amp; Knowledge Base</span>
+                        </a>
+                    @endif
+                    @if($modMgr->isEnabled('donations'))
+                        <a href="{{ route('admin.donations') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ (request()->routeIs('admin.donations') && !request()->routeIs('admin.donations.packages*')) ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="credit-card" class="w-4 h-4"></i>
+                            <span>Donation Approvals</span>
+                        </a>
+                        <a href="{{ route('admin.donations.packages') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.donations.packages*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="gift" class="w-4 h-4"></i>
+                            <span>Packages &amp; Rewards</span>
+                        </a>
+                    @endif
                 </div>
             </div>
+            @endif
 
             <div>
                 <p class="text-[10px] font-bold uppercase tracking-wider {{ $isChronicles ? 'text-[#D4AF37] font-cinzel border-b border-[#3E2E4E] pb-1' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500') }} px-3 mb-2">System</p>
@@ -330,6 +356,15 @@
                         <i data-lucide="file-text" class="w-4 h-4"></i>
                         <span>Activity Logs</span>
                     </a>
+
+                    <!-- Developer Donation Button -->
+                    <button type="button" @click="devDonationOpen = true" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-semibold transition-all mt-3 group {{ $isChronicles ? 'bg-gradient-to-r from-[#D4AF37]/20 via-[#3A2410]/40 to-[#D4AF37]/10 text-[#FCE69B] border border-[#D4AF37]/50 hover:border-[#FFD700]' : 'bg-gradient-to-r from-amber-500/15 via-rose-500/10 to-indigo-500/15 text-amber-300 border border-amber-500/30 hover:border-amber-400 hover:text-white' }} shadow-sm">
+                        <span class="flex items-center gap-2">
+                            <i data-lucide="heart" class="w-4 h-4 text-rose-400 fill-rose-500/30 group-hover:scale-125 transition-transform"></i>
+                            <span class="text-xs">Support Developer</span>
+                        </span>
+                        <span class="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded tracking-wider {{ $isChronicles ? 'bg-[#D4AF37]/30 text-[#FFD700]' : 'bg-amber-400/20 text-amber-300 border border-amber-400/30' }}">Donate</span>
+                    </button>
                 </div>
             </div>
         </aside>
@@ -356,6 +391,122 @@
                 @yield('content')
             @endif
         </main>
+    </div>
+
+    <!-- Developer Donation Modal -->
+    <div x-show="devDonationOpen" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" 
+         style="display: none;">
+        <div @click.away="devDonationOpen = false" 
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             class="relative w-full max-w-lg rounded-3xl bg-slate-900 border border-amber-500/30 p-6 sm:p-8 shadow-2xl overflow-hidden text-slate-200"
+             x-data="{ copiedGCash: false, copiedBPI: false }">
+            
+            <!-- Glow background effect -->
+            <div class="absolute -top-24 -right-24 w-60 h-60 bg-gradient-to-br from-amber-500/20 via-pink-500/20 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="flex items-start justify-between relative z-10 mb-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-500 p-0.5 shadow-lg shadow-rose-500/20">
+                        <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                            <i data-lucide="heart" class="w-6 h-6 text-rose-400 fill-rose-500/30"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <span>Support the Developer</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold uppercase">AetherCP</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 font-semibold">Mark Willow Aldave</p>
+                    </div>
+                </div>
+                <button type="button" @click="devDonationOpen = false" class="p-1.5 rounded-xl bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed mb-6">
+                Thank you for using and administering <strong class="text-amber-300">Aether Control Panel</strong>! If you appreciate the continuous development, security patches, themes, and feature updates, you can support the developer by sending any amount of donation to his official accounts:
+            </p>
+
+            <div class="space-y-4 relative z-10 mb-6">
+                <!-- GCash Account -->
+                <div class="p-4 rounded-2xl bg-slate-950/80 border border-blue-500/30 hover:border-blue-400/50 transition-colors">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-[0_0_8px_#60a5fa]"></span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-blue-400">GCash</span>
+                        </div>
+                        <button type="button" 
+                                @click="navigator.clipboard.writeText('09653727778'); copiedGCash = true; setTimeout(() => copiedGCash = false, 2500)"
+                                class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 border border-blue-500/40 transition-colors flex items-center gap-1.5">
+                            <i data-lucide="copy" class="w-3.5 h-3.5" x-show="!copiedGCash"></i>
+                            <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400" x-show="copiedGCash" style="display: none;"></i>
+                            <span x-text="copiedGCash ? 'Copied!' : 'Copy Number'"></span>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-lg font-mono font-bold text-white tracking-wider">09653727778</p>
+                            <p class="text-[11px] text-slate-400 font-medium">Account Name: <strong class="text-slate-200">Mark Willow Aldave</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BPI Account -->
+                <div class="p-4 rounded-2xl bg-slate-950/80 border border-red-500/30 hover:border-red-400/50 transition-colors">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-red-400 shadow-[0_0_8px_#f87171]"></span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-red-400">BPI (Bank of the Philippine Islands)</span>
+                        </div>
+                        <button type="button" 
+                                @click="navigator.clipboard.writeText('0856300202'); copiedBPI = true; setTimeout(() => copiedBPI = false, 2500)"
+                                class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-red-500/20 text-red-300 hover:bg-red-500/30 border border-red-500/40 transition-colors flex items-center gap-1.5">
+                            <i data-lucide="copy" class="w-3.5 h-3.5" x-show="!copiedBPI"></i>
+                            <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400" x-show="copiedBPI" style="display: none;"></i>
+                            <span x-text="copiedBPI ? 'Copied!' : 'Copy Account'"></span>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-lg font-mono font-bold text-white tracking-wider">0856300202</p>
+                            <p class="text-[11px] text-slate-400 font-medium">Account Name: <strong class="text-slate-200">Mark Willow Aldave</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 text-xs text-amber-200/90 leading-relaxed mb-6">
+                <p class="font-semibold text-amber-300 mb-1 flex items-center gap-1.5">
+                    <i data-lucide="info" class="w-4 h-4 text-amber-400"></i>
+                    <span>How to send support:</span>
+                </p>
+                <ol class="list-decimal list-inside space-y-1 text-slate-300 pl-1">
+                    <li>Open your GCash or BPI Banking mobile app.</li>
+                    <li>Select <strong>Send Money / Transfer Funds</strong>.</li>
+                    <li>Enter the account number and name (Mark Willow Aldave).</li>
+                    <li>Input any amount you wish to contribute to the project.</li>
+                </ol>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <button type="button" @click="devDonationOpen = false" class="px-5 py-2.5 rounded-xl font-bold bg-slate-800 hover:bg-slate-700 text-white text-xs transition-colors">
+                    Close
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>

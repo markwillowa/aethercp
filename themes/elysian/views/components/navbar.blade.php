@@ -1,3 +1,6 @@
+@php
+    $modMgr = app(\App\Services\Module\ModuleManager::class);
+@endphp
 <nav x-data="{ mobileOpen: false, userDropdown: false }" class="relative z-20 border-b border-amber-500/20 bg-[#080d1a]/95 backdrop-blur-md sticky top-0 shadow-lg shadow-black/40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
@@ -21,30 +24,44 @@
                 <a href="{{ route('home') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('home') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Home
                 </a>
+                @if($modMgr->isEnabled('news'))
                 <a href="{{ route('news.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('news.*') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     News
                 </a>
+                @endif
+                @if($modMgr->isEnabled('rankings'))
                 <a href="{{ route('rankings.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('rankings.*') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Rankings
                 </a>
+                @endif
+                @if($modMgr->isEnabled('guild'))
                 <a href="{{ route('guilds.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('guilds.*') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Guilds
                 </a>
+                @endif
+                @if($modMgr->isEnabled('character'))
                 <a href="{{ route('characters.online') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('characters.online') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Online
                 </a>
+                @endif
                 <a href="{{ route('woe.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('woe.*') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     WoE
                 </a>
+                @if($modMgr->isEnabled('itemdb'))
                 <a href="{{ route('itemdb.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('itemdb.*') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Database
                 </a>
+                @endif
+                @if($modMgr->isEnabled('downloads'))
                 <a href="{{ route('downloads.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('downloads.*') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Downloads
                 </a>
+                @endif
+                @if($modMgr->isEnabled('donations'))
                 <a href="{{ route('donations.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('donations.*') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Donations
                 </a>
+                @endif
             </div>
 
             <!-- Right Side Auth / User Controls -->
@@ -78,10 +95,12 @@
                                     <i data-lucide="user" class="w-3.5 h-3.5 text-amber-400"></i>
                                     <span>Account Profile</span>
                                 </a>
+                                @if($modMgr->isEnabled('character'))
                                 <a href="{{ route('account.characters') }}" class="flex items-center gap-2 px-4 py-2 text-xs text-slate-300 hover:text-amber-300 hover:bg-slate-800/60 transition-colors">
                                     <i data-lucide="shield" class="w-3.5 h-3.5 text-amber-400"></i>
                                     <span>My Characters</span>
                                 </a>
+                                @endif
                                 @if(auth()->user()->isAdmin())
                                     <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-xs text-amber-400 font-semibold hover:bg-amber-500/10 transition-colors">
                                         <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-400"></i>
@@ -125,14 +144,28 @@
     <!-- Mobile Drawer -->
     <div x-show="mobileOpen" class="md:hidden border-t border-amber-500/20 bg-[#080d1a] px-4 pt-3 pb-6 space-y-2">
         <a href="{{ route('home') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-amber-300 bg-amber-500/10">Home</a>
+        @if($modMgr->isEnabled('news'))
         <a href="{{ route('news.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">News</a>
+        @endif
+        @if($modMgr->isEnabled('rankings'))
         <a href="{{ route('rankings.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Rankings</a>
+        @endif
+        @if($modMgr->isEnabled('guild'))
         <a href="{{ route('guilds.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Guilds</a>
+        @endif
+        @if($modMgr->isEnabled('character'))
         <a href="{{ route('characters.online') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Online</a>
+        @endif
         <a href="{{ route('woe.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">WoE</a>
+        @if($modMgr->isEnabled('itemdb'))
         <a href="{{ route('itemdb.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Database</a>
+        @endif
+        @if($modMgr->isEnabled('downloads'))
         <a href="{{ route('downloads.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Downloads</a>
+        @endif
+        @if($modMgr->isEnabled('donations'))
         <a href="{{ route('donations.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Donations</a>
+        @endif
     </div>
 </nav>
 

@@ -2,9 +2,15 @@
 
 @section('admin_content')
 <div class="space-y-6">
-    <div class="border-b border-slate-800 pb-4">
-        <h1 class="text-2xl font-bold text-white">System Activity & Audit Logs</h1>
-        <p class="text-xs text-slate-400 mt-1">Security logs, logins, administrative actions, and unstuck history.</p>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+            <h1 class="text-2xl font-bold text-white">System Activity & Audit Logs</h1>
+            <p class="text-xs text-slate-400 mt-1">Security logs, logins, administrative actions, and unstuck history.</p>
+        </div>
+        <button type="button" @click="$dispatch('open-dev-donation-modal')" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 via-pink-500 to-rose-500 hover:from-amber-400 hover:to-pink-400 text-slate-950 shadow-lg shadow-pink-500/20 transition-all flex items-center gap-2 shrink-0">
+            <i data-lucide="heart" class="w-4 h-4 text-slate-950 fill-current"></i>
+            <span>Support Developer</span>
+        </button>
     </div>
 
     <div class="bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">

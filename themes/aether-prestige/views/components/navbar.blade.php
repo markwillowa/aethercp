@@ -1,5 +1,6 @@
 @php
     $isHome = request()->routeIs('home');
+    $modMgr = app(\App\Services\Module\ModuleManager::class);
 @endphp
 <header class="{{ $isHome ? 'prestige-header-transparent' : 'prestige-header-solid' }}">
     <div class="prestige-container">
@@ -17,21 +18,31 @@
                 <a href="{{ route('woe.index') }}" class="prestige-nav-link {{ request()->routeIs('woe.*') ? 'active' : '' }}">
                     World
                 </a>
-                <a href="{{ route('characters.online') }}" class="prestige-nav-link {{ request()->routeIs('characters.*') ? 'active' : '' }}">
-                    Characters
-                </a>
-                <a href="{{ route('rankings.index') }}" class="prestige-nav-link {{ request()->routeIs('rankings.*') ? 'active' : '' }}">
-                    Rankings
-                </a>
-                <a href="{{ route('itemdb.index') }}" class="prestige-nav-link {{ request()->routeIs('itemdb.*') ? 'active' : '' }}">
-                    Database
-                </a>
-                <a href="{{ route('news.index') }}" class="prestige-nav-link {{ request()->routeIs('news.*') ? 'active' : '' }}">
-                    Media
-                </a>
-                <a href="{{ route('downloads.index') }}" class="prestige-nav-link {{ request()->routeIs('downloads.*') ? 'active' : '' }}">
-                    Downloads
-                </a>
+                @if($modMgr->isEnabled('character'))
+                    <a href="{{ route('characters.online') }}" class="prestige-nav-link {{ request()->routeIs('characters.*') ? 'active' : '' }}">
+                        Characters
+                    </a>
+                @endif
+                @if($modMgr->isEnabled('rankings'))
+                    <a href="{{ route('rankings.index') }}" class="prestige-nav-link {{ request()->routeIs('rankings.*') ? 'active' : '' }}">
+                        Rankings
+                    </a>
+                @endif
+                @if($modMgr->isEnabled('itemdb'))
+                    <a href="{{ route('itemdb.index') }}" class="prestige-nav-link {{ request()->routeIs('itemdb.*') ? 'active' : '' }}">
+                        Database
+                    </a>
+                @endif
+                @if($modMgr->isEnabled('news'))
+                    <a href="{{ route('news.index') }}" class="prestige-nav-link {{ request()->routeIs('news.*') ? 'active' : '' }}">
+                        Media
+                    </a>
+                @endif
+                @if($modMgr->isEnabled('downloads'))
+                    <a href="{{ route('downloads.index') }}" class="prestige-nav-link {{ request()->routeIs('downloads.*') ? 'active' : '' }}">
+                        Downloads
+                    </a>
+                @endif
             </nav>
 
             <!-- Right: User Account Profile (Matching reference: 'FERDI' with square avatar box) -->
@@ -108,13 +119,27 @@
         <div class="grid grid-cols-2 gap-2 text-xs font-semibold">
             <a href="{{ route('home') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Home</a>
             <a href="{{ route('woe.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">World (WoE)</a>
-            <a href="{{ route('characters.online') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Characters</a>
-            <a href="{{ route('rankings.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Rankings</a>
-            <a href="{{ route('guilds.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Guilds</a>
-            <a href="{{ route('itemdb.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Item Codex</a>
-            <a href="{{ route('news.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Media & News</a>
-            <a href="{{ route('downloads.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Downloads</a>
-            <a href="{{ route('donations.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Donations</a>
+            @if($modMgr->isEnabled('character'))
+                <a href="{{ route('characters.online') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Characters</a>
+            @endif
+            @if($modMgr->isEnabled('rankings'))
+                <a href="{{ route('rankings.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Rankings</a>
+            @endif
+            @if($modMgr->isEnabled('guild'))
+                <a href="{{ route('guilds.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Guilds</a>
+            @endif
+            @if($modMgr->isEnabled('itemdb'))
+                <a href="{{ route('itemdb.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Item Codex</a>
+            @endif
+            @if($modMgr->isEnabled('news'))
+                <a href="{{ route('news.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Media &amp; News</a>
+            @endif
+            @if($modMgr->isEnabled('downloads'))
+                <a href="{{ route('downloads.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Downloads</a>
+            @endif
+            @if($modMgr->isEnabled('donations'))
+                <a href="{{ route('donations.index') }}" class="p-2.5 rounded-lg bg-[#151B26] text-white hover:text-[#C6A76A]">Donations</a>
+            @endif
         </div>
 
         <div class="pt-3 border-t border-white/10 flex items-center justify-between">
