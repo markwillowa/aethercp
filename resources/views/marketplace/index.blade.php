@@ -3,7 +3,7 @@
 @section('title', 'Aether Trade House - Player Marketplace')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6" x-data="{
+<div class="chronicles-container py-8 space-y-6" x-data="{
     buyModalOpen: false,
     selectedListing: null,
     buyQuantity: 1,
@@ -41,7 +41,7 @@
 }">
 
     <!-- 1. TRADE HOUSE HEADER BOARD -->
-    <div class="rounded-2xl p-5 relative overflow-hidden shadow-2xl" style="background: linear-gradient(180deg, #241A2E 0%, #17111F 100%); border: 2px solid #806442; box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 15px rgba(182,154,101,0.15);">
+    <div class="chronicles-panel p-5 relative overflow-hidden" style="background: linear-gradient(180deg, #241A2E 0%, #17111F 100%); border: 2px solid #806442; box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 15px rgba(182,154,101,0.15);">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
             <!-- Title & Atmosphere -->
             <div class="flex items-center gap-4">
@@ -162,55 +162,70 @@
     <!-- ==================== TAB 1: BROWSE MARKET ==================== -->
     @if($tab === 'browse')
         <div class="space-y-4">
-            <!-- Filter Toolbar -->
-            <div class="p-4 rounded-2xl" style="background: #1C1525; border: 1px solid #3E2E4E;">
-                <form action="{{ route('marketplace.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+            <!-- Search & Filter Toolbar -->
+            <div class="chronicles-panel p-4" style="background: #1C1525; border: 1.5px solid #4A3A5A;">
+                <form action="{{ route('marketplace.index') }}" method="GET" class="space-y-3">
                     <input type="hidden" name="tab" value="browse">
 
-                    <!-- Search Input -->
-                    <div class="lg:col-span-2">
-                        <label class="text-[10px] font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Search Item Name or ID</label>
-                        <div class="relative">
-                            <input type="text" name="q" value="{{ request('q') }}" placeholder="e.g. Blade, Tsurugi, Poring Card..." class="w-full pl-9 pr-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-[#EDE4D2] focus:border-[#D4AF37]">
-                            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+                    <!-- Search Input & Button in one unified row -->
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                        <div class="relative flex-1">
+                            <input type="text" name="q" value="{{ request('q') }}" placeholder="Search by item name or ID (e.g. Blade, Tsurugi, Poring Card)..." 
+                                   class="w-full pl-9 pr-3 py-2 bg-[#140E1B] border border-[#5A4A68] rounded text-xs text-[#E8DCC9] placeholder:text-[#7A6B85] focus:outline-none focus:border-[#D4AF37]">
+                            <i data-lucide="search" class="w-4 h-4 text-[#A898B5] absolute left-3 top-2.5"></i>
+                        </div>
+
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="submit" class="chronicles-btn-gold py-2 px-5 cursor-pointer">
+                                <i data-lucide="search" class="w-3.5 h-3.5 mr-1"></i>
+                                <span>Filter Market</span>
+                            </button>
+                            @if(request('q') || (request('type') && request('type') !== 'all') || (request('currency') && request('currency') !== 'all') || request('sort'))
+                                <a href="{{ route('marketplace.index', ['tab' => 'browse']) }}" class="chronicles-btn-dark py-2 px-3 cursor-pointer" title="Reset Filters">
+                                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                                    <span>Reset</span>
+                                </a>
+                            @endif
                         </div>
                     </div>
 
-                    <!-- Category Filter -->
-                    <div>
-                        <label class="text-[10px] font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Category</label>
-                        <select name="type" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-[#EDE4D2] focus:border-[#D4AF37]">
-                            <option value="all">All Categories</option>
-                            <option value="Weapon" {{ request('type') === 'Weapon' ? 'selected' : '' }}>Weapons</option>
-                            <option value="Armor" {{ request('type') === 'Armor' ? 'selected' : '' }}>Armor &amp; Shields</option>
-                            <option value="Card" {{ request('type') === 'Card' ? 'selected' : '' }}>Cards</option>
-                            <option value="Consumable" {{ request('type') === 'Consumable' ? 'selected' : '' }}>Consumables</option>
-                            <option value="Etc" {{ request('type') === 'Etc' ? 'selected' : '' }}>Materials &amp; Etc</option>
-                        </select>
-                    </div>
+                    <!-- Category, Currency, and Sort Order in a clean 3-column row -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2.5 border-t border-[#2F233B]">
+                        <div>
+                            <label class="text-[10px] font-bold text-[#D4AF37] uppercase tracking-wider block mb-1 font-cinzel">Category</label>
+                            <select name="type" onchange="this.form.submit()" class="w-full px-3 py-1.5 bg-[#140E1B] border border-[#5A4A68] rounded text-xs text-[#E8DCC9] focus:outline-none focus:border-[#D4AF37] cursor-pointer">
+                                <option value="all">All Categories</option>
+                                <option value="Weapon" {{ request('type') === 'Weapon' ? 'selected' : '' }}>Weapons</option>
+                                <option value="Armor" {{ request('type') === 'Armor' ? 'selected' : '' }}>Armor &amp; Shields</option>
+                                <option value="Card" {{ request('type') === 'Card' ? 'selected' : '' }}>Monster Cards</option>
+                                <option value="Consumable" {{ request('type') === 'Consumable' ? 'selected' : '' }}>Potions &amp; Consumables</option>
+                                <option value="Etc" {{ request('type') === 'Etc' ? 'selected' : '' }}>Materials &amp; Loot</option>
+                            </select>
+                        </div>
 
-                    <!-- Currency Filter -->
-                    <div>
-                        <label class="text-[10px] font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Currency</label>
-                        <select name="currency" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-[#EDE4D2] focus:border-[#D4AF37]">
-                            <option value="all">Any Currency</option>
-                            <option value="zeny" {{ request('currency') === 'zeny' ? 'selected' : '' }}>Zeny (Z)</option>
-                            <option value="cashpoints" {{ request('currency') === 'cashpoints' ? 'selected' : '' }}>Cash Points (CP)</option>
-                        </select>
-                    </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-[#D4AF37] uppercase tracking-wider block mb-1 font-cinzel">Currency</label>
+                            <select name="currency" onchange="this.form.submit()" class="w-full px-3 py-1.5 bg-[#140E1B] border border-[#5A4A68] rounded text-xs text-[#E8DCC9] focus:outline-none focus:border-[#D4AF37] cursor-pointer">
+                                <option value="all">Any Currency (Zeny &amp; CP)</option>
+                                <option value="zeny" {{ request('currency') === 'zeny' ? 'selected' : '' }}>Zeny (Z) Only</option>
+                                <option value="cashpoints" {{ request('currency') === 'cashpoints' ? 'selected' : '' }}>Cash Points (CP) Only</option>
+                            </select>
+                        </div>
 
-                    <!-- Action Button -->
-                    <div>
-                        <button type="submit" class="w-full py-2 px-4 rounded-xl text-xs font-bold font-cinzel bg-gradient-to-b from-[#E5B358] to-[#B8860B] text-[#17111F] border border-[#FCE69B] shadow hover:brightness-110 transition-all flex items-center justify-center gap-2 cursor-pointer">
-                            <i data-lucide="filter" class="w-4 h-4"></i>
-                            Filter Market
-                        </button>
+                        <div>
+                            <label class="text-[10px] font-bold text-[#D4AF37] uppercase tracking-wider block mb-1 font-cinzel">Sort Order</label>
+                            <select name="sort" onchange="this.form.submit()" class="w-full px-3 py-1.5 bg-[#140E1B] border border-[#5A4A68] rounded text-xs text-[#E8DCC9] focus:outline-none focus:border-[#D4AF37] cursor-pointer">
+                                <option value="newest" {{ request('sort') === 'newest' || !request('sort') ? 'selected' : '' }}>Recently Listed</option>
+                                <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>Price: Lowest First</option>
+                                <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Price: Highest First</option>
+                            </select>
+                        </div>
                     </div>
                 </form>
             </div>
 
             <!-- Items Table -->
-            <div class="rounded-2xl overflow-hidden shadow-2xl" style="background: #1C1525; border: 2px solid #3E2E4E;">
+            <div class="chronicles-panel overflow-hidden shadow-2xl" style="background: #1C1525; border: 2px solid #3E2E4E;">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
@@ -286,8 +301,8 @@
                                             <span class="text-slate-500 text-[11px] italic font-cinzel">Your Listing</span>
                                         @else
                                             <button @click="openBuyModal({{ json_encode($listing) }})" 
-                                                    class="px-3.5 py-1.5 rounded-xl text-xs font-bold font-cinzel bg-gradient-to-b from-[#E5B358] to-[#B8860B] text-[#17111F] border border-[#FCE69B] shadow hover:brightness-110 transition-all inline-flex items-center gap-1.5 cursor-pointer">
-                                                <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i>
+                                                    class="chronicles-btn-gold py-1.5 px-3.5 cursor-pointer">
+                                                <i data-lucide="shopping-cart" class="w-3.5 h-3.5 mr-1"></i>
                                                 Buy Item
                                             </button>
                                         @endif
@@ -316,7 +331,7 @@
     <!-- ==================== TAB 2: DEPOSIT FROM STORAGE ==================== -->
     @if($tab === 'storage')
         <div class="space-y-4">
-            <div class="p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3" style="background: #1C1525; border: 1px solid #3E2E4E;">
+            <div class="chronicles-panel p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3" style="background: #1C1525; border: 1px solid #3E2E4E;">
                 <div>
                     <h3 class="text-sm font-bold text-white font-cinzel">In-Game Kafra Storage Inventory</h3>
                     <p class="text-xs text-[#C8BDAA]">Select an item from your personal Kafra storage to move into Trade House escrow custody.</p>
@@ -326,7 +341,7 @@
                 </div>
             </div>
 
-            <div class="rounded-2xl overflow-hidden shadow-2xl" style="background: #1C1525; border: 2px solid #3E2E4E;">
+            <div class="chronicles-panel overflow-hidden shadow-2xl" style="background: #1C1525; border: 2px solid #3E2E4E;">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
@@ -368,8 +383,8 @@
                                     <td class="py-3.5 px-4 text-right">
                                         @if($sItem['is_transferable'])
                                             <button @click="openTransferModal({{ json_encode($sItem) }})" 
-                                                    class="px-3.5 py-1.5 rounded-xl text-xs font-bold font-cinzel bg-[#D4AF37]/20 text-[#FCE69B] hover:bg-[#D4AF37]/30 border border-[#D4AF37]/40 transition-all inline-flex items-center gap-1.5 cursor-pointer">
-                                                <i data-lucide="arrow-right-circle" class="w-3.5 h-3.5"></i>
+                                                    class="chronicles-btn-gold py-1.5 px-3.5 cursor-pointer">
+                                                <i data-lucide="arrow-right-circle" class="w-3.5 h-3.5 mr-1"></i>
                                                 Deposit Item
                                             </button>
                                         @else
@@ -394,14 +409,14 @@
     <!-- ==================== TAB 3: CUSTODY INVENTORY & SELL ==================== -->
     @if($tab === 'custody')
         <div class="space-y-4">
-            <div class="p-4 rounded-2xl flex items-center justify-between" style="background: #1C1525; border: 1px solid #3E2E4E;">
+            <div class="chronicles-panel p-4 flex items-center justify-between" style="background: #1C1525; border: 1px solid #3E2E4E;">
                 <div>
                     <h3 class="text-sm font-bold text-white font-cinzel">Trade House Custody Vault</h3>
                     <p class="text-xs text-[#C8BDAA]">Items safely escrowed in the Trade House. You may list them for sale or withdraw them back to Kafra storage.</p>
                 </div>
             </div>
 
-            <div class="rounded-2xl overflow-hidden shadow-2xl" style="background: #1C1525; border: 2px solid #3E2E4E;">
+            <div class="chronicles-panel overflow-hidden shadow-2xl" style="background: #1C1525; border: 2px solid #3E2E4E;">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
@@ -436,15 +451,15 @@
                                     </td>
                                     <td class="py-3.5 px-4 text-right space-x-2">
                                         <button @click="openSellModal({{ json_encode($cItem) }})" 
-                                                class="px-3.5 py-1.5 rounded-xl text-xs font-bold font-cinzel bg-gradient-to-b from-[#E5B358] to-[#B8860B] text-[#17111F] border border-[#FCE69B] shadow hover:brightness-110 transition-all inline-flex items-center gap-1.5 cursor-pointer">
-                                            <i data-lucide="tag" class="w-3.5 h-3.5"></i>
+                                                class="chronicles-btn-gold py-1.5 px-3.5 cursor-pointer">
+                                            <i data-lucide="tag" class="w-3.5 h-3.5 mr-1"></i>
                                             List for Sale
                                         </button>
 
                                         <form action="{{ route('marketplace.withdraw', $cItem->id) }}" method="POST" class="inline" onsubmit="return confirm('Withdraw this item back to your in-game Kafra storage?');">
                                             @csrf
-                                            <button type="submit" class="px-3 py-1.5 rounded-xl text-xs font-bold font-cinzel bg-[#251A33] text-slate-300 hover:text-white hover:bg-[#352643] border border-[#4A3A5A] transition-all inline-flex items-center gap-1 cursor-pointer">
-                                                <i data-lucide="arrow-left-circle" class="w-3.5 h-3.5"></i>
+                                            <button type="submit" class="chronicles-btn-dark py-1.5 px-3 cursor-pointer">
+                                                <i data-lucide="arrow-left-circle" class="w-3.5 h-3.5 mr-1"></i>
                                                 Withdraw
                                             </button>
                                         </form>
@@ -467,14 +482,14 @@
     <!-- ==================== TAB 4: MY ACTIVE LISTINGS ==================== -->
     @if($tab === 'my_listings')
         <div class="space-y-4">
-            <div class="p-4 rounded-2xl flex items-center justify-between" style="background: #1C1525; border: 1px solid #3E2E4E;">
+            <div class="chronicles-panel p-4 flex items-center justify-between" style="background: #1C1525; border: 1px solid #3E2E4E;">
                 <div>
                     <h3 class="text-sm font-bold text-white font-cinzel">My Active Consignments</h3>
                     <p class="text-xs text-[#C8BDAA]">Track your current items listed on the Trade House, monitor countdowns, and cancel unsold listings.</p>
                 </div>
             </div>
 
-            <div class="rounded-2xl overflow-hidden shadow-2xl" style="background: #1C1525; border: 2px solid #3E2E4E;">
+            <div class="chronicles-panel overflow-hidden shadow-2xl" style="background: #1C1525; border: 2px solid #3E2E4E;">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
@@ -567,14 +582,14 @@
     <!-- ==================== TAB 5: TRADE HISTORY ==================== -->
     @if($tab === 'history')
         <div class="space-y-4">
-            <div class="p-4 rounded-2xl flex items-center justify-between" style="background: #1C1525; border: 1px solid #3E2E4E;">
+            <div class="chronicles-panel p-4 flex items-center justify-between" style="background: #1C1525; border: 1px solid #3E2E4E;">
                 <div>
                     <h3 class="text-sm font-bold text-white font-cinzel">Transaction Ledger &amp; Audit Trail</h3>
                     <p class="text-xs text-[#C8BDAA]">Complete immutable history of your purchases and sales completed in the Trade House.</p>
                 </div>
             </div>
 
-            <div class="rounded-2xl overflow-hidden shadow-2xl" style="background: #1C1525; border: 2px solid #3E2E4E;">
+            <div class="chronicles-panel overflow-hidden shadow-2xl" style="background: #1C1525; border: 2px solid #3E2E4E;">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
@@ -697,8 +712,8 @@
                     </div>
 
                     <div class="flex justify-end gap-3 pt-2">
-                        <button type="button" @click="buyModalOpen = false" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#251A33] text-slate-300 hover:text-white border border-[#4A3A5A] cursor-pointer">Cancel</button>
-                        <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold font-cinzel bg-gradient-to-b from-[#E5B358] to-[#B8860B] text-[#17111F] border border-[#FCE69B] shadow hover:brightness-110 cursor-pointer">Confirm Buyout</button>
+                        <button type="button" @click="buyModalOpen = false" class="chronicles-btn-dark py-2 px-4 cursor-pointer">Cancel</button>
+                        <button type="submit" class="chronicles-btn-gold py-2 px-5 cursor-pointer">Confirm Buyout</button>
                     </div>
                 </form>
             </template>
@@ -745,8 +760,8 @@
                     </div>
 
                     <div class="flex justify-end gap-3 pt-2">
-                        <button type="button" @click="transferModalOpen = false" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#251A33] text-slate-300 hover:text-white border border-[#4A3A5A] cursor-pointer">Cancel</button>
-                        <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold font-cinzel bg-gradient-to-b from-[#E5B358] to-[#B8860B] text-[#17111F] border border-[#FCE69B] shadow hover:brightness-110 cursor-pointer">Transfer Item</button>
+                        <button type="button" @click="transferModalOpen = false" class="chronicles-btn-dark py-2 px-4 cursor-pointer">Cancel</button>
+                        <button type="submit" class="chronicles-btn-gold py-2 px-5 cursor-pointer">Transfer Item</button>
                     </div>
                 </form>
             </template>
@@ -840,8 +855,8 @@
                     </div>
 
                     <div class="flex justify-end gap-3 pt-2">
-                        <button type="button" @click="listModalOpen = false" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#251A33] text-slate-300 hover:text-white border border-[#4A3A5A] cursor-pointer">Cancel</button>
-                        <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold font-cinzel bg-gradient-to-b from-[#E5B358] to-[#B8860B] text-[#17111F] border border-[#FCE69B] shadow hover:brightness-110 cursor-pointer">Post Consignment</button>
+                        <button type="button" @click="listModalOpen = false" class="chronicles-btn-dark py-2 px-4 cursor-pointer">Cancel</button>
+                        <button type="submit" class="chronicles-btn-gold py-2 px-5 cursor-pointer">Post Consignment</button>
                     </div>
                 </form>
             </template>

@@ -186,6 +186,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/marketplace', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'index'])->name('marketplace.index');
     Route::post('/marketplace/settings', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'updateSettings'])->name('marketplace.settings');
     Route::post('/marketplace/cancel/{id}', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'cancelListing'])->name('marketplace.cancel');
+    Route::post('/marketplace/return/{id}', [\App\Http\Controllers\Admin\AdminMarketplaceController::class, 'returnItem'])->name('marketplace.return');
 
     // Item Database Search for Admin Selectors
     Route::get('/items/search', [AdminController::class, 'searchItems'])->name('items.search');

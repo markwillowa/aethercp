@@ -388,6 +388,85 @@ class MarketplaceEscrowService
     }
 
     /**
+     * Admin force-returns an item from custody or active listing back into the owner's Kafra storage.
+     */
+    public function adminForceWithdrawToStorage(int $marketplaceItemId): bool
+    {
+        $item = MarketplaceItem::where('id', $marketplaceItemId)
+            ->lockForUpdate()
+            ->first();
+
+        if (!$item) {
+            throw new \RuntimeException('Marketplace custody item not found.');
+        }
+
+        if ($item->status === 'withdrawn') {
+            throw new \RuntimeException('This item has already been returned to player storage.');
+        }
+
+        if ($item->status === 'sold') {
+            throw new \RuntimeException('Cannot return an item that was already purchased and fulfilled.');
+        }
+
+        // If the item is actively listed, cancel the listing first
+        if ($item->status === 'listed') {
+            MarketplaceListing::where('marketplace_item_id', $item->id)
+                ->where('status', 'active')
+                ->update([
+                    'status' => 'cancelled',
+                    'cancelled_at' => now(),
+                ]);
+        }
+
+        $conn = DB::connection('ragnarok');
+
+        return DB::transaction(function () use ($conn, $item) {
+            $canStack = ($item->refine == 0 && $item->card0 == 0 && $item->card1 == 0 && $item->card2 == 0 && $item->card3 == 0);
+            $merged = false;
+
+            if ($canStack) {
+                $existing = $conn->table('storage')
+                    ->where('account_id', $item->account_id)
+                    ->where('nameid', $item->nameid)
+                    ->where('refine', 0)
+                    ->where('card0', 0)
+                    ->first();
+
+                if ($existing && ($existing->amount + $item->amount) <= 30000) {
+                    $conn->table('storage')->where('id', $existing->id)->increment('amount', $item->amount);
+                    $merged = true;
+                }
+            }
+
+            if (!$merged) {
+                $conn->table('storage')->insert([
+                    'account_id' => $item->account_id,
+                    'nameid' => $item->nameid,
+                    'amount' => $item->amount,
+                    'equip' => $item->equip,
+                    'identify' => $item->identify,
+                    'refine' => $item->refine,
+                    'attribute' => $item->attribute,
+                    'card0' => $item->card0,
+                    'card1' => $item->card1,
+                    'card2' => $item->card2,
+                    'card3' => $item->card3,
+                    'expire_time' => $item->expire_time,
+                    'bound' => $item->bound,
+                    'unique_id' => $item->unique_id,
+                ]);
+            }
+
+            $item->update([
+                'status' => 'withdrawn',
+                'withdrawn_at' => now(),
+            ]);
+
+            return true;
+        });
+    }
+
+    /**
      * Create a new marketplace listing from an item in custody.
      */
     public function createListing(
