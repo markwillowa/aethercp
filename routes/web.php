@@ -47,11 +47,19 @@ Route::middleware('module:guild')->group(function () {
     Route::get('/woe', [\App\Http\Controllers\Public\WoeController::class, 'index'])->name('woe.index');
 });
 
-// Item Database
+// Item & Game Database Center
 Route::middleware('module:itemdb')->group(function () {
     Route::get('/database/items', [ItemDbController::class, 'index'])->name('itemdb.index');
+    Route::get('/database', [ItemDbController::class, 'index'])->name('database.items');
     Route::get('/database/items/{id}', [ItemDbController::class, 'show'])->name('itemdb.show');
+    Route::get('/database/monsters', [ItemDbController::class, 'monsters'])->name('database.monsters');
+    Route::get('/database/monsters/{id}', [ItemDbController::class, 'showMonster'])->name('database.monsters.show');
+    Route::get('/database/maps', [ItemDbController::class, 'maps'])->name('database.maps');
 });
+
+// Server Status & Demographics
+Route::get('/server-status', [\App\Http\Controllers\Public\ServerStatusController::class, 'index'])->name('server.status');
+Route::get('/status', [\App\Http\Controllers\Public\ServerStatusController::class, 'index'])->name('status');
 
 // Downloads
 Route::middleware('module:downloads')->group(function () {

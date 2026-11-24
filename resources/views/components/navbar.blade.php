@@ -30,6 +30,9 @@
                 <a href="{{ route('guilds.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('guilds.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Guilds
                 </a>
+                <a href="{{ route('server.status') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('server.status') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                    Status
+                </a>
                 <a href="{{ route('characters.online') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('characters.online') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Online
                 </a>

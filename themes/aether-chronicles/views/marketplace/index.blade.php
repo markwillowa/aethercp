@@ -162,26 +162,29 @@
     <!-- ==================== TAB 1: BROWSE MARKET ==================== -->
     @if($tab === 'browse')
         <div class="space-y-4">
-            <!-- Search & Filter Toolbar -->
-            <div class="chronicles-panel p-4" style="background: #1C1525; border: 1.5px solid #4A3A5A;">
+            <!-- Neverwinter-Style Trade House Search & Filter Console -->
+            <div class="chronicles-panel p-4" style="background: linear-gradient(180deg, #1F162A 0%, #160F1E 100%); border: 2px solid #5A456B; box-shadow: 0 4px 20px rgba(0,0,0,0.6);">
                 <form action="{{ route('marketplace.index') }}" method="GET" class="space-y-3">
                     <input type="hidden" name="tab" value="browse">
 
-                    <!-- Search Input & Button in one unified row -->
-                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                    <!-- Search Row with Dedicated Icon and Generous Left Padding -->
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                         <div class="relative flex-1">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+                                <i data-lucide="search" class="w-4 h-4 text-[#C9A96E]"></i>
+                            </div>
                             <input type="text" name="q" value="{{ request('q') }}" placeholder="Search by item name or ID (e.g. Blade, Tsurugi, Poring Card)..." 
-                                   class="w-full pl-9 pr-3 py-2 bg-[#140E1B] border border-[#5A4A68] rounded text-xs text-[#E8DCC9] placeholder:text-[#7A6B85] focus:outline-none focus:border-[#D4AF37]">
-                            <i data-lucide="search" class="w-4 h-4 text-[#A898B5] absolute left-3 top-2.5"></i>
+                                   style="padding-left: 3rem !important; padding-right: 1.25rem !important; height: 44px;"
+                                   class="w-full bg-[#110B17] border border-[#6B537F] rounded-xl text-xs font-medium text-[#F3E5AB] placeholder:text-[#8D7D9A] focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all shadow-inner">
                         </div>
 
                         <div class="flex items-center gap-2 shrink-0">
-                            <button type="submit" class="chronicles-btn-gold py-2 px-5 cursor-pointer">
-                                <i data-lucide="search" class="w-3.5 h-3.5 mr-1"></i>
-                                <span>Filter Market</span>
+                            <button type="submit" class="chronicles-btn-gold py-2.5 px-6 cursor-pointer flex items-center gap-1.5 shadow-md">
+                                <i data-lucide="search" class="w-4 h-4"></i>
+                                <span class="tracking-wide">SEARCH MARKET</span>
                             </button>
                             @if(request('q') || (request('type') && request('type') !== 'all') || (request('currency') && request('currency') !== 'all') || request('sort'))
-                                <a href="{{ route('marketplace.index', ['tab' => 'browse']) }}" class="chronicles-btn-dark py-2 px-3 cursor-pointer" title="Reset Filters">
+                                <a href="{{ route('marketplace.index', ['tab' => 'browse']) }}" class="chronicles-btn-dark py-2.5 px-3.5 cursor-pointer flex items-center gap-1" title="Reset Filters">
                                     <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
                                     <span>Reset</span>
                                 </a>
@@ -189,11 +192,14 @@
                         </div>
                     </div>
 
-                    <!-- Category, Currency, and Sort Order in a clean 3-column row -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2.5 border-t border-[#2F233B]">
+                    <!-- Trade House Filter Specifications -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-[#352643]">
                         <div>
-                            <label class="text-[10px] font-bold text-[#D4AF37] uppercase tracking-wider block mb-1 font-cinzel">Category</label>
-                            <select name="type" onchange="this.form.submit()" class="w-full px-3 py-1.5 bg-[#140E1B] border border-[#5A4A68] rounded text-xs text-[#E8DCC9] focus:outline-none focus:border-[#D4AF37] cursor-pointer">
+                            <label class="text-[10px] font-bold text-[#D4AF37] uppercase tracking-wider block mb-1 font-cinzel flex items-center gap-1">
+                                <i data-lucide="layers" class="w-3 h-3"></i>
+                                <span>Item Category</span>
+                            </label>
+                            <select name="type" onchange="this.form.submit()" class="w-full px-3 py-2 bg-[#110B17] border border-[#6B537F] rounded-lg text-xs font-medium text-[#EDE4D2] focus:outline-none focus:border-[#D4AF37] cursor-pointer">
                                 <option value="all">All Categories</option>
                                 <option value="Weapon" {{ request('type') === 'Weapon' ? 'selected' : '' }}>Weapons</option>
                                 <option value="Armor" {{ request('type') === 'Armor' ? 'selected' : '' }}>Armor &amp; Shields</option>
@@ -204,8 +210,11 @@
                         </div>
 
                         <div>
-                            <label class="text-[10px] font-bold text-[#D4AF37] uppercase tracking-wider block mb-1 font-cinzel">Currency</label>
-                            <select name="currency" onchange="this.form.submit()" class="w-full px-3 py-1.5 bg-[#140E1B] border border-[#5A4A68] rounded text-xs text-[#E8DCC9] focus:outline-none focus:border-[#D4AF37] cursor-pointer">
+                            <label class="text-[10px] font-bold text-[#D4AF37] uppercase tracking-wider block mb-1 font-cinzel flex items-center gap-1">
+                                <i data-lucide="coins" class="w-3 h-3"></i>
+                                <span>Accepted Currency</span>
+                            </label>
+                            <select name="currency" onchange="this.form.submit()" class="w-full px-3 py-2 bg-[#110B17] border border-[#6B537F] rounded-lg text-xs font-medium text-[#EDE4D2] focus:outline-none focus:border-[#D4AF37] cursor-pointer">
                                 <option value="all">Any Currency (Zeny &amp; CP)</option>
                                 <option value="zeny" {{ request('currency') === 'zeny' ? 'selected' : '' }}>Zeny (Z) Only</option>
                                 <option value="cashpoints" {{ request('currency') === 'cashpoints' ? 'selected' : '' }}>Cash Points (CP) Only</option>
@@ -213,8 +222,11 @@
                         </div>
 
                         <div>
-                            <label class="text-[10px] font-bold text-[#D4AF37] uppercase tracking-wider block mb-1 font-cinzel">Sort Order</label>
-                            <select name="sort" onchange="this.form.submit()" class="w-full px-3 py-1.5 bg-[#140E1B] border border-[#5A4A68] rounded text-xs text-[#E8DCC9] focus:outline-none focus:border-[#D4AF37] cursor-pointer">
+                            <label class="text-[10px] font-bold text-[#D4AF37] uppercase tracking-wider block mb-1 font-cinzel flex items-center gap-1">
+                                <i data-lucide="arrow-up-down" class="w-3 h-3"></i>
+                                <span>Sort Order</span>
+                            </label>
+                            <select name="sort" onchange="this.form.submit()" class="w-full px-3 py-2 bg-[#110B17] border border-[#6B537F] rounded-lg text-xs font-medium text-[#EDE4D2] focus:outline-none focus:border-[#D4AF37] cursor-pointer">
                                 <option value="newest" {{ request('sort') === 'newest' || !request('sort') ? 'selected' : '' }}>Recently Listed</option>
                                 <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>Price: Lowest First</option>
                                 <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Price: Highest First</option>
@@ -224,94 +236,126 @@
                 </form>
             </div>
 
-            <!-- Items Table -->
-            <div class="chronicles-panel overflow-hidden shadow-2xl" style="background: #1C1525; border: 2px solid #3E2E4E;">
+            <!-- MMORPG Trade House Consignments Table -->
+            <div class="chronicles-panel overflow-hidden shadow-2xl" style="background: #181120; border: 2px solid #5A456B;">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
-                            <tr class="border-b border-[#3E2E4E] bg-[#241A2F]/90 text-[#F3E5AB] font-cinzel">
-                                <th class="py-3.5 px-4">Item Description</th>
+                            <tr class="border-b-2 border-[#5A456B] bg-[#22172D] text-[#F3E5AB] font-cinzel text-[11px] tracking-wide uppercase">
+                                <th class="py-3.5 px-4">Item &amp; Specifications</th>
                                 <th class="py-3.5 px-4">Seller Adventurer</th>
-                                <th class="py-3.5 px-4">Stock</th>
+                                <th class="py-3.5 px-4 text-center">Expires In</th>
+                                <th class="py-3.5 px-4 text-center">Stock</th>
                                 <th class="py-3.5 px-4">Price / Unit</th>
                                 <th class="py-3.5 px-4">Total Buyout</th>
-                                <th class="py-3.5 px-4">Time Left</th>
                                 <th class="py-3.5 px-4 text-right">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-[#352643]">
+                        <tbody class="divide-y divide-[#2F213C]">
                             @forelse($browseListings as $listing)
-                                <tr class="hover:bg-[#251A33]/70 transition-colors">
-                                    <!-- Item Description -->
-                                    <td class="py-3.5 px-4">
+                                <tr class="hover:bg-[#251A33] transition-colors group">
+                                    <!-- Item Icon & Name -->
+                                    <td class="py-3 px-4">
                                         <div class="flex items-center gap-3">
-                                            <div class="relative shrink-0">
-                                                <img src="{{ $listing->item->icon_url }}" alt="Item" class="w-9 h-9 object-contain rounded-lg bg-[#140E1B] border border-[#4A3A5A] p-0.5" onerror="this.src='/images/item-placeholder.png'">
+                                            <!-- Framed RO Item Box -->
+                                            <div class="relative w-11 h-11 rounded-lg bg-[#100B17] border-2 border-[#806442] p-1 flex items-center justify-center shrink-0 shadow-inner group-hover:border-[#FFD700] transition-colors">
+                                                <img src="{{ $listing->item->icon_url }}" alt="Item" class="w-8 h-8 object-contain" onerror="this.src='/images/item-placeholder.png'">
                                                 @if($listing->item->refine > 0)
-                                                    <span class="absolute -top-1.5 -right-1.5 px-1 py-0.2 rounded text-[9px] font-bold bg-[#D4AF37] text-black shadow">
+                                                    <span class="absolute -top-1.5 -right-1.5 px-1.5 py-0.2 rounded text-[9px] font-black bg-gradient-to-r from-[#FFE894] to-[#D4AF37] text-black shadow">
                                                         +{{ $listing->item->refine }}
                                                     </span>
                                                 @endif
                                             </div>
                                             <div>
-                                                <h4 class="font-bold text-white text-sm font-cinzel">{{ $listing->item->formatted_name }}</h4>
-                                                <p class="text-[10px] text-slate-400">ID #{{ $listing->item->nameid }} • {{ $listing->item->item_type }}</p>
+                                                <h4 class="font-bold text-[#FFD700] group-hover:text-[#FFE4A0] text-sm font-cinzel transition-colors flex items-center gap-1.5">
+                                                    <span>{{ $listing->item->formatted_name }}</span>
+                                                    @if($listing->item->slots > 0)
+                                                        <span class="text-[10px] text-[#A396AD] font-mono">[{{ $listing->item->slots }}]</span>
+                                                    @endif
+                                                </h4>
+                                                <p class="text-[10px] text-[#A898B5] mt-0.5">
+                                                    ID #{{ $listing->item->nameid }} • <span class="text-[#E2D9EB]">{{ $listing->item->item_type }}</span>
+                                                </p>
                                             </div>
                                         </div>
                                     </td>
 
                                     <!-- Seller -->
-                                    <td class="py-3.5 px-4">
-                                        <span class="font-medium text-[#EDE4D2]">{{ $listing->seller_char_name }}</span>
+                                    <td class="py-3 px-4">
+                                        <div class="flex items-center gap-1.5">
+                                            <i data-lucide="shield" class="w-3.5 h-3.5 text-[#D4AF37] shrink-0"></i>
+                                            <span class="font-cinzel font-semibold text-[#EDE4D2]">{{ $listing->seller_char_name }}</span>
+                                        </div>
+                                    </td>
+
+                                    <!-- Time Left -->
+                                    <td class="py-3 px-4 text-center">
+                                        <span class="inline-flex items-center gap-1 text-[11px] font-medium text-[#C8BDAA] bg-[#140E1B] px-2.5 py-1 rounded-md border border-[#3E2E4E]">
+                                            <i data-lucide="clock" class="w-3 h-3 text-[#D4AF37]"></i>
+                                            <span>{{ $listing->remaining_time }}</span>
+                                        </span>
                                     </td>
 
                                     <!-- Stock -->
-                                    <td class="py-3.5 px-4 font-mono font-bold text-white">
-                                        {{ number_format($listing->remaining_quantity) }}
+                                    <td class="py-3 px-4 text-center font-mono font-bold text-white">
+                                        <span class="px-2 py-0.5 rounded bg-[#100B17] border border-[#3E2E4E] text-[#F3E5AB]">
+                                            {{ number_format($listing->remaining_quantity) }}
+                                        </span>
                                     </td>
 
-                                    <!-- Unit Price -->
-                                    <td class="py-3.5 px-4">
+                                    <!-- Price / Unit -->
+                                    <td class="py-3 px-4">
                                         @if($listing->currency_type === 'zeny')
-                                            <span class="inline-flex items-center gap-1 font-bold text-amber-300 font-mono">
+                                            <span class="inline-flex items-center gap-1 font-bold text-amber-300 font-mono text-xs">
                                                 <i data-lucide="coins" class="w-3.5 h-3.5 text-amber-400"></i>
-                                                {{ number_format($listing->unit_price) }} Z
+                                                {{ number_format($listing->unit_price) }} <span class="text-[10px] text-amber-400/80">Z</span>
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center gap-1 font-bold text-purple-300 font-mono">
+                                            <span class="inline-flex items-center gap-1 font-bold text-purple-300 font-mono text-xs">
                                                 <i data-lucide="gem" class="w-3.5 h-3.5 text-purple-400"></i>
-                                                {{ number_format($listing->unit_price) }} CP
+                                                {{ number_format($listing->unit_price) }} <span class="text-[10px] text-purple-400/80">CP</span>
                                             </span>
                                         @endif
                                     </td>
 
                                     <!-- Total Buyout -->
-                                    <td class="py-3.5 px-4 font-mono font-bold text-white">
-                                        {{ number_format($listing->unit_price * $listing->remaining_quantity) }}
-                                    </td>
-
-                                    <!-- Time Left -->
-                                    <td class="py-3.5 px-4 text-slate-400">
-                                        {{ $listing->remaining_time }}
+                                    <td class="py-3 px-4">
+                                        @if($listing->currency_type === 'zeny')
+                                            <div class="font-mono font-black text-amber-200 text-sm flex items-center gap-1">
+                                                <i data-lucide="coins" class="w-4 h-4 text-[#FFD700]"></i>
+                                                <span>{{ number_format($listing->unit_price * $listing->remaining_quantity) }}</span>
+                                                <span class="text-[10px] text-amber-400 font-sans">Z</span>
+                                            </div>
+                                        @else
+                                            <div class="font-mono font-black text-purple-200 text-sm flex items-center gap-1">
+                                                <i data-lucide="gem" class="w-4 h-4 text-purple-400"></i>
+                                                <span>{{ number_format($listing->unit_price * $listing->remaining_quantity) }}</span>
+                                                <span class="text-[10px] text-purple-400 font-sans">CP</span>
+                                            </div>
+                                        @endif
                                     </td>
 
                                     <!-- Buy Action -->
-                                    <td class="py-3.5 px-4 text-right">
+                                    <td class="py-3 px-4 text-right">
                                         @if($listing->seller_user_id === auth()->id())
-                                            <span class="text-slate-500 text-[11px] italic font-cinzel">Your Listing</span>
+                                            <span class="text-[#A396AD] text-[11px] font-cinzel italic bg-[#100B17] px-2.5 py-1 rounded border border-[#3E2E4E]">Your Consignment</span>
                                         @else
                                             <button @click="openBuyModal({{ json_encode($listing) }})" 
-                                                    class="chronicles-btn-gold py-1.5 px-3.5 cursor-pointer">
-                                                <i data-lucide="shopping-cart" class="w-3.5 h-3.5 mr-1"></i>
-                                                Buy Item
+                                                    class="chronicles-btn-gold py-1.5 px-4 cursor-pointer uppercase font-cinzel font-bold text-[11px] tracking-wider shadow-md hover:scale-105 transition-transform flex items-center gap-1.5 ml-auto">
+                                                <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
+                                                <span>BUYOUT</span>
                                             </button>
                                         @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-12 text-[#C8BDAA] font-cinzel">
-                                        No active listings are currently posted in the Trade House.
+                                    <td colspan="7" class="text-center py-14 text-[#C8BDAA] font-cinzel">
+                                        <div class="flex flex-col items-center justify-center gap-2">
+                                            <i data-lucide="scale" class="w-8 h-8 text-[#5A456B]"></i>
+                                            <p class="text-sm font-semibold text-[#E2D9EB]">No active consignments match your search filters.</p>
+                                            <p class="text-xs text-[#A898B5]">Check back soon or adjust your category and keyword queries.</p>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforelse
@@ -319,11 +363,21 @@
                     </table>
                 </div>
 
-                @if($browseListings->hasPages())
-                    <div class="p-4 border-t border-[#3E2E4E]">
-                        {{ $browseListings->links() }}
+                <!-- Bottom Status Bar (Showing X of Y items like Neverwinter) -->
+                <div class="p-3.5 border-t border-[#3E2E4E] bg-[#140E1B] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#C8BDAA] font-cinzel">
+                    <div>
+                        @if($browseListings->total() > 0)
+                            Showing <span class="font-bold text-[#FFD700]">{{ $browseListings->firstItem() ?? 1 }} - {{ $browseListings->lastItem() ?? $browseListings->total() }}</span> of <span class="font-bold text-[#FFD700]">{{ $browseListings->total() }}</span> Consignments
+                        @else
+                            Showing 0 Consignments
+                        @endif
                     </div>
-                @endif
+                    @if($browseListings->hasPages())
+                        <div>
+                            {{ $browseListings->links() }}
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     @endif

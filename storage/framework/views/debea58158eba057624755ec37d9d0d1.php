@@ -1,0 +1,705 @@
+<?php $__env->startSection('title', 'Player Marketplace - Admin Control Panel'); ?>
+
+<?php $__env->startSection('admin_content'); ?>
+<div class="space-y-6" x-data="{ adminTab: '<?php echo e($activeTab ?? 'listings'); ?>' }">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold font-cinzel text-white flex items-center gap-2">
+                <i data-lucide="scale" class="w-6 h-6 text-[#D4AF37]"></i>
+                Player Marketplace &amp; Escrow
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Manage player-to-player trade house listings, item custody escrow, economy taxes, and trading rules.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="<?php echo e(route('marketplace.index')); ?>" target="_blank" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#2A1D38] hover:bg-[#38264C] text-[#E5B358] border border-[#523A6E] flex items-center gap-1.5 transition-all shadow-sm">
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Visit Trade House
+            </a>
+            <?php if(!empty($settings['maintenance_mode'])): ?>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                    <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> Maintenance Mode
+                </span>
+            <?php elseif(empty($settings['enabled'])): ?>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                    <i data-lucide="power-off" class="w-3.5 h-3.5"></i> Extension Disabled
+                </span>
+            <?php else: ?>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                    <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Marketplace Active
+                </span>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Stats Overview Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="p-4 rounded-2xl bg-[#1C1525] border border-[#3E2E4E] flex items-center gap-4 shadow-sm">
+            <div class="w-12 h-12 rounded-xl bg-[#D4AF37]/20 text-[#FCE69B] flex items-center justify-center shrink-0 border border-[#D4AF37]/30">
+                <i data-lucide="tag" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Active Listings</p>
+                <h3 class="text-2xl font-bold text-white font-cinzel"><?php echo e(number_format($stats['active_listings'])); ?></h3>
+                <p class="text-[10px] text-slate-400 mt-0.5"><?php echo e(number_format($stats['total_items_in_custody'])); ?> in custody (<?php echo e(number_format($stats['total_items_all'])); ?> total)</p>
+            </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[#1C1525] border border-[#3E2E4E] flex items-center gap-4 shadow-sm">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 border border-emerald-500/30">
+                <i data-lucide="check-check" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Completed Trades</p>
+                <h3 class="text-2xl font-bold text-white font-cinzel"><?php echo e(number_format($stats['total_sales_count'])); ?></h3>
+                <p class="text-[10px] text-emerald-400 mt-0.5">Successful player purchases</p>
+            </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[#1C1525] border border-[#3E2E4E] flex items-center gap-4 shadow-sm">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 border border-amber-500/30">
+                <i data-lucide="coins" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Zeny Volume</p>
+                <h3 class="text-lg font-bold text-amber-300 font-cinzel"><?php echo e(number_format($stats['zeny_volume'])); ?> Z</h3>
+                <p class="text-[10px] text-slate-400 mt-0.5">Tax Collected: <span class="text-amber-200 font-semibold"><?php echo e(number_format($stats['zeny_tax_collected'])); ?> Z</span></p>
+            </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[#1C1525] border border-[#3E2E4E] flex items-center gap-4 shadow-sm">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-300 flex items-center justify-center shrink-0 border border-purple-500/30">
+                <i data-lucide="gem" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Cash Points Volume</p>
+                <h3 class="text-lg font-bold text-purple-300 font-cinzel"><?php echo e(number_format($stats['points_volume'])); ?> CP</h3>
+                <p class="text-[10px] text-slate-400 mt-0.5">Tax Collected: <span class="text-purple-200 font-semibold"><?php echo e(number_format($stats['points_tax_collected'])); ?> CP</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Tabs -->
+    <div class="space-y-6">
+        <div class="flex flex-wrap items-center gap-2 border-b border-[#3E2E4E] pb-3">
+            <button @click="adminTab = 'listings'" :class="adminTab === 'listings' ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/50 shadow-sm' : 'text-slate-400 hover:text-white bg-[#1C1525] border border-transparent'" class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
+                <i data-lucide="list" class="w-4 h-4"></i>
+                Listings Moderation (<?php echo e($listings->total()); ?>)
+            </button>
+            <button @click="adminTab = 'custody'" :class="adminTab === 'custody' ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/50 shadow-sm' : 'text-slate-400 hover:text-white bg-[#1C1525] border border-transparent'" class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
+                <i data-lucide="archive" class="w-4 h-4"></i>
+                Escrow Custody Vault (<?php echo e($custodyItems->total()); ?>)
+            </button>
+            <button @click="adminTab = 'transactions'" :class="adminTab === 'transactions' ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/50 shadow-sm' : 'text-slate-400 hover:text-white bg-[#1C1525] border border-transparent'" class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
+                <i data-lucide="history" class="w-4 h-4"></i>
+                Transaction Ledger (<?php echo e($transactions->total()); ?>)
+            </button>
+            <button @click="adminTab = 'settings'" :class="adminTab === 'settings' ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/50 shadow-sm' : 'text-slate-400 hover:text-white bg-[#1C1525] border border-transparent'" class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
+                <i data-lucide="settings-2" class="w-4 h-4"></i>
+                Configuration &amp; Economy Rules
+            </button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 1: LISTINGS MODERATION                 -->
+        <!-- ========================================== -->
+        <div x-show="adminTab === 'listings'" class="space-y-4">
+            <!-- Search & Filters -->
+            <div class="rounded-2xl bg-[#1C1525] border border-[#3E2E4E] p-4">
+                <form method="GET" action="<?php echo e(route('admin.marketplace.index')); ?>" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <input type="hidden" name="tab" value="listings">
+                    
+                    <div class="md:col-span-2 relative">
+                        <input type="text" name="search" value="<?php echo e(request('search')); ?>" placeholder="Search listing code, seller character, or item ID..." class="w-full px-3.5 py-2 pl-9 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37]">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-2.5"></i>
+                    </div>
+
+                    <div>
+                        <select name="status" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                            <option value="all" <?php echo e(request('status') === 'all' || !request('status') ? 'selected' : ''); ?>>All Statuses</option>
+                            <option value="active" <?php echo e(request('status') === 'active' ? 'selected' : ''); ?>>Active Listings</option>
+                            <option value="sold" <?php echo e(request('status') === 'sold' ? 'selected' : ''); ?>>Sold</option>
+                            <option value="cancelled" <?php echo e(request('status') === 'cancelled' ? 'selected' : ''); ?>>Cancelled</option>
+                            <option value="expired" <?php echo e(request('status') === 'expired' ? 'selected' : ''); ?>>Expired</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <select name="currency" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                            <option value="" <?php echo e(!request('currency') ? 'selected' : ''); ?>>All Currencies</option>
+                            <option value="zeny" <?php echo e(request('currency') === 'zeny' ? 'selected' : ''); ?>>Zeny Only</option>
+                            <option value="cashpoints" <?php echo e(request('currency') === 'cashpoints' ? 'selected' : ''); ?>>Cash Points Only</option>
+                        </select>
+                        <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#D4AF37] hover:bg-[#FCE69B] text-black transition-all cursor-pointer shrink-0">
+                            Filter
+                        </button>
+                        <?php if(request('search') || request('status') || request('currency')): ?>
+                            <a href="<?php echo e(route('admin.marketplace.index', ['tab' => 'listings'])); ?>" class="px-2.5 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white bg-[#251A33] border border-[#3E2E4E] transition-all shrink-0" title="Reset Filters">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Listings Table -->
+            <div class="rounded-2xl bg-[#1C1525] border border-[#3E2E4E] overflow-hidden shadow-lg">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-[#3E2E4E] bg-[#241A2F]/90 text-[#F3E5AB]">
+                                <th class="py-3 px-4 font-cinzel">Listing Code</th>
+                                <th class="py-3 px-4 font-cinzel">Item Details</th>
+                                <th class="py-3 px-4 font-cinzel">Seller &amp; Account</th>
+                                <th class="py-3 px-4 font-cinzel">Unit Price</th>
+                                <th class="py-3 px-4 font-cinzel">Stock</th>
+                                <th class="py-3 px-4 font-cinzel">Expires In</th>
+                                <th class="py-3 px-4 font-cinzel">Status</th>
+                                <th class="py-3 px-4 text-right font-cinzel">Moderation</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#352643]">
+                            <?php $__empty_1 = true; $__currentLoopData = $listings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $itemListing): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                <tr class="hover:bg-[#251A33]/50 transition-colors">
+                                    <td class="py-3 px-4 font-mono font-bold text-[#E5B358]"><?php echo e($itemListing->listing_code); ?></td>
+                                    <td class="py-3 px-4">
+                                        <div class="flex items-center gap-2.5">
+                                            <img src="<?php echo e($itemListing->item->icon_url); ?>" alt="Item" class="w-8 h-8 object-contain rounded bg-[#140E1B] border border-[#3E2E4E] p-0.5" onerror="this.src='/images/item-placeholder.png'">
+                                            <div>
+                                                <p class="font-bold text-white">
+                                                    <?php if($itemListing->item->refine > 0): ?>
+                                                        <span class="text-amber-300 font-mono">+<?php echo e($itemListing->item->refine); ?></span>
+                                                    <?php endif; ?>
+                                                    <?php echo e($itemListing->item->formatted_name); ?>
+
+                                                </p>
+                                                <p class="text-[10px] text-slate-400">ID #<?php echo e($itemListing->item->nameid); ?> • <?php echo e($itemListing->item->item_type); ?></p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <p class="font-medium text-white"><?php echo e($itemListing->seller_char_name); ?></p>
+                                        <p class="text-[10px] text-slate-400"><?php echo e($itemListing->sellerUser->username ?? 'Account #'.$itemListing->seller_account_id); ?></p>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <?php if($itemListing->currency_type === 'zeny'): ?>
+                                            <span class="inline-flex items-center gap-1 font-bold text-amber-300">
+                                                <i data-lucide="coins" class="w-3.5 h-3.5"></i>
+                                                <?php echo e(number_format($itemListing->unit_price)); ?> Z
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="inline-flex items-center gap-1 font-bold text-purple-300">
+                                                <i data-lucide="gem" class="w-3.5 h-3.5"></i>
+                                                <?php echo e(number_format($itemListing->unit_price)); ?> CP
+                                            </span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <span class="font-bold text-white"><?php echo e($itemListing->remaining_quantity); ?></span> / <?php echo e($itemListing->quantity); ?>
+
+                                    </td>
+                                    <td class="py-3 px-4 text-slate-300">
+                                        <?php echo e($itemListing->remaining_time); ?>
+
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <?php if($itemListing->status === 'active'): ?>
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Active</span>
+                                        <?php elseif($itemListing->status === 'sold'): ?>
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">Sold</span>
+                                        <?php elseif($itemListing->status === 'cancelled'): ?>
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">Cancelled</span>
+                                        <?php else: ?>
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-500/20 text-slate-300 border border-slate-500/30">Expired</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="py-3 px-4 text-right">
+                                        <?php if($itemListing->status === 'active'): ?>
+                                            <form action="<?php echo e(route('admin.marketplace.cancel', $itemListing->id)); ?>" method="POST" onsubmit="return confirm('Cancel this listing and release the item back to seller custody?');" class="inline">
+                                                <?php echo csrf_field(); ?>
+                                                <button type="submit" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-rose-500/20 text-rose-300 hover:bg-rose-500/40 border border-rose-500/30 transition-all cursor-pointer">
+                                                    Cancel Listing
+                                                </button>
+                                            </form>
+                                        <?php else: ?>
+                                            <span class="text-slate-500 text-[11px]">—</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                <tr>
+                                    <td colspan="8" class="text-center py-10 text-slate-400">
+                                        <i data-lucide="inbox" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i>
+                                        No marketplace listings match the selected search criteria.
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <?php if($listings->hasPages()): ?>
+                    <div class="p-4 border-t border-[#3E2E4E]">
+                        <?php echo e($listings->links()); ?>
+
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: ESCROW CUSTODY VAULT                -->
+        <!-- ========================================== -->
+        <div x-show="adminTab === 'custody'" class="space-y-4">
+            <!-- Search & Filters -->
+            <div class="rounded-2xl bg-[#1C1525] border border-[#3E2E4E] p-4">
+                <form method="GET" action="<?php echo e(route('admin.marketplace.index')); ?>" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <input type="hidden" name="tab" value="custody">
+                    
+                    <div class="md:col-span-2 relative">
+                        <input type="text" name="custody_search" value="<?php echo e(request('custody_search')); ?>" placeholder="Search item ID, account ID, or username..." class="w-full px-3.5 py-2 pl-9 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37]">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-2.5"></i>
+                    </div>
+
+                    <div>
+                        <select name="custody_status" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                            <option value="all" <?php echo e(request('custody_status') === 'all' || !request('custody_status') ? 'selected' : ''); ?>>All Items in Vault</option>
+                            <option value="in_custody" <?php echo e(request('custody_status') === 'in_custody' ? 'selected' : ''); ?>>In Custody (Unlisted)</option>
+                            <option value="listed" <?php echo e(request('custody_status') === 'listed' ? 'selected' : ''); ?>>Actively Listed</option>
+                            <option value="withdrawn" <?php echo e(request('custody_status') === 'withdrawn' ? 'selected' : ''); ?>>Returned / Withdrawn</option>
+                            <option value="sold" <?php echo e(request('custody_status') === 'sold' ? 'selected' : ''); ?>>Sold &amp; Delivered</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#D4AF37] hover:bg-[#FCE69B] text-black transition-all cursor-pointer w-full">
+                            Filter Vault
+                        </button>
+                        <?php if(request('custody_search') || request('custody_status')): ?>
+                            <a href="<?php echo e(route('admin.marketplace.index', ['tab' => 'custody'])); ?>" class="px-2.5 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white bg-[#251A33] border border-[#3E2E4E] transition-all shrink-0" title="Reset Filters">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Custody Vault Table -->
+            <div class="rounded-2xl bg-[#1C1525] border border-[#3E2E4E] overflow-hidden shadow-lg">
+                <div class="p-4 border-b border-[#3E2E4E] flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold text-white font-cinzel">Items Held in Marketplace Escrow</h3>
+                        <p class="text-[11px] text-slate-400">All player items currently deposited into marketplace custody or active listings.</p>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-[#3E2E4E] bg-[#241A2F]/90 text-[#F3E5AB]">
+                                <th class="py-3 px-4 font-cinzel">Custody ID</th>
+                                <th class="py-3 px-4 font-cinzel">Item Info</th>
+                                <th class="py-3 px-4 font-cinzel">Account &amp; Character</th>
+                                <th class="py-3 px-4 font-cinzel">Quantity</th>
+                                <th class="py-3 px-4 font-cinzel">Card Slots / Metadata</th>
+                                <th class="py-3 px-4 font-cinzel">Deposited At</th>
+                                <th class="py-3 px-4 font-cinzel">Escrow State</th>
+                                <th class="py-3 px-4 text-right font-cinzel">Admin Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#352643]">
+                            <?php $__empty_1 = true; $__currentLoopData = $custodyItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $custodyItem): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                <tr class="hover:bg-[#251A33]/50 transition-colors">
+                                    <td class="py-3 px-4 font-mono font-bold text-[#E5B358]">#<?php echo e($custodyItem->id); ?></td>
+                                    <td class="py-3 px-4">
+                                        <div class="flex items-center gap-2.5">
+                                            <img src="<?php echo e($custodyItem->icon_url); ?>" alt="Item" class="w-8 h-8 object-contain rounded bg-[#140E1B] border border-[#3E2E4E] p-0.5" onerror="this.src='/images/item-placeholder.png'">
+                                            <div>
+                                                <p class="font-bold text-white">
+                                                    <?php if($custodyItem->refine > 0): ?>
+                                                        <span class="text-amber-300 font-mono">+<?php echo e($custodyItem->refine); ?></span>
+                                                    <?php endif; ?>
+                                                    <?php echo e($custodyItem->formatted_name); ?>
+
+                                                </p>
+                                                <p class="text-[10px] text-slate-400">ID #<?php echo e($custodyItem->nameid); ?> • <?php echo e($custodyItem->item_type); ?></p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <p class="font-medium text-white"><?php echo e($custodyItem->user->username ?? 'Account #'.$custodyItem->account_id); ?></p>
+                                        <p class="text-[10px] text-slate-400">Char ID: <?php echo e($custodyItem->char_id); ?></p>
+                                    </td>
+                                    <td class="py-3 px-4 font-bold text-white">
+                                        <?php echo e(number_format($custodyItem->amount)); ?>x
+                                    </td>
+                                    <td class="py-3 px-4 text-slate-300 font-mono text-[11px]">
+                                        <?php
+                                            $cards = array_filter([$custodyItem->card0, $custodyItem->card1, $custodyItem->card2, $custodyItem->card3]);
+                                        ?>
+                                        <?php if(count($cards) > 0): ?>
+                                            <span class="text-amber-300">Cards: [<?php echo e(implode(', ', $cards)); ?>]</span>
+                                        <?php else: ?>
+                                            <span class="text-slate-500">None</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="py-3 px-4 text-slate-400">
+                                        <?php echo e($custodyItem->created_at->format('M d, Y H:i')); ?>
+
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <?php if($custodyItem->status === 'in_custody'): ?>
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">In Custody</span>
+                                        <?php elseif($custodyItem->status === 'listed'): ?>
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Actively Listed</span>
+                                        <?php elseif($custodyItem->status === 'withdrawn'): ?>
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-500/20 text-slate-300 border border-slate-500/30">Returned</span>
+                                        <?php elseif($custodyItem->status === 'sold'): ?>
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">Sold</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="py-3 px-4 text-right">
+                                        <?php if(in_array($custodyItem->status, ['in_custody', 'listed'])): ?>
+                                            <form action="<?php echo e(route('admin.marketplace.return', $custodyItem->id)); ?>" method="POST" onsubmit="return confirm('Forcefully return this item to Account #<?php echo e($custodyItem->account_id); ?>\'s Kafra storage?');" class="inline">
+                                                <?php echo csrf_field(); ?>
+                                                <button type="submit" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500/20 text-amber-300 hover:bg-amber-500/40 border border-amber-500/30 transition-all cursor-pointer">
+                                                    Force Return to Storage
+                                                </button>
+                                            </form>
+                                        <?php else: ?>
+                                            <span class="text-slate-500 text-[11px]">—</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                <tr>
+                                    <td colspan="8" class="text-center py-10 text-slate-400">
+                                        <i data-lucide="archive" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i>
+                                        No escrow custody items match the query.
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <?php if($custodyItems->hasPages()): ?>
+                    <div class="p-4 border-t border-[#3E2E4E]">
+                        <?php echo e($custodyItems->links()); ?>
+
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: TRANSACTION LEDGER                  -->
+        <!-- ========================================== -->
+        <div x-show="adminTab === 'transactions'" class="space-y-4">
+            <!-- Search & Filters -->
+            <div class="rounded-2xl bg-[#1C1525] border border-[#3E2E4E] p-4">
+                <form method="GET" action="<?php echo e(route('admin.marketplace.index')); ?>" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <input type="hidden" name="tab" value="transactions">
+                    
+                    <div class="md:col-span-2 relative">
+                        <input type="text" name="tx_search" value="<?php echo e(request('tx_search')); ?>" placeholder="Search TX reference code, buyer character, or seller..." class="w-full px-3.5 py-2 pl-9 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37]">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-2.5"></i>
+                    </div>
+
+                    <div>
+                        <select name="tx_currency" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                            <option value="" <?php echo e(!request('tx_currency') ? 'selected' : ''); ?>>All Currencies</option>
+                            <option value="zeny" <?php echo e(request('tx_currency') === 'zeny' ? 'selected' : ''); ?>>Zeny Trades Only</option>
+                            <option value="cashpoints" <?php echo e(request('tx_currency') === 'cashpoints' ? 'selected' : ''); ?>>Cash Points Trades Only</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#D4AF37] hover:bg-[#FCE69B] text-black transition-all cursor-pointer w-full">
+                            Filter Ledger
+                        </button>
+                        <?php if(request('tx_search') || request('tx_currency')): ?>
+                            <a href="<?php echo e(route('admin.marketplace.index', ['tab' => 'transactions'])); ?>" class="px-2.5 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white bg-[#251A33] border border-[#3E2E4E] transition-all shrink-0" title="Reset Filters">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Transactions Table -->
+            <div class="rounded-2xl bg-[#1C1525] border border-[#3E2E4E] overflow-hidden shadow-lg">
+                <div class="p-4 border-b border-[#3E2E4E]">
+                    <h3 class="text-sm font-bold text-white font-cinzel">Marketplace Transactions &amp; Economic Ledger</h3>
+                    <p class="text-[11px] text-slate-400">Complete historical record of player-to-player sales and taxes collected.</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-[#3E2E4E] bg-[#241A2F]/90 text-[#F3E5AB]">
+                                <th class="py-3 px-4 font-cinzel">TX Reference</th>
+                                <th class="py-3 px-4 font-cinzel">Purchased Item</th>
+                                <th class="py-3 px-4 font-cinzel">Buyer</th>
+                                <th class="py-3 px-4 font-cinzel">Seller</th>
+                                <th class="py-3 px-4 font-cinzel">Gross Total</th>
+                                <th class="py-3 px-4 font-cinzel">Tax Fee</th>
+                                <th class="py-3 px-4 font-cinzel">Net Seller Proceeds</th>
+                                <th class="py-3 px-4 font-cinzel">Date</th>
+                                <th class="py-3 px-4 font-cinzel">Fulfillment</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#352643]">
+                            <?php $__empty_1 = true; $__currentLoopData = $transactions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tx): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                <tr class="hover:bg-[#251A33]/50 transition-colors">
+                                    <td class="py-3 px-4 font-mono font-bold text-[#E5B358]"><?php echo e($tx->transaction_code); ?></td>
+                                    <td class="py-3 px-4">
+                                        <div class="flex items-center gap-2">
+                                            <img src="<?php echo e($tx->item->icon_url); ?>" alt="Item" class="w-7 h-7 object-contain rounded bg-[#140E1B] p-0.5 border border-[#3E2E4E]" onerror="this.src='/images/item-placeholder.png'">
+                                            <div>
+                                                <span class="font-bold text-white"><?php echo e($tx->quantity); ?>x <?php echo e($tx->item->formatted_name); ?></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-4 font-medium text-white"><?php echo e($tx->buyer_char_name); ?></td>
+                                    <td class="py-3 px-4 font-medium text-white"><?php echo e($tx->seller_char_name); ?></td>
+                                    <td class="py-3 px-4 font-bold <?php echo e($tx->currency_type === 'zeny' ? 'text-amber-300' : 'text-purple-300'); ?>">
+                                        <?php echo e(number_format($tx->gross_amount)); ?> <?php echo e($tx->currency_type === 'zeny' ? 'Z' : 'CP'); ?>
+
+                                    </td>
+                                    <td class="py-3 px-4 text-rose-300 font-mono">
+                                        -<?php echo e(number_format($tx->tax_amount)); ?>
+
+                                    </td>
+                                    <td class="py-3 px-4 text-emerald-300 font-bold font-mono">
+                                        <?php echo e(number_format($tx->net_seller_proceeds)); ?>
+
+                                    </td>
+                                    <td class="py-3 px-4 text-slate-400">
+                                        <?php echo e($tx->created_at->format('M d, Y H:i')); ?>
+
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                            <i data-lucide="check" class="w-3 h-3"></i> Delivered
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                <tr>
+                                    <td colspan="9" class="text-center py-10 text-slate-400">
+                                        <i data-lucide="history" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i>
+                                        No marketplace sales recorded yet.
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <?php if($transactions->hasPages()): ?>
+                    <div class="p-4 border-t border-[#3E2E4E]">
+                        <?php echo e($transactions->links()); ?>
+
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 4: CONFIGURATION & ECONOMY RULES       -->
+        <!-- ========================================== -->
+        <div x-show="adminTab === 'settings'" class="space-y-6">
+            <form action="<?php echo e(route('admin.marketplace.settings')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
+
+                <!-- Section 1: Master Activation & Maintenance -->
+                <div class="p-5 rounded-2xl bg-[#1C1525] border border-[#3E2E4E] space-y-4 shadow-sm">
+                    <h3 class="text-sm font-bold text-white font-cinzel flex items-center gap-2 border-b border-[#3E2E4E] pb-3">
+                        <i data-lucide="power" class="w-4 h-4 text-[#D4AF37]"></i>
+                        Extension Activation &amp; Maintenance Status
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center justify-between p-3.5 rounded-xl bg-[#140E1B] border border-[#352643]">
+                            <div>
+                                <label class="text-xs font-bold text-white block">Enable Marketplace Extension</label>
+                                <span class="text-[11px] text-slate-400">Master switch to make the Player Marketplace accessible to registered players.</span>
+                            </div>
+                            <input type="checkbox" name="module_enabled_marketplace" value="1" <?php echo e(!empty($settings['enabled']) ? 'checked' : ''); ?> class="w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
+                        </div>
+
+                        <div class="flex items-center justify-between p-3.5 rounded-xl bg-[#140E1B] border border-[#352643]">
+                            <div>
+                                <label class="text-xs font-bold text-white block">Marketplace Maintenance Mode</label>
+                                <span class="text-[11px] text-slate-400">Temporarily suspend listing creation and purchases while preserving all escrowed items.</span>
+                            </div>
+                            <input type="checkbox" name="marketplace_maintenance_mode" value="1" <?php echo e(!empty($settings['maintenance_mode']) ? 'checked' : ''); ?> class="w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                    <!-- Section 2: Operations, Limits & Announcements -->
+                    <div class="p-5 rounded-2xl bg-[#1C1525] border border-[#3E2E4E] space-y-4 shadow-sm">
+                        <h3 class="text-sm font-bold text-white font-cinzel flex items-center gap-2 border-b border-[#3E2E4E] pb-3">
+                            <i data-lucide="sliders" class="w-4 h-4 text-[#D4AF37]"></i>
+                            Operations, Announcements &amp; Limits
+                        </h3>
+
+                        <div>
+                            <label class="text-xs font-bold text-slate-300 block mb-1">Marketplace Announcement</label>
+                            <input type="text" name="marketplace_announcement" value="<?php echo e($settings['announcement']); ?>" placeholder="e.g. Welcome to the Trade House! 5% tax is currently active." class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                            <span class="text-[10px] text-slate-400 mt-0.5 block">Displayed at the top of the Trade House interface</span>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-slate-300 block mb-1">Trade House Rules &amp; Notice</label>
+                            <textarea name="marketplace_rules" rows="3" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]"><?php echo e($settings['rules']); ?></textarea>
+                            <span class="text-[10px] text-slate-400 mt-0.5 block">Official rules guidelines displayed in the rules modal for players</span>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Max / Player</label>
+                                <input type="number" name="marketplace_max_listings_player" value="<?php echo e($settings['max_listings_player']); ?>" min="1" max="100" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                                <span class="text-[10px] text-slate-400">Listings/Account</span>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Max / Character</label>
+                                <input type="number" name="marketplace_max_listings_char" value="<?php echo e($settings['max_listings_char']); ?>" min="1" max="50" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                                <span class="text-[10px] text-slate-400">Listings/Char</span>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Max Items / Listing</label>
+                                <input type="number" name="marketplace_max_items_per_listing" value="<?php echo e($settings['max_items_per_listing'] ?? 1000); ?>" min="1" max="30000" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                                <span class="text-[10px] text-slate-400">Max Stack</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Minimum Selling Price</label>
+                                <input type="number" name="marketplace_min_price" value="<?php echo e($settings['min_price']); ?>" min="1" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Maximum Selling Price</label>
+                                <input type="number" name="marketplace_max_price" value="<?php echo e($settings['max_price']); ?>" min="1" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3 pt-2 border-t border-[#3E2E4E]">
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Min Duration</label>
+                                <input type="number" name="marketplace_min_duration_hours" value="<?php echo e($settings['min_duration_hours'] ?? 24); ?>" min="1" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                                <span class="text-[10px] text-slate-400">Hours</span>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Default Duration</label>
+                                <select name="marketplace_default_duration_hours" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                                    <option value="24" <?php echo e($settings['default_duration_hours'] == 24 ? 'selected' : ''); ?>>24 Hours (1 Day)</option>
+                                    <option value="72" <?php echo e($settings['default_duration_hours'] == 72 ? 'selected' : ''); ?>>72 Hours (3 Days)</option>
+                                    <option value="168" <?php echo e($settings['default_duration_hours'] == 168 ? 'selected' : ''); ?>>168 Hours (7 Days)</option>
+                                    <option value="336" <?php echo e($settings['default_duration_hours'] == 336 ? 'selected' : ''); ?>>336 Hours (14 Days)</option>
+                                    <option value="720" <?php echo e($settings['default_duration_hours'] == 720 ? 'selected' : ''); ?>>720 Hours (30 Days)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Max Duration</label>
+                                <input type="number" name="marketplace_max_duration_hours" value="<?php echo e($settings['max_duration_hours'] ?? 720); ?>" min="24" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                                <span class="text-[10px] text-slate-400">Hours</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Currencies, Taxes & Item Safety -->
+                    <div class="p-5 rounded-2xl bg-[#1C1525] border border-[#3E2E4E] space-y-4 shadow-sm">
+                        <h3 class="text-sm font-bold text-white font-cinzel flex items-center gap-2 border-b border-[#3E2E4E] pb-3">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-[#D4AF37]"></i>
+                            Currencies, Fees, Taxes &amp; Item Safety
+                        </h3>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-[#140E1B] border border-[#352643]">
+                                <div>
+                                    <label class="text-xs font-bold text-white block">Allow Zeny Payments</label>
+                                    <span class="text-[10px] text-slate-400">Trade using character Zeny</span>
+                                </div>
+                                <input type="checkbox" name="marketplace_allow_zeny" value="1" <?php echo e(!empty($settings['allow_zeny']) ? 'checked' : ''); ?> class="w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-[#140E1B] border border-[#352643]">
+                                <div>
+                                    <label class="text-xs font-bold text-white block">Allow Cash Points Payments</label>
+                                    <span class="text-[10px] text-slate-400">Trade using account CP</span>
+                                </div>
+                                <input type="checkbox" name="marketplace_allow_cashpoints" value="1" <?php echo e(!empty($settings['allow_cashpoints']) ? 'checked' : ''); ?> class="w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Marketplace Sales Tax (%)</label>
+                                <input type="number" step="0.1" name="marketplace_tax_percent" value="<?php echo e($settings['tax_percent']); ?>" min="0" max="50" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                                <span class="text-[10px] text-slate-400">Deducted automatically from seller proceeds</span>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-300 block mb-1">Listing Insertion Fee (Zeny)</label>
+                                <input type="number" name="marketplace_listing_fee" value="<?php echo e($settings['listing_fee']); ?>" min="0" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                                <span class="text-[10px] text-slate-400">Flat fee charged from character Zeny</span>
+                            </div>
+                        </div>
+
+                        <!-- Item Safety Rules -->
+                        <div class="space-y-2 pt-2 border-t border-[#3E2E4E]">
+                            <p class="text-[11px] font-bold text-[#E5B358] uppercase tracking-wider font-cinzel">Item Safeguards &amp; Restriction Rules</p>
+
+                            <div class="grid grid-cols-2 gap-3 text-xs">
+                                <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+                                    <input type="checkbox" name="marketplace_allow_withdrawals" value="1" <?php echo e(!empty($settings['allow_withdrawals']) ? 'checked' : ''); ?> class="w-4 h-4 rounded text-[#D4AF37]">
+                                    Allow Item Withdrawals
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+                                    <input type="checkbox" name="marketplace_allow_stackables" value="1" <?php echo e(!empty($settings['allow_stackables']) ? 'checked' : ''); ?> class="w-4 h-4 rounded text-[#D4AF37]">
+                                    Allow Stackable Items
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+                                    <input type="checkbox" name="marketplace_allow_equipment" value="1" <?php echo e(!empty($settings['allow_equipment']) ? 'checked' : ''); ?> class="w-4 h-4 rounded text-[#D4AF37]">
+                                    Allow Equipment
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+                                    <input type="checkbox" name="marketplace_allow_refined" value="1" <?php echo e(!empty($settings['allow_refined']) ? 'checked' : ''); ?> class="w-4 h-4 rounded text-[#D4AF37]">
+                                    Allow Refined Equipment
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+                                    <input type="checkbox" name="marketplace_allow_cards" value="1" <?php echo e(!empty($settings['allow_cards']) ? 'checked' : ''); ?> class="w-4 h-4 rounded text-[#D4AF37]">
+                                    Allow Cards &amp; Random Options
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+                                    <input type="checkbox" name="marketplace_history_enabled" value="1" <?php echo e(!empty($settings['history_enabled']) ? 'checked' : ''); ?> class="w-4 h-4 rounded text-[#D4AF37]">
+                                    Enable Marketplace History
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+                                    <input type="checkbox" name="marketplace_allow_bound" value="1" <?php echo e(!empty($settings['allow_bound']) ? 'checked' : ''); ?> class="w-4 h-4 rounded text-[#D4AF37]">
+                                    Allow Bound Items (Caution)
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+                                    <input type="checkbox" name="marketplace_allow_rental" value="1" <?php echo e(!empty($settings['allow_rental']) ? 'checked' : ''); ?> class="w-4 h-4 rounded text-[#D4AF37]">
+                                    Allow Rental Items (Caution)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <button type="submit" class="px-6 py-2.5 rounded-xl font-bold text-xs bg-[#D4AF37] hover:bg-[#FCE69B] text-black border border-[#FCE69B] shadow-md hover:brightness-110 transition-all flex items-center gap-2 cursor-pointer">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        Save Marketplace Settings
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\aether\resources\views/admin/marketplace/index.blade.php ENDPATH**/ ?>

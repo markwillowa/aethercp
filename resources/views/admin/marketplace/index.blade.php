@@ -111,8 +111,12 @@
                     <input type="hidden" name="tab" value="listings">
                     
                     <div class="md:col-span-2 relative">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search listing code, seller character, or item ID..." class="w-full px-3.5 py-2 pl-9 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37]">
-                        <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-2.5"></i>
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
+                        </div>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search listing code, seller character, or item ID..." 
+                               style="padding-left: 3rem !important; padding-right: 1rem !important; height: 40px;"
+                               class="w-full rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37] transition-all">
                     </div>
 
                     <div>
@@ -254,8 +258,12 @@
                     <input type="hidden" name="tab" value="custody">
                     
                     <div class="md:col-span-2 relative">
-                        <input type="text" name="custody_search" value="{{ request('custody_search') }}" placeholder="Search item ID, account ID, or username..." class="w-full px-3.5 py-2 pl-9 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37]">
-                        <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-2.5"></i>
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
+                        </div>
+                        <input type="text" name="custody_search" value="{{ request('custody_search') }}" placeholder="Search item ID, account ID, or username..." 
+                               style="padding-left: 3rem !important; padding-right: 1rem !important; height: 40px;"
+                               class="w-full rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37] transition-all">
                     </div>
 
                     <div>
@@ -396,8 +404,12 @@
                     <input type="hidden" name="tab" value="transactions">
                     
                     <div class="md:col-span-2 relative">
-                        <input type="text" name="tx_search" value="{{ request('tx_search') }}" placeholder="Search TX reference code, buyer character, or seller..." class="w-full px-3.5 py-2 pl-9 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37]">
-                        <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-2.5"></i>
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
+                        </div>
+                        <input type="text" name="tx_search" value="{{ request('tx_search') }}" placeholder="Search TX reference code, buyer character, or seller..." 
+                               style="padding-left: 3rem !important; padding-right: 1rem !important; height: 40px;"
+                               class="w-full rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37] transition-all">
                     </div>
 
                     <div>

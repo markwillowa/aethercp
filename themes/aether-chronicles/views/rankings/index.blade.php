@@ -3,7 +3,8 @@
 @section('content')
 <div class="chronicles-container py-10 space-y-8">
 
-    <div class="chronicles-panel flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <!-- Top Wood Board Header -->
+    <div class="chronicles-wood-board flex flex-col md:flex-row md:items-center justify-between gap-6 p-5 sm:p-6 shadow-xl">
         <div>
             <div class="flex items-center gap-2.5">
                 <i data-lucide="trophy" class="w-6 h-6 text-[#FFD700]"></i>
@@ -27,10 +28,11 @@
                     'guild' => ['label' => 'Guild Rankings', 'icon' => 'shield'],
                 ];
                 $rankingItems = $ladder ?? $rankings ?? [];
+                $colCount = ($type === 'guild') ? 6 : (($type === 'job') ? 6 : 5);
             @endphp
             @foreach($tabs as $key => $tab)
                 <a href="{{ route('rankings.index', ['type' => $key]) }}"
-                   class="px-3 py-1.5 rounded text-xs font-cinzel font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all {{ $type === $key ? 'bg-gradient-to-b from-[#F3B33D] to-[#9E5600] text-[#3B1F0A] border-2 border-[#FFF3D6] shadow-md' : 'bg-[#251F2D] border border-[#5A4A68] text-[#FFE4A0] hover:bg-[#352B42]' }}">
+                   class="px-3.5 py-2 rounded-lg text-xs font-cinzel font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all {{ $type === $key ? 'bg-gradient-to-b from-[#FFE894] to-[#8C5E09] text-[#1A1202] border border-[#FFEAA5] shadow-lg font-black' : 'bg-[#251F2D] border border-[#5A4A68] text-[#FFE4A0] hover:bg-[#352B42] hover:text-[#FFF]' }}">
                     <i data-lucide="{{ $tab['icon'] }}" class="w-3.5 h-3.5"></i>
                     <span>{{ $tab['label'] }}</span>
                 </a>
@@ -39,106 +41,112 @@
     </div>
 
     <!-- Leaderboard Table Panel -->
-    <div class="chronicles-panel pt-6">
-        <div class="chronicles-panel-header">
+    <div class="chronicles-panel shadow-2xl">
+        <div class="chronicles-panel-header px-5 py-3">
             <span class="chronicles-panel-title">
                 <i data-lucide="award" class="w-4 h-4"></i>
-                <span>{{ $tabs[$type]['label'] ?? 'Standings' }}</span>
+                <span>{{ $tabs[$type]['label'] ?? 'Standings' }} Rankings</span>
             </span>
+            <span class="text-[11px] text-[#A396AD] font-mono">Top {{ count($rankingItems) }} Ranked</span>
         </div>
 
-        <div class="overflow-x-auto mt-2">
-            <table class="w-full text-xs text-left">
+        <div class="p-4 sm:p-6 overflow-x-auto">
+            <table class="chronicles-table">
                 <thead>
-                    <tr class="border-b border-[#5A4A68] text-[#CBB488] font-cinzel text-[11px] uppercase">
-                        <th class="w-16 py-2 px-3 text-center">Rank</th>
+                    <tr>
+                        <th class="w-16 text-center">Rank</th>
                         @if($type === 'guild')
-                            <th class="py-2 px-3">Guild Crest &amp; Name</th>
-                            <th class="py-2 px-3">Guild Master</th>
-                            <th class="py-2 px-3 text-center">Guild Level</th>
-                            <th class="py-2 px-3 text-center">Members</th>
-                            <th class="py-2 px-3 text-right">Total EXP</th>
+                            <th class="text-left">Guild Crest &amp; Name</th>
+                            <th class="text-left">Guild Master</th>
+                            <th class="text-center">Guild Level</th>
+                            <th class="text-center">Members</th>
+                            <th class="text-right">Total EXP</th>
                         @else
-                            <th class="py-2 px-3">Adventurer Name</th>
-                            <th class="py-2 px-3 text-center">Job Class</th>
-                            <th class="py-2 px-3 text-center">Base Level</th>
+                            <th class="text-left">Adventurer Name</th>
+                            <th class="text-center">Job Class</th>
+                            <th class="text-center">Base Level</th>
                             @if($type === 'job')
-                                <th class="py-2 px-3 text-center">Job Level</th>
+                                <th class="text-center">Job Level</th>
                             @endif
                             @if($type === 'zeny')
-                                <th class="py-2 px-3 text-right">Carried Zeny</th>
+                                <th class="text-right">Carried Zeny</th>
                             @elseif($type === 'mvp')
-                                <th class="py-2 px-3 text-right">MVP Kills</th>
+                                <th class="text-right">MVP Kills</th>
                             @else
-                                <th class="py-2 px-3 text-right">EXP Points</th>
+                                <th class="text-right">EXP Points</th>
                             @endif
                         @endif
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-white/[0.04]">
+                <tbody>
                     @forelse($rankingItems as $index => $row)
                         @php $rank = $index + 1; @endphp
-                        <tr class="hover:bg-white/[0.03] transition-colors">
-                            <td class="py-2.5 px-3 text-center font-bold">
+                        <tr class="hover:bg-white/[0.04] transition-colors">
+                            <td class="text-center font-bold">
                                 @if($rank === 1)
-                                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-b from-[#FFE885] to-[#D4AF37] text-[#3B1F0A] border border-[#FFF3D6] font-cinzel font-black shadow text-xs">
+                                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-b from-[#FFE885] to-[#D4AF37] text-[#3B1F0A] border border-[#FFF3D6] font-cinzel font-black shadow-md text-xs">
                                         1
                                     </span>
                                 @elseif($rank === 2)
-                                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-b from-[#E0E0E0] to-[#9E9E9E] text-[#212121] border border-white font-cinzel font-black shadow text-xs">
+                                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-b from-[#E0E0E0] to-[#9E9E9E] text-[#212121] border border-white font-cinzel font-black shadow-md text-xs">
                                         2
                                     </span>
                                 @elseif($rank === 3)
-                                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-b from-[#D79A63] to-[#8C532B] text-white border border-[#F5CBA7] font-cinzel font-black shadow text-xs">
+                                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-b from-[#D79A63] to-[#8C532B] text-white border border-[#F5CBA7] font-cinzel font-black shadow-md text-xs">
                                         3
                                     </span>
                                 @else
-                                    <span class="font-mono text-xs text-[#8C7A68]">#{{ $rank }}</span>
+                                    <span class="font-mono text-xs text-[#A396AD]">#{{ $rank }}</span>
                                 @endif
                             </td>
 
                             @if($type === 'guild')
-                                <td class="py-2.5 px-3">
-                                    <div class="flex items-center gap-2.5">
-                                        @if($row->guild_id > 0)
-                                            <img src="{{ route('guilds.emblem', $row->guild_id) }}" alt="Guild Emblem" class="w-6 h-6 rounded border border-[#5A4A68]" loading="lazy">
-                                        @endif
-                                        <a href="{{ route('guilds.show', $row->guild_id) }}" class="font-cinzel font-bold text-[#F3E5AB] hover:text-[#FFD700]">
+                                <td class="text-left">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded bg-[#1B1522] border border-[#5A4A68] flex items-center justify-center shrink-0">
+                                            @if($row->guild_id > 0)
+                                                <img src="{{ route('guilds.emblem', $row->guild_id) }}" alt="Emblem" class="w-6 h-6 rounded" loading="lazy">
+                                            @else
+                                                <i data-lucide="shield" class="w-4 h-4 text-[#D4AF37]"></i>
+                                            @endif
+                                        </div>
+                                        <a href="{{ route('guilds.show', $row->guild_id) }}" class="font-cinzel font-bold text-[#F3E5AB] hover:text-[#FFD700] transition-colors">
                                             {{ $row->name }}
                                         </a>
                                     </div>
                                 </td>
-                                <td class="py-2.5 px-3 text-[#E2D9EB]">{{ $row->master }}</td>
-                                <td class="py-2.5 px-3 text-center font-mono font-bold text-[#FFD700]">Lv. {{ $row->guild_lv }}</td>
-                                <td class="py-2.5 px-3 text-center font-mono text-[#E2D9EB]">{{ $row->connect_member }} / {{ $row->max_member }}</td>
-                                <td class="py-2.5 px-3 text-right font-mono text-xs text-[#FFD700] font-bold">{{ number_format($row->exp) }}</td>
+                                <td class="text-left text-[#E2D9EB]">{{ $row->master }}</td>
+                                <td class="text-center font-mono font-bold text-[#FFD700]">Lv. {{ $row->guild_lv }}</td>
+                                <td class="text-center font-mono text-[#E2D9EB]">{{ $row->connect_member ?? 0 }} / {{ $row->max_member }}</td>
+                                <td class="text-right font-mono text-xs text-[#FFD700] font-bold">{{ number_format($row->exp) }}</td>
                             @else
-                                <td class="py-2.5 px-3">
-                                    <a href="{{ route('characters.show', $row->name) }}" class="font-cinzel font-bold text-[#F3E5AB] hover:text-[#FFD700]">
+                                <td class="text-left">
+                                    <a href="{{ route('characters.show', $row->name) }}" class="font-cinzel font-bold text-[#F3E5AB] hover:text-[#FFD700] transition-colors">
                                         {{ $row->name }}
                                     </a>
                                 </td>
-                                <td class="py-2.5 px-3 text-center">
-                                    <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#1F1926] text-[#CBB488] border border-[#5A4A68]">
+                                <td class="text-center">
+                                    <span class="px-2.5 py-1 rounded text-[11px] font-semibold bg-[#1F1926] text-[#CBB488] border border-[#5A4A68]">
                                         {{ \App\Services\Emulator\JobHelper::getName($row->class) }}
                                     </span>
                                 </td>
-                                <td class="py-2.5 px-3 text-center font-mono font-bold text-[#FFD700]">Lv. {{ $row->base_level }}</td>
+                                <td class="text-center font-mono font-bold text-[#FFD700]">Lv. {{ $row->base_level }}</td>
                                 @if($type === 'job')
-                                    <td class="py-2.5 px-3 text-center font-mono font-bold text-[#E5A823]">Lv. {{ $row->job_level }}</td>
+                                    <td class="text-center font-mono font-bold text-[#E5A823]">Lv. {{ $row->job_level }}</td>
                                 @endif
                                 @if($type === 'zeny')
-                                    <td class="py-2.5 px-3 text-right font-mono text-xs font-bold text-[#FFD700]">{{ number_format($row->zeny) }} Z</td>
+                                    <td class="text-right font-mono text-xs font-bold text-[#FFD700]">{{ number_format($row->zeny) }} Z</td>
                                 @elseif($type === 'mvp')
-                                    <td class="py-2.5 px-3 text-right font-mono text-xs font-bold text-[#E53935]">{{ number_format($row->mvp_kills ?? $row->score ?? 0) }}</td>
+                                    <td class="text-right font-mono text-xs font-bold text-[#E53935]">{{ number_format($row->mvp_kills ?? $row->score ?? 0) }}</td>
                                 @else
-                                    <td class="py-2.5 px-3 text-right font-mono text-xs text-[#A396AD]">{{ number_format($row->base_exp) }}</td>
+                                    <td class="text-right font-mono text-xs text-[#A396AD]">{{ number_format($row->base_exp) }}</td>
                                 @endif
                             @endif
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="py-12 text-center text-xs text-[#8C7A68]">
+                            <td colspan="{{ $colCount }}" class="py-12 text-center text-xs text-[#8C7A68]">
+                                <i data-lucide="trophy" class="w-8 h-8 text-[#5A4A68] mx-auto mb-2"></i>
                                 Leaderboard awaiting new records.
                             </td>
                         </tr>

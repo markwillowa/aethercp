@@ -1,22 +1,38 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="chronicles-container py-6 space-y-6">
+@section('title', 'Item Database & Codex')
 
-    <!-- Header Panel -->
-    <div class="chronicles-panel p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+@section('content')
+<div class="chronicles-container py-10 space-y-8">
+
+    <!-- Top Wood Board Header with Database Navigation Switcher -->
+    <div class="chronicles-wood-board flex flex-col md:flex-row md:items-center justify-between gap-6 p-5 sm:p-6 shadow-xl">
         <div>
-            <h1 class="font-cinzel text-xl sm:text-2xl font-bold text-[#F3E5AB] tracking-wide uppercase flex items-center gap-2">
-                <i data-lucide="database" class="w-5 h-5 text-[#D4AF37]"></i>
-                <span>Item Database &amp; Codex</span>
-            </h1>
-            <p class="text-xs text-[#A396AD] mt-1">
-                Lookup equipment, weapons, cards, and items directly from server database tables.
+            <div class="flex items-center gap-2.5">
+                <i data-lucide="database" class="w-6 h-6 text-[#FFD700]"></i>
+                <h1 class="font-cinzel text-2xl font-black text-[#FFE4A0] tracking-wide uppercase">
+                    Item Database &amp; Codex
+                </h1>
+            </div>
+            <p class="text-xs text-[#EAD2B0] mt-1">
+                Lookup equipment, weapons, cards, and items directly from server database tables
             </p>
         </div>
-        <div class="chronicles-online-pill text-xs">
-            <span class="w-2 h-2 rounded-full bg-[#22C55E]"></span>
-            <span>Official Emulator Database</span>
+
+        <!-- Database Switcher Tabs -->
+        <div class="flex items-center gap-2">
+            <a href="{{ route('itemdb.index') }}" class="px-3.5 py-2 rounded-lg text-xs font-cinzel font-black uppercase tracking-wider bg-gradient-to-b from-[#FFE894] to-[#8C5E09] text-[#1A1202] border border-[#FFEAA5] shadow-lg flex items-center gap-1.5">
+                <i data-lucide="package" class="w-3.5 h-3.5"></i>
+                <span>Items</span>
+            </a>
+            <a href="{{ route('database.monsters') }}" class="px-3.5 py-2 rounded-lg text-xs font-cinzel font-bold uppercase tracking-wider bg-[#251F2D] border border-[#5A4A68] text-[#FFE4A0] hover:bg-[#352B42] hover:text-white transition-all flex items-center gap-1.5">
+                <i data-lucide="skull" class="w-3.5 h-3.5"></i>
+                <span>Monsters</span>
+            </a>
+            <a href="{{ route('database.maps') }}" class="px-3.5 py-2 rounded-lg text-xs font-cinzel font-bold uppercase tracking-wider bg-[#251F2D] border border-[#5A4A68] text-[#FFE4A0] hover:bg-[#352B42] hover:text-white transition-all flex items-center gap-1.5">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                <span>Maps &amp; Dungeons</span>
+            </a>
         </div>
     </div>
 
