@@ -73,7 +73,7 @@
                         <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
                     </a>
 
-                    <form method="POST" action="{{ route('account.characters.reset-position', $char->char_id) }}">
+                    <form method="POST" action="{{ route('account.unstuck', $char->char_id) }}">
                         @csrf
                         <button type="submit" 
                                 onclick="return confirm('Reset {{ $char->name }} position back to Prontera?')"

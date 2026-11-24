@@ -128,6 +128,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/pincode', [AccountController::class, 'changePincode'])->name('pincode');
         Route::get('/characters', [AccountController::class, 'characters'])->name('characters');
         Route::post('/characters/{id}/unstuck', [AccountController::class, 'unstuck'])->name('unstuck');
+        Route::post('/characters/{id}/reset-position', [AccountController::class, 'unstuck'])->name('characters.reset-position');
         Route::delete('/characters/{id}', [AccountController::class, 'deleteCharacter'])->name('characters.delete');
     });
 });

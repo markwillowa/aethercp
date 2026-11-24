@@ -763,3 +763,165 @@ body.chronicles-theme {
 .chronicles-footer a:hover {
     color: #FFD700;
 }
+
+/* ==========================================================================
+   7. EXTENDED THEME COMPONENTS & PANELS (Panels, Boards, Tables & Buttons)
+   ========================================================================== */
+.chronicles-panel-ivy {
+    background: linear-gradient(180deg, #261E30 0%, #1A1422 100%);
+    border: 1.5px solid #4A3E56;
+    border-top: 1.5px solid #635373;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    padding: 1.5rem;
+    position: relative;
+    color: #EDE4D2;
+}
+
+.chronicles-wood-board {
+    background: linear-gradient(180deg, #2A1F35 0%, #1E1627 100%);
+    border: 2px solid #5A4A68;
+    border-top: 2px solid #735F85;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.chronicles-ribbon-header {
+    background: linear-gradient(180deg, #3E2F4D 0%, #261D32 100%);
+    border-bottom: 2px solid #D4AF37;
+    padding: 0.6rem 1rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #F3E5AB;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 6px 6px 0 0;
+    margin: -1.5rem -1.5rem 1rem -1.5rem;
+}
+
+.chronicles-btn-red {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(180deg, #A82508 0%, #6E1502 100%);
+    border: 1.5px solid #D4441D;
+    border-top: 1.5px solid #FF6B4A;
+    color: #FFF0D4 !important;
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.65rem 1.25rem;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    text-decoration: none;
+}
+.chronicles-btn-red:hover {
+    background: linear-gradient(180deg, #C22F0D 0%, #851C05 100%);
+    border-color: #FFA07A;
+    box-shadow: 0 6px 14px rgba(168, 37, 8, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    filter: brightness(1.1);
+}
+
+.chronicles-btn-wood {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    background: linear-gradient(180deg, #3D2D20 0%, #261B12 100%);
+    border: 1.5px solid #6E533C;
+    border-top: 1.5px solid #947253;
+    color: #F0E6D2 !important;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+.chronicles-btn-wood:hover {
+    background: linear-gradient(180deg, #4F3B2B 0%, #35261A 100%);
+    border-color: #B38E68;
+    filter: brightness(1.1);
+}
+
+.chronicles-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(30, 22, 38, 0.85);
+    border: 1px solid #5A4A68;
+    color: #EDE4D2;
+}
+.chronicles-status-pill.online {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.4);
+    color: #4ADE80;
+}
+.chronicles-status-pill.offline {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #F87171;
+}
+
+.chronicles-input {
+    width: 100%;
+    background-color: #140E1B !important;
+    border: 1.5px solid #4A3A5A !important;
+    border-radius: 6px;
+    padding: 0.6rem 0.85rem;
+    font-size: 0.8rem;
+    color: #EDE4D2 !important;
+    transition: all 0.2s ease;
+}
+.chronicles-input:focus {
+    border-color: #D4AF37 !important;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.25);
+}
+
+.chronicles-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    text-align: left;
+}
+.chronicles-table th {
+    background-color: #241A2F;
+    color: #F3E5AB;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1.5px solid #4A3A5A;
+}
+.chronicles-table td {
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid #352643;
+    color: #EDE4D2;
+}
+.chronicles-table tr:hover td {
+    background-color: rgba(255, 255, 255, 0.03);
+}

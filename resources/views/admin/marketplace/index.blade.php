@@ -2,7 +2,7 @@
 
 @section('title', 'Player Marketplace - Admin Control Panel')
 
-@section('content')
+@section('admin_content')
 <div class="space-y-6" x-data="{ adminTab: '{{ $activeTab ?? 'listings' }}' }">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
