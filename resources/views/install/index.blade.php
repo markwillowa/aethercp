@@ -79,12 +79,26 @@
              gameDbMessage: '',
              gameDbWarning: false,
 
-             // Step 4 Data: Migration / Provisioning
+             // Step 4 Data: Migration / Provisioning & Seeders
              migrationMode: 'auto',
              migrating: false,
              verifyingManual: false,
              migrationComplete: false,
              migrationLog: '',
+             selectedSeeders: ['settings', 'badges', 'attendance', 'donations', 'news', 'downloads'],
+             toggleSeeder(key) {
+                 if (this.selectedSeeders.includes(key)) {
+                     this.selectedSeeders = this.selectedSeeders.filter(s => s !== key);
+                 } else {
+                     this.selectedSeeders.push(key);
+                 }
+             },
+             selectAllSeeders() {
+                 this.selectedSeeders = ['settings', 'badges', 'attendance', 'donations', 'news', 'downloads'];
+             },
+             selectMinimalSeeders() {
+                 this.selectedSeeders = ['settings', 'badges'];
+             },
 
              // Step 5 Data: Admin
              adminType: 'designate_game_account',
@@ -242,13 +256,13 @@
                      this.statusError = 'Stage 3 Incomplete: Please fill in all required fields for the Ragnarok Game Database.';
                      return;
                  }
-                 // 3. Strict verification requirement: Both tests must pass
+                 // 3. Strict verification requirement: Both databases must connect successfully
                  if (!this.webDbTested) {
-                     this.statusError = 'Cannot proceed: You must click \'Test Connection\' on the AetherCP Web Database and verify connectivity first.';
+                     this.statusError = 'Cannot proceed: Unable to connect to # AetherCP Web Application Database (MySQL / MariaDB). Please click \'Test Connection\' and ensure your credentials are valid.';
                      return;
                  }
                  if (!this.gameDbTested) {
-                     this.statusError = 'Cannot proceed: You must click \'Test Game DB\' on the Ragnarok Game Database and verify connectivity first.';
+                     this.statusError = 'Cannot proceed: Unable to connect to # Ragnarok Game Server Database Connection. Please click \'Test Game DB\' and ensure your credentials are valid.';
                      return;
                  }
                  this.step = 4;
@@ -293,7 +307,8 @@
                              ro_rate_base: (this.roRateBase || '').trim(),
                              ro_rate_job: (this.roRateJob || '').trim(),
                              ro_rate_drop: (this.roRateDrop || '').trim(),
-                             ro_max_level: this.roMaxLevel
+                             ro_max_level: this.roMaxLevel,
+                             selected_seeders: this.selectedSeeders
                          })
                      });
                      const data = await res.json();
@@ -351,7 +366,8 @@
                              ro_rate_base: (this.roRateBase || '').trim(),
                              ro_rate_job: (this.roRateJob || '').trim(),
                              ro_rate_drop: (this.roRateDrop || '').trim(),
-                             ro_max_level: this.roMaxLevel
+                             ro_max_level: this.roMaxLevel,
+                             selected_seeders: this.selectedSeeders
                          })
                      });
                      const data = await res.json();
@@ -770,14 +786,31 @@
                         </div>
                     </div>
 
-                    <div class="pt-4 flex justify-between">
+                    <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-800/60 mt-4">
                         <button type="button" @click="step = 2; statusError = ''" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80">
                             Back
                         </button>
+
+                        <div class="text-xs">
+                            <template x-if="!webDbTested || !gameDbTested">
+                                <span class="text-amber-400 font-medium flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/30 px-3 py-1.5 rounded-xl">
+                                    <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i>
+                                    <span x-text="!webDbTested && !gameDbTested ? 'Please verify both Web DB and Game DB connections to proceed' : (!webDbTested ? 'Please click \'Test Connection\' on Web Database' : 'Please click \'Test Game DB\' on Ragnarok Database')"></span>
+                                </span>
+                            </template>
+                            <template x-if="webDbTested && gameDbTested">
+                                <span class="text-emerald-400 font-medium flex items-center gap-1.5 bg-emerald-950/40 border border-emerald-500/30 px-3 py-1.5 rounded-xl">
+                                    <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
+                                    <span>Both database connections verified &bull; Ready to proceed</span>
+                                </span>
+                            </template>
+                        </div>
+
                         <button type="button" @click="proceedToStep4()"
-                                :class="(!webDbTested || !gameDbTested) ? 'opacity-60 cursor-not-allowed bg-slate-700 text-slate-400' : 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20'"
+                                :disabled="!webDbTested || !gameDbTested"
+                                :class="(!webDbTested || !gameDbTested) ? 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500' : 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20'"
                                 class="px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all">
-                            <span>Proceed to Migration</span>
+                            <span>Proceed to Provisioning Stage</span>
                             <i data-lucide="arrow-right" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -793,8 +826,107 @@
                             <span>Step 4: Provision Web Database</span>
                         </h2>
                         <p class="text-xs text-slate-400 mt-1">
-                            Choose between automated migration (standard/local) or direct phpMyAdmin SQL import (recommended for cPanel).
+                            Select which seeders and starter content to install, then choose between automated execution or phpMyAdmin SQL import.
                         </p>
+                    </div>
+
+                    <!-- Seeder Selection Panel -->
+                    <div class="bg-slate-950/70 border border-slate-800/80 rounded-2xl p-5 space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                            <div>
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2">
+                                    <i data-lucide="package-check" class="w-4 h-4 text-cyan-400"></i>
+                                    <span>Select Seeders &amp; Starter Content</span>
+                                </h3>
+                                <p class="text-[11px] text-slate-400 mt-0.5">
+                                    Choose which starter content packages to install into your web database (<span class="text-cyan-400 font-bold" x-text="selectedSeeders.length"></span> of 6 selected).
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button type="button" @click="selectAllSeeders()" class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-slate-800 transition-colors">
+                                    Select All
+                                </button>
+                                <button type="button" @click="selectMinimalSeeders()" class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 border border-slate-800 transition-colors">
+                                    Minimal
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <!-- 1. Core Settings -->
+                            <label class="p-3 rounded-xl border transition-all cursor-pointer flex items-start gap-3 select-none"
+                                   :class="selectedSeeders.includes('settings') ? 'bg-cyan-950/20 border-cyan-500/40 text-slate-200' : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700'">
+                                <input type="checkbox" :checked="selectedSeeders.includes('settings')" @change="toggleSeeder('settings')" class="mt-0.5 rounded text-cyan-500 focus:ring-cyan-500">
+                                <div>
+                                    <div class="font-bold text-white flex items-center gap-1.5">
+                                        <span>Core Site Settings</span>
+                                        <span class="text-[9px] uppercase tracking-wider bg-cyan-500/20 text-cyan-300 px-1.5 py-0.2 rounded font-semibold">Recommended</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">Server branding, gameplay rates, active theme, Discord links, and system configuration.</p>
+                                </div>
+                            </label>
+
+                            <!-- 2. Badges & Ranking Tiers -->
+                            <label class="p-3 rounded-xl border transition-all cursor-pointer flex items-start gap-3 select-none"
+                                   :class="selectedSeeders.includes('badges') ? 'bg-cyan-950/20 border-cyan-500/40 text-slate-200' : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700'">
+                                <input type="checkbox" :checked="selectedSeeders.includes('badges')" @change="toggleSeeder('badges')" class="mt-0.5 rounded text-cyan-500 focus:ring-cyan-500">
+                                <div>
+                                    <div class="font-bold text-white flex items-center gap-1.5">
+                                        <span>Badges &amp; Ranking Tiers</span>
+                                        <span class="text-[9px] uppercase tracking-wider bg-cyan-500/20 text-cyan-300 px-1.5 py-0.2 rounded font-semibold">Recommended</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">Base, Job, PvP combat rank stars, MVP boss trophies, and Guild ranking tier definitions.</p>
+                                </div>
+                            </label>
+
+                            <!-- 3. Daily Attendance Campaigns -->
+                            <label class="p-3 rounded-xl border transition-all cursor-pointer flex items-start gap-3 select-none"
+                                   :class="selectedSeeders.includes('attendance') ? 'bg-cyan-950/20 border-cyan-500/40 text-slate-200' : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700'">
+                                <input type="checkbox" :checked="selectedSeeders.includes('attendance')" @change="toggleSeeder('attendance')" class="mt-0.5 rounded text-cyan-500 focus:ring-cyan-500">
+                                <div>
+                                    <div class="font-bold text-white flex items-center gap-1.5">
+                                        <span>Daily Attendance Rewards</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">30-Day Monthly Attendance Campaign &amp; 7-Day Welcome Streak with rewards.</p>
+                                </div>
+                            </label>
+
+                            <!-- 4. Donation Packages -->
+                            <label class="p-3 rounded-xl border transition-all cursor-pointer flex items-start gap-3 select-none"
+                                   :class="selectedSeeders.includes('donations') ? 'bg-cyan-950/20 border-cyan-500/40 text-slate-200' : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700'">
+                                <input type="checkbox" :checked="selectedSeeders.includes('donations')" @change="toggleSeeder('donations')" class="mt-0.5 rounded text-cyan-500 focus:ring-cyan-500">
+                                <div>
+                                    <div class="font-bold text-white flex items-center gap-1.5">
+                                        <span>Donation Packages &amp; Tiers</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">Starter Novice ($10), Champion ($25), and Mythic ($50) packages with Cash Points.</p>
+                                </div>
+                            </label>
+
+                            <!-- 5. Sample News & Articles -->
+                            <label class="p-3 rounded-xl border transition-all cursor-pointer flex items-start gap-3 select-none"
+                                   :class="selectedSeeders.includes('news') ? 'bg-cyan-950/20 border-cyan-500/40 text-slate-200' : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700'">
+                                <input type="checkbox" :checked="selectedSeeders.includes('news')" @change="toggleSeeder('news')" class="mt-0.5 rounded text-cyan-500 focus:ring-cyan-500">
+                                <div>
+                                    <div class="font-bold text-white flex items-center gap-1.5">
+                                        <span>Sample News &amp; Announcements</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">Initial welcome announcement and renewal update patch notes articles.</p>
+                                </div>
+                            </label>
+
+                            <!-- 6. Client Download Mirrors -->
+                            <label class="p-3 rounded-xl border transition-all cursor-pointer flex items-start gap-3 select-none"
+                                   :class="selectedSeeders.includes('downloads') ? 'bg-cyan-950/20 border-cyan-500/40 text-slate-200' : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700'">
+                                <input type="checkbox" :checked="selectedSeeders.includes('downloads')" @change="toggleSeeder('downloads')" class="mt-0.5 rounded text-cyan-500 focus:ring-cyan-500">
+                                <div>
+                                    <div class="font-bold text-white flex items-center gap-1.5">
+                                        <span>Client Download Mirrors</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">Full Client, Lite Client, and Cumulative Manual Patch download entries.</p>
+                                </div>
+                            </label>
+                        </div>
                     </div>
 
                     <!-- Mode Selector -->
@@ -857,7 +989,7 @@
                                 </div>
                                 <i data-lucide="download" class="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform"></i>
                             </a>
-                            <a href="{{ route('install.download-sql', 'seeders') }}"
+                            <a :href="'{{ route('install.download-sql', 'seeders') }}?modules=' + selectedSeeders.join(',')"
                                class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500/40 text-left flex items-center justify-between group transition-all">
                                 <div>
                                     <span class="text-xs font-bold text-white group-hover:text-amber-300 block">2. aether_seeders.sql</span>

@@ -29,6 +29,11 @@ class EnsureInstalled
 
         // If not installed, redirect all non-installer requests to the installer wizard
         if (!$isInstalled) {
+            // Automatically initialize .env if missing on fresh upload
+            if (!file_exists(base_path('.env')) && file_exists(base_path('.env.example'))) {
+                @copy(base_path('.env.example'), base_path('.env'));
+            }
+
             if (!$request->is('install*')) {
                 return redirect()->route('install.index');
             }

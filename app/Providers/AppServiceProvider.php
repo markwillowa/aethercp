@@ -12,6 +12,31 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // If no .env file exists (fresh upload or fresh installation), automatically initialize .env from .env.example
+        $envPath = base_path('.env');
+        if (!file_exists($envPath)) {
+            $examplePath = base_path('.env.example');
+            if (file_exists($examplePath)) {
+                @copy($examplePath, $envPath);
+            } else {
+                @file_put_contents($envPath, "APP_NAME=\"AetherCP\"\nAPP_ENV=production\nAPP_DEBUG=false\nSESSION_DRIVER=file\nCACHE_STORE=file\n");
+            }
+            // Generate a secure 32-byte base64 application key
+            try {
+                $randomKey = 'base64:' . base64_encode(random_bytes(32));
+                $envContent = file_exists($envPath) ? file_get_contents($envPath) : '';
+                if (preg_match('/^APP_KEY=[^\r\n]*/m', $envContent)) {
+                    $envContent = preg_replace('/^APP_KEY=[^\r\n]*/m', 'APP_KEY=' . $randomKey, $envContent);
+                } else {
+                    $envContent .= "\nAPP_KEY=" . $randomKey . "\n";
+                }
+                @file_put_contents($envPath, $envContent);
+                config(['app.key' => $randomKey]);
+            } catch (\Throwable $e) {
+                // Keep default fallback
+            }
+        }
+
         // When not installed, force session and cache to file so unmigrated database doesn't crash on sessions table
         if (!file_exists(storage_path('installed'))) {
             config([

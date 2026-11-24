@@ -266,16 +266,20 @@ AetherCP is specifically designed to run on shared web hosting with **zero termi
 
 #### Step 4: Run the Web Installer (Two Provisioning Choices)
 Open `https://yourserver.com/` (or `https://yourserver.com/cp/`) in your browser:
-- On **Step 3**, enter your cPanel database credentials and click **Test Connection** for both databases.
-- On **Step 4**, choose your preferred provisioning mode:
-  - **Option A (Automated 1-Click)**: Runs database migrations directly in PHP.
+- **Automatic `.env` Creation**: If `.env` is missing on a fresh upload, AetherCP automatically creates `.env` from `.env.example` with a freshly generated encryption key, file session driver, and file cache store.
+- **Step 3 (Database Connection Enforcement)**:
+  - Enter your database credentials for both the **AetherCP Web Application Database** and the **Ragnarok Game Server Database**.
+  - Click **"Test Connection"** on both sections. Connectivity must be verified before the wizard allows proceeding to Step 4.
+  - Server network status and gameplay rates are optional and will not block installation if your emulator server is currently offline.
+- **Step 4 (Seeder Selection & Provisioning)**:
+  - **Select Seeders & Starter Content**: Select which content packages you wish to upload/install (Core Site Settings, Badges & Ranking Tiers, Daily Attendance Rewards, Donation Packages, Sample News & Articles, and Client Download Mirrors).
+  - **Option A (Automated 1-Click)**: Runs database migrations and seeds ONLY your selected seeders directly via PHP.
   - **Option B (phpMyAdmin Manual SQL Import)**:
-    1. Click the download buttons to download:
-       - `database/sql/aether_schema.sql` (All tables, indexes, and migrations tracking)
-       - `database/sql/aether_seeders.sql` (Starter configuration, campaigns, and badges)
-    2. In phpMyAdmin, click your web database (`cpaneluser_aether`) and click **Import** for each file.
-    3. Click **"I Have Imported the SQL Files • Verify & Proceed"** in the wizard.
-- On **Step 5**, configure your administrator credentials, then click **Complete Installation**.
+    1. Download `aether_schema.sql` (all tables, indexes, and migrations tracking).
+    2. Download your tailored `aether_seeders.sql` (dynamically filtered to contain only your chosen seeders).
+    3. In phpMyAdmin, click your web database (`cpaneluser_aether`) and click **Import** for each file.
+    4. Click **"I Have Imported the SQL Files • Verify & Proceed"** in the wizard.
+- **Step 5**: Configure your administrator credentials, then click **Complete Installation**.
 
 > [!TIP]
 > **No `sessions` Table Crashes on cPanel**: Fresh uploads on cPanel default to `SESSION_DRIVER=file`, ensuring requests never query a non-existent database session table before installation!

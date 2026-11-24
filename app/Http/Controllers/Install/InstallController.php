@@ -22,6 +22,30 @@ class InstallController extends Controller
      */
     public function index(): View
     {
+        // Automatically initialize .env on fresh installation if missing
+        $envPath = base_path('.env');
+        if (!File::exists($envPath)) {
+            $examplePath = base_path('.env.example');
+            if (File::exists($examplePath)) {
+                File::copy($examplePath, $envPath);
+            } else {
+                File::put($envPath, "APP_NAME=\"AetherCP\"\nAPP_ENV=production\nAPP_DEBUG=false\nSESSION_DRIVER=file\nCACHE_STORE=file\n");
+            }
+            try {
+                $randomKey = 'base64:' . base64_encode(random_bytes(32));
+                $envContent = File::get($envPath);
+                if (preg_match('/^APP_KEY=[^\r\n]*/m', $envContent)) {
+                    $envContent = preg_replace('/^APP_KEY=[^\r\n]*/m', 'APP_KEY=' . $randomKey, $envContent);
+                } else {
+                    $envContent .= "\nAPP_KEY=" . $randomKey . "\n";
+                }
+                File::put($envPath, $envContent);
+                config(['app.key' => $randomKey]);
+            } catch (\Throwable $e) {
+                // Continue with runtime fallback
+            }
+        }
+
         $requirements = $this->getSystemRequirements();
         $suggestedUrl = url('/');
         // Normalize out public if somehow present
@@ -260,6 +284,36 @@ class InstallController extends Controller
             ], 422);
         }
 
+        // Pre-validate Web DB connectivity
+        try {
+            new PDO(
+                "mysql:host={$validated['db_host']};port={$validated['db_port']};dbname={$validated['db_database']}",
+                $validated['db_username'],
+                $validated['db_password'] ?? '',
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 5]
+            );
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Web database connection check failed: ' . $e->getMessage() . '. Unable to proceed.',
+            ], 422);
+        }
+
+        // Pre-validate Ragnarok Game DB connectivity
+        try {
+            new PDO(
+                "mysql:host={$validated['ro_db_host']};port={$validated['ro_db_port']};dbname={$validated['ro_db_database']}",
+                $validated['ro_db_username'],
+                $validated['ro_db_password'] ?? '',
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 5]
+            );
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ragnarok game database connection check failed: ' . $e->getMessage() . '. Unable to proceed.',
+            ], 422);
+        }
+
         try {
             // 1. Update .env file
             $envPath = base_path('.env');
@@ -330,12 +384,14 @@ class InstallController extends Controller
             Artisan::call('migrate', ['--force' => true]);
             $migrateOutput = trim(Artisan::output());
 
-            // 5. Seed default configuration and starter data
+            // 5. Seed selected configuration and starter data modules
+            $selectedSeeders = $request->input('selected_seeders', ['settings', 'badges', 'attendance', 'donations', 'news', 'downloads']);
+            if (!is_array($selectedSeeders)) {
+                $selectedSeeders = ['settings', 'badges', 'attendance', 'donations', 'news', 'downloads'];
+            }
             if (class_exists(\Database\Seeders\AetherDatabaseSeeder::class)) {
-                Artisan::call('db:seed', [
-                    '--class' => 'Database\\Seeders\\AetherDatabaseSeeder',
-                    '--force' => true,
-                ]);
+                $seeder = new \Database\Seeders\AetherDatabaseSeeder();
+                $seeder->run($selectedSeeders);
             }
 
             // Update site settings
@@ -355,7 +411,7 @@ class InstallController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Environment configured and web database tables migrated successfully!',
+                'message' => 'Environment configured, web database tables migrated, and selected seeders populated successfully!',
                 'migration_log' => $migrateOutput,
             ]);
         } catch (\Throwable $e) {
@@ -370,21 +426,90 @@ class InstallController extends Controller
     /**
      * Download SQL dump files for manual phpMyAdmin import (cPanel support).
      */
-    public function downloadSql(string $type)
+    public function downloadSql(string $type, Request $request)
     {
-        $file = match ($type) {
-            'schema' => base_path('database/sql/aether_schema.sql'),
-            'seeders' => base_path('database/sql/aether_seeders.sql'),
-            default => null,
-        };
-
-        if (!$file || !File::exists($file)) {
-            abort(404, 'SQL file not found.');
+        if ($type === 'schema') {
+            $file = base_path('database/sql/aether_schema.sql');
+            if (!File::exists($file)) {
+                abort(404, 'SQL schema file not found.');
+            }
+            return response()->download($file, 'aether_schema.sql', [
+                'Content-Type' => 'application/sql',
+            ]);
         }
 
-        return response()->download($file, basename($file), [
-            'Content-Type' => 'application/sql',
-        ]);
+        if ($type === 'seeders') {
+            $file = base_path('database/sql/aether_seeders.sql');
+            if (!File::exists($file)) {
+                abort(404, 'SQL seeders file not found.');
+            }
+
+            $moduleParam = $request->query('modules') ?? $request->query('seeders');
+            if ($moduleParam) {
+                $requestedModules = array_filter(array_map('trim', explode(',', strtolower($moduleParam))));
+                $filteredSql = $this->generateFilteredSeedersSql($file, $requestedModules);
+                return response($filteredSql, 200, [
+                    'Content-Type' => 'application/sql',
+                    'Content-Disposition' => 'attachment; filename="aether_seeders.sql"',
+                ]);
+            }
+
+            return response()->download($file, 'aether_seeders.sql', [
+                'Content-Type' => 'application/sql',
+            ]);
+        }
+
+        abort(404, 'Invalid SQL type requested.');
+    }
+
+    /**
+     * Generate tailored seeders SQL based on user-selected modules.
+     */
+    protected function generateFilteredSeedersSql(string $fullFilePath, array $modules): string
+    {
+        $sql = File::get($fullFilePath);
+
+        $moduleTableMap = [
+            'settings' => ['site_settings'],
+            'badges' => ['badge_definitions', 'badge_tiers', 'reward_definitions'],
+            'attendance' => ['attendance_campaigns', 'attendance_campaign_days', 'attendance_campaign_items'],
+            'donations' => ['donation_packages'],
+            'news' => ['news'],
+            'downloads' => ['downloads'],
+            'admin' => ['users'],
+        ];
+
+        $allowedTables = ['users']; // always keep users table template
+        foreach ($modules as $mod) {
+            $mod = trim(strtolower($mod));
+            if (isset($moduleTableMap[$mod])) {
+                $allowedTables = array_merge($allowedTables, $moduleTableMap[$mod]);
+            }
+        }
+        $allowedTables = array_unique($allowedTables);
+
+        $header = "-- =====================================================================\n"
+                . "-- AetherCP Filtered Starter Seeders Export\n"
+                . "-- Selected Modules: " . implode(', ', $modules) . "\n"
+                . "-- =====================================================================\n\n"
+                . "SET FOREIGN_KEY_CHECKS=0;\n"
+                . "START TRANSACTION;\n\n";
+        $footer = "\nCOMMIT;\nSET FOREIGN_KEY_CHECKS=1;\n";
+
+        $sections = preg_split('/(?=-- -+\s*-- Dumping data for table)/', $sql);
+        $output = '';
+
+        foreach ($sections as $section) {
+            if (preg_match('/-- Dumping data for table `([^`]+)`/', $section, $m)) {
+                $table = $m[1];
+                if (in_array($table, $allowedTables)) {
+                    $cleaned = preg_replace('/(COMMIT;\s*SET FOREIGN_KEY_CHECKS=1;.*)/s', '', $section);
+                    $output .= trim($cleaned) . "\n\n";
+                }
+            }
+        }
+
+        return $header . $output . $footer;
     }
 
     /**
@@ -420,6 +545,36 @@ class InstallController extends Controller
             'ro_rate_drop' => 'nullable|string|max:20',
             'ro_max_level' => 'nullable|integer|min:1|max:999',
         ]);
+
+        // Pre-validate Web DB connectivity
+        try {
+            new PDO(
+                "mysql:host={$validated['db_host']};port={$validated['db_port']};dbname={$validated['db_database']}",
+                $validated['db_username'],
+                $validated['db_password'] ?? '',
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 5]
+            );
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Web database connection check failed: ' . $e->getMessage() . '. Unable to proceed.',
+            ], 422);
+        }
+
+        // Pre-validate Ragnarok Game DB connectivity
+        try {
+            new PDO(
+                "mysql:host={$validated['ro_db_host']};port={$validated['ro_db_port']};dbname={$validated['ro_db_database']}",
+                $validated['ro_db_username'],
+                $validated['ro_db_password'] ?? '',
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 5]
+            );
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ragnarok game database connection check failed: ' . $e->getMessage() . '. Unable to proceed.',
+            ], 422);
+        }
 
         try {
             // 1. Update .env file
