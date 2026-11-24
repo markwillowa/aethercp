@@ -57,12 +57,6 @@
                         Marketplace
                     </a>
                 @endif
-                @if($modMgr->isEnabled('attendance'))
-                    <a href="{{ route('attendance.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 {{ request()->routeIs('attendance.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
-                        <i data-lucide="calendar" class="w-4 h-4 text-amber-400"></i>
-                        <span>Daily Rewards</span>
-                    </a>
-                @endif
                 @if($modMgr->isEnabled('donations'))
                     <a href="{{ route('donations.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('donations.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                         Donations
@@ -105,6 +99,10 @@
                                 <span>My Characters</span>
                             </a>
                             @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('attendance'))
+                                <a href="{{ route('attendance.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                                    <i data-lucide="calendar" class="w-4 h-4 text-amber-400"></i>
+                                    <span>Daily Rewards</span>
+                                </a>
                                 <a href="{{ route('inbox.index') }}" class="flex items-center justify-between px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
                                     <span class="flex items-center gap-2">
                                         <i data-lucide="inbox" class="w-4 h-4 text-cyan-400"></i>
@@ -197,6 +195,11 @@
         <div class="border-t border-slate-800 pt-3 mt-2">
             @auth
                 <a href="{{ route('account.profile') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-cyan-400 hover:bg-slate-800">My Account ({{ auth()->user()->username }})</a>
+                <a href="{{ route('account.characters') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">My Characters</a>
+                @if($modMgr->isEnabled('attendance'))
+                    <a href="{{ route('attendance.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-amber-300 hover:bg-slate-800">Daily Rewards</a>
+                    <a href="{{ route('inbox.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-cyan-400 hover:bg-slate-800">Reward Inbox</a>
+                @endif
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="w-full text-left px-3 py-2 rounded-lg text-base font-medium text-red-400 hover:bg-slate-800">Log Out</button>

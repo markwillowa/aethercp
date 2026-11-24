@@ -27,6 +27,11 @@ class CharacterRepository implements CharacterRepositoryInterface
             ->toArray();
     }
 
+    public function getByAccountId(int $accountId): array
+    {
+        return $this->getCharactersByAccount($accountId);
+    }
+
     public function findById(int $charId): ?object
     {
         return DB::connection('ragnarok')

@@ -6,6 +6,8 @@ interface CharacterRepositoryInterface
 {
     public function getCharactersByAccount(int $accountId): array;
 
+    public function getByAccountId(int $accountId): array;
+
     public function findById(int $charId): ?object;
 
     public function findByName(string $name): ?object;

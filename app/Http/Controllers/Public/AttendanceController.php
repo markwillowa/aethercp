@@ -22,7 +22,7 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $characters = $user ? $this->characterRepo->getByAccountId((int) $user->account_id) : [];
+        $characters = $user ? $this->characterRepo->getCharactersByAccount((int) $user->account_id) : [];
 
         $campaignsData = $user
             ? $this->attendanceService->getActiveCampaignsForUser($user)
