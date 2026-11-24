@@ -329,7 +329,7 @@
                  x-data="{
                      activeTab: 'lvl',
                      tabs: [
-                         { key: 'lvl', label: 'Lvl' },
+                         { key: 'lvl', label: 'Base' },
                          { key: 'job', label: 'Job' },
                          { key: 'pvp', label: 'PvP' },
                          { key: 'mvp', label: 'MVP' },
@@ -438,11 +438,11 @@
                                     </div>
                                 </template>
                                 <template x-if="activeTab !== 'guild'">
-                                    <div class="w-6 h-6 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0 overflow-hidden">
-                                        <template x-if="item.guild_emblem_url">
-                                            <img :src="item.guild_emblem_url" alt="" class="w-5 h-5 object-contain">
+                                    <div class="w-7 h-7 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0 overflow-hidden">
+                                        <template x-if="item.job_sprite_url">
+                                            <img :src="item.job_sprite_url" alt="" class="w-6 h-6 object-contain" onerror="this.style.display='none';">
                                         </template>
-                                        <template x-if="!item.guild_emblem_url">
+                                        <template x-if="!item.job_sprite_url">
                                             <span class="text-[10px] font-bold text-cyan-400" x-text="item.name ? item.name.charAt(0).toUpperCase() : 'A'"></span>
                                         </template>
                                     </div>

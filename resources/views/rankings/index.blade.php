@@ -17,7 +17,7 @@
         <div class="flex flex-wrap items-center gap-2">
             @php
                 $tabs = [
-                    'lvl' => ['label' => 'Lvl', 'icon' => 'trending-up'],
+                    'lvl' => ['label' => 'Base', 'icon' => 'trending-up'],
                     'job' => ['label' => 'Job', 'icon' => 'award'],
                     'pvp' => ['label' => 'PvP', 'icon' => 'swords'],
                     'mvp' => ['label' => 'MVP', 'icon' => 'skull'],
@@ -142,8 +142,12 @@
                             @else
                                 <td class="py-3.5 px-4 font-bold text-white">
                                     <a href="{{ $row['profile_url'] }}" class="flex items-center gap-2.5 hover:text-cyan-400 transition-colors">
-                                        <span class="w-6 h-6 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center text-[10px] text-cyan-400 shrink-0">
-                                            {{ strtoupper(substr($row['name'], 0, 1)) }}
+                                        <span class="w-8 h-8 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 overflow-hidden">
+                                            @if(!empty($row['job_sprite_url']))
+                                                <img src="{{ $row['job_sprite_url'] }}" alt="{{ $row['job_name'] }}" class="w-7 h-7 object-contain" onerror="this.style.display='none';">
+                                            @else
+                                                <span class="text-[10px] text-cyan-400">{{ strtoupper(substr($row['name'], 0, 1)) }}</span>
+                                            @endif
                                         </span>
                                         <span>{{ $row['name'] }}</span>
                                         @if(!empty($row['online']))

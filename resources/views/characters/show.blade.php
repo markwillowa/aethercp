@@ -16,8 +16,11 @@
     <!-- Main Character Card -->
     <div class="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div class="flex items-center gap-5">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-2xl font-black text-slate-950 shadow-lg">
-                {{ strtoupper(substr($char->name, 0, 1)) }}
+            <div class="w-20 h-20 rounded-2xl bg-slate-950 border border-slate-700 flex items-center justify-center shadow-lg overflow-hidden shrink-0">
+                <img src="{{ $jobSpriteUrl }}" alt="{{ \App\Services\Emulator\JobHelper::getName($char->class) }}" class="w-16 h-16 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <span style="display: none;" class="w-full h-full bg-gradient-to-tr from-cyan-500 to-blue-600 items-center justify-center text-2xl font-black text-slate-950">
+                    {{ strtoupper(substr($char->name, 0, 1)) }}
+                </span>
             </div>
             <div>
                 <div class="flex items-center gap-3">
@@ -106,6 +109,43 @@
                 </li>
             </ul>
         </div>
+    </div>
+
+    <!-- Equipped Gear Section -->
+    <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 backdrop-blur-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                <i data-lucide="shield" class="w-4 h-4 text-cyan-400"></i>
+                <span>Equipped Gear ({{ count($equippedItems) }})</span>
+            </h3>
+        </div>
+
+        @if(count($equippedItems) > 0)
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                @foreach($equippedItems as $eq)
+                    <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 hover:border-cyan-500/30 transition-colors">
+                        <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0">
+                            <img src="{{ $eq['icon_url'] }}" alt="{{ $eq['name'] }}" class="w-7 h-7 object-contain" onerror="this.src='/images/item-placeholder.png'">
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <span class="text-[10px] font-mono uppercase tracking-wider text-cyan-400 block">{{ $eq['slot_label'] }}</span>
+                            <a href="{{ route('itemdb.show', $eq['nameid']) }}" class="text-xs font-bold text-white hover:text-cyan-300 truncate block">
+                                {{ $eq['refine'] > 0 ? '+' . $eq['refine'] . ' ' : '' }}{{ $eq['name'] }}{{ $eq['slots'] > 0 ? ' [' . $eq['slots'] . ']' : '' }}
+                            </a>
+                            @if(!empty($eq['cards']))
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                    @foreach($eq['cards'] as $card)
+                                        <span class="px-1.5 py-0.5 rounded text-[9px] font-medium bg-purple-950/60 text-purple-300 border border-purple-500/30">{{ $card['name'] }}</span>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <p class="text-xs text-slate-500 text-center py-6">No equipment currently equipped on this character.</p>
+        @endif
     </div>
 </div>
 @endsection

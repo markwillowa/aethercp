@@ -264,6 +264,22 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/logs', [AdminController::class, 'activityLogs'])->name('logs');
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::post('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
+
+    // Ranking Engine & Synchronization Management
+    Route::get('/rankings', [\App\Http\Controllers\Admin\AdminRankingController::class, 'index'])->name('rankings.index');
+    Route::post('/rankings/settings', [\App\Http\Controllers\Admin\AdminRankingController::class, 'updateSettings'])->name('rankings.settings');
+    Route::post('/rankings/sync', [\App\Http\Controllers\Admin\AdminRankingController::class, 'syncNow'])->name('rankings.sync');
+    Route::post('/rankings/token', [\App\Http\Controllers\Admin\AdminRankingController::class, 'regenerateToken'])->name('rankings.token');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Authenticated Emulator Event Ingestion Bridge
+|--------------------------------------------------------------------------
+*/
+Route::prefix('api/emulator')->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])->group(function () {
+    Route::post('/events', [\App\Http\Controllers\Api\EmulatorEventController::class, 'store'])->name('api.emulator.events.store');
+    Route::post('/events/batch', [\App\Http\Controllers\Api\EmulatorEventController::class, 'batch'])->name('api.emulator.events.batch');
 });
 
 /*

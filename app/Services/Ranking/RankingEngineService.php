@@ -143,21 +143,54 @@ class RankingEngineService
 
         $this->applyCharacterFilters($query, 'c', $search, $classFilter, $cfg);
 
+        $maxBase = $cfg['max_base_level'];
+        $statsByChar = Schema::hasTable('ranking_character_stats')
+            ? DB::table('ranking_character_stats')
+                ->whereNotNull('max_base_reached_at')
+                ->get(['char_id', 'max_base_reached_at'])
+                ->keyBy('char_id')
+            : collect();
+
         $total = (clone $query)->count();
         $rows = $query->orderByDesc('c.base_level')
             ->orderByDesc('c.base_exp')
             ->orderBy('c.char_id')
-            ->offset(($page - 1) * $perPage)
-            ->limit($perPage)
+            ->limit(max(200, $page * $perPage))
             ->get();
 
-        $maxBase = $cfg['max_base_level'];
+        // Sort chronologically by max_base_reached_at for characters who reached max base level
+        $sorted = $rows->sort(function ($a, $b) use ($maxBase, $statsByChar) {
+            $aMax = (int) $a->base_level >= $maxBase;
+            $bMax = (int) $b->base_level >= $maxBase;
+
+            if ($aMax && $bMax) {
+                $aTime = $statsByChar->get($a->char_id)?->max_base_reached_at;
+                $bTime = $statsByChar->get($b->char_id)?->max_base_reached_at;
+                if ($aTime && $bTime && $aTime !== $bTime) {
+                    return strcmp($aTime, $bTime);
+                }
+                if ($aTime && !$bTime) return -1;
+                if (!$aTime && $bTime) return 1;
+            }
+
+            if ((int) $a->base_level !== (int) $b->base_level) {
+                return (int) $b->base_level <=> (int) $a->base_level;
+            }
+            if ((int) $a->base_exp !== (int) $b->base_exp) {
+                return (int) $b->base_exp <=> (int) $a->base_exp;
+            }
+            return (int) $a->char_id <=> (int) $b->char_id;
+        })->values();
+
+        $paged = $sorted->slice(($page - 1) * $perPage, $perPage)->values();
+
         $items = [];
         $startRank = (($page - 1) * $perPage) + 1;
 
-        foreach ($rows as $idx => $row) {
+        foreach ($paged as $idx => $row) {
             $rank = $startRank + $idx;
             $reachedMax = (int) $row->base_level >= $maxBase;
+            $achievedAt = $statsByChar->get($row->char_id)?->max_base_reached_at;
             $achievement = null;
             if ($reachedMax) {
                 $achievement = ($rank === 1) ? 'First to Max Level' : 'Max Level';
@@ -168,7 +201,7 @@ class RankingEngineService
                 'primary_stat_value' => (int) $row->base_level,
                 'secondary_stat' => 'Job Lv. ' . (int) $row->job_level,
                 'achievement_label' => $achievement,
-                'achieved_at' => null, // Will be populated by Stage 2 achievement event table
+                'achieved_at' => $achievedAt,
             ]);
         }
 
@@ -201,21 +234,53 @@ class RankingEngineService
 
         $this->applyCharacterFilters($query, 'c', $search, $classFilter, $cfg);
 
+        $maxJob = $cfg['max_job_level'];
+        $statsByChar = Schema::hasTable('ranking_character_stats')
+            ? DB::table('ranking_character_stats')
+                ->whereNotNull('max_job_reached_at')
+                ->get(['char_id', 'max_job_reached_at'])
+                ->keyBy('char_id')
+            : collect();
+
         $total = (clone $query)->count();
         $rows = $query->orderByDesc('c.job_level')
             ->orderByDesc('c.job_exp')
             ->orderBy('c.char_id')
-            ->offset(($page - 1) * $perPage)
-            ->limit($perPage)
+            ->limit(max(200, $page * $perPage))
             ->get();
 
-        $maxJob = $cfg['max_job_level'];
+        $sorted = $rows->sort(function ($a, $b) use ($maxJob, $statsByChar) {
+            $aMax = (int) $a->job_level >= $maxJob;
+            $bMax = (int) $b->job_level >= $maxJob;
+
+            if ($aMax && $bMax) {
+                $aTime = $statsByChar->get($a->char_id)?->max_job_reached_at;
+                $bTime = $statsByChar->get($b->char_id)?->max_job_reached_at;
+                if ($aTime && $bTime && $aTime !== $bTime) {
+                    return strcmp($aTime, $bTime);
+                }
+                if ($aTime && !$bTime) return -1;
+                if (!$aTime && $bTime) return 1;
+            }
+
+            if ((int) $a->job_level !== (int) $b->job_level) {
+                return (int) $b->job_level <=> (int) $a->job_level;
+            }
+            if ((int) $a->job_exp !== (int) $b->job_exp) {
+                return (int) $b->job_exp <=> (int) $a->job_exp;
+            }
+            return (int) $a->char_id <=> (int) $b->char_id;
+        })->values();
+
+        $paged = $sorted->slice(($page - 1) * $perPage, $perPage)->values();
+
         $items = [];
         $startRank = (($page - 1) * $perPage) + 1;
 
-        foreach ($rows as $idx => $row) {
+        foreach ($paged as $idx => $row) {
             $rank = $startRank + $idx;
             $reachedMax = (int) $row->job_level >= $maxJob;
+            $achievedAt = $statsByChar->get($row->char_id)?->max_job_reached_at;
             $achievement = null;
             if ($reachedMax) {
                 $achievement = ($rank === 1) ? 'First to Max Job' : 'Max Job Level';
@@ -226,7 +291,7 @@ class RankingEngineService
                 'primary_stat_value' => (int) $row->job_level,
                 'secondary_stat' => 'Base Lv. ' . (int) $row->base_level,
                 'achievement_label' => $achievement,
-                'achieved_at' => null,
+                'achieved_at' => $achievedAt,
             ]);
         }
 
@@ -235,24 +300,141 @@ class RankingEngineService
 
     protected function buildPvpLeaderboard(int $perPage, int $page, string $search, ?int $classFilter, array $cfg): array
     {
-        // Stage 2 will add verified PvP event tables (`ranking_character_stats`).
-        // Until then, check if the table exists so we never fabricate PvP kills.
-        if (Schema::hasTable('ranking_character_stats')) {
-            // Query verified PvP stats when Stage 2 table is migrated
+        if (!Schema::hasTable('ranking_character_stats')) {
+            return $this->wrapPayload('pvp', [], 0, $perPage, $page);
         }
 
-        return $this->wrapPayload('pvp', [], 0, $perPage, $page);
+        $stats = DB::table('ranking_character_stats')
+            ->where('pvp_kills', '>', 0)
+            ->orderByDesc('pvp_kills')
+            ->orderBy('pvp_deaths')
+            ->get()
+            ->keyBy('char_id');
+
+        if ($stats->isEmpty()) {
+            return $this->wrapPayload('pvp', [], 0, $perPage, $page);
+        }
+
+        $conn = DB::connection('ragnarok');
+        $charTable = $this->emulator->getTableName('char');
+        $guildTable = $this->emulator->getTableName('guild');
+
+        $query = $conn->table("{$charTable} as c")
+            ->leftJoin("{$guildTable} as g", 'c.guild_id', '=', 'g.guild_id')
+            ->whereIn('c.char_id', $stats->keys()->all())
+            ->select(
+                'c.char_id',
+                'c.account_id',
+                'c.name',
+                'c.class',
+                'c.sex',
+                'c.base_level',
+                'c.job_level',
+                'c.guild_id',
+                'c.online',
+                'g.name as guild_name',
+                'g.emblem_len as guild_emblem_len'
+            );
+
+        $this->applyCharacterFilters($query, 'c', $search, $classFilter, $cfg);
+
+        $chars = $query->get()->keyBy('char_id');
+        $merged = [];
+        foreach ($stats as $cid => $st) {
+            if ($chars->has($cid)) {
+                $c = $chars->get($cid);
+                $c->pvp_kills = (int) $st->pvp_kills;
+                $c->pvp_deaths = (int) $st->pvp_deaths;
+                $merged[] = $c;
+            }
+        }
+
+        $total = count($merged);
+        $paged = array_slice($merged, ($page - 1) * $perPage, $perPage);
+        $items = [];
+        $startRank = (($page - 1) * $perPage) + 1;
+
+        foreach ($paged as $idx => $row) {
+            $rank = $startRank + $idx;
+            $kd = $row->pvp_deaths > 0 ? round($row->pvp_kills / $row->pvp_deaths, 2) : (float) $row->pvp_kills;
+            $items[] = $this->formatCharacterEntry($row, $rank, [
+                'primary_stat_label' => '',
+                'primary_stat_value' => number_format($row->pvp_kills) . ' Kills',
+                'secondary_stat' => "K/D: {$kd} ({$row->pvp_deaths}D)",
+                'pvp_kills' => $row->pvp_kills,
+                'pvp_deaths' => $row->pvp_deaths,
+                'kd_ratio' => $kd,
+            ]);
+        }
+
+        return $this->wrapPayload('pvp', $items, $total, $perPage, $page);
     }
 
     protected function buildMvpLeaderboard(int $perPage, int $page, string $search, ?int $classFilter, array $cfg): array
     {
-        // Stage 2 will add verified MVP kill event tables (`ranking_character_stats`).
-        // Until then, return verified records if table exists, otherwise empty (never count ordinary kills).
-        if (Schema::hasTable('ranking_character_stats')) {
-            // Query verified MVP stats when Stage 2 table is migrated
+        if (!Schema::hasTable('ranking_character_stats')) {
+            return $this->wrapPayload('mvp', [], 0, $perPage, $page);
         }
 
-        return $this->wrapPayload('mvp', [], 0, $perPage, $page);
+        $stats = DB::table('ranking_character_stats')
+            ->where('mvp_kills', '>', 0)
+            ->orderByDesc('mvp_kills')
+            ->get()
+            ->keyBy('char_id');
+
+        if ($stats->isEmpty()) {
+            return $this->wrapPayload('mvp', [], 0, $perPage, $page);
+        }
+
+        $conn = DB::connection('ragnarok');
+        $charTable = $this->emulator->getTableName('char');
+        $guildTable = $this->emulator->getTableName('guild');
+
+        $query = $conn->table("{$charTable} as c")
+            ->leftJoin("{$guildTable} as g", 'c.guild_id', '=', 'g.guild_id')
+            ->whereIn('c.char_id', $stats->keys()->all())
+            ->select(
+                'c.char_id',
+                'c.account_id',
+                'c.name',
+                'c.class',
+                'c.sex',
+                'c.base_level',
+                'c.job_level',
+                'c.guild_id',
+                'c.online',
+                'g.name as guild_name',
+                'g.emblem_len as guild_emblem_len'
+            );
+
+        $this->applyCharacterFilters($query, 'c', $search, $classFilter, $cfg);
+
+        $chars = $query->get()->keyBy('char_id');
+        $merged = [];
+        foreach ($stats as $cid => $st) {
+            if ($chars->has($cid)) {
+                $c = $chars->get($cid);
+                $c->mvp_kills = (int) $st->mvp_kills;
+                $merged[] = $c;
+            }
+        }
+
+        $total = count($merged);
+        $paged = array_slice($merged, ($page - 1) * $perPage, $perPage);
+        $items = [];
+        $startRank = (($page - 1) * $perPage) + 1;
+
+        foreach ($paged as $idx => $row) {
+            $rank = $startRank + $idx;
+            $items[] = $this->formatCharacterEntry($row, $rank, [
+                'primary_stat_label' => '',
+                'primary_stat_value' => number_format($row->mvp_kills) . ' MVPs',
+                'secondary_stat' => 'Lv. ' . (int) $row->base_level,
+                'mvp_kills' => $row->mvp_kills,
+            ]);
+        }
+
+        return $this->wrapPayload('mvp', $items, $total, $perPage, $page);
     }
 
     protected function buildGuildLeaderboard(int $perPage, int $page, string $search, array $cfg): array
@@ -445,6 +627,7 @@ class RankingEngineService
             'class' => (int) $row->class,
             'job_name' => JobHelper::getName((int) $row->class),
             'job_badge_color' => JobHelper::getBadgeColor((int) $row->class),
+            'job_sprite_url' => JobHelper::getSpriteUrl((int) $row->class, (string) ($row->sex ?? 'M')),
             'sex' => (string) ($row->sex ?? 'M'),
             'base_level' => (int) $row->base_level,
             'job_level' => (int) $row->job_level,

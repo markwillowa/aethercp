@@ -1,0 +1,72 @@
+//==============================================================================
+// AetherCP — Real-Time rAthena Ranking Event Bridge (SQL Bridge Table + NPC)
+//==============================================================================
+// 1. Run this SQL on your rAthena (`ragnarok`) database:
+//
+// CREATE TABLE IF NOT EXISTS `cp_ranking_events` (
+//   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+//   `event_uuid` VARCHAR(64) NOT NULL UNIQUE,
+//   `event_type` VARCHAR(40) NOT NULL,
+//   `char_id` INT UNSIGNED NULL,
+//   `account_id` INT UNSIGNED NULL,
+//   `target_char_id` INT UNSIGNED NULL,
+//   `guild_id` INT UNSIGNED NULL,
+//   `mob_id` INT UNSIGNED NULL,
+//   `value` BIGINT NOT NULL DEFAULT 1,
+//   `occurred_at` DATETIME NOT NULL,
+//   `synced` TINYINT(1) NOT NULL DEFAULT 0,
+//   INDEX `idx_synced` (`synced`)
+// ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+//
+// 2. Add this script to npc/custom/aether_ranking_bridge.txt and enable it in
+//    npc/scripts_custom.conf.
+// 3. Schedule `php artisan aether:sync-rankings` every minute (or push directly
+//    to POST /api/emulator/events with X-Aether-Sync-Token).
+//==============================================================================
+
+-	script	AetherRankingBridge	-1,{
+OnInit:
+	.max_base_level = 99;   // Match AetherCP Admin -> Rankings -> Max Base Level
+	.max_job_level  = 50;   // Match AetherCP Admin -> Rankings -> Max Job Level
+	end;
+
+OnPCBaseLvUpEvent:
+	if (BaseLevel >= .max_base_level) {
+		.@uuid$ = "base_" + getcharid(0) + "_" + BaseLevel;
+		query_sql("INSERT IGNORE INTO `cp_ranking_events` (`event_uuid`, `event_type`, `char_id`, `account_id`, `value`, `occurred_at`) VALUES ('" + escape_sql(.@uuid$) + "', 'max_base_level', " + getcharid(0) + ", " + getcharid(3) + ", " + BaseLevel + ", NOW())");
+	}
+	end;
+
+OnPCJobLvUpEvent:
+	if (JobLevel >= .max_job_level) {
+		.@uuid$ = "job_" + getcharid(0) + "_" + JobLevel;
+		query_sql("INSERT IGNORE INTO `cp_ranking_events` (`event_uuid`, `event_type`, `char_id`, `account_id`, `value`, `occurred_at`) VALUES ('" + escape_sql(.@uuid$) + "', 'max_job_level', " + getcharid(0) + ", " + getcharid(3) + ", " + JobLevel + ", NOW())");
+	}
+	end;
+
+OnPCKillEvent:
+	if (killedrid > 0 && killedrid != getcharid(3)) {
+		.@victim_cid = getcharid(0, rid2name(killedrid));
+		if (.@victim_cid > 0 && .@victim_cid != getcharid(0)) {
+			.@uuid$ = "pvp_" + getcharid(0) + "_" + .@victim_cid + "_" + gettimetick(2);
+			query_sql("INSERT IGNORE INTO `cp_ranking_events` (`event_uuid`, `event_type`, `char_id`, `account_id`, `target_char_id`, `value`, `occurred_at`) VALUES ('" + escape_sql(.@uuid$) + "', 'pvp_kill', " + getcharid(0) + ", " + getcharid(3) + ", " + .@victim_cid + ", 1, NOW())");
+		}
+	}
+	end;
+
+OnNPCKillEvent:
+	// Verify MVP flag in mob_db before recording
+	if (killedrid > 0) {
+		.@is_mvp = getmonsterinfo(killedrid, MOB_MVPEXP);
+		if (.@is_mvp > 0) {
+			.@uuid$ = "mvp_" + getcharid(0) + "_" + killedrid + "_" + gettimetick(2);
+			query_sql("INSERT IGNORE INTO `cp_ranking_events` (`event_uuid`, `event_type`, `char_id`, `account_id`, `mob_id`, `value`, `occurred_at`) VALUES ('" + escape_sql(.@uuid$) + "', 'mvp_kill', " + getcharid(0) + ", " + getcharid(3) + ", " + killedrid + ", 1, NOW())");
+		}
+	}
+	end;
+
+OnAgitEnd:
+	.@uuid$ = "woe_end_" + gettimetick(2);
+	query_sql("INSERT IGNORE INTO `cp_ranking_events` (`event_uuid`, `event_type`, `guild_id`, `value`, `occurred_at`) VALUES ('" + escape_sql(.@uuid$) + "', 'guild_castle', 0, 1, NOW())");
+	end;
+}
