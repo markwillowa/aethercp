@@ -730,43 +730,29 @@ class MarketplaceEscrowService
                 $this->adjustCashPoints($listing->seller_account_id, $netProceeds);
             }
 
-            // 2. Deliver purchased item to buyer's Kafra Storage
+            // 2. Deliver purchased item to buyer's Escrow Inbox (claimable to Storage or Character)
             $item = $listing->item;
-            $canStack = ($item->refine == 0 && $item->card0 == 0 && $item->card1 == 0 && $item->card2 == 0 && $item->card3 == 0);
-            $merged = false;
-
-            if ($canStack) {
-                $existing = $conn->table('storage')
-                    ->where('account_id', $buyer->account_id)
-                    ->where('nameid', $item->nameid)
-                    ->where('refine', 0)
-                    ->where('card0', 0)
-                    ->first();
-
-                if ($existing && ($existing->amount + $quantity) <= 30000) {
-                    $conn->table('storage')->where('id', $existing->id)->increment('amount', $quantity);
-                    $merged = true;
-                }
-            }
-
-            if (!$merged) {
-                $conn->table('storage')->insert([
-                    'account_id' => $buyer->account_id,
-                    'nameid' => $item->nameid,
-                    'amount' => $quantity,
-                    'equip' => $item->equip,
-                    'identify' => $item->identify,
-                    'refine' => $item->refine,
-                    'attribute' => $item->attribute,
-                    'card0' => $item->card0,
-                    'card1' => $item->card1,
-                    'card2' => $item->card2,
-                    'card3' => $item->card3,
-                    'expire_time' => $item->expire_time,
-                    'bound' => $item->bound,
-                    'unique_id' => $item->unique_id,
-                ]);
-            }
+            app(\App\Services\Escrow\EscrowInboxService::class)->depositItem(
+                (int) $buyer->account_id,
+                [
+                    'user_id' => $buyer->id,
+                    'source_type' => 'marketplace',
+                    'source_id' => $listing->id,
+                    'reward_type' => 'item',
+                    'item_id' => (int) $item->nameid,
+                    'item_name' => $item->name,
+                    'quantity' => $quantity,
+                    'refine' => (int) ($item->refine ?? 0),
+                    'card0' => (int) ($item->card0 ?? 0),
+                    'card1' => (int) ($item->card1 ?? 0),
+                    'card2' => (int) ($item->card2 ?? 0),
+                    'card3' => (int) ($item->card3 ?? 0),
+                    'identified' => (bool) ($item->identify ?? true),
+                    'bound' => (int) ($item->bound ?? 0),
+                    'title' => "Marketplace Purchase: " . ($item->name ?? "Item #{$item->nameid}"),
+                    'message' => "Purchased from {$listing->seller_name} ({$quantity}x). Ready to transfer into your game.",
+                ]
+            );
 
             // 3. Update listing and item state
             $newRemaining = $listing->remaining_quantity - $quantity;

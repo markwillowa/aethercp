@@ -135,12 +135,10 @@ class RewardService
                 $details[] = 'Credited ' . number_format($issuance->zeny_amount) . " Zeny to char #{$issuance->char_id}";
             }
 
-            // 2. Item Delivery (Direct to Kafra Storage)
+            // 2. Item Delivery (Deposit to Escrow Inbox)
             $items = is_array($issuance->items_json) ? $issuance->items_json : [];
             if (in_array($issuance->reward_type, ['item', 'multi_item'], true) && !empty($items)) {
-                $storageTable = $this->emulator->getTableName('storage');
-                $currentSlots = $conn->table($storageTable)->where('account_id', $issuance->account_id)->count();
-
+                $escrow = app(\App\Services\Escrow\EscrowInboxService::class);
                 foreach ($items as $itemEntry) {
                     $nameid = (int) ($itemEntry['nameid'] ?? 0);
                     $amount = max(1, (int) ($itemEntry['amount'] ?? 1));
@@ -148,40 +146,19 @@ class RewardService
                         continue;
                     }
 
-                    // Try merging into existing clean stack within MAX_ITEM_STACK
-                    $existing = $conn->table($storageTable)
-                        ->where('account_id', $issuance->account_id)
-                        ->where('nameid', $nameid)
-                        ->where('refine', 0)
-                        ->where('card0', 0)
-                        ->where('bound', 0)
-                        ->first();
+                    $escrow->depositItem((int) $issuance->account_id, [
+                        'source_type' => 'ranking',
+                        'source_id' => $issuance->id,
+                        'reward_type' => 'item',
+                        'item_id' => $nameid,
+                        'item_name' => $itemEntry['name'] ?? null,
+                        'quantity' => $amount,
+                        'refine' => (int) ($itemEntry['refine'] ?? 0),
+                        'title' => "Ranking Reward: " . ($itemEntry['name'] ?? "Item #{$nameid}"),
+                        'message' => "Earned from server rankings and badge recognition. Ready to transfer into the game.",
+                    ]);
 
-                    if ($existing && ($existing->amount + $amount) <= self::MAX_ITEM_STACK) {
-                        $conn->table($storageTable)->where('id', $existing->id)->increment('amount', $amount);
-                    } else {
-                        if ($currentSlots >= self::MAX_STORAGE_SLOTS) {
-                            throw new \RuntimeException("Kafra storage full ({$currentSlots}/" . self::MAX_STORAGE_SLOTS . " slots) for account #{$issuance->account_id}.");
-                        }
-                        $conn->table($storageTable)->insert([
-                            'account_id' => $issuance->account_id,
-                            'nameid' => $nameid,
-                            'amount' => min($amount, self::MAX_ITEM_STACK),
-                            'equip' => 0,
-                            'identify' => 1,
-                            'refine' => 0,
-                            'attribute' => 0,
-                            'card0' => 0,
-                            'card1' => 0,
-                            'card2' => 0,
-                            'card3' => 0,
-                            'expire_time' => 0,
-                            'bound' => 0,
-                            'unique_id' => 0,
-                        ]);
-                        $currentSlots++;
-                    }
-                    $details[] = "Delivered {$amount}x Item #{$nameid} to Kafra storage (Acc #{$issuance->account_id})";
+                    $details[] = "Deposited {$amount}x Item #{$nameid} into Escrow Inbox (Acc #{$issuance->account_id})";
                 }
             }
 

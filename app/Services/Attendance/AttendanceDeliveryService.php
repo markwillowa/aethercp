@@ -307,42 +307,7 @@ class AttendanceDeliveryService
      */
     public function claimInboxItemToStorage(PlayerInboxItem $inboxItem, User $user): array
     {
-        if ((int) $inboxItem->account_id !== (int) $user->account_id) {
-            return ['success' => false, 'message' => 'Unauthorized inbox access.'];
-        }
-
-        if ($inboxItem->status === 'claimed') {
-            return ['success' => false, 'message' => 'This reward has already been claimed to your Kafra Storage.'];
-        }
-
-        try {
-            $campaignItemMock = new AttendanceCampaignItem([
-                'item_id' => $inboxItem->item_id,
-                'quantity' => $inboxItem->quantity,
-                'refine' => $inboxItem->refine,
-                'card0' => $inboxItem->card0,
-                'card1' => $inboxItem->card1,
-                'card2' => $inboxItem->card2,
-                'card3' => $inboxItem->card3,
-                'identified' => $inboxItem->identified,
-                'bound' => $inboxItem->bound,
-            ]);
-
-            $this->deliverItemToStorage($user->account_id, $campaignItemMock);
-
-            $inboxItem->update([
-                'status' => 'claimed',
-                'claimed_to' => 'storage',
-                'claimed_at' => now(),
-            ]);
-
-            return [
-                'success' => true,
-                'message' => "Successfully claimed {$inboxItem->formatted_title} to your in-game Kafra Storage!",
-            ];
-        } catch (\Throwable $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
-        }
+        return app(\App\Services\Escrow\EscrowInboxService::class)->claimToStorage($inboxItem, $user);
     }
 
     /**

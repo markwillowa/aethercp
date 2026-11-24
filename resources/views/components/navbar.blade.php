@@ -103,10 +103,10 @@
                                     <i data-lucide="calendar" class="w-4 h-4 text-amber-400"></i>
                                     <span>Daily Rewards</span>
                                 </a>
-                                <a href="{{ route('inbox.index') }}" class="flex items-center justify-between px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                                <a href="{{ route('escrow.index') }}" class="flex items-center justify-between px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
                                     <span class="flex items-center gap-2">
                                         <i data-lucide="inbox" class="w-4 h-4 text-cyan-400"></i>
-                                        <span>Reward Inbox</span>
+                                        <span>Escrow Inbox</span>
                                     </span>
                                     @php
                                         $userUnclaimed = \App\Models\PlayerInboxItem::where('account_id', auth()->user()->account_id)->where('status', 'unclaimed')->count();
@@ -198,8 +198,8 @@
                 <a href="{{ route('account.characters') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">My Characters</a>
                 @if($modMgr->isEnabled('attendance'))
                     <a href="{{ route('attendance.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-amber-300 hover:bg-slate-800">Daily Rewards</a>
-                    <a href="{{ route('inbox.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-cyan-400 hover:bg-slate-800">Reward Inbox</a>
                 @endif
+                <a href="{{ route('escrow.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-cyan-400 hover:bg-slate-800">Escrow Inbox</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="w-full text-left px-3 py-2 rounded-lg text-base font-medium text-red-400 hover:bg-slate-800">Log Out</button>

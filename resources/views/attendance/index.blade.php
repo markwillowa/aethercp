@@ -29,7 +29,7 @@
 
         <div class="flex items-center gap-3">
             @auth
-                <a href="{{ route('inbox.index') }}" class="px-4 py-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-800 flex items-center gap-2 text-xs font-semibold shadow-inner transition-colors">
+                <a href="{{ route('escrow.index') }}" class="px-4 py-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-800 flex items-center gap-2 text-xs font-semibold shadow-inner transition-colors">
                     <div class="relative">
                         <i data-lucide="inbox" class="w-4 h-4 text-cyan-400"></i>
                         @if($inboxCount > 0)
@@ -38,7 +38,7 @@
                             </span>
                         @endif
                     </div>
-                    <span>My Reward Inbox</span>
+                    <span>Escrow Inbox</span>
                 </a>
             @endauth
         </div>

@@ -29,21 +29,27 @@ class InGameRewardService
                 $result['messages'][] = "Credited {$donation->points_awarded} Cash Points (New Balance: {$newBalance}).";
             }
 
-            // 2. Deliver In-Game Item Rewards
+            // 2. Deliver In-Game Item Rewards to Escrow Inbox (claimable to Storage or Character)
             $package = $donation->package;
             if ($package && $package->item_id > 0 && $package->item_amount > 0 && !$donation->items_delivered) {
-                $delivered = $this->deliverItemToStorage(
-                    $donation->account_id,
-                    $package->item_id,
-                    $package->item_amount
+                app(\App\Services\Escrow\EscrowInboxService::class)->depositItem(
+                    (int) $donation->account_id,
+                    [
+                        'source_type' => 'donation',
+                        'source_id' => $donation->id,
+                        'reward_type' => 'item',
+                        'item_id' => (int) $package->item_id,
+                        'item_name' => $package->item_name,
+                        'quantity' => (int) $package->item_amount,
+                        'title' => "Donation Package: " . ($package->name ?? "Reward Item"),
+                        'message' => "Thank you for supporting the server! Ready to transfer into your game.",
+                    ]
                 );
 
-                if ($delivered) {
-                    $donation->items_delivered = true;
-                    $result['items_delivered'] = true;
-                    $itemName = $package->item_name ?: "Item #{$package->item_id}";
-                    $result['messages'][] = "Delivered {$package->item_amount}x {$itemName} to Kafra Storage.";
-                }
+                $donation->items_delivered = true;
+                $result['items_delivered'] = true;
+                $itemName = $package->item_name ?: "Item #{$package->item_id}";
+                $result['messages'][] = "Delivered {$package->item_amount}x {$itemName} to Escrow Inbox.";
             }
 
             $donation->save();

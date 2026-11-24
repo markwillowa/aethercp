@@ -83,4 +83,34 @@ class PlayerInboxItem extends Model
 
         return "{$prefix}{$name}{$qty}";
     }
+
+    public function getSourceLabelAttribute(): string
+    {
+        return match ($this->source_type) {
+            'attendance', 'daily' => 'Daily Attendance',
+            'marketplace' => 'Marketplace Escrow',
+            'ranking' => 'Leaderboard Reward',
+            'donation' => 'Donation Package',
+            default => ucfirst($this->source_type ?? 'Web System'),
+        };
+    }
+
+    public function getSourceBadgeColorAttribute(): string
+    {
+        return match ($this->source_type) {
+            'attendance', 'daily' => 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+            'marketplace' => 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
+            'ranking' => 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+            'donation' => 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+            default => 'bg-slate-800 text-slate-300 border-slate-700',
+        };
+    }
+
+    public function getClaimedDestinationLabelAttribute(): string
+    {
+        if ($this->claimed_to === 'inventory') {
+            return $this->claimed_character_id ? "Character #{$this->claimed_character_id}" : 'Character Inventory';
+        }
+        return 'Kafra Storage';
+    }
 }

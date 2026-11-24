@@ -138,8 +138,17 @@ Route::get('/themes/{theme}/assets/{path}', function (string $theme, string $pat
 Route::middleware('module:attendance')->group(function () {
     Route::get('/attendance', [\App\Http\Controllers\Public\AttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/attendance/{campaign}/claim', [\App\Http\Controllers\Public\AttendanceController::class, 'claim'])->middleware('auth')->name('attendance.claim');
-    Route::get('/inbox', [\App\Http\Controllers\Public\AttendanceController::class, 'inbox'])->middleware('auth')->name('inbox.index');
-    Route::post('/inbox/{item}/claim-storage', [\App\Http\Controllers\Public\AttendanceController::class, 'claimToStorage'])->middleware('auth')->name('inbox.claim-storage');
+});
+
+// Escrow Inbox (Central clearinghouse for Daily Rewards, Marketplace, Rankings, Donations)
+Route::middleware('auth')->group(function () {
+    Route::get('/escrow', [\App\Http\Controllers\Public\EscrowInboxController::class, 'index'])->name('escrow.index');
+    Route::post('/escrow/{item}/claim-storage', [\App\Http\Controllers\Public\EscrowInboxController::class, 'claimToStorage'])->name('escrow.claim-storage');
+    Route::post('/escrow/{item}/claim-character', [\App\Http\Controllers\Public\EscrowInboxController::class, 'claimToCharacter'])->name('escrow.claim-character');
+
+    // Backward-compatibility aliases for /inbox
+    Route::get('/inbox', fn() => redirect()->route('escrow.index'))->name('inbox.index');
+    Route::post('/inbox/{item}/claim-storage', [\App\Http\Controllers\Public\EscrowInboxController::class, 'claimToStorage'])->name('inbox.claim-storage');
 });
 
 /*
