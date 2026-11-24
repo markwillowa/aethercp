@@ -324,34 +324,172 @@
             @endif
 
             @if($modMgr->isEnabled('rankings'))
-            <!-- Top 5 Players Preview -->
-            <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <!-- Live 5-Tab Rankings Widget -->
+            <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-4"
+                 x-data="{
+                     activeTab: 'lvl',
+                     tabs: [
+                         { key: 'lvl', label: 'Lvl' },
+                         { key: 'job', label: 'Job' },
+                         { key: 'pvp', label: 'PvP' },
+                         { key: 'mvp', label: 'MVP' },
+                         { key: 'guild', label: 'Guild' }
+                     ],
+                     datasets: {{ json_encode($homeRankings ?? []) }},
+                     loading: false,
+                     error: null,
+                     feedBaseUrl: '{{ url('/rankings/feed') }}',
+                     fullRankingsUrl: '{{ route('rankings.index') }}',
+                     init() {
+                         setInterval(() => {
+                             this.refreshTab(this.activeTab, true);
+                         }, 30000);
+                     },
+                     selectTab(key) {
+                         this.activeTab = key;
+                         this.error = null;
+                         this.refreshTab(key, false);
+                     },
+                     async refreshTab(key, silent = false) {
+                         if (!silent && (!this.datasets[key] || !this.datasets[key].items)) {
+                             this.loading = true;
+                         }
+                         try {
+                             const res = await fetch(this.feedBaseUrl + '/' + key, {
+                                 headers: { 'Accept': 'application/json' }
+                             });
+                             if (!res.ok) throw new Error('Failed to load rankings');
+                             const json = await res.json();
+                             if (json.ok && json.data) {
+                                 this.datasets[key] = json.data;
+                                 this.error = null;
+                             }
+                         } catch (e) {
+                             if (!silent) {
+                                 this.error = 'Unable to refresh live rankings.';
+                             }
+                         } finally {
+                             this.loading = false;
+                         }
+                     },
+                     get currentItems() {
+                         return (this.datasets[this.activeTab] && this.datasets[this.activeTab].items) ? this.datasets[this.activeTab].items : [];
+                     },
+                     get lastUpdated() {
+                         return (this.datasets[this.activeTab] && this.datasets[this.activeTab].updated_human) ? this.datasets[this.activeTab].updated_human : '';
+                     }
+                 }">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                     <div class="flex items-center gap-2">
                         <i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i>
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-white">Top Adventurers</h3>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-white">Live Rankings</h3>
                     </div>
-                    <a href="{{ route('rankings.index') }}" class="text-xs text-cyan-400 hover:underline">Full Ladder</a>
+                    <a :href="fullRankingsUrl + '?type=' + activeTab" class="text-xs text-cyan-400 hover:underline flex items-center gap-1">
+                        <span>View Full Rankings</span>
+                        <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                    </a>
                 </div>
 
-                <div class="space-y-2">
-                    @forelse($topPlayers as $idx => $player)
-                        @php
-                            $pName = is_array($player) ? ($player['name'] ?? 'Adventurer') : ($player->name ?? 'Adventurer');
-                            $pLevel = is_array($player) ? ($player['base_level'] ?? 1) : ($player->base_level ?? 1);
-                        @endphp
-                        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950/50 hover:bg-slate-800/40 transition-colors text-xs">
-                            <div class="flex items-center gap-2.5">
-                                <span class="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] {{ $idx === 0 ? 'bg-amber-400 text-slate-950' : ($idx === 1 ? 'bg-slate-300 text-slate-950' : ($idx === 2 ? 'bg-amber-700 text-white' : 'bg-slate-800 text-slate-400')) }}">
-                                    {{ $idx + 1 }}
-                                </span>
-                                <span class="font-semibold text-slate-200">{{ $pName }}</span>
+                <!-- 5 Ranking Category Tabs -->
+                <div class="grid grid-cols-5 gap-1 p-1 rounded-xl bg-slate-950/80 border border-slate-800/80">
+                    <template x-for="tab in tabs" :key="tab.key">
+                        <button type="button"
+                                @click="selectTab(tab.key)"
+                                :class="activeTab === tab.key ? 'bg-cyan-500 text-slate-950 font-bold shadow' : 'text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium'"
+                                class="py-1.5 px-1 rounded-lg text-[11px] transition-all text-center cursor-pointer"
+                                x-text="tab.label"></button>
+                    </template>
+                </div>
+
+                <!-- Error State -->
+                <template x-if="error">
+                    <div class="p-3 rounded-xl bg-red-950/40 border border-red-500/30 text-red-300 text-xs text-center">
+                        <span x-text="error"></span>
+                    </div>
+                </template>
+
+                <!-- Loading State -->
+                <template x-if="loading">
+                    <div class="space-y-2 py-2">
+                        <div class="h-9 rounded-xl bg-slate-800/50 animate-pulse"></div>
+                        <div class="h-9 rounded-xl bg-slate-800/50 animate-pulse"></div>
+                        <div class="h-9 rounded-xl bg-slate-800/50 animate-pulse"></div>
+                    </div>
+                </template>
+
+                <!-- Leaderboard Rows -->
+                <div x-show="!loading" class="space-y-2">
+                    <template x-for="(item, idx) in currentItems" :key="activeTab + '_' + (item.char_id || item.guild_id || idx)">
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 hover:bg-slate-800/50 border border-slate-800/60 transition-colors text-xs gap-2">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <span class="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] shrink-0"
+                                      :class="item.rank === 1 ? 'bg-amber-400 text-slate-950' : (item.rank === 2 ? 'bg-slate-300 text-slate-950' : (item.rank === 3 ? 'bg-amber-700 text-white' : 'bg-slate-800 text-slate-400'))"
+                                      x-text="item.rank"></span>
+
+                                <!-- Avatar / Guild Emblem -->
+                                <template x-if="activeTab === 'guild'">
+                                    <div class="w-6 h-6 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0 overflow-hidden">
+                                        <template x-if="item.emblem_url">
+                                            <img :src="item.emblem_url" alt="" class="w-5 h-5 object-contain">
+                                        </template>
+                                        <template x-if="!item.emblem_url">
+                                            <span class="text-[10px] font-bold text-cyan-400" x-text="item.name ? item.name.charAt(0).toUpperCase() : 'G'"></span>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template x-if="activeTab !== 'guild'">
+                                    <div class="w-6 h-6 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0 overflow-hidden">
+                                        <template x-if="item.guild_emblem_url">
+                                            <img :src="item.guild_emblem_url" alt="" class="w-5 h-5 object-contain">
+                                        </template>
+                                        <template x-if="!item.guild_emblem_url">
+                                            <span class="text-[10px] font-bold text-cyan-400" x-text="item.name ? item.name.charAt(0).toUpperCase() : 'A'"></span>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-1.5">
+                                        <a :href="item.profile_url" class="font-semibold text-slate-200 hover:text-cyan-400 truncate transition-colors" x-text="item.name"></a>
+                                        <template x-if="item.achievement_label || item.badge_label">
+                                            <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 shrink-0"
+                                                  x-text="item.achievement_label || item.badge_label"></span>
+                                        </template>
+                                    </div>
+                                    <p class="text-[10px] text-slate-500 truncate"
+                                       x-text="activeTab === 'guild' ? ('Master: ' + item.master + ' • ' + item.members_count + ' members') : (item.job_name + (item.guild_name ? ' • ' + item.guild_name : ''))"></p>
+                                </div>
                             </div>
-                            <span class="text-cyan-400 font-bold">Lv. {{ $pLevel }}</span>
+
+                            <div class="text-right shrink-0">
+                                <template x-if="activeTab === 'guild'">
+                                    <div>
+                                        <span class="text-cyan-400 font-bold block" x-text="'Lv. ' + item.guild_lv"></span>
+                                        <span class="text-[10px] text-amber-400 font-mono" x-text="item.castles_count + ' Castle' + (item.castles_count === 1 ? '' : 's')"></span>
+                                    </div>
+                                </template>
+                                <template x-if="activeTab !== 'guild'">
+                                    <div>
+                                        <span class="text-cyan-400 font-bold block" x-text="(item.primary_stat_label ? item.primary_stat_label + ' ' : '') + item.primary_stat_value"></span>
+                                        <span class="text-[10px] text-slate-500 font-mono" x-text="item.secondary_stat || ''"></span>
+                                    </div>
+                                </template>
+                            </div>
                         </div>
-                    @empty
-                        <p class="text-xs text-slate-500 text-center py-2">No player rankings recorded.</p>
-                    @endforelse
+                    </template>
+
+                    <!-- Empty State -->
+                    <template x-if="currentItems.length === 0">
+                        <div class="p-4 rounded-xl bg-slate-950/50 border border-slate-800/60 text-center space-y-1">
+                            <p class="text-xs text-slate-400 font-medium">No rankings recorded yet.</p>
+                            <p class="text-[10px] text-slate-500" x-show="activeTab === 'pvp' || activeTab === 'mvp'">Verified gameplay events will appear here automatically.</p>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-800/60">
+                    <span x-show="lastUpdated">Updated: <span x-text="lastUpdated" class="font-mono text-slate-400"></span></span>
+                    <button type="button" @click="refreshTab(activeTab, false)" class="text-cyan-400 hover:text-cyan-300 font-medium cursor-pointer ml-auto">Refresh</button>
                 </div>
             </div>
             @endif

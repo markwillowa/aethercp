@@ -32,6 +32,10 @@
                         <button disabled class="w-full py-2 rounded-xl bg-slate-800 text-slate-400 text-xs font-semibold cursor-not-allowed">
                             Currently Active
                         </button>
+                    @elseif(!empty($thm['is_disabled']))
+                        <button disabled class="w-full py-2 rounded-xl bg-slate-950 text-slate-600 border border-slate-800 text-xs font-semibold cursor-not-allowed">
+                            Disabled
+                        </button>
                     @else
                         <form method="POST" action="{{ route('admin.themes.activate', $slug) }}">
                             @csrf

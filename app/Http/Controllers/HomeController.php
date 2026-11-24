@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Contracts\Repositories\RankingRepositoryInterface;
 use App\Contracts\EmulatorInterface;
 use App\Models\News;
+use App\Services\Ranking\RankingEngineService;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function __construct(
         protected RankingRepositoryInterface $rankings,
-        protected EmulatorInterface $emulator
+        protected EmulatorInterface $emulator,
+        protected RankingEngineService $rankingEngine
     ) {}
 
     public function index()
@@ -21,35 +23,34 @@ class HomeController extends Controller
             ->limit(5)
             ->get();
 
-        $topBase = [];
-        $topJob = [];
-        $topMvp = [];
-        $topGuilds = [];
+        $rankingConfig = $this->rankingEngine->getConfig();
+        $homeLimit = $rankingConfig['homepage_limit'] ?? 5;
 
-        try {
-            $topBase = $this->rankings->getBaseLevelRanking(5);
-        } catch (\Throwable $e) {
-            $topBase = [];
+        $homeRankings = [
+            'lvl' => [],
+            'job' => [],
+            'pvp' => [],
+            'mvp' => [],
+            'guild' => [],
+        ];
+
+        foreach (['lvl', 'job', 'pvp', 'mvp', 'guild'] as $cat) {
+            try {
+                $homeRankings[$cat] = $this->rankingEngine->getLeaderboard($cat, $homeLimit, 1);
+            } catch (\Throwable $e) {
+                $homeRankings[$cat] = [
+                    'category' => $cat,
+                    'items' => [],
+                    'total' => 0,
+                    'updated_human' => now()->format('M d, Y H:i:s'),
+                ];
+            }
         }
 
-        try {
-            $topJob = $this->rankings->getJobLevelRanking(5);
-        } catch (\Throwable $e) {
-            $topJob = [];
-        }
-
-        try {
-            $topMvp = $this->rankings->getMvpRanking(5);
-        } catch (\Throwable $e) {
-            $topMvp = [];
-        }
-
-        try {
-            $topGuilds = $this->rankings->getGuildRanking(5);
-        } catch (\Throwable $e) {
-            $topGuilds = [];
-        }
-
+        $topBase = $homeRankings['lvl']['items'] ?? [];
+        $topJob = $homeRankings['job']['items'] ?? [];
+        $topMvp = $homeRankings['mvp']['items'] ?? [];
+        $topGuilds = $homeRankings['guild']['items'] ?? [];
         $topPlayers = $topBase;
 
         $serverStatus = [
@@ -64,6 +65,16 @@ class HomeController extends Controller
             $serverStatus['online_count'] = 0;
         }
 
-        return view('home', compact('news', 'topPlayers', 'topBase', 'topJob', 'topMvp', 'topGuilds', 'serverStatus'));
+        return view('home', compact(
+            'news',
+            'topPlayers',
+            'topBase',
+            'topJob',
+            'topMvp',
+            'topGuilds',
+            'homeRankings',
+            'rankingConfig',
+            'serverStatus'
+        ));
     }
 }

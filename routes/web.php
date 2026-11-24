@@ -27,6 +27,7 @@ Route::middleware('module:news')->group(function () {
 // Rankings
 Route::middleware('module:rankings')->group(function () {
     Route::get('/rankings', [RankingController::class, 'index'])->name('rankings.index');
+    Route::get('/rankings/feed/{category}', [RankingController::class, 'feed'])->name('rankings.feed');
 });
 
 // Guilds & Emblems
