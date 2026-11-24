@@ -266,12 +266,41 @@
                                                 <?php endif; ?>
                                             </div>
                                             <div>
-                                                <h4 class="font-bold text-[#FFD700] group-hover:text-[#FFE4A0] text-sm font-cinzel transition-colors flex items-center gap-1.5">
-                                                    <span><?php echo e($listing->item->formatted_name); ?></span>
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <h4 class="font-bold text-[#FFD700] group-hover:text-[#FFE4A0] text-sm font-cinzel transition-colors">
+                                                        <?php echo e($listing->item->formatted_name); ?>
+
+                                                    </h4>
                                                     <?php if($listing->item->slots > 0): ?>
-                                                        <span class="text-[10px] text-[#A396AD] font-mono">[<?php echo e($listing->item->slots); ?>]</span>
+                                                        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-black font-mono tracking-wider bg-[#2B1E38] text-[#FFE894] border border-[#D4AF37]/60 shadow-sm">
+                                                            <i data-lucide="layers" class="w-3 h-3 text-[#FFD700]"></i>
+                                                            <span><?php echo e($listing->item->slots); ?> <?php echo e(Str::plural('SLOT', $listing->item->slots)); ?></span>
+                                                        </span>
                                                     <?php endif; ?>
-                                                </h4>
+                                                </div>
+
+                                                <!-- Compounded Cards / Open Sockets -->
+                                                <?php if($listing->item->slots > 0): ?>
+                                                    <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                                                        <?php for($s = 0; $s < $listing->item->slots; $s++): ?>
+                                                            <?php
+                                                                $cardInSlot = $listing->item->cards[$s] ?? null;
+                                                            ?>
+                                                            <?php if($cardInSlot): ?>
+                                                                <span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-medium bg-[#361F2E] border border-rose-500/50 text-[#F5C2D7]" title="<?php echo e($cardInSlot['name']); ?>">
+                                                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                                                                    <span><?php echo e($cardInSlot['name']); ?></span>
+                                                                </span>
+                                                            <?php else: ?>
+                                                                <span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-mono text-[#8C7B99] bg-[#140E1B] border border-dashed border-[#5A456B]">
+                                                                    <span class="w-1.5 h-1.5 rounded-full border border-[#8C7B99]"></span>
+                                                                    <span>Empty Slot</span>
+                                                                </span>
+                                                            <?php endif; ?>
+                                                        <?php endfor; ?>
+                                                    </div>
+                                                <?php endif; ?>
+
                                                 <p class="text-[10px] text-[#A898B5] mt-0.5">
                                                     ID #<?php echo e($listing->item->nameid); ?> • <span class="text-[#E2D9EB]"><?php echo e($listing->item->item_type); ?></span>
                                                 </p>
@@ -415,11 +444,26 @@
                                         <div class="flex items-center gap-3">
                                             <img src="<?php echo e($sItem['icon_url']); ?>" alt="Item" class="w-8 h-8 object-contain rounded bg-[#140E1B] border border-[#4A3A5A] p-0.5" onerror="this.src='/images/item-placeholder.png'">
                                             <div>
-                                                <p class="font-bold text-white font-cinzel">
-                                                    <?php echo e($sItem['refine'] > 0 ? '+'.$sItem['refine'].' ' : ''); ?><?php echo e($sItem['name']); ?>
-
-                                                </p>
-                                                <p class="text-[10px] text-slate-400">ID #<?php echo e($sItem['nameid']); ?></p>
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <p class="font-bold text-white font-cinzel"><?php echo e($sItem['formatted_name']); ?></p>
+                                                    <?php if(($sItem['slots'] ?? 0) > 0): ?>
+                                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[9px] font-black font-mono tracking-wider bg-[#2B1E38] text-[#FFE894] border border-[#D4AF37]/60 shadow-sm">
+                                                            <i data-lucide="layers" class="w-2.5 h-2.5 text-[#FFD700]"></i>
+                                                            <span><?php echo e($sItem['slots']); ?> <?php echo e(Str::plural('SLOT', $sItem['slots'])); ?></span>
+                                                        </span>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <?php if(!empty($sItem['cards'])): ?>
+                                                    <div class="flex items-center gap-1 mt-1 flex-wrap">
+                                                        <?php $__currentLoopData = $sItem['cards']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-medium bg-[#361F2E] border border-rose-500/40 text-[#F5C2D7]">
+                                                                <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                                                                <span><?php echo e($c['name']); ?></span>
+                                                            </span>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <p class="text-[10px] text-slate-400 mt-0.5">ID #<?php echo e($sItem['nameid']); ?></p>
                                             </div>
                                         </div>
                                     </td>
@@ -493,8 +537,26 @@
                                         <div class="flex items-center gap-3">
                                             <img src="<?php echo e($cItem->icon_url); ?>" alt="Item" class="w-8 h-8 object-contain rounded bg-[#140E1B] border border-[#4A3A5A] p-0.5" onerror="this.src='/images/item-placeholder.png'">
                                             <div>
-                                                <p class="font-bold text-white font-cinzel"><?php echo e($cItem->formatted_name); ?></p>
-                                                <p class="text-[10px] text-slate-400">ID #<?php echo e($cItem->nameid); ?></p>
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <p class="font-bold text-white font-cinzel"><?php echo e($cItem->formatted_name); ?></p>
+                                                    <?php if($cItem->slots > 0): ?>
+                                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[9px] font-black font-mono tracking-wider bg-[#2B1E38] text-[#FFE894] border border-[#D4AF37]/60 shadow-sm">
+                                                            <i data-lucide="layers" class="w-2.5 h-2.5 text-[#FFD700]"></i>
+                                                            <span><?php echo e($cItem->slots); ?> <?php echo e(Str::plural('SLOT', $cItem->slots)); ?></span>
+                                                        </span>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <?php if(!empty($cItem->cards)): ?>
+                                                    <div class="flex items-center gap-1 mt-1 flex-wrap">
+                                                        <?php $__currentLoopData = $cItem->cards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-medium bg-[#361F2E] border border-rose-500/40 text-[#F5C2D7]">
+                                                                <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                                                                <span><?php echo e($c['name']); ?></span>
+                                                            </span>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <p class="text-[10px] text-slate-400 mt-0.5">ID #<?php echo e($cItem->nameid); ?></p>
                                             </div>
                                         </div>
                                     </td>
@@ -572,8 +634,26 @@
                                         <div class="flex items-center gap-3">
                                             <img src="<?php echo e($mListing->item->icon_url); ?>" alt="Item" class="w-8 h-8 object-contain rounded bg-[#140E1B] border border-[#4A3A5A] p-0.5" onerror="this.src='/images/item-placeholder.png'">
                                             <div>
-                                                <p class="font-bold text-white font-cinzel"><?php echo e($mListing->item->formatted_name); ?></p>
-                                                <p class="text-[10px] text-slate-400">ID #<?php echo e($mListing->item->nameid); ?></p>
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <p class="font-bold text-white font-cinzel"><?php echo e($mListing->item->formatted_name); ?></p>
+                                                    <?php if($mListing->item->slots > 0): ?>
+                                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[9px] font-black font-mono tracking-wider bg-[#2B1E38] text-[#FFE894] border border-[#D4AF37]/60 shadow-sm">
+                                                            <i data-lucide="layers" class="w-2.5 h-2.5 text-[#FFD700]"></i>
+                                                            <span><?php echo e($mListing->item->slots); ?> <?php echo e(Str::plural('SLOT', $mListing->item->slots)); ?></span>
+                                                        </span>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <?php if(!empty($mListing->item->cards)): ?>
+                                                    <div class="flex items-center gap-1 mt-1 flex-wrap">
+                                                        <?php $__currentLoopData = $mListing->item->cards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-medium bg-[#361F2E] border border-rose-500/40 text-[#F5C2D7]">
+                                                                <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                                                                <span><?php echo e($c['name']); ?></span>
+                                                            </span>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <p class="text-[10px] text-slate-400 mt-0.5">ID #<?php echo e($mListing->item->nameid); ?></p>
                                             </div>
                                         </div>
                                     </td>
@@ -748,13 +828,24 @@
             <template x-if="selectedListing">
                 <form :action="'/marketplace/buy/' + selectedListing.id" method="POST" class="space-y-4">
                     <?php echo csrf_field(); ?>
-                    <!-- Item Overview -->
-                    <div class="flex items-center gap-3 p-3 rounded-xl bg-[#140E1B] border border-[#352643]">
-                        <img :src="selectedListing.item.icon_url" class="w-10 h-10 object-contain rounded bg-[#251A33] p-1 border border-[#4A3A5A]">
-                        <div>
-                            <h4 class="font-bold text-white font-cinzel" x-text="selectedListing.item.formatted_name"></h4>
-                            <p class="text-[11px] text-slate-400">Seller: <span class="text-[#E5B358] font-bold" x-text="selectedListing.seller_char_name"></span></p>
+                    <!-- Item Overview with Slot & Card Breakdown -->
+                    <div class="p-3.5 rounded-xl bg-[#140E1B] border border-[#352643] space-y-2">
+                        <div class="flex items-center gap-3">
+                            <img :src="selectedListing.item.icon_url" class="w-10 h-10 object-contain rounded bg-[#251A33] p-1 border border-[#4A3A5A]">
+                            <div>
+                                <h4 class="font-bold text-[#FFD700] font-cinzel text-sm" x-text="selectedListing.item.formatted_name"></h4>
+                                <p class="text-[11px] text-slate-400">Seller: <span class="text-[#E5B358] font-bold" x-text="selectedListing.seller_char_name"></span></p>
+                            </div>
                         </div>
+                        <template x-if="selectedListing.item.slots > 0">
+                            <div class="pt-2 border-t border-[#2F233B] flex items-center justify-between text-[11px]">
+                                <span class="inline-flex items-center gap-1 font-bold font-mono text-[#FFE894] bg-[#2B1E38] px-2 py-0.5 rounded border border-[#D4AF37]/50">
+                                    <i data-lucide="layers" class="w-3 h-3 text-[#FFD700]"></i>
+                                    <span x-text="selectedListing.item.slots + ' Card Slots'"></span>
+                                </span>
+                                <span class="text-slate-300 font-mono text-[10px]" x-text="selectedListing.item.card_count > 0 ? selectedListing.item.card_count + ' Compounded' : 'All Sockets Empty'"></span>
+                            </div>
+                        </template>
                     </div>
 
                     <!-- Quantity Input -->
@@ -810,12 +901,23 @@
                     <?php echo csrf_field(); ?>
                     <input type="hidden" name="storage_id" :value="selectedStorageItem.storage_id">
 
-                    <div class="flex items-center gap-3 p-3 rounded-xl bg-[#140E1B] border border-[#352643]">
-                        <img :src="selectedStorageItem.icon_url" class="w-10 h-10 object-contain rounded bg-[#251A33] p-1 border border-[#4A3A5A]">
-                        <div>
-                            <h4 class="font-bold text-white font-cinzel" x-text="selectedStorageItem.name"></h4>
-                            <p class="text-[11px] text-slate-400" x-text="'Category: ' + selectedStorageItem.type"></p>
+                    <div class="p-3.5 rounded-xl bg-[#140E1B] border border-[#352643] space-y-2">
+                        <div class="flex items-center gap-3">
+                            <img :src="selectedStorageItem.icon_url" class="w-10 h-10 object-contain rounded bg-[#251A33] p-1 border border-[#4A3A5A]">
+                            <div>
+                                <h4 class="font-bold text-[#FFD700] font-cinzel text-sm" x-text="selectedStorageItem.formatted_name || selectedStorageItem.name"></h4>
+                                <p class="text-[11px] text-slate-400" x-text="'Category: ' + selectedStorageItem.type"></p>
+                            </div>
                         </div>
+                        <template x-if="selectedStorageItem.slots > 0">
+                            <div class="pt-2 border-t border-[#2F233B] flex items-center justify-between text-[11px]">
+                                <span class="inline-flex items-center gap-1 font-bold font-mono text-[#FFE894] bg-[#2B1E38] px-2 py-0.5 rounded border border-[#D4AF37]/50">
+                                    <i data-lucide="layers" class="w-3 h-3 text-[#FFD700]"></i>
+                                    <span x-text="selectedStorageItem.slots + ' Card Slots'"></span>
+                                </span>
+                                <span class="text-slate-300 font-mono text-[10px]" x-text="selectedStorageItem.card_count > 0 ? selectedStorageItem.card_count + ' Compounded' : 'Uncarded'"></span>
+                            </div>
+                        </template>
                     </div>
 
                     <div>
@@ -858,12 +960,23 @@
                     <?php echo csrf_field(); ?>
                     <input type="hidden" name="item_id" :value="selectedCustodyItem.id">
 
-                    <div class="flex items-center gap-3 p-3 rounded-xl bg-[#140E1B] border border-[#352643]">
-                        <img :src="selectedCustodyItem.icon_url" class="w-10 h-10 object-contain rounded bg-[#251A33] p-1 border border-[#4A3A5A]">
-                        <div>
-                            <h4 class="font-bold text-white font-cinzel" x-text="selectedCustodyItem.item_name"></h4>
-                            <p class="text-[11px] text-slate-400" x-text="'Available in vault: ' + selectedCustodyItem.amount"></p>
+                    <div class="p-3.5 rounded-xl bg-[#140E1B] border border-[#352643] space-y-2">
+                        <div class="flex items-center gap-3">
+                            <img :src="selectedCustodyItem.icon_url" class="w-10 h-10 object-contain rounded bg-[#251A33] p-1 border border-[#4A3A5A]">
+                            <div>
+                                <h4 class="font-bold text-[#FFD700] font-cinzel text-sm" x-text="selectedCustodyItem.formatted_name || selectedCustodyItem.item_name"></h4>
+                                <p class="text-[11px] text-slate-400" x-text="'Available in vault: ' + selectedCustodyItem.amount"></p>
+                            </div>
                         </div>
+                        <template x-if="selectedCustodyItem.slots > 0">
+                            <div class="pt-2 border-t border-[#2F233B] flex items-center justify-between text-[11px]">
+                                <span class="inline-flex items-center gap-1 font-bold font-mono text-[#FFE894] bg-[#2B1E38] px-2 py-0.5 rounded border border-[#D4AF37]/50">
+                                    <i data-lucide="layers" class="w-3 h-3 text-[#FFD700]"></i>
+                                    <span x-text="selectedCustodyItem.slots + ' Card Slots'"></span>
+                                </span>
+                                <span class="text-slate-300 font-mono text-[10px]" x-text="selectedCustodyItem.card_count > 0 ? selectedCustodyItem.card_count + ' Compounded' : 'Uncarded'"></span>
+                            </div>
+                        </template>
                     </div>
 
                     <!-- Currency Selector -->

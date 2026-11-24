@@ -171,13 +171,24 @@
                                         <div class="flex items-center gap-2.5">
                                             <img src="{{ $itemListing->item->icon_url }}" alt="Item" class="w-8 h-8 object-contain rounded bg-[#140E1B] border border-[#3E2E4E] p-0.5" onerror="this.src='/images/item-placeholder.png'">
                                             <div>
-                                                <p class="font-bold text-white">
-                                                    @if($itemListing->item->refine > 0)
-                                                        <span class="text-amber-300 font-mono">+{{ $itemListing->item->refine }}</span>
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <p class="font-bold text-white">{{ $itemListing->item->formatted_name }}</p>
+                                                    @if($itemListing->item->slots > 0)
+                                                        <span class="px-1.5 py-0.2 rounded text-[9px] font-bold font-mono bg-[#2B1E38] text-[#FFE894] border border-[#D4AF37]/50">
+                                                            {{ $itemListing->item->slots }} SLOTS
+                                                        </span>
                                                     @endif
-                                                    {{ $itemListing->item->formatted_name }}
-                                                </p>
-                                                <p class="text-[10px] text-slate-400">ID #{{ $itemListing->item->nameid }} • {{ $itemListing->item->item_type }}</p>
+                                                </div>
+                                                @if(!empty($itemListing->item->cards))
+                                                    <div class="flex items-center gap-1 mt-0.5 flex-wrap">
+                                                        @foreach($itemListing->item->cards as $c)
+                                                            <span class="px-1 py-0.2 rounded text-[8px] bg-[#361F2E] border border-rose-500/40 text-[#F5C2D7]">
+                                                                ◆ {{ $c['name'] }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                                <p class="text-[10px] text-slate-400 mt-0.5">ID #{{ $itemListing->item->nameid }} • {{ $itemListing->item->item_type }}</p>
                                             </div>
                                         </div>
                                     </td>
@@ -320,13 +331,15 @@
                                         <div class="flex items-center gap-2.5">
                                             <img src="{{ $custodyItem->icon_url }}" alt="Item" class="w-8 h-8 object-contain rounded bg-[#140E1B] border border-[#3E2E4E] p-0.5" onerror="this.src='/images/item-placeholder.png'">
                                             <div>
-                                                <p class="font-bold text-white">
-                                                    @if($custodyItem->refine > 0)
-                                                        <span class="text-amber-300 font-mono">+{{ $custodyItem->refine }}</span>
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <p class="font-bold text-white">{{ $custodyItem->formatted_name }}</p>
+                                                    @if($custodyItem->slots > 0)
+                                                        <span class="px-1.5 py-0.2 rounded text-[9px] font-bold font-mono bg-[#2B1E38] text-[#FFE894] border border-[#D4AF37]/50">
+                                                            {{ $custodyItem->slots }} SLOTS
+                                                        </span>
                                                     @endif
-                                                    {{ $custodyItem->formatted_name }}
-                                                </p>
-                                                <p class="text-[10px] text-slate-400">ID #{{ $custodyItem->nameid }} • {{ $custodyItem->item_type }}</p>
+                                                </div>
+                                                <p class="text-[10px] text-slate-400 mt-0.5">ID #{{ $custodyItem->nameid }} • {{ $custodyItem->item_type }}</p>
                                             </div>
                                         </div>
                                     </td>
@@ -338,13 +351,16 @@
                                         {{ number_format($custodyItem->amount) }}x
                                     </td>
                                     <td class="py-3 px-4 text-slate-300 font-mono text-[11px]">
-                                        @php
-                                            $cards = array_filter([$custodyItem->card0, $custodyItem->card1, $custodyItem->card2, $custodyItem->card3]);
-                                        @endphp
-                                        @if(count($cards) > 0)
-                                            <span class="text-amber-300">Cards: [{{ implode(', ', $cards) }}]</span>
+                                        @if(!empty($custodyItem->cards))
+                                            <div class="flex flex-col gap-0.5">
+                                                @foreach($custodyItem->cards as $c)
+                                                    <span class="text-rose-300 text-[10px]">Slot {{ $c['slot'] }}: {{ $c['name'] }}</span>
+                                                @endforeach
+                                            </div>
+                                        @elseif($custodyItem->slots > 0)
+                                            <span class="text-slate-400 text-[10px] italic">{{ $custodyItem->slots }} Open Sockets</span>
                                         @else
-                                            <span class="text-slate-500">None</span>
+                                            <span class="text-slate-500 text-[10px]">Unslotted</span>
                                         @endif
                                     </td>
                                     <td class="py-3 px-4 text-slate-400">

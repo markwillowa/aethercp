@@ -109,8 +109,12 @@
                     <input type="hidden" name="tab" value="listings">
                     
                     <div class="md:col-span-2 relative">
-                        <input type="text" name="search" value="<?php echo e(request('search')); ?>" placeholder="Search listing code, seller character, or item ID..." class="w-full px-3.5 py-2 pl-9 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37]">
-                        <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-2.5"></i>
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
+                        </div>
+                        <input type="text" name="search" value="<?php echo e(request('search')); ?>" placeholder="Search listing code, seller character, or item ID..." 
+                               style="padding-left: 3rem !important; padding-right: 1rem !important; height: 40px;"
+                               class="w-full rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37] transition-all">
                     </div>
 
                     <div>
@@ -165,14 +169,25 @@
                                         <div class="flex items-center gap-2.5">
                                             <img src="<?php echo e($itemListing->item->icon_url); ?>" alt="Item" class="w-8 h-8 object-contain rounded bg-[#140E1B] border border-[#3E2E4E] p-0.5" onerror="this.src='/images/item-placeholder.png'">
                                             <div>
-                                                <p class="font-bold text-white">
-                                                    <?php if($itemListing->item->refine > 0): ?>
-                                                        <span class="text-amber-300 font-mono">+<?php echo e($itemListing->item->refine); ?></span>
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <p class="font-bold text-white"><?php echo e($itemListing->item->formatted_name); ?></p>
+                                                    <?php if($itemListing->item->slots > 0): ?>
+                                                        <span class="px-1.5 py-0.2 rounded text-[9px] font-bold font-mono bg-[#2B1E38] text-[#FFE894] border border-[#D4AF37]/50">
+                                                            <?php echo e($itemListing->item->slots); ?> SLOTS
+                                                        </span>
                                                     <?php endif; ?>
-                                                    <?php echo e($itemListing->item->formatted_name); ?>
+                                                </div>
+                                                <?php if(!empty($itemListing->item->cards)): ?>
+                                                    <div class="flex items-center gap-1 mt-0.5 flex-wrap">
+                                                        <?php $__currentLoopData = $itemListing->item->cards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <span class="px-1 py-0.2 rounded text-[8px] bg-[#361F2E] border border-rose-500/40 text-[#F5C2D7]">
+                                                                ◆ <?php echo e($c['name']); ?>
 
-                                                </p>
-                                                <p class="text-[10px] text-slate-400">ID #<?php echo e($itemListing->item->nameid); ?> • <?php echo e($itemListing->item->item_type); ?></p>
+                                                            </span>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <p class="text-[10px] text-slate-400 mt-0.5">ID #<?php echo e($itemListing->item->nameid); ?> • <?php echo e($itemListing->item->item_type); ?></p>
                                             </div>
                                         </div>
                                     </td>
@@ -256,8 +271,12 @@
                     <input type="hidden" name="tab" value="custody">
                     
                     <div class="md:col-span-2 relative">
-                        <input type="text" name="custody_search" value="<?php echo e(request('custody_search')); ?>" placeholder="Search item ID, account ID, or username..." class="w-full px-3.5 py-2 pl-9 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37]">
-                        <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-2.5"></i>
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
+                        </div>
+                        <input type="text" name="custody_search" value="<?php echo e(request('custody_search')); ?>" placeholder="Search item ID, account ID, or username..." 
+                               style="padding-left: 3rem !important; padding-right: 1rem !important; height: 40px;"
+                               class="w-full rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37] transition-all">
                     </div>
 
                     <div>
@@ -314,14 +333,15 @@
                                         <div class="flex items-center gap-2.5">
                                             <img src="<?php echo e($custodyItem->icon_url); ?>" alt="Item" class="w-8 h-8 object-contain rounded bg-[#140E1B] border border-[#3E2E4E] p-0.5" onerror="this.src='/images/item-placeholder.png'">
                                             <div>
-                                                <p class="font-bold text-white">
-                                                    <?php if($custodyItem->refine > 0): ?>
-                                                        <span class="text-amber-300 font-mono">+<?php echo e($custodyItem->refine); ?></span>
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <p class="font-bold text-white"><?php echo e($custodyItem->formatted_name); ?></p>
+                                                    <?php if($custodyItem->slots > 0): ?>
+                                                        <span class="px-1.5 py-0.2 rounded text-[9px] font-bold font-mono bg-[#2B1E38] text-[#FFE894] border border-[#D4AF37]/50">
+                                                            <?php echo e($custodyItem->slots); ?> SLOTS
+                                                        </span>
                                                     <?php endif; ?>
-                                                    <?php echo e($custodyItem->formatted_name); ?>
-
-                                                </p>
-                                                <p class="text-[10px] text-slate-400">ID #<?php echo e($custodyItem->nameid); ?> • <?php echo e($custodyItem->item_type); ?></p>
+                                                </div>
+                                                <p class="text-[10px] text-slate-400 mt-0.5">ID #<?php echo e($custodyItem->nameid); ?> • <?php echo e($custodyItem->item_type); ?></p>
                                             </div>
                                         </div>
                                     </td>
@@ -333,13 +353,16 @@
                                         <?php echo e(number_format($custodyItem->amount)); ?>x
                                     </td>
                                     <td class="py-3 px-4 text-slate-300 font-mono text-[11px]">
-                                        <?php
-                                            $cards = array_filter([$custodyItem->card0, $custodyItem->card1, $custodyItem->card2, $custodyItem->card3]);
-                                        ?>
-                                        <?php if(count($cards) > 0): ?>
-                                            <span class="text-amber-300">Cards: [<?php echo e(implode(', ', $cards)); ?>]</span>
+                                        <?php if(!empty($custodyItem->cards)): ?>
+                                            <div class="flex flex-col gap-0.5">
+                                                <?php $__currentLoopData = $custodyItem->cards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <span class="text-rose-300 text-[10px]">Slot <?php echo e($c['slot']); ?>: <?php echo e($c['name']); ?></span>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </div>
+                                        <?php elseif($custodyItem->slots > 0): ?>
+                                            <span class="text-slate-400 text-[10px] italic"><?php echo e($custodyItem->slots); ?> Open Sockets</span>
                                         <?php else: ?>
-                                            <span class="text-slate-500">None</span>
+                                            <span class="text-slate-500 text-[10px]">Unslotted</span>
                                         <?php endif; ?>
                                     </td>
                                     <td class="py-3 px-4 text-slate-400">
@@ -401,8 +424,12 @@
                     <input type="hidden" name="tab" value="transactions">
                     
                     <div class="md:col-span-2 relative">
-                        <input type="text" name="tx_search" value="<?php echo e(request('tx_search')); ?>" placeholder="Search TX reference code, buyer character, or seller..." class="w-full px-3.5 py-2 pl-9 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37]">
-                        <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-2.5"></i>
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
+                        </div>
+                        <input type="text" name="tx_search" value="<?php echo e(request('tx_search')); ?>" placeholder="Search TX reference code, buyer character, or seller..." 
+                               style="padding-left: 3rem !important; padding-right: 1rem !important; height: 40px;"
+                               class="w-full rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white placeholder-slate-500 focus:outline-none focus:border-[#D4AF37] transition-all">
                     </div>
 
                     <div>

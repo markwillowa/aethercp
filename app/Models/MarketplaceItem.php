@@ -55,6 +55,14 @@ class MarketplaceItem extends Model
         'metadata' => 'array',
     ];
 
+    protected $appends = [
+        'slots',
+        'cards',
+        'card_count',
+        'formatted_name',
+        'icon_url',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -77,20 +85,86 @@ class MarketplaceItem extends Model
     }
 
     /**
+     * Get item inherent slots (0-4) from metadata or emulator database
+     */
+    public function getSlotsAttribute(): int
+    {
+        if (is_array($this->metadata) && isset($this->metadata['slots'])) {
+            return (int) $this->metadata['slots'];
+        }
+
+        try {
+            $itemRepo = app(\App\Contracts\Repositories\ItemRepositoryInterface::class);
+            $dbItem = $itemRepo->findById($this->nameid);
+            if ($dbItem && isset($dbItem->slots)) {
+                return (int) $dbItem->slots;
+            }
+        } catch (\Throwable $e) {
+            // fallback
+        }
+
+        // If card IDs are present, item has at least that many slots
+        $cardSlots = 0;
+        if ($this->card0 > 0 && $this->card0 < 65000) $cardSlots++;
+        if ($this->card1 > 0 && $this->card1 < 65000) $cardSlots++;
+        if ($this->card2 > 0 && $this->card2 < 65000) $cardSlots++;
+        if ($this->card3 > 0 && $this->card3 < 65000) $cardSlots++;
+
+        return $cardSlots;
+    }
+
+    /**
+     * Get compounded cards details
+     */
+    public function getCardsAttribute(): array
+    {
+        $cards = [];
+        foreach (['card0', 'card1', 'card2', 'card3'] as $idx => $col) {
+            $cardId = (int) $this->{$col};
+            if ($cardId > 0 && $cardId < 65000) {
+                $cards[] = [
+                    'slot' => $idx + 1,
+                    'id' => $cardId,
+                    'name' => $this->getCardName($cardId),
+                ];
+            }
+        }
+
+        return $cards;
+    }
+
+    /**
+     * Get number of compounded cards
+     */
+    public function getCardCountAttribute(): int
+    {
+        return count($this->cards);
+    }
+
+    /**
+     * Resolve card name from Item repository
+     */
+    public function getCardName(int $cardId): string
+    {
+        try {
+            $itemRepo = app(\App\Contracts\Repositories\ItemRepositoryInterface::class);
+            $cardDb = $itemRepo->findById($cardId);
+            return $cardDb ? ($cardDb->name_english ?? $cardDb->name_aegis ?? "Card #{$cardId}") : "Card #{$cardId}";
+        } catch (\Throwable $e) {
+            return "Card #{$cardId}";
+        }
+    }
+
+    /**
      * Get formatted item title (e.g. "+7 Stiletto [3]" or "Poring Card")
      */
     public function getFormattedNameAttribute(): string
     {
         $prefix = $this->refine > 0 ? "+{$this->refine} " : '';
         $name = $this->item_name ?: "Item #{$this->nameid}";
-        
-        $cardSlots = 0;
-        if ($this->card0 > 0) $cardSlots++;
-        if ($this->card1 > 0) $cardSlots++;
-        if ($this->card2 > 0) $cardSlots++;
-        if ($this->card3 > 0) $cardSlots++;
+        $slots = $this->slots;
 
-        $slotText = $cardSlots > 0 ? " [{$cardSlots}]" : '';
+        $slotText = $slots > 0 ? " [{$slots}]" : '';
 
         return $prefix . $name . $slotText;
     }

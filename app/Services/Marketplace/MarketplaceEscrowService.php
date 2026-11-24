@@ -179,6 +179,25 @@ class MarketplaceEscrowService
             $itemDb = $this->itemRepo->findById($row->nameid);
             $itemName = $itemDb ? ($itemDb->name_english ?? $itemDb->name_aegis ?? "Item #{$row->nameid}") : "Item #{$row->nameid}";
             $itemType = $itemDb ? ($itemDb->type ?? 'Etc') : 'Etc';
+            $slots = $itemDb ? (int) ($itemDb->slots ?? 0) : 0;
+
+            // Resolve compounded cards
+            $cards = [];
+            foreach (['card0', 'card1', 'card2', 'card3'] as $idx => $cardCol) {
+                $cId = (int) $row->{$cardCol};
+                if ($cId > 0 && $cId < 65000) {
+                    $cDb = $this->itemRepo->findById($cId);
+                    $cards[] = [
+                        'slot' => $idx + 1,
+                        'id' => $cId,
+                        'name' => $cDb ? ($cDb->name_english ?? $cDb->name_aegis ?? "Card #{$cId}") : "Card #{$cId}",
+                    ];
+                }
+            }
+
+            $prefix = $row->refine > 0 ? "+{$row->refine} " : '';
+            $slotText = $slots > 0 ? " [{$slots}]" : '';
+            $formattedName = $prefix . $itemName . $slotText;
 
             $isTransferable = true;
             $restrictionReason = null;
@@ -201,11 +220,15 @@ class MarketplaceEscrowService
                 'storage_id' => $row->id,
                 'nameid' => $row->nameid,
                 'name' => $itemName,
+                'formatted_name' => $formattedName,
                 'amount' => $row->amount,
                 'equip' => $row->equip,
                 'identify' => $row->identify,
                 'refine' => $row->refine,
                 'attribute' => $row->attribute,
+                'slots' => $slots,
+                'cards' => $cards,
+                'card_count' => count($cards),
                 'card0' => $row->card0,
                 'card1' => $row->card1,
                 'card2' => $row->card2,
@@ -275,10 +298,25 @@ class MarketplaceEscrowService
                 $conn->table('storage')->where('id', $storageId)->decrement('amount', $amount);
             }
 
-            // Resolve item name and type
+            // Resolve item name, type, and inherent slots
             $itemDb = $this->itemRepo->findById($storageRow->nameid);
             $itemName = $itemDb ? ($itemDb->name_english ?? $itemDb->name_aegis ?? "Item #{$storageRow->nameid}") : "Item #{$storageRow->nameid}";
             $itemType = $itemDb ? ($itemDb->type ?? 'Etc') : 'Etc';
+            $slots = $itemDb ? (int) ($itemDb->slots ?? 0) : 0;
+
+            // Resolve compounded cards
+            $cards = [];
+            foreach (['card0', 'card1', 'card2', 'card3'] as $idx => $cardCol) {
+                $cId = (int) $storageRow->{$cardCol};
+                if ($cId > 0 && $cId < 65000) {
+                    $cDb = $this->itemRepo->findById($cId);
+                    $cards[] = [
+                        'slot' => $idx + 1,
+                        'id' => $cId,
+                        'name' => $cDb ? ($cDb->name_english ?? $cDb->name_aegis ?? "Card #{$cId}") : "Card #{$cId}",
+                    ];
+                }
+            }
 
             // Create Marketplace Item in Custody
             return MarketplaceItem::create([
@@ -302,6 +340,10 @@ class MarketplaceEscrowService
                 'item_type' => $itemType,
                 'status' => 'in_custody',
                 'deposited_at' => now(),
+                'metadata' => [
+                    'slots' => $slots,
+                    'cards' => $cards,
+                ],
             ]);
         });
     }
