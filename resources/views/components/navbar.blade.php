@@ -57,6 +57,12 @@
                         Marketplace
                     </a>
                 @endif
+                @if($modMgr->isEnabled('attendance'))
+                    <a href="{{ route('attendance.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 {{ request()->routeIs('attendance.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                        <i data-lucide="calendar" class="w-4 h-4 text-amber-400"></i>
+                        <span>Daily Rewards</span>
+                    </a>
+                @endif
                 @if($modMgr->isEnabled('donations'))
                     <a href="{{ route('donations.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('donations.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                         Donations
@@ -98,6 +104,20 @@
                                 <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i>
                                 <span>My Characters</span>
                             </a>
+                            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('attendance'))
+                                <a href="{{ route('inbox.index') }}" class="flex items-center justify-between px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                                    <span class="flex items-center gap-2">
+                                        <i data-lucide="inbox" class="w-4 h-4 text-cyan-400"></i>
+                                        <span>Reward Inbox</span>
+                                    </span>
+                                    @php
+                                        $userUnclaimed = \App\Models\PlayerInboxItem::where('account_id', auth()->user()->account_id)->where('status', 'unclaimed')->count();
+                                    @endphp
+                                    @if($userUnclaimed > 0)
+                                        <span class="px-2 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-slate-950 font-mono">{{ $userUnclaimed }}</span>
+                                    @endif
+                                </a>
+                            @endif
 
                             @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
                                 <a href="{{ route('support.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">

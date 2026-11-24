@@ -87,6 +87,12 @@ return [
             'version' => '1.0.0',
             'enabled' => true,
         ],
+        'attendance' => [
+            'name' => 'Daily Rewards & Attendance',
+            'description' => 'Configurable daily login calendar, streaks, milestone rewards, and multi-campaign player rewards.',
+            'version' => '1.0.0',
+            'enabled' => true,
+        ],
     ],
 ];
 

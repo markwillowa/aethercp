@@ -134,6 +134,14 @@ Route::get('/themes/{theme}/assets/{path}', function (string $theme, string $pat
     return response()->file($filePath, ['Content-Type' => $mime]);
 })->where('path', '.*')->name('theme.asset');
 
+// Daily Rewards & Attendance System (Gated by 'attendance' module)
+Route::middleware('module:attendance')->group(function () {
+    Route::get('/attendance', [\App\Http\Controllers\Public\AttendanceController::class, 'index'])->name('attendance.index');
+    Route::post('/attendance/{campaign}/claim', [\App\Http\Controllers\Public\AttendanceController::class, 'claim'])->middleware('auth')->name('attendance.claim');
+    Route::get('/inbox', [\App\Http\Controllers\Public\AttendanceController::class, 'inbox'])->middleware('auth')->name('inbox.index');
+    Route::post('/inbox/{item}/claim-storage', [\App\Http\Controllers\Public\AttendanceController::class, 'claimToStorage'])->middleware('auth')->name('inbox.claim-storage');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Guest Authentication Routes
@@ -289,6 +297,30 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::post('/rewards', [\App\Http\Controllers\Admin\AdminRewardController::class, 'store'])->name('rewards.store');
         Route::post('/rewards/{id}/toggle', [\App\Http\Controllers\Admin\AdminRewardController::class, 'toggle'])->name('rewards.toggle');
         Route::post('/rewards/issuances/{id}/retry', [\App\Http\Controllers\Admin\AdminRewardController::class, 'retry'])->name('rewards.retry');
+    });
+
+    // Daily Rewards & Attendance Campaign Management (Gated by 'attendance' module)
+    Route::middleware('module:attendance')->group(function () {
+        Route::get('/attendance', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'index'])->name('attendance.index');
+        Route::get('/attendance/create', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'create'])->name('attendance.create');
+        Route::post('/attendance', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'store'])->name('attendance.store');
+        Route::get('/attendance/{campaign}/edit', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'edit'])->name('attendance.edit');
+        Route::put('/attendance/{campaign}', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'update'])->name('attendance.update');
+        Route::delete('/attendance/{campaign}', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'destroy'])->name('attendance.destroy');
+        Route::post('/attendance/{campaign}/toggle-status', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'toggleStatus'])->name('attendance.toggle-status');
+        Route::post('/attendance/{campaign}/duplicate', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'duplicate'])->name('attendance.duplicate');
+
+        // Reward Schedule Builder
+        Route::get('/attendance/{campaign}/schedule', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'schedule'])->name('attendance.schedule');
+        Route::post('/attendance/{campaign}/schedule/generate', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'generateSchedule'])->name('attendance.schedule.generate');
+        Route::post('/attendance/{campaign}/schedule/day/{dayNumber}/item', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'addItem'])->name('attendance.schedule.add-item');
+        Route::delete('/attendance/{campaign}/schedule/item/{itemId}', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'deleteItem'])->name('attendance.schedule.delete-item');
+        Route::put('/attendance/{campaign}/schedule/day/{dayNumber}', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'updateDay'])->name('attendance.schedule.update-day');
+
+        // Deliveries & Reports
+        Route::get('/attendance-deliveries', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'deliveries'])->name('attendance.deliveries');
+        Route::post('/attendance-deliveries/{deliveryId}/retry', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'retryDelivery'])->name('attendance.deliveries.retry');
+        Route::get('/attendance-reports', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'reports'])->name('attendance.reports');
     });
 });
 
