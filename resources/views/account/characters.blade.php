@@ -27,12 +27,20 @@
                         ? \Illuminate\Support\Facades\DB::connection('ragnarok')->table('guild')->where('guild_id', $char->guild_id)->select('guild_id', 'name', 'emblem_len')->first()
                         : null;
                     $spriteUrl = \App\Services\Emulator\JobHelper::getSpriteUrl((int) $char->class, (string) ($char->sex ?? 'M'));
+                    $cPrivacy = \App\Models\PlayerProfileSetting::forCharacter((int) $char->char_id, (int) $user->account_id);
+                    $displayAvatar = !empty($cPrivacy->avatar_path) ? $cPrivacy->avatar_path : $spriteUrl;
                 @endphp
                 <div class="bg-slate-900/70 border border-slate-800 hover:border-slate-700/80 rounded-2xl p-6 backdrop-blur-sm transition-all duration-200 space-y-4">
                     <div class="flex items-start justify-between gap-3">
                         <div class="flex items-center gap-3.5 min-w-0">
                             <div class="w-14 h-14 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 overflow-hidden">
-                                <img src="{{ $spriteUrl }}" alt="{{ \App\Services\Emulator\JobHelper::getName($char->class) }}" class="w-12 h-12 object-contain" onerror="this.style.display='none';">
+                                @if($displayAvatar)
+                                    <img src="{{ $displayAvatar }}" alt="{{ \App\Services\Emulator\JobHelper::getName($char->class) }}" class="w-full h-full object-cover">
+                                @else
+                                    <span class="w-full h-full bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-lg font-black text-slate-950">
+                                        {{ strtoupper(substr($char->name, 0, 1)) }}
+                                    </span>
+                                @endif
                             </div>
                             <div class="min-w-0">
                                 <a href="{{ route('characters.show', $char->name) }}" class="text-lg font-bold text-white hover:text-cyan-400 transition-colors truncate block">{{ $char->name }}</a>
@@ -97,44 +105,79 @@
                         </form>
                     </div>
 
-                    @php
-                        $cPrivacy = \App\Models\PlayerProfileSetting::forCharacter((int) $char->char_id, (int) $user->account_id);
-                    @endphp
-                    <div x-data="{ openPrivacy: false }" class="pt-2 border-t border-slate-800/60">
-                        <button type="button" @click="openPrivacy = !openPrivacy" class="w-full flex items-center justify-between text-[11px] font-semibold text-slate-400 hover:text-cyan-400 transition-colors">
+                    <div x-data="{ openCustom: false }" class="pt-2 border-t border-slate-800/60">
+                        <button type="button" @click="openCustom = !openCustom" class="w-full flex items-center justify-between text-[11px] font-semibold text-slate-400 hover:text-cyan-400 transition-colors py-1">
                             <span class="flex items-center gap-1.5">
-                                <i data-lucide="shield" class="w-3.5 h-3.5"></i>
-                                <span>Profile Privacy ({{ $cPrivacy->is_public ? 'Public' : 'Private' }})</span>
+                                <i data-lucide="sliders" class="w-3.5 h-3.5 text-cyan-400"></i>
+                                <span>Profile Customization &amp; Privacy</span>
                             </span>
-                            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] px-2 py-0.2 rounded font-mono {{ $cPrivacy->is_public ? 'text-emerald-400 bg-emerald-950/60' : 'text-amber-400 bg-amber-950/60' }}">
+                                    {{ $cPrivacy->is_public ? 'Public' : 'Private' }}
+                                </span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5" :class="openCustom ? 'rotate-180' : ''"></i>
+                            </div>
                         </button>
-                        <form x-show="openPrivacy" style="display: none;" method="POST" action="{{ route('account.characters.privacy', $char->char_id) }}" class="mt-3 space-y-2 text-[11px] bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+                        <form x-show="openCustom" style="display: none;" method="POST" action="{{ route('account.characters.privacy', $char->char_id) }}" enctype="multipart/form-data" class="mt-3 space-y-3 text-[11px] bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/80">
                             @csrf
                             @php
                                 $acctRankingsEnabled = app(\App\Services\Module\ModuleManager::class)->isEnabled('rankings');
                                 $privacyFields = [
                                     'is_public' => 'Public Profile',
-                                    'show_char_info' => 'Char Info',
-                                    'show_guild' => 'Guild',
-                                    'show_last_login' => 'Last Login',
+                                    'show_char_info' => 'Basic Info',
+                                    'show_equipments' => 'Equipments',
+                                    'show_stats' => 'Stats & Attributes',
+                                    'show_zeny' => 'Zeny Balance',
+                                    'show_guild' => 'Guild Standing',
+                                    'show_last_login' => 'Last Login Time',
                                 ];
                                 if ($acctRankingsEnabled) {
-                                    $privacyFields['show_rankings'] = 'Rankings';
-                                    $privacyFields['show_badges'] = 'Badges';
+                                    $privacyFields['show_badges'] = 'Earned Badges';
+                                    $privacyFields['show_rankings'] = 'Leaderboard Standings';
                                     $privacyFields['show_achievements'] = 'Achievements';
-                                    $privacyFields['show_stats'] = 'Statistics';
                                 }
                             @endphp
-                            <div class="grid grid-cols-2 gap-1.5 text-slate-300">
-                                @foreach($privacyFields as $pField => $pLabel)
-                                    <label class="flex items-center gap-1.5 cursor-pointer">
-                                        <input type="checkbox" name="{{ $pField }}" value="1" {{ $cPrivacy->$pField ? 'checked' : '' }} class="rounded bg-slate-900 border-slate-700 text-cyan-500">
-                                        <span>{{ $pLabel }}</span>
-                                    </label>
-                                @endforeach
+
+                            <!-- Visibility Checkboxes -->
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">Display &amp; Visibility</span>
+                                <div class="grid grid-cols-2 gap-2 text-slate-300">
+                                    @foreach($privacyFields as $pField => $pLabel)
+                                        <label class="flex items-center gap-2 cursor-pointer hover:text-white">
+                                            <input type="checkbox" name="{{ $pField }}" value="1" {{ ($cPrivacy->$pField ?? true) ? 'checked' : '' }} class="rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-0">
+                                            <span>{{ $pLabel }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
                             </div>
-                            <input type="text" name="bio" value="{{ $cPrivacy->bio }}" placeholder="Short profile bio..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-white">
-                            <button type="submit" class="w-full py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold">Save Privacy</button>
+
+                            <!-- Avatar Customization -->
+                            <div class="border-t border-slate-800/80 pt-2.5 space-y-2">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Character Avatar / Portrait</span>
+                                <div class="space-y-1.5">
+                                    <input type="url" name="avatar_url" value="{{ !empty($cPrivacy->avatar_path) && filter_var($cPrivacy->avatar_path, FILTER_VALIDATE_URL) ? $cPrivacy->avatar_path : '' }}" placeholder="Image URL (e.g. from Google or RateMyServer)..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-white text-xs placeholder:text-slate-600 focus:border-cyan-500">
+                                    <div class="flex items-center gap-2">
+                                        <label class="text-[10px] text-slate-400 shrink-0">Or Upload:</label>
+                                        <input type="file" name="avatar_file" accept="image/*" class="w-full text-[10px] text-slate-400 file:mr-2 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-slate-800 file:text-cyan-400 hover:file:bg-slate-700">
+                                    </div>
+                                    @if(!empty($cPrivacy->avatar_path))
+                                        <label class="flex items-center gap-1.5 text-[10px] text-amber-400 cursor-pointer pt-0.5">
+                                            <input type="checkbox" name="remove_avatar" value="1" class="rounded bg-slate-900 border-slate-700 text-amber-500">
+                                            <span>Reset to default job portrait</span>
+                                        </label>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Bio Input -->
+                            <div class="border-t border-slate-800/80 pt-2.5 space-y-1">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Adventurer Bio / Motto</span>
+                                <input type="text" name="bio" value="{{ $cPrivacy->bio }}" placeholder="Short adventurer motto or story..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-white text-xs placeholder:text-slate-600 focus:border-cyan-500">
+                            </div>
+
+                            <button type="submit" class="w-full py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold transition-colors">
+                                Save Profile &amp; Privacy
+                            </button>
                         </form>
                     </div>
                 </div>

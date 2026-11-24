@@ -21,7 +21,9 @@
     <div class="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div class="flex items-center gap-5">
             <div class="w-24 h-24 rounded-2xl bg-slate-950 border border-cyan-500/30 flex items-center justify-center shadow-lg overflow-hidden shrink-0">
-                @if($jobSpriteUrl)
+                @if(!empty($avatarUrl))
+                    <img src="{{ $avatarUrl }}" alt="{{ \App\Services\Emulator\JobHelper::getName($char->class) }}" class="w-full h-full object-cover">
+                @elseif($jobSpriteUrl)
                     <img src="{{ $jobSpriteUrl }}" alt="{{ \App\Services\Emulator\JobHelper::getName($char->class) }}" class="w-full h-full object-cover">
                 @else
                     <span class="w-full h-full bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-2xl font-black text-slate-950">
@@ -82,10 +84,12 @@
                     <span class="text-slate-500 block">HP / SP</span>
                     <strong class="text-sm font-bold text-white">{{ number_format($char->max_hp) }} / {{ number_format($char->max_sp) }}</strong>
                 </div>
-                <div class="border-l border-slate-800 pl-4">
-                    <span class="text-slate-500 block">Zeny</span>
-                    <strong class="text-sm font-bold text-amber-400 font-mono">{{ number_format($char->zeny) }} Z</strong>
-                </div>
+                @if($privacy->show_zeny || $isOwnerOrAdmin)
+                    <div class="border-l border-slate-800 pl-4">
+                        <span class="text-slate-500 block">Zeny</span>
+                        <strong class="text-sm font-bold text-amber-400 font-mono">{{ number_format($char->zeny) }} Z</strong>
+                    </div>
+                @endif
             </div>
         @endif
     </div>
@@ -166,6 +170,7 @@
     @if($privacy->show_char_info || $isOwnerOrAdmin)
         <div x-show="tab === 'character'" style="display: none;" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                @if($privacy->show_stats || $isOwnerOrAdmin)
                 <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-4">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 border-b border-slate-800 pb-3">Primary Attributes</h3>
                     <div class="grid grid-cols-3 gap-3 text-xs">
@@ -189,8 +194,9 @@
                         </div>
                     @endif
                 </div>
+                @endif
 
-                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-4">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-4 {{ !($privacy->show_stats || $isOwnerOrAdmin) ? 'md:col-span-2' : '' }}">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 border-b border-slate-800 pb-3">Character Information</h3>
                     <ul class="space-y-2 text-xs">
                         <li class="flex justify-between py-1.5 border-b border-slate-800/60">
@@ -220,6 +226,7 @@
             </div>
 
             <!-- Equipped Gear -->
+            @if($privacy->show_equipments || $isOwnerOrAdmin)
             <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-4">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 border-b border-slate-800 pb-3 flex items-center gap-2">
                     <i data-lucide="shield" class="w-4 h-4 text-cyan-400"></i>
@@ -240,7 +247,7 @@
                                     @if(!empty($eq['cards']))
                                         <div class="flex flex-wrap gap-1 mt-1">
                                             @foreach($eq['cards'] as $card)
-                                                <span class="px-1.5 py-0.5 rounded text-[9px] font-medium bg-purple-950/60 text-purple-300 border border-purple-500/30">{{ $card['name'] }}</span>
+                                                 <span class="px-1.5 py-0.5 rounded text-[9px] font-medium bg-purple-950/60 text-purple-300 border border-purple-500/30">{{ $card['name'] }}</span>
                                             @endforeach
                                         </div>
                                     @endif
@@ -252,6 +259,7 @@
                     <p class="text-xs text-slate-500 text-center py-6">No equipment currently equipped on this character.</p>
                 @endif
             </div>
+            @endif
         </div>
     @endif
 

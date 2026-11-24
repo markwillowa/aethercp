@@ -60,7 +60,7 @@ class CharacterViewController extends Controller
             : null;
 
         $equippedItems = [];
-        if ($privacy->show_char_info || $isOwnerOrAdmin) {
+        if ((($privacy->show_equipments ?? true) && ($privacy->show_char_info ?? true)) || $isOwnerOrAdmin) {
             $inventory = $this->characters->getInventory($char->char_id);
             $rawEquipped = array_filter($inventory, fn($i) => !empty($i->equip));
 
@@ -95,6 +95,7 @@ class CharacterViewController extends Controller
 
         $statColumns = $this->emulator->getStatColumns();
         $jobSpriteUrl = JobHelper::getSpriteUrl((int) $char->class, (string) ($char->sex ?? 'M'));
+        $avatarUrl = !empty($privacy->avatar_path) ? $privacy->avatar_path : $jobSpriteUrl;
         $rankingsEnabled = app(\App\Services\Module\ModuleManager::class)->isEnabled('rankings');
 
         $badges = ($rankingsEnabled && ($privacy->show_badges || $isOwnerOrAdmin))
@@ -119,6 +120,7 @@ class CharacterViewController extends Controller
             'equippedItems',
             'statColumns',
             'jobSpriteUrl',
+            'avatarUrl',
             'rankingsEnabled',
             'badges',
             'privacy',
@@ -146,18 +148,41 @@ class CharacterViewController extends Controller
         }
 
         $privacy = PlayerProfileSetting::forCharacter($charId, (int) $user->account_id);
+
+        $avatarPath = $privacy->avatar_path;
+        if ($request->hasFile('avatar_file')) {
+            $request->validate([
+                'avatar_file' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            ]);
+            $uploadDir = public_path('uploads/avatars');
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            $file = $request->file('avatar_file');
+            $filename = 'avatar_char_' . $charId . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move($uploadDir, $filename);
+            $avatarPath = asset('uploads/avatars/' . $filename);
+        } elseif ($request->filled('avatar_url')) {
+            $avatarPath = trim($request->input('avatar_url'));
+        } elseif ($request->input('remove_avatar') == '1') {
+            $avatarPath = null;
+        }
+
         $privacy->update([
             'is_public' => $request->has('is_public'),
             'show_char_info' => $request->has('show_char_info'),
+            'show_equipments' => $request->has('show_equipments'),
+            'show_stats' => $request->has('show_stats'),
+            'show_zeny' => $request->has('show_zeny'),
             'show_rankings' => $request->has('show_rankings'),
             'show_badges' => $request->has('show_badges'),
             'show_achievements' => $request->has('show_achievements'),
-            'show_stats' => $request->has('show_stats'),
             'show_guild' => $request->has('show_guild'),
             'show_last_login' => $request->has('show_last_login'),
+            'avatar_path' => $avatarPath,
             'bio' => trim((string) $request->input('bio', '')) ?: null,
         ]);
 
-        return back()->with('success', "Profile privacy settings saved for {$char->name}.");
+        return back()->with('success', "Profile settings and privacy saved for {$char->name}.");
     }
 }

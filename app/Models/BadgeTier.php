@@ -25,6 +25,7 @@ class BadgeTier extends Model
 
     public function getFormattedLabelAttribute(): string
     {
-        return $this->tier_name . ' ' . str_repeat('★', $this->stars);
+        $categoryPrefix = strtoupper($this->category);
+        return "[{$categoryPrefix}] {$this->tier_name} " . str_repeat('★', $this->stars);
     }
 }
