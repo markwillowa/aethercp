@@ -3,55 +3,62 @@
 @section('title', 'My Support Tickets')
 
 @section('content')
-<div class="chronicles-container py-10 space-y-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-    <!-- Top Wood Board Header -->
-    <div class="chronicles-wood-board flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 shadow-2xl">
-        <div>
-            <div class="flex items-center gap-2">
-                <a href="{{ route('support.index') }}" class="text-xs text-[#D4AF37] hover:text-[#FFE4A0] font-cinzel font-bold flex items-center gap-1">
-                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-                    <span>Support Center</span>
-                </a>
-                <span class="text-slate-500">•</span>
-                <span class="text-[10px] text-[#A898B5] font-mono uppercase">Ticket Ledger</span>
+    <!-- Header Card -->
+    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-md shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-500 flex items-center justify-center font-bold text-slate-950 shrink-0 shadow-lg">
+                <i data-lucide="inbox" class="w-6 h-6 text-white"></i>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-black font-cinzel text-[#FCE69B] tracking-wider uppercase mt-1">
-                My Support Tickets
-            </h1>
-            <p class="text-xs text-[#C8BDAA] mt-0.5">Track your open cases, view administrative responses, and manage existing tickets.</p>
+            <div>
+                <h1 class="text-xl font-bold text-white tracking-wide">My Support Tickets</h1>
+                <p class="text-xs text-slate-400">View status, check staff responses, and continue conversations.</p>
+            </div>
         </div>
 
-        @if($settings['enabled'])
-            <div>
-                <a href="{{ route('support.create') }}" class="chronicles-btn-gold py-2.5 px-5 cursor-pointer flex items-center gap-1.5 shadow-md">
+        <div class="flex items-center gap-2">
+            <a href="{{ route('support.index') }}" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="arrow-left" class="w-4 h-4 text-cyan-400"></i>
+                <span>Support Home</span>
+            </a>
+            @if($settings['enabled'])
+                <a href="{{ route('support.create') }}" class="px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:from-cyan-400 hover:to-blue-500 shadow-md shadow-cyan-500/20 flex items-center gap-1.5 transition-all">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                    <span class="font-cinzel text-xs font-bold tracking-wide">SUBMIT A TICKET</span>
+                    <span>New Ticket</span>
                 </a>
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
 
+    <!-- Alert Notifications -->
+    @if(session('success'))
+        <div class="p-4 rounded-xl bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 text-xs flex items-center gap-3 shadow-lg">
+            <i data-lucide="check-circle" class="w-5 h-5 shrink-0 text-emerald-400"></i>
+            <span class="font-medium">{{ session('success') }}</span>
+        </div>
+    @endif
+
     <!-- Filter & Search Console -->
-    <div class="chronicles-panel p-4" style="background: linear-gradient(180deg, #1F162A 0%, #160F1E 100%); border: 2px solid #5A456B; box-shadow: 0 4px 20px rgba(0,0,0,0.6);">
+    <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg">
         <form action="{{ route('support.my-tickets') }}" method="GET" class="space-y-3">
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <div class="relative flex-1">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
-                        <i data-lucide="search" class="w-4 h-4 text-[#C9A96E]"></i>
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
                     </div>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search tickets by reference code or subject..." 
                            style="padding-left: 3rem !important; padding-right: 1.25rem !important; height: 44px;"
-                           class="w-full bg-[#110B17] border border-[#6B537F] rounded-xl text-xs font-medium text-[#F3E5AB] placeholder:text-[#8D7D9A] focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all shadow-inner">
+                           class="w-full bg-slate-950 border border-slate-800 rounded-xl text-xs font-medium text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all shadow-inner">
                 </div>
 
                 <div class="flex items-center gap-2 shrink-0">
-                    <button type="submit" class="chronicles-btn-gold py-2.5 px-5 cursor-pointer flex items-center gap-1.5 shadow-md">
+                    <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:from-cyan-400 hover:to-blue-500 cursor-pointer flex items-center gap-1.5 shadow-md shadow-cyan-500/20">
                         <i data-lucide="search" class="w-4 h-4"></i>
                         <span>Filter</span>
                     </button>
                     @if(request('search') || request('status') || request('category'))
-                        <a href="{{ route('support.my-tickets') }}" class="chronicles-btn-dark py-2.5 px-3.5 cursor-pointer flex items-center gap-1" title="Reset Filters">
+                        <a href="{{ route('support.my-tickets') }}" class="px-3.5 py-2.5 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 cursor-pointer flex items-center gap-1" title="Reset Filters">
                             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
                             <span>Reset</span>
                         </a>
@@ -60,7 +67,7 @@
             </div>
 
             <!-- Status Tabs & Category Selector -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-[#352643]">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-800">
                 <!-- Status Switcher -->
                 <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
                     @php
@@ -74,25 +81,27 @@
                         ];
                         $curStatus = request('status', 'all');
                     @endphp
-                    @foreach($statuses as $k => $label)
-                        <a href="{{ route('support.my-tickets', array_merge(request()->query(), ['status' => $k])) }}" 
-                           class="px-2.5 py-1 rounded-lg text-xs font-cinzel font-bold whitespace-nowrap transition-colors {{ $curStatus === $k ? 'bg-[#D4AF37]/20 text-[#FFE894] border border-[#D4AF37]/60' : 'text-[#A898B5] hover:text-white bg-[#140E1B] border border-transparent' }}">
-                            {{ $label }}
+
+                    @foreach($statuses as $sKey => $sLabel)
+                        <a href="{{ route('support.my-tickets', array_merge(request()->except('page'), ['status' => $sKey])) }}"
+                           class="px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors {{ $curStatus === $sKey ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30' : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800' }}">
+                            {{ $sLabel }}
                         </a>
                     @endforeach
                 </div>
 
-                <!-- Category Selector -->
-                <div class="shrink-0 w-full sm:w-48">
-                    <select name="category" onchange="this.form.submit()" class="w-full px-3 py-1.5 bg-[#110B17] border border-[#6B537F] rounded-lg text-xs text-[#EDE4D2] focus:outline-none focus:border-[#D4AF37] cursor-pointer">
-                        <option value="all">All Categories</option>
-                        <option value="account" {{ request('category') === 'account' ? 'selected' : '' }}>Account Issues</option>
-                        <option value="character" {{ request('category') === 'character' ? 'selected' : '' }}>Character Issues</option>
-                        <option value="in_game" {{ request('category') === 'in_game' ? 'selected' : '' }}>In-Game Issues</option>
-                        <option value="technical" {{ request('category') === 'technical' ? 'selected' : '' }}>Technical Support</option>
-                        <option value="donation" {{ request('category') === 'donation' ? 'selected' : '' }}>Donations / Billing</option>
+                <!-- Category Filter -->
+                <div class="flex items-center gap-2">
+                    <span class="text-[11px] text-slate-500 whitespace-nowrap">Category:</span>
+                    <select name="category" onchange="this.form.submit()" class="px-3 py-1.5 rounded-lg text-xs bg-slate-950 border border-slate-800 text-slate-300 focus:border-cyan-500 cursor-pointer">
+                        <option value="">All Categories</option>
+                        <option value="account" {{ request('category') === 'account' ? 'selected' : '' }}>Account</option>
+                        <option value="character" {{ request('category') === 'character' ? 'selected' : '' }}>Character</option>
+                        <option value="in_game" {{ request('category') === 'in_game' ? 'selected' : '' }}>In-Game</option>
+                        <option value="technical" {{ request('category') === 'technical' ? 'selected' : '' }}>Technical</option>
+                        <option value="donation" {{ request('category') === 'donation' ? 'selected' : '' }}>Payment / Donation</option>
                         <option value="bug_report" {{ request('category') === 'bug_report' ? 'selected' : '' }}>Bug Reports</option>
-                        <option value="player_report" {{ request('category') === 'player_report' ? 'selected' : '' }}>Report a Player</option>
+                        <option value="report_player" {{ request('category') === 'report_player' ? 'selected' : '' }}>Player Report</option>
                         <option value="other" {{ request('category') === 'other' ? 'selected' : '' }}>Other</option>
                     </select>
                 </div>
@@ -101,69 +110,69 @@
     </div>
 
     <!-- Tickets Table -->
-    <div class="chronicles-panel overflow-hidden shadow-2xl" style="background: #181120; border: 2px solid #5A456B;">
+    <div class="rounded-2xl bg-slate-900/80 border border-slate-800 overflow-hidden shadow-xl">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
                 <thead>
-                    <tr class="border-b-2 border-[#5A456B] bg-[#22172D] text-[#F3E5AB] font-cinzel text-[11px] tracking-wide uppercase">
-                        <th class="py-3.5 px-4">Ticket Ref</th>
+                    <tr class="border-b border-slate-800 bg-slate-950/80 text-slate-400 text-[11px] font-semibold uppercase tracking-wider">
+                        <th class="py-3.5 px-4">Reference</th>
                         <th class="py-3.5 px-4">Subject</th>
                         <th class="py-3.5 px-4">Category</th>
                         <th class="py-3.5 px-4 text-center">Priority</th>
                         <th class="py-3.5 px-4 text-center">Status</th>
-                        <th class="py-3.5 px-4">Last Activity</th>
+                        <th class="py-3.5 px-4 text-right">Created</th>
+                        <th class="py-3.5 px-4 text-right">Last Updated</th>
                         <th class="py-3.5 px-4 text-right">Action</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-[#2F213C]">
+                <tbody class="divide-y divide-slate-800">
                     @forelse($tickets as $ticket)
-                        <tr class="hover:bg-[#251A33] transition-colors group">
-                            <td class="py-3.5 px-4 font-mono font-bold text-[#FFE894]">
-                                {{ $ticket->ticket_reference }}
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-mono font-bold text-cyan-400 whitespace-nowrap">
+                                <a href="{{ route('support.show', $ticket->reference) }}" class="hover:underline">
+                                    {{ $ticket->reference }}
+                                </a>
                             </td>
                             <td class="py-3.5 px-4">
-                                <a href="{{ route('support.show', $ticket->ticket_reference) }}" class="font-cinzel font-bold text-[#FCE69B] group-hover:text-white transition-colors block">
+                                <a href="{{ route('support.show', $ticket->reference) }}" class="font-bold text-white hover:text-cyan-400 transition-colors block truncate max-w-sm">
                                     {{ $ticket->subject }}
                                 </a>
-                                <div class="flex items-center gap-2 mt-0.5 text-[10px] text-[#A898B5]">
-                                    @if($ticket->char_name)
-                                        <span>Char: <strong class="text-[#E2D9EB]">{{ $ticket->char_name }}</strong></span>
-                                        <span>•</span>
-                                    @endif
-                                    <span>Submitted {{ $ticket->created_at->format('M d, Y') }}</span>
-                                </div>
+                                @if($ticket->character_name)
+                                    <span class="text-[10px] text-slate-500 font-mono block">Char: {{ $ticket->character_name }}</span>
+                                @endif
                             </td>
-                            <td class="py-3.5 px-4 text-[#D8CDBC]">
+                            <td class="py-3.5 px-4 text-slate-300 whitespace-nowrap">
                                 {{ $ticket->category_label }}
                             </td>
-                            <td class="py-3.5 px-4 text-center">
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono border {{ $ticket->priority_badge_class }}">
-                                    {{ $ticket->priority_label }}
+                            <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider {{ $ticket->priority_badge_class }}">
+                                    {{ ucfirst($ticket->priority) }}
                                 </span>
                             </td>
-                            <td class="py-3.5 px-4 text-center">
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono border {{ $ticket->status_badge_class }}">
+                            <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider {{ $ticket->status_badge_class }}">
                                     {{ $ticket->status_label }}
                                 </span>
                             </td>
-                            <td class="py-3.5 px-4 text-[#A898B5]">
-                                {{ $ticket->last_message_at->diffForHumans() }}
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-400 whitespace-nowrap">
+                                {{ $ticket->created_at->format('M d, Y') }}
                             </td>
-                            <td class="py-3.5 px-4 text-right">
-                                <a href="{{ route('support.show', $ticket->ticket_reference) }}" class="chronicles-btn-gold py-1.5 px-3.5 text-[11px] font-cinzel font-bold inline-flex items-center gap-1 shadow-md hover:scale-105 transition-transform">
-                                    <span>View Case</span>
-                                    <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300 whitespace-nowrap">
+                                {{ $ticket->last_activity_at ? $ticket->last_activity_at->diffForHumans() : $ticket->created_at->diffForHumans() }}
+                            </td>
+                            <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                                <a href="{{ route('support.show', $ticket->reference) }}" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors inline-flex items-center gap-1">
+                                    <span>View</span>
+                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-cyan-400"></i>
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center py-14 text-[#C8BDAA] font-cinzel">
-                                <div class="flex flex-col items-center justify-center gap-2">
-                                    <i data-lucide="inbox" class="w-8 h-8 text-[#5A456B]"></i>
-                                    <p class="text-sm font-semibold text-[#E2D9EB]">No tickets found matching your query.</p>
-                                    <p class="text-xs text-[#A898B5]">Try resetting your search query or selecting a different status filter.</p>
-                                </div>
+                            <td colspan="8" class="py-12 text-center text-slate-400">
+                                <i data-lucide="inbox" class="w-10 h-10 text-slate-600 mx-auto mb-2"></i>
+                                <p class="text-sm font-bold text-white">No support tickets found</p>
+                                <p class="text-xs text-slate-500 mt-1">Submit your first inquiry if you require game master assistance.</p>
                             </td>
                         </tr>
                     @endforelse
@@ -172,10 +181,11 @@
         </div>
 
         @if($tickets->hasPages())
-            <div class="p-4 border-t border-[#3E2E4E] bg-[#140E1B]">
+            <div class="p-4 border-t border-slate-800">
                 {{ $tickets->links() }}
             </div>
         @endif
     </div>
+
 </div>
 @endsection

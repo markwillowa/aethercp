@@ -3,35 +3,35 @@
 @section('title', 'Player Support Center')
 
 @section('content')
-<div class="chronicles-container py-10 space-y-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-    <!-- Top Wood Board Header -->
-    <div class="chronicles-wood-board flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 shadow-2xl">
+    <!-- Header Card -->
+    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-md shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 shadow-lg" style="background: radial-gradient(circle, #E5B358 0%, #806442 100%); border: 2px solid #FCE69B; color: #17111F;">
-                <i data-lucide="life-buoy" class="w-8 h-8"></i>
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-500 flex items-center justify-center shrink-0 shadow-lg text-slate-950 font-bold">
+                <i data-lucide="life-buoy" class="w-6 h-6 text-white"></i>
             </div>
             <div>
                 <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#B69A65] font-cinzel">Rune-Midgard Support</span>
-                    <span class="px-2 py-0.5 rounded text-[9px] font-bold font-mono uppercase bg-[#140E1B] text-[#D4AF37] border border-[#806442]">Direct Help</span>
+                    <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Help &amp; Inquiries</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-slate-800 text-slate-300 border border-slate-700">Staff Support</span>
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-black font-cinzel text-[#FCE69B] tracking-wider uppercase drop-shadow">
-                    Support Center
+                <h1 class="text-2xl sm:text-3xl font-bold aether-gradient-text tracking-tight mt-0.5">
+                    Player Support Center
                 </h1>
-                <p class="text-xs text-[#C8BDAA] mt-0.5">We're here to help. Submit inquiries, report issues, and track your active tickets.</p>
+                <p class="text-xs text-slate-400 mt-0.5">Submit inquiries, track investigations, and communicate directly with game masters.</p>
             </div>
         </div>
 
         <div class="flex items-center gap-3">
-            <a href="{{ route('support.my-tickets') }}" class="chronicles-btn-dark py-2.5 px-4 cursor-pointer flex items-center gap-1.5 shadow-md">
-                <i data-lucide="inbox" class="w-4 h-4 text-[#D4AF37]"></i>
-                <span class="font-cinzel text-xs font-bold">My Tickets</span>
+            <a href="{{ route('support.my-tickets') }}" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 cursor-pointer flex items-center gap-1.5 transition-colors">
+                <i data-lucide="inbox" class="w-4 h-4 text-cyan-400"></i>
+                <span>My Tickets</span>
             </a>
             @if($settings['enabled'])
-                <a href="{{ route('support.create') }}" class="chronicles-btn-gold py-2.5 px-5 cursor-pointer flex items-center gap-1.5 shadow-md">
+                <a href="{{ route('support.create') }}" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:from-cyan-400 hover:to-blue-500 cursor-pointer flex items-center gap-1.5 shadow-md shadow-cyan-500/20 transition-all">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                    <span class="font-cinzel text-xs font-bold tracking-wide">SUBMIT A TICKET</span>
+                    <span>Submit Ticket</span>
                 </a>
             @endif
         </div>
@@ -39,9 +39,9 @@
 
     <!-- Announcement Banner -->
     @if(!empty($settings['announcement']))
-        <div class="p-4 rounded-xl bg-[#1C1425] border border-[#5A456B] text-xs flex items-center gap-3 text-[#EDE4D2] shadow-md">
-            <i data-lucide="megaphone" class="w-5 h-5 text-[#FFD700] shrink-0"></i>
-            <span class="text-[#E2D9EB]">{{ $settings['announcement'] }}</span>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-xs flex items-center gap-3 text-slate-300 shadow-md">
+            <i data-lucide="megaphone" class="w-5 h-5 text-cyan-400 shrink-0"></i>
+            <span>{{ $settings['announcement'] }}</span>
         </div>
     @endif
 
@@ -62,86 +62,86 @@
 
     <!-- Ticket Summary Stats -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div class="chronicles-panel p-4" style="background: #181120; border: 1.5px solid #4A3A5A;">
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[#A898B5] font-cinzel">Active Tickets</span>
-                <i data-lucide="activity" class="w-4 h-4 text-[#FFD700]"></i>
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Active Tickets</span>
+                <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
             </div>
-            <div class="mt-2 text-2xl font-black font-mono text-[#FFE4A0]">{{ $stats['active'] }}</div>
-            <p class="text-[10px] text-[#8C7B99] mt-0.5">Under active review</p>
+            <div class="mt-2 text-2xl font-black font-mono text-cyan-300">{{ $stats['active'] }}</div>
+            <p class="text-[10px] text-slate-500 mt-0.5">Under active review</p>
         </div>
 
-        <div class="chronicles-panel p-4" style="background: #181120; border: 1.5px solid #4A3A5A;">
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[#A898B5] font-cinzel">Awaiting Response</span>
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Awaiting Response</span>
                 <i data-lucide="clock" class="w-4 h-4 text-amber-400"></i>
             </div>
             <div class="mt-2 text-2xl font-black font-mono text-amber-300">{{ $stats['awaiting_player'] }}</div>
-            <p class="text-[10px] text-[#8C7B99] mt-0.5">Staff replied to you</p>
+            <p class="text-[10px] text-slate-500 mt-0.5">Staff replied to you</p>
         </div>
 
-        <div class="chronicles-panel p-4" style="background: #181120; border: 1.5px solid #4A3A5A;">
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[#A898B5] font-cinzel">Resolved</span>
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Resolved</span>
                 <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
             </div>
             <div class="mt-2 text-2xl font-black font-mono text-emerald-300">{{ $stats['resolved'] }}</div>
-            <p class="text-[10px] text-[#8C7B99] mt-0.5">Issues addressed</p>
+            <p class="text-[10px] text-slate-500 mt-0.5">Issues addressed</p>
         </div>
 
-        <div class="chronicles-panel p-4" style="background: #181120; border: 1.5px solid #4A3A5A;">
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[#A898B5] font-cinzel">Total Inquiries</span>
-                <i data-lucide="folder" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Total Inquiries</span>
+                <i data-lucide="folder" class="w-4 h-4 text-blue-400"></i>
             </div>
-            <div class="mt-2 text-2xl font-black font-mono text-cyan-300">{{ $stats['total'] }}</div>
-            <p class="text-[10px] text-[#8C7B99] mt-0.5">All time submissions</p>
+            <div class="mt-2 text-2xl font-black font-mono text-blue-300">{{ $stats['total'] }}</div>
+            <p class="text-[10px] text-slate-500 mt-0.5">All time submissions</p>
         </div>
     </div>
 
-    <!-- Quick Help Categories -->
+    <!-- Quick Help Topics -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="p-4 rounded-xl bg-[#181120] border border-[#3E2E4E] hover:border-[#D4AF37]/50 transition-colors">
-            <div class="w-9 h-9 rounded-lg bg-[#251A33] border border-[#5A456B] flex items-center justify-center text-[#FFD700] mb-3">
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition-colors">
+            <div class="w-9 h-9 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-cyan-400 mb-3 shadow-inner">
                 <i data-lucide="user-check" class="w-5 h-5"></i>
             </div>
-            <h4 class="font-cinzel font-bold text-sm text-[#F3E5AB]">Account &amp; Security</h4>
-            <p class="text-xs text-[#A898B5] mt-1">Password resets, pin code changes, 2FA authorization, and security inquiries.</p>
+            <h4 class="font-bold text-sm text-white">Account &amp; Security</h4>
+            <p class="text-xs text-slate-400 mt-1">Password resets, pin code changes, 2FA authorization, and security inquiries.</p>
         </div>
 
-        <div class="p-4 rounded-xl bg-[#181120] border border-[#3E2E4E] hover:border-[#D4AF37]/50 transition-colors">
-            <div class="w-9 h-9 rounded-lg bg-[#251A33] border border-[#5A456B] flex items-center justify-center text-cyan-400 mb-3">
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition-colors">
+            <div class="w-9 h-9 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-blue-400 mb-3 shadow-inner">
                 <i data-lucide="sword" class="w-5 h-5"></i>
             </div>
-            <h4 class="font-cinzel font-bold text-sm text-[#F3E5AB]">Character &amp; Gameplay</h4>
-            <p class="text-xs text-[#A898B5] mt-1">Stuck characters, lost items, quest issues, or guild management assistance.</p>
+            <h4 class="font-bold text-sm text-white">Character &amp; Gameplay</h4>
+            <p class="text-xs text-slate-400 mt-1">Stuck characters, lost items, quest issues, or guild management assistance.</p>
         </div>
 
-        <div class="p-4 rounded-xl bg-[#181120] border border-[#3E2E4E] hover:border-[#D4AF37]/50 transition-colors">
-            <div class="w-9 h-9 rounded-lg bg-[#251A33] border border-[#5A456B] flex items-center justify-center text-amber-400 mb-3">
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition-colors">
+            <div class="w-9 h-9 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-amber-400 mb-3 shadow-inner">
                 <i data-lucide="gem" class="w-5 h-5"></i>
             </div>
-            <h4 class="font-cinzel font-bold text-sm text-[#F3E5AB]">Donations &amp; Billing</h4>
-            <p class="text-xs text-[#A898B5] mt-1">PayPal verification, donation package rewards, and Cash Point credits.</p>
+            <h4 class="font-bold text-sm text-white">Donations &amp; Billing</h4>
+            <p class="text-xs text-slate-400 mt-1">PayPal verification, donation package rewards, and Cash Point credits.</p>
         </div>
 
-        <div class="p-4 rounded-xl bg-[#181120] border border-[#3E2E4E] hover:border-[#D4AF37]/50 transition-colors">
-            <div class="w-9 h-9 rounded-lg bg-[#251A33] border border-[#5A456B] flex items-center justify-center text-rose-400 mb-3">
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition-colors">
+            <div class="w-9 h-9 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-rose-400 mb-3 shadow-inner">
                 <i data-lucide="bug" class="w-5 h-5"></i>
             </div>
-            <h4 class="font-cinzel font-bold text-sm text-[#F3E5AB]">Bug Reports &amp; Abuse</h4>
-            <p class="text-xs text-[#A898B5] mt-1">Client crashes, map glitches, rule violations, or suspicious bot behavior.</p>
+            <h4 class="font-bold text-sm text-white">Bug Reports &amp; Abuse</h4>
+            <p class="text-xs text-slate-400 mt-1">Client crashes, map glitches, rule violations, or suspicious bot behavior.</p>
         </div>
     </div>
 
     <!-- Recently Updated Tickets Table -->
-    <div class="chronicles-panel overflow-hidden shadow-2xl" style="background: #181120; border: 2px solid #5A456B;">
-        <div class="p-4 border-b border-[#3E2E4E] bg-[#22172D] flex items-center justify-between">
+    <div class="rounded-2xl bg-slate-900/80 border border-slate-800 overflow-hidden shadow-xl">
+        <div class="p-4 border-b border-slate-800 bg-slate-950/80 flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <i data-lucide="history" class="w-4 h-4 text-[#FFD700]"></i>
-                <h3 class="font-cinzel text-sm font-bold text-[#F3E5AB] uppercase tracking-wide">Recent Support Tickets</h3>
+                <i data-lucide="clock" class="w-4 h-4 text-cyan-400"></i>
+                <h3 class="text-xs font-bold text-white uppercase tracking-wider">Recently Updated Tickets</h3>
             </div>
-            <a href="{{ route('support.my-tickets') }}" class="text-xs text-[#D4AF37] hover:text-[#FFE4A0] font-cinzel font-bold flex items-center gap-1">
+            <a href="{{ route('support.my-tickets') }}" class="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-semibold">
                 <span>View All Tickets</span>
                 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </a>
@@ -150,66 +150,49 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
                 <thead>
-                    <tr class="border-b border-[#3E2E4E] bg-[#1E1428] text-[#D8CDBC] font-cinzel text-[11px] tracking-wide uppercase">
+                    <tr class="border-b border-slate-800 bg-slate-950/60 text-slate-400 text-[11px] font-semibold uppercase tracking-wider">
                         <th class="py-3 px-4">Reference</th>
                         <th class="py-3 px-4">Subject</th>
                         <th class="py-3 px-4">Category</th>
-                        <th class="py-3 px-4">Priority</th>
-                        <th class="py-3 px-4">Status</th>
-                        <th class="py-3 px-4">Last Activity</th>
-                        <th class="py-3 px-4 text-right">Action</th>
+                        <th class="py-3 px-4 text-center">Priority</th>
+                        <th class="py-3 px-4 text-center">Status</th>
+                        <th class="py-3 px-4 text-right">Last Activity</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-[#2F213C]">
+                <tbody class="divide-y divide-slate-800">
                     @forelse($recentTickets as $ticket)
-                        <tr class="hover:bg-[#251A33] transition-colors">
-                            <td class="py-3 px-4 font-mono font-bold text-[#FFE894]">
-                                {{ $ticket->ticket_reference }}
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3 px-4 font-mono font-bold text-cyan-400 whitespace-nowrap">
+                                <a href="{{ route('support.show', $ticket->reference) }}" class="hover:underline">
+                                    {{ $ticket->reference }}
+                                </a>
                             </td>
                             <td class="py-3 px-4">
-                                <a href="{{ route('support.show', $ticket->ticket_reference) }}" class="font-cinzel font-bold text-[#FCE69B] hover:text-white transition-colors">
+                                <a href="{{ route('support.show', $ticket->reference) }}" class="font-bold text-white hover:text-cyan-400 transition-colors block truncate max-w-xs">
                                     {{ $ticket->subject }}
                                 </a>
-                                @if($ticket->char_name)
-                                    <p class="text-[10px] text-[#A898B5] mt-0.5">Char: {{ $ticket->char_name }}</p>
-                                @endif
                             </td>
-                            <td class="py-3 px-4 text-[#D8CDBC]">
+                            <td class="py-3 px-4 text-slate-300 whitespace-nowrap">
                                 {{ $ticket->category_label }}
                             </td>
-                            <td class="py-3 px-4">
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono border {{ $ticket->priority_badge_class }}">
-                                    {{ $ticket->priority_label }}
+                            <td class="py-3 px-4 text-center whitespace-nowrap">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider {{ $ticket->priority_badge_class }}">
+                                    {{ ucfirst($ticket->priority) }}
                                 </span>
                             </td>
-                            <td class="py-3 px-4">
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono border {{ $ticket->status_badge_class }}">
+                            <td class="py-3 px-4 text-center whitespace-nowrap">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider {{ $ticket->status_badge_class }}">
                                     {{ $ticket->status_label }}
                                 </span>
                             </td>
-                            <td class="py-3 px-4 text-[#A898B5]">
-                                {{ $ticket->last_message_at->diffForHumans() }}
-                            </td>
-                            <td class="py-3 px-4 text-right">
-                                <a href="{{ route('support.show', $ticket->ticket_reference) }}" class="chronicles-btn-gold py-1 px-3 text-[11px] font-cinzel font-bold inline-flex items-center gap-1">
-                                    <span>View</span>
-                                    <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                                </a>
+                            <td class="py-3 px-4 text-right font-mono text-slate-400 whitespace-nowrap">
+                                {{ $ticket->last_activity_at ? $ticket->last_activity_at->diffForHumans() : $ticket->created_at->diffForHumans() }}
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center py-12 text-[#C8BDAA] font-cinzel">
-                                <div class="flex flex-col items-center justify-center gap-2">
-                                    <i data-lucide="inbox" class="w-8 h-8 text-[#5A456B]"></i>
-                                    <p class="text-sm font-semibold text-[#E2D9EB]">You have not submitted any support tickets yet.</p>
-                                    @if($settings['enabled'])
-                                        <a href="{{ route('support.create') }}" class="chronicles-btn-gold py-1.5 px-4 text-xs mt-2 inline-flex items-center gap-1.5">
-                                            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
-                                            <span>Submit Your First Ticket</span>
-                                        </a>
-                                    @endif
-                                </div>
+                            <td colspan="6" class="py-10 text-center text-slate-400">
+                                You do not have any submitted tickets yet.
                             </td>
                         </tr>
                     @endforelse
@@ -217,5 +200,6 @@
             </table>
         </div>
     </div>
+
 </div>
 @endsection

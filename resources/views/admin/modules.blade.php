@@ -30,9 +30,24 @@
                     @if(empty($mod['protected']))
                         <div class="flex items-center gap-2">
                             @if($key === 'marketplace')
-                                <a href="{{ route('admin.marketplace.index') }}" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#D4AF37]/20 hover:bg-[#D4AF37]/30 text-[#FCE69B] border border-[#D4AF37]/40 flex items-center gap-1 transition-colors">
+                                <a href="{{ route('admin.marketplace.index') }}" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1 transition-colors">
                                     <i data-lucide="settings" class="w-3.5 h-3.5"></i>
                                     Configure
+                                </a>
+                            @elseif($key === 'support')
+                                <a href="{{ route('admin.support.settings') }}" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center gap-1 transition-colors">
+                                    <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+                                    Settings
+                                </a>
+                            @elseif($key === 'faq')
+                                <a href="{{ route('admin.faq.index') }}" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center gap-1 transition-colors">
+                                    <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+                                    Manage
+                                </a>
+                            @elseif($key === 'gallery')
+                                <a href="{{ route('admin.gallery.index') }}" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center gap-1 transition-colors">
+                                    <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+                                    Manage
                                 </a>
                             @endif
                             <form method="POST" action="{{ route('admin.modules.toggle', $key) }}">

@@ -196,9 +196,15 @@
 
             <!-- Server Status Card -->
             <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-4">
-                <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
-                    <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-white">Live Cluster Status</h3>
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-white">Live Cluster Status</h3>
+                    </div>
+                    <a href="{{ route('server.status') }}" class="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-medium">
+                        <span>Details</span>
+                        <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                    </a>
                 </div>
 
                 <div class="space-y-2.5 text-xs">
