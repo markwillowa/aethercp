@@ -63,13 +63,26 @@
              roEmulator: '{{ addslashes($defaultConfig['ro_emulator']) }}',
              roRenewal: {{ $defaultConfig['ro_renewal'] ? 'true' : 'false' }},
              roPasswordHash: '{{ addslashes($defaultConfig['ro_password_hash']) }}',
+             roLoginIp: '{{ addslashes($defaultConfig['ro_login_ip'] ?? '127.0.0.1') }}',
+             roLoginPort: {{ (int)($defaultConfig['ro_login_port'] ?? 6900) }},
+             roCharIp: '{{ addslashes($defaultConfig['ro_char_ip'] ?? '127.0.0.1') }}',
+             roCharPort: {{ (int)($defaultConfig['ro_char_port'] ?? 6121) }},
+             roMapIp: '{{ addslashes($defaultConfig['ro_map_ip'] ?? '127.0.0.1') }}',
+             roMapPort: {{ (int)($defaultConfig['ro_map_port'] ?? 5121) }},
+             roRateBase: '{{ addslashes($defaultConfig['ro_rate_base'] ?? '1000x') }}',
+             roRateJob: '{{ addslashes($defaultConfig['ro_rate_job'] ?? '1000x') }}',
+             roRateDrop: '{{ addslashes($defaultConfig['ro_rate_drop'] ?? '100x') }}',
+             roMaxLevel: {{ (int)($defaultConfig['ro_max_level'] ?? 260) }},
+             showAdvRoConfig: false,
              gameDbTested: false,
              gameDbTesting: false,
              gameDbMessage: '',
              gameDbWarning: false,
 
-             // Step 4 Data: Migration
+             // Step 4 Data: Migration / Provisioning
+             migrationMode: 'auto',
              migrating: false,
+             verifyingManual: false,
              migrationComplete: false,
              migrationLog: '',
 
@@ -270,7 +283,17 @@
                              ro_db_password: this.roDbPassword,
                              ro_emulator: this.roEmulator,
                              ro_renewal: this.roRenewal,
-                             ro_password_hash: this.roPasswordHash
+                             ro_password_hash: this.roPasswordHash,
+                             ro_login_ip: (this.roLoginIp || '').trim(),
+                             ro_login_port: this.roLoginPort,
+                             ro_char_ip: (this.roCharIp || '').trim(),
+                             ro_char_port: this.roCharPort,
+                             ro_map_ip: (this.roMapIp || '').trim(),
+                             ro_map_port: this.roMapPort,
+                             ro_rate_base: (this.roRateBase || '').trim(),
+                             ro_rate_job: (this.roRateJob || '').trim(),
+                             ro_rate_drop: (this.roRateDrop || '').trim(),
+                             ro_max_level: this.roMaxLevel
                          })
                      });
                      const data = await res.json();
@@ -286,6 +309,63 @@
                      this.statusError = 'Setup execution error: ' + err.message;
                  } finally {
                      this.migrating = false;
+                 }
+             },
+
+             // STAGE 4: MANUAL SQL VERIFICATION (FOR CPANEL / PHPMYADMIN)
+             async verifyManualSetup() {
+                 this.verifyingManual = true;
+                 this.statusError = '';
+                 this.statusMessage = 'Verifying manually imported SQL schema and settings...';
+                 try {
+                     const res = await fetch('{{ route('install.verify-manual-sql') }}', {
+                         method: 'POST',
+                         headers: {
+                             'Content-Type': 'application/json',
+                             'Accept': 'application/json',
+                             'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                         },
+                         body: JSON.stringify({
+                             app_name: this.appName.trim(),
+                             server_name: this.serverName.trim(),
+                             app_url: this.appUrl.trim(),
+                             db_host: this.dbHost.trim(),
+                             db_port: this.dbPort,
+                             db_database: this.dbDatabase.trim(),
+                             db_username: this.dbUsername.trim(),
+                             db_password: this.dbPassword,
+                             ro_db_host: this.roDbHost.trim(),
+                             ro_db_port: this.roDbPort,
+                             ro_db_database: this.roDbDatabase.trim(),
+                             ro_db_username: this.roDbUsername.trim(),
+                             ro_db_password: this.roDbPassword,
+                             ro_emulator: this.roEmulator,
+                             ro_renewal: this.roRenewal,
+                             ro_password_hash: this.roPasswordHash,
+                             ro_login_ip: (this.roLoginIp || '').trim(),
+                             ro_login_port: this.roLoginPort,
+                             ro_char_ip: (this.roCharIp || '').trim(),
+                             ro_char_port: this.roCharPort,
+                             ro_map_ip: (this.roMapIp || '').trim(),
+                             ro_map_port: this.roMapPort,
+                             ro_rate_base: (this.roRateBase || '').trim(),
+                             ro_rate_job: (this.roRateJob || '').trim(),
+                             ro_rate_drop: (this.roRateDrop || '').trim(),
+                             ro_max_level: this.roMaxLevel
+                         })
+                     });
+                     const data = await res.json();
+                     if (res.ok && data.success) {
+                         this.migrationComplete = true;
+                         this.statusMessage = data.message;
+                         this.step = 5;
+                     } else {
+                         this.statusError = data.message || 'SQL verification failed. Please ensure both SQL files are imported.';
+                     }
+                 } catch (err) {
+                     this.statusError = 'Manual verification error: ' + err.message;
+                 } finally {
+                     this.verifyingManual = false;
                  }
              },
 
@@ -645,6 +725,49 @@
                             <i :data-lucide="gameDbWarning ? 'alert-circle' : 'check-circle'" class="w-4 h-4"></i>
                             <span x-text="gameDbMessage"></span>
                         </div>
+
+                        <!-- Ragnarok Server Network Pings & Server Rates (Expandable) -->
+                        <div class="border-t border-slate-800/80 pt-3">
+                            <button type="button" @click="showAdvRoConfig = !showAdvRoConfig" class="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center justify-between w-full">
+                                <span class="flex items-center gap-1.5">
+                                    <i data-lucide="network" class="w-4 h-4 text-cyan-400"></i>
+                                    <span>Ragnarok Server Network Status &amp; Game Rates (Optional)</span>
+                                </span>
+                                <i data-lucide="chevron-down" class="w-4 h-4 transition-transform" :class="showAdvRoConfig ? 'rotate-180' : ''"></i>
+                            </button>
+
+                            <div x-show="showAdvRoConfig" x-cloak class="mt-4 space-y-3">
+                                <p class="text-[11px] text-slate-400">
+                                    Configure connection ports used to display live server status and default gameplay rates.
+                                </p>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                                    <div>
+                                        <label class="block text-slate-400 mb-1">Login Port</label>
+                                        <input type="number" x-model="roLoginPort" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-400 mb-1">Char Port</label>
+                                        <input type="number" x-model="roCharPort" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-400 mb-1">Map Port</label>
+                                        <input type="number" x-model="roMapPort" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-400 mb-1">Base EXP Rate</label>
+                                        <input type="text" x-model="roRateBase" placeholder="1000x" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-400 mb-1">Job EXP Rate</label>
+                                        <input type="text" x-model="roRateJob" placeholder="1000x" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-400 mb-1">Drop Rate</label>
+                                        <input type="text" x-model="roRateDrop" placeholder="100x" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="pt-4 flex justify-between">
@@ -670,22 +793,37 @@
                             <span>Step 4: Provision Web Database</span>
                         </h2>
                         <p class="text-xs text-slate-400 mt-1">
-                            Save your configuration, generate application encryption key, and create AetherCP tables.
+                            Choose between automated migration (standard/local) or direct phpMyAdmin SQL import (recommended for cPanel).
                         </p>
                     </div>
 
-                    <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-6 text-center space-y-4">
+                    <!-- Mode Selector -->
+                    <div class="grid grid-cols-2 gap-3 bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
+                        <button type="button" @click="migrationMode = 'auto'"
+                                :class="migrationMode === 'auto' ? 'bg-cyan-500 text-slate-950 font-bold shadow-md' : 'text-slate-400 hover:text-white'"
+                                class="py-2.5 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="zap" class="w-4 h-4"></i>
+                            <span>Automated (CLI / Local / VPS)</span>
+                        </button>
+                        <button type="button" @click="migrationMode = 'manual_cpanel'"
+                                :class="migrationMode === 'manual_cpanel' ? 'bg-amber-400 text-slate-950 font-bold shadow-md' : 'text-slate-400 hover:text-white'"
+                                class="py-2.5 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="server" class="w-4 h-4"></i>
+                            <span>cPanel / phpMyAdmin SQL Import</span>
+                        </button>
+                    </div>
+
+                    <!-- Mode A: Automated -->
+                    <div x-show="migrationMode === 'auto'" class="bg-slate-950/80 border border-slate-800 rounded-2xl p-6 text-center space-y-4">
                         <div class="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto text-cyan-400">
                             <i data-lucide="database-zap" class="w-8 h-8" :class="migrating ? 'animate-pulse' : ''"></i>
                         </div>
-
                         <div>
-                            <h3 class="text-base font-bold text-white">Ready to Execute Migrations</h3>
+                            <h3 class="text-base font-bold text-white">Execute Automated Provisioning</h3>
                             <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">
-                                This will provision the news articles, site settings, administrative activity logs, user sessions, and donation tables in <strong class="text-cyan-400" x-text="dbDatabase"></strong>.
+                                Executes all migrations and seeds directly via PHP into <strong class="text-cyan-400" x-text="dbDatabase"></strong>.
                             </p>
                         </div>
-
                         <div class="pt-2">
                             <button type="button" @click="runSetup()" :disabled="migrating"
                                     class="px-8 py-3 rounded-xl font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-xl shadow-cyan-500/30 disabled:opacity-50 flex items-center justify-center gap-2 mx-auto transition-all">
@@ -695,8 +833,65 @@
                         </div>
                     </div>
 
+                    <!-- Mode B: cPanel / phpMyAdmin Manual SQL Import -->
+                    <div x-show="migrationMode === 'manual_cpanel'" class="bg-slate-950/80 border border-amber-500/30 rounded-2xl p-6 space-y-5">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                                <i data-lucide="file-code" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white">cPanel &amp; phpMyAdmin Manual SQL Import</h3>
+                                <p class="text-xs text-slate-400 mt-0.5">
+                                    Avoid timeouts and PHP restrictions by importing the pre-generated SQL files directly into phpMyAdmin.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Download SQL Buttons -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <a href="{{ route('install.download-sql', 'schema') }}"
+                               class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-left flex items-center justify-between group transition-all">
+                                <div>
+                                    <span class="text-xs font-bold text-white group-hover:text-cyan-300 block">1. aether_schema.sql</span>
+                                    <span class="text-[10px] text-slate-400 block">All tables, indexes &amp; migrations</span>
+                                </div>
+                                <i data-lucide="download" class="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform"></i>
+                            </a>
+                            <a href="{{ route('install.download-sql', 'seeders') }}"
+                               class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500/40 text-left flex items-center justify-between group transition-all">
+                                <div>
+                                    <span class="text-xs font-bold text-white group-hover:text-amber-300 block">2. aether_seeders.sql</span>
+                                    <span class="text-[10px] text-slate-400 block">Starter settings, campaigns &amp; data</span>
+                                </div>
+                                <i data-lucide="download" class="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform"></i>
+                            </a>
+                        </div>
+
+                        <!-- Instructions -->
+                        <div class="bg-slate-900/90 border border-slate-800/80 rounded-xl p-4 text-xs text-slate-300 space-y-2">
+                            <p class="font-bold text-white">Quick phpMyAdmin Instructions:</p>
+                            <ol class="list-decimal list-inside space-y-1 text-slate-400 text-[11px]">
+                                <li>Open <strong>phpMyAdmin</strong> in your cPanel dashboard.</li>
+                                <li>Click on your database (<code class="text-cyan-300 font-mono" x-text="dbDatabase"></code>) on the left sidebar.</li>
+                                <li>Click the <strong>Import</strong> tab at the top.</li>
+                                <li>Choose <strong class="text-white">aether_schema.sql</strong> and click <strong>Import</strong>.</li>
+                                <li>Next, choose <strong class="text-white">aether_seeders.sql</strong> and click <strong>Import</strong>.</li>
+                                <li class="text-amber-300 italic">Note: Your Ragnarok emulator tables (login, char, item_db) are managed separately by your rAthena/Hercules SQL files.</li>
+                            </ol>
+                        </div>
+
+                        <!-- Verify Button -->
+                        <div class="text-center pt-2">
+                            <button type="button" @click="verifyManualSetup()" :disabled="verifyingManual"
+                                    class="px-8 py-3 rounded-xl font-bold bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 shadow-xl shadow-amber-500/20 disabled:opacity-50 flex items-center justify-center gap-2 mx-auto transition-all">
+                                <i data-lucide="check-circle" class="w-4 h-4" x-show="!verifyingManual"></i>
+                                <span x-text="verifyingManual ? 'Verifying Tables...' : 'I Have Imported the SQL Files &bull; Verify &amp; Proceed'"></span>
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="pt-4 flex justify-between">
-                        <button type="button" @click="step = 3; statusError = ''" :disabled="migrating" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80">
+                        <button type="button" @click="step = 3; statusError = ''" :disabled="migrating || verifyingManual" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80">
                             Back
                         </button>
                     </div>

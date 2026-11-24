@@ -351,9 +351,11 @@ Route::prefix('api/emulator')->middleware('module:rankings')->withoutMiddleware(
 Route::prefix('install')->name('install.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Install\InstallController::class, 'index'])->name('index');
     Route::get('/requirements', [\App\Http\Controllers\Install\InstallController::class, 'checkRequirements'])->name('requirements');
+    Route::get('/download-sql/{type}', [\App\Http\Controllers\Install\InstallController::class, 'downloadSql'])->name('download-sql');
     Route::post('/test-database', [\App\Http\Controllers\Install\InstallController::class, 'testDatabase'])->name('test-database');
     Route::post('/test-game-database', [\App\Http\Controllers\Install\InstallController::class, 'testGameDatabase'])->name('test-game-database');
     Route::post('/setup-environment', [\App\Http\Controllers\Install\InstallController::class, 'setupEnvironment'])->name('setup-environment');
+    Route::post('/verify-manual-sql', [\App\Http\Controllers\Install\InstallController::class, 'verifyManualSql'])->name('verify-manual-sql');
     Route::post('/setup-admin', [\App\Http\Controllers\Install\InstallController::class, 'setupAdmin'])->name('setup-admin');
 });
 

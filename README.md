@@ -4,30 +4,51 @@
   <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/shield.svg" width="80" height="80" alt="AetherCP Shield">
 </p>
 
-AetherCP is an independent, modern, high-performance web-based control panel engineered for **rAthena** and **Hercules** Ragnarok Online private servers. Built from the ground up on PHP 8.4+, Laravel 12, Tailwind CSS 4, Alpine.js, and Lucide Icons, AetherCP delivers an extensible architecture with zero legacy baggage.
+AetherCP is an independent, modern, high-performance web-based control panel engineered for **rAthena** and **Hercules** Ragnarok Online private servers. Built from the ground up on PHP 8.3+, Laravel 12, Tailwind CSS 4, Alpine.js, and Lucide Icons, AetherCP delivers an extensible architecture with zero legacy baggage.
 
 ---
 
-## Key Highlights
+## Key Highlights & Features
 
-- **Interactive Web Installation Wizard**: 1-click web setup wizard (`/install`) with pre-flight environment diagnostics, real-time database connection testing, and automated schema migration.
-- **Shared Hosting Plug & Play**: Fully deployable on cPanel, DirectAdmin, and shared Apache hosting with **zero terminal/SSH access required**.
-- **Dual Database Architecture**: Complete isolation between the AetherCP web application database (`aether_cp`) and the live game server databases (`login`, `char`, `map`).
-- **Emulator Abstraction Layer**: Pluggable driver system supporting **rAthena** and **Hercules** across both **Pre-Renewal** and **Renewal** modes.
-- **Universal Password Hashing**: Auto-detects and verifies password hashes across Bcrypt, SHA256 (Hercules), MD5 (Standard RO), and plaintext, completely preventing account lockouts during migrations.
-- **Dynamic Theming System**: Ships with multiple distinctive themes:
-  - **Aether Chronicles (Commercial Premium)**: Faithful reproduction of the classic Episode XIII & Noghaltz promotional composition. Features ornate medieval stone frames, engraved metallic borders, dark fantasy stone backgrounds, gold filigree buttons, aged parchment news cards, and a live 3-column desktop layout.
-  - **Aether Prestige (Flagship)**: Ultra-luxury AAA MMORPG aesthetic featuring ambient Ken-Burns hero motion, floating atmospheric light particles, staggered entrance animations, and a bespoke **Sovereign Treasury Vault** interactive 2-column donation console.
-  - **Aether Dark (Default)**: Sleek ethereal cyan & electric blue neon aesthetic.
-  - **Elysian Mythic**: Midnight sapphire and Nordic gold celestial design.
-  - **Ragnarok Classic**: Nostalgic parchment-and-wood aesthetic reminiscent of classic Ragnarok Online portals.
-- **Dynamic Home Page & Settings Editor**: All home page hero titles, subtitles, storyline descriptions, trailers (main + stacked preview cards), hallmark feature cards, telemetry, and call-to-action banners are 100% configurable in real time via the Admin Control Panel without editing code. Settings synchronize dynamically from the database (`site_settings`) into runtime configuration.
-- **Automated & Manual Donation Suite**: Full-featured patronage engine supporting automated PayPal IPN transactions with instant delivery of Cash Points (`#CASHPOINTS`) and bonus items directly into players' account Kafra Storage vaults, alongside manual claim verification for GCash, Bank Wire, and Cryptocurrency.
-- **Clean Subdirectory Routing**: Native support for subdirectory paths without `/public` in the URL (e.g. `http://localhost/aether/` or `https://myserver.com/cp/`).
-- **Live Server Pings**: High-precision cluster pings (Login, Character, Map servers) and live online player tracking.
-- **Player & Guild Leaderboards**: High-performance cached rankings for Base Level, Job Level, Zeny, MVP Fame, and Guild EXP.
-- **Player Self-Service Tools**: Unstuck (reset character position to Prontera), in-game 4-digit security PIN changes, password updates, and character inspection.
-- **Comprehensive Administration**: Full GM dashboard, account search with ban/unban toggles, character viewer, news and announcement CMS, donation claim reviews, and system audit logging.
+### 1. Centralized Escrow Inbox (Web-to-Game Item Transfer)
+- **Unified Inventory**: All rewards and web transactions—including **Daily Attendance Rewards**, **Marketplace Purchases**, **PvP / MVP Season Ranking Rewards**, and **Donation Package Bonus Items**—are safely held in the player's account **Escrow Inbox**.
+- **Dual Transfer Destinations**: Players choose whether to transfer held items directly to:
+  - **Account Kafra Storage** (`storage` table)
+  - **Character Inventory** (`inventory` table)
+- **Online Safety Checks**: Validates character offline status before performing inventory writes to prevent item duplication or emulator state overwrites.
+- **Audit & History**: Comprehensive tracking of claim dates, item IDs, quantities, source campaign/system, and transfer logs.
+
+### 2. Configurable Daily Rewards & Attendance Engine
+- **Arbitrary Campaign Durations**: Fully flexible campaign schedules not limited to 7 days—supports **5, 7, 14, 30, 60, 90, 180, 365+ days** or any custom duration.
+- **Reward Schedule Generator**: Administrators can automatically generate daily reward tiers with custom milestone multipliers (e.g. Day 7, 14, 21, 30 jackpot rewards).
+- **Multi-Item & Zeny Packages**: Each day can contain multiple items and Zeny bundles delivered atomically into the Escrow Inbox.
+- **Account-Wide Eligibility**: Tracks attendance at the account level so rewards cannot be multi-claimed across alternate characters.
+- **Flexible Progression Modes**: Supports both consecutive login streaks (reset on missed day) and cumulative attendance modes.
+
+### 3. Live Rankings & Categorized Badges
+- **Real-Time Leaderboards**: Cached, low-overhead ranking views for **Base Level**, **Job Level**, **PvP Kills & KDR**, **MVP Boss Kills**, and **Guild EXP / Castle Castles**.
+- **Category-Isolated Badges**: Badges are strictly segmented by domain—Base Level leaderboards only show Base progression badges; PvP leaderboards only show PvP combat badges; MVP leaderboards only show MVP conqueror badges.
+- **Automated Ranking Seasons**: Configurable season reward schedules with automatic prize distribution into winners' Escrow Inboxes.
+
+### 4. Character Profile Customization & Privacy Controls
+- **Public Profile Customizer**: Players can select their featured job portrait, bio, and showcase specific earned badges.
+- **Granular Privacy Toggles**: Players can independently toggle the visibility of their gear, equipment refine levels, base stats, and inventory on their public profile.
+
+### 5. Enhanced Item Database & Player Marketplace
+- **Visual Divine Pride Integration**: Dynamic sprite and collection image lookups for weapons, armor, headgears, and cards.
+- **Player-to-Player Web Marketplace**: Browse, list, and buy in-game items through the web control panel, with items escrowed automatically.
+
+### 6. Dynamic Theming System
+- **Aether Chronicles (Commercial Premium)**: Faithful reproduction of classic Episode XIII & Noghaltz promotional composition. Features ornate medieval stone frames, engraved metallic borders, dark fantasy stone backgrounds, gold filigree buttons, aged parchment cards, and a 3-column desktop layout.
+- **Aether Prestige (Flagship)**: Ultra-luxury AAA MMORPG aesthetic featuring ambient Ken-Burns hero motion, floating atmospheric light particles, staggered entrance animations, and a bespoke **Sovereign Treasury Vault** interactive donation console.
+- **Aether Dark (Default)**: Sleek ethereal cyan & electric blue neon aesthetic.
+- **Elysian Mythic**: Midnight sapphire and Nordic gold celestial design.
+- **Ragnarok Classic**: Nostalgic parchment-and-wood aesthetic reminiscent of classic Ragnarok Online portals.
+
+### 7. Dual Installation Modes (Automated CLI or phpMyAdmin)
+- **Interactive Web Installation Wizard**: 6-step guided setup (`/install`) with pre-flight environment diagnostics, real-time database connection testing, and game server network rates configuration.
+- **cPanel & Shared Hosting Plug & Play**: Pre-generated SQL dumps (`aether_schema.sql` and `aether_seeders.sql`) allow manual import via phpMyAdmin for hosts that restrict PHP process execution or command-line access.
+- **Protected Session Handling**: Built-in `file` session driver default prevents the notorious `Table 'sessions' doesn't exist` error on uninstalled shared hosting environments.
 
 ---
 
@@ -54,7 +75,7 @@ AetherCP is an independent, modern, high-performance web-based control panel eng
 >    - **Single Source of Truth**: The web control panel authenticates directly against the emulator `login` table. Any account in `login` (such as `s1`, `admin`, or newly registered players) can immediately log in on the website.
 > 
 > 2. **AetherCP Web Database (e.g. `aether_cp`)**:
->    - Contains web-specific tables (`news`, `downloads`, `donations`, `donation_packages`, `site_settings`, `activity_logs`, `sessions`).
+>    - Contains web-specific tables (`news`, `downloads`, `donations`, `donation_packages`, `site_settings`, `activity_logs`, `player_inbox_items`, `attendance_campaigns`, `badge_definitions`, `users`).
 >    - Laravel migrations apply **only** to this separate web database.
 
 ---
@@ -140,61 +161,35 @@ AetherCP supports both a **Web-Based Setup Wizard** (no terminal needed) and a *
    http://localhost/aether/
    ```
    The interactive wizard will automatically launch:
-   - **Pre-flight Checks**: Confirms PHP runtime, extensions, and directory permissions.
-   - **Database Setup**: Pre-populated with your local MySQL credentials (`127.0.0.1`, port `3306`).
-   - Click **"Test Connection"** on Web DB and **"Test Game DB"** to verify connectivity.
-   - Click **"Execute Database Provisioning"** to migrate web tables.
-   - **Administrator Account Setup**:
+   - **Step 1: Pre-flight Checks**: Confirms PHP runtime, extensions, and directory permissions.
+   - **Step 2: Realm Settings**: Server name, control panel branding, and URL.
+   - **Step 3: Database & Ragnarok Config**: Test Web DB connection and Ragnarok Game DB connection; configure game server pings and gameplay rates (Base/Job/Drop rates, Max Level).
+   - **Step 4: Provisioning Stage**:
+     - *Mode A*: Automated 1-Click Provisioning.
+     - *Mode B*: Manual phpMyAdmin SQL Import.
+   - **Step 5: Administrator Account Setup**:
      - *Elevate Existing Game Account (Recommended)*: Enter your existing game account userid to grant GM level 99 (uses your existing in-game password).
-     - *Create Standalone Web Administrator*: Enter a custom admin username, email, and password (minimum 6 characters).
-   - Click **"Complete Installation"**!
-   - **Summary & Admin Credentials Screen**:
-     The final installation step explicitly lists your:
-     - **Admin Username**: Your designated administrator login.
-     - **Admin Password**: Your configured password (or a reminder if using your in-game password).
-     - Links to navigate straight to the **Public Site** or **Admin Control Panel** (`/admin`). Record these credentials before proceeding!
+     - *Create Standalone Web Administrator*: Enter a custom admin username, email, and password.
+   - **Step 6: Complete Installation**: Displays confirmation and direct links to the site and `/admin`.
 
 ---
 
-### 2. Linux & Ubuntu Installation (22.04 / 24.04 LTS)
+### 2. Linux & Ubuntu (Nginx + PHP-FPM / Apache2)
 
-#### Prerequisites & System Packages
-Update your package manager and install PHP, required extensions, Composer, Node.js, and your web server:
-
-```bash
-sudo apt update && sudo apt upgrade -y
-sudo apt install -y software-properties-common curl git unzip
-
-# Add Ondřej Surý PHP PPA for modern PHP versions
-sudo add-apt-repository ppa:ondrej/php -y
-sudo apt update
-
-# Install PHP 8.3 or 8.4 with required modules, Composer, and unzip
-sudo apt install -y php8.3-fpm php8.3-cli php8.3-mysql php8.3-mbstring \
-    php8.3-xml php8.3-curl php8.3-zip php8.3-gd php8.3-intl php8.3-bcmath \
-    mariadb-server composer unzip
-
-# Install Node.js (v20+ LTS) and npm (Required for building Vite frontend assets)
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
-```
-
-#### Option A: Nginx Configuration (Recommended)
-1. **Clone Project**:
+#### Step-by-Step Setup
+1. **Clone the Repository**:
    ```bash
    cd /var/www
-   sudo git clone https://github.com/markwillowa/aethercp.git aether
+   git clone https://github.com/markwillowa/aethercp.git aether
    cd /var/www/aether
    ```
 
-2. **Install Composer & NPM Dependencies**:
-   > [!IMPORTANT]
-   > Like all standard Laravel applications, third-party libraries in `vendor/` and compiled assets in `public/build/` are **excluded from Git**. You **must** run `composer install` and `npm install && npm run build` to prevent `vendor/autoload.php` and `Vite manifest not found` errors.
+2. **Install Dependencies & Build Assets**:
    ```bash
    composer install --no-dev --optimize-autoloader
+   npm install && npm run build
    cp .env.example .env
    php artisan key:generate
-   npm install && npm run build
    ```
 
 3. **Configure File Permissions**:
@@ -203,21 +198,16 @@ sudo apt install -y nodejs
    sudo chmod -R 775 /var/www/aether/storage /var/www/aether/bootstrap/cache
    ```
 
-4. **Create Nginx Server Block**:
-   ```bash
-   sudo nano /etc/nginx/sites-available/aether
-   ```
-   Paste the following configuration:
+4. **Nginx Server Block**:
    ```nginx
    server {
        listen 80;
-       server_name ro.yourdomain.com; # Or your server IP
+       server_name ro.yourdomain.com;
        root /var/www/aether/public;
 
        index index.php index.html;
        charset utf-8;
 
-       # Security: block dotfiles and sensitive config
        location ~ /\.(?!well-known).* {
            deny all;
        }
@@ -239,44 +229,13 @@ sudo apt install -y nodejs
        }
    }
    ```
-   Enable the site and restart Nginx:
+   Enable and restart Nginx:
    ```bash
    sudo ln -s /etc/nginx/sites-available/aether /etc/nginx/sites-enabled/
    sudo nginx -t && sudo systemctl reload nginx
    ```
 
-#### Option B: Apache2 Configuration
-1. **Enable Apache Modules**:
-   ```bash
-   sudo a2enmod rewrite headers
-   ```
-2. **Create Apache VirtualHost**:
-   ```bash
-   sudo nano /etc/apache2/sites-available/aether.conf
-   ```
-   ```apache
-   <VirtualHost *:80>
-       ServerName ro.yourdomain.com
-       DocumentRoot /var/www/aether/public
-
-       <Directory /var/www/aether/public>
-           Options -Indexes +FollowSymLinks
-           AllowOverride All
-           Require all granted
-       </Directory>
-
-       ErrorLog ${APACHE_LOG_DIR}/aether_error.log
-       CustomLog ${APACHE_LOG_DIR}/aether_access.log combined
-   </VirtualHost>
-   ```
-   Enable and restart Apache:
-   ```bash
-   sudo a2ensite aether.conf && sudo systemctl restart apache2
-   ```
-
-3. **Complete Installation in Browser**:
-   Open `http://ro.yourdomain.com/` in your browser and follow the interactive wizard.
-   On Step 5, designate your administrator credentials. The final Step 6 screen will display your **Admin Username** and **Admin Password** for immediate login to `/admin`.
+5. Complete installation via `http://ro.yourdomain.com/install`.
 
 ---
 
@@ -297,33 +256,43 @@ AetherCP is specifically designed to run on shared web hosting with **zero termi
 #### Step 2: Create Databases in cPanel
 1. Open **MySQL Databases** or **MySQL Database Wizard** in cPanel.
 2. Create your AetherCP web database: `cpaneluser_aether`.
-3. Create your Ragnarok game database (if hosted on the same server): `cpaneluser_freynix`.
+3. Create your Ragnarok game database: `cpaneluser_ragnarok`.
 4. Create a database user, assign a password, and grant **ALL PRIVILEGES** to both databases.
 
 #### Step 3: Import Ragnarok Emulator SQL
 - Open **phpMyAdmin** from cPanel.
-- Select your game database (`cpaneluser_freynix`).
-- Click **Import** and upload your emulator's `main.sql` and `item_db.sql`.
+- Select your game database (`cpaneluser_ragnarok`).
+- Click **Import** and upload your emulator's `main.sql` and `item_db.sql` (from your rAthena or Hercules repository).
 
-#### Step 4: Run the Web Installer
-- Open `https://yourserver.com/` (or `https://yourserver.com/cp/`) in your browser.
-- The web wizard will detect your environment, test the cPanel database credentials, run migrations via PHP, and lock the installation.
+#### Step 4: Run the Web Installer (Two Provisioning Choices)
+Open `https://yourserver.com/` (or `https://yourserver.com/cp/`) in your browser:
+- On **Step 3**, enter your cPanel database credentials and click **Test Connection** for both databases.
+- On **Step 4**, choose your preferred provisioning mode:
+  - **Option A (Automated 1-Click)**: Runs database migrations directly in PHP.
+  - **Option B (phpMyAdmin Manual SQL Import)**:
+    1. Click the download buttons to download:
+       - `database/sql/aether_schema.sql` (All tables, indexes, and migrations tracking)
+       - `database/sql/aether_seeders.sql` (Starter configuration, campaigns, and badges)
+    2. In phpMyAdmin, click your web database (`cpaneluser_aether`) and click **Import** for each file.
+    3. Click **"I Have Imported the SQL Files • Verify & Proceed"** in the wizard.
+- On **Step 5**, configure your administrator credentials, then click **Complete Installation**.
+
+> [!TIP]
+> **No `sessions` Table Crashes on cPanel**: Fresh uploads on cPanel default to `SESSION_DRIVER=file`, ensuring requests never query a non-existent database session table before installation!
 
 ---
 
 ### 4. Docker & Docker Compose Deployment
 
-AetherCP includes production-ready containerization files out of the box.
+AetherCP includes production-ready containerization files out of the box:
 
-1. **Start the Stack**:
-   ```bash
-   docker compose up -d
-   ```
-   This will spin up:
-   - **`aether_control_panel`**: PHP 8.4 + Apache web application container on port `8080`.
-   - **`aether_database`**: MariaDB 10.11 container.
-2. **Access the Setup Wizard**:
-   Navigate to `http://localhost:8080/` to configure the application.
+```bash
+docker compose up -d
+```
+- **`aether_control_panel`**: PHP 8.4 + Apache web application container on port `8080`.
+- **`aether_database`**: MariaDB 10.11 container.
+
+Navigate to `http://localhost:8080/` to configure the application.
 
 ---
 
@@ -347,11 +316,6 @@ php artisan key:generate
 # 4. Run automated installation command (creates database, tables, and default admin)
 php artisan aether:install
 
-# CLI installation outputs default administrative credentials upon completion:
-#   Username: admin
-#   Password: Admin1234!
-#   URL:      http://your-domain/login
-
 # 5. Lock the installer
 php -r "file_put_contents('storage/installed', json_encode(['installed_at' => date('c'), 'version' => '1.0.0']));"
 ```
@@ -360,7 +324,7 @@ php -r "file_put_contents('storage/installed', json_encode(['installed_at' => da
 
 ## Background Task Scheduling (Cron Job)
 
-To enable automatic ranking caching, server uptime heartbeats, and donation polling, add a single cron entry to your server:
+To enable automatic ranking caching, server uptime heartbeats, donation polling, and daily attendance resets, add a single cron entry to your server:
 
 ```bash
 crontab -e
@@ -382,83 +346,39 @@ AetherCP maintains a comprehensive unit and feature test suite. Run tests via:
 php artisan test
 ```
 
-**69 automated tests (279 assertions)** validate:
+Automated tests validate:
 - Emulator password auto-detection across Plaintext, MD5, SHA256, and Bcrypt
 - Pre-Renewal and Renewal stat and column detection (preventing SQL 1054 errors)
 - Public routes, ranking caches, database searches, and downloads
-- Dynamic theme switching (Aether Dark, Elysian Mythic, and Ragnarok Classic)
-- Installation wizard pre-flight validation and lock gating
-- In-game Kafra item delivery and automated donation package fulfillment
-- YAML database file validation and migration
+- Escrow Inbox transfers to Kafra Storage and Character Inventory with offline checks
+- Attendance campaign claim validation, consecutive streak rules, and multi-day packages
+- Categorized badge assignment and leaderboards isolation
+- Dynamic theme switching (Aether Dark, Aether Chronicles, Aether Prestige, Elysian Mythic, and Ragnarok Classic)
+- Installation wizard pre-flight validation, SQL downloads, and lock gating
 
 ---
 
 ## Troubleshooting & FAQ
 
-### 1. `Fatal error: Failed opening required '.../vendor/autoload.php'`
-- **Error message**:
-  ```
-  Warning: require(.../vendor/autoload.php): Failed to open stream: No such file or directory in .../public/index.php on line 14
-  Fatal error: Uncaught Error: Failed opening required '.../vendor/autoload.php' in .../public/index.php:14
-  ```
-- **Cause**: The application was cloned directly with Git, but the external PHP packages in `vendor/` have not been installed yet. Git intentionally ignores `vendor/` according to standard industry practices.
-- **Solution**: Open your terminal (PowerShell, CMD, or Bash), navigate to the root directory where AetherCP is installed, and run:
-  ```powershell
-  # Windows (XAMPP / Laragon)
-  Set-Location C:\xampp\htdocs\aether
-  composer install
+### 1. `Table '...sessions' doesn't exist (Connection: mysql)`
+- **Cause**: Laravel's session driver was set to `database` before the database tables were created.
+- **Solution**: AetherCP is pre-configured with `SESSION_DRIVER=file` in `.env.example` and dynamic file session fallback during installation. If you encounter this on a manual setup, ensure `SESSION_DRIVER=file` and `CACHE_STORE=file` in your `.env` file until migrations have run.
 
-  # Linux (Ubuntu / Debian / CentOS)
-  cd /var/www/aether
-  composer install --no-dev --optimize-autoloader
-  ```
-  *(If you do not have Composer installed, download and install it from [getcomposer.org](https://getcomposer.org/download/))*.
-
-### 2. `No application encryption key has been specified`
-- **Cause**: The application is missing its `.env` configuration file or security key.
-- **Solution**:
-  ```powershell
-  # Windows
-  copy .env.example .env
-  php artisan key:generate
-
-  # Linux
-  cp .env.example .env
-  php artisan key:generate
-  ```
+### 2. `Fatal error: Failed opening required '.../vendor/autoload.php'`
+- **Cause**: Third-party PHP libraries in `vendor/` have not been installed yet.
+- **Solution**: Run `composer install` in your project root directory.
 
 ### 3. `Illuminate\Foundation\ViteManifestNotFoundException: Vite manifest not found`
-- **Error message**:
-  ```
-  Illuminate\Foundation\ViteManifestNotFoundException
-  vendor\laravel\framework\src\Illuminate\Foundation\Vite.php:974
-  Vite manifest not found at: C:\xampp\htdocs\aethercp\public\build/manifest.json
-  ```
-- **Cause**: The compiled frontend asset directory `public/build/` is gitignored. When cloning the repository, the compiled CSS/JS and the Vite `manifest.json` do not exist until the frontend build process runs.
-- **Solution**: Install Node dependencies and execute the production build command in your project root:
-  ```powershell
-  # Windows (PowerShell / CMD)
-  Set-Location C:\xampp\htdocs\aether
-  npm install
-  npm run build
+- **Cause**: The compiled frontend asset directory `public/build/` is gitignored.
+- **Solution**: Run `npm install && npm run build` to compile frontend CSS and JavaScript assets.
 
-  # Linux (Ubuntu / Debian / CentOS)
-  cd /var/www/aether
-  npm install && npm run build
-  ```
-  *(Requires [Node.js & npm](https://nodejs.org/); if you do not have Node.js installed, download it or install via your OS package manager)*.
-
-### 4. Blank or Unstyled Pages / Missing CSS
-- **Cause**: Pre-built Vite assets in `public/build/` are missing or outdated.
-- **Solution**:
-  ```bash
-  npm install
-  npm run build
-  ```
+### 4. `No application encryption key has been specified`
+- **Cause**: The application is missing its `.env` configuration file or security key.
+- **Solution**: Run `copy .env.example .env` (or `cp .env.example .env`) and `php artisan key:generate`.
 
 ### 5. `Call to undefined function ...` or Missing PHP Extension
 - **Cause**: Required PHP modules are disabled in `php.ini`.
-- **Solution**: Ensure `extension=pdo_mysql`, `extension=mbstring`, `extension=openssl`, `extension=curl`, `extension=fileinfo`, `extension=gd`, and `extension=zip` are active (uncommented) in `php.ini`, then restart your web server (Apache/Nginx).
+- **Solution**: Ensure `extension=pdo_mysql`, `extension=mbstring`, `extension=openssl`, `extension=curl`, `extension=fileinfo`, `extension=gd`, and `extension=zip` are active (uncommented) in `php.ini`, then restart your web server.
 
 ---
 

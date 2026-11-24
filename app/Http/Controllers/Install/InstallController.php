@@ -44,6 +44,16 @@ class InstallController extends Controller
             'ro_emulator' => config('emulator.driver', 'rathena'),
             'ro_renewal' => (bool)config('emulator.renewal', true),
             'ro_password_hash' => config('emulator.hash', 'plain'),
+            'ro_login_ip' => config('emulator.servers.login.host', '127.0.0.1'),
+            'ro_login_port' => (int) config('emulator.servers.login.port', 6900),
+            'ro_char_ip' => config('emulator.servers.char.host', '127.0.0.1'),
+            'ro_char_port' => (int) config('emulator.servers.char.port', 6121),
+            'ro_map_ip' => config('emulator.servers.map.host', '127.0.0.1'),
+            'ro_map_port' => (int) config('emulator.servers.map.port', 5121),
+            'ro_rate_base' => config('aether.rates.base', '1000x'),
+            'ro_rate_job' => config('aether.rates.job', '1000x'),
+            'ro_rate_drop' => config('aether.rates.drop', '100x'),
+            'ro_max_level' => (int) config('aether.rates.max_base_level', 260),
         ];
 
         return view('install.index', [
@@ -208,7 +218,17 @@ class InstallController extends Controller
             'ro_db_password' => 'nullable|string',
             'ro_emulator' => 'required|in:rathena,hercules',
             'ro_renewal' => 'required|boolean',
-            'ro_password_hash' => 'required|in:plain,md5,sha256',
+            'ro_password_hash' => 'required|in:plain,md5,sha256,bcrypt',
+            'ro_login_ip' => 'nullable|string',
+            'ro_login_port' => 'nullable|integer|between:1,65535',
+            'ro_char_ip' => 'nullable|string',
+            'ro_char_port' => 'nullable|integer|between:1,65535',
+            'ro_map_ip' => 'nullable|string',
+            'ro_map_port' => 'nullable|integer|between:1,65535',
+            'ro_rate_base' => 'nullable|string|max:20',
+            'ro_rate_job' => 'nullable|string|max:20',
+            'ro_rate_drop' => 'nullable|string|max:20',
+            'ro_max_level' => 'nullable|integer|min:1|max:999',
         ]);
 
         // Pre-validate database connectivity before writing configuration
@@ -268,6 +288,16 @@ class InstallController extends Controller
                 'RO_EMULATOR' => $validated['ro_emulator'],
                 'RO_RENEWAL' => $validated['ro_renewal'] ? 'true' : 'false',
                 'RO_PASSWORD_HASH' => $validated['ro_password_hash'],
+                'RO_LOGIN_IP' => $validated['ro_login_ip'] ?? '127.0.0.1',
+                'RO_LOGIN_PORT' => $validated['ro_login_port'] ?? 6900,
+                'RO_CHAR_IP' => $validated['ro_char_ip'] ?? '127.0.0.1',
+                'RO_CHAR_PORT' => $validated['ro_char_port'] ?? 6121,
+                'RO_MAP_IP' => $validated['ro_map_ip'] ?? '127.0.0.1',
+                'RO_MAP_PORT' => $validated['ro_map_port'] ?? 5121,
+                'RO_RATE_BASE' => '"' . ($validated['ro_rate_base'] ?? '1000x') . '"',
+                'RO_RATE_JOB' => '"' . ($validated['ro_rate_job'] ?? '1000x') . '"',
+                'RO_RATE_DROP' => '"' . ($validated['ro_rate_drop'] ?? '100x') . '"',
+                'RO_MAX_BASE_LEVEL' => $validated['ro_max_level'] ?? 260,
             ];
 
             $this->updateEnvFile($envPath, $envUpdates);
@@ -308,8 +338,20 @@ class InstallController extends Controller
                 ]);
             }
 
-            // Update site setting for server name
+            // Update site settings
             SiteSetting::set('server_name', $validated['server_name']);
+            if (!empty($validated['ro_rate_base'])) {
+                SiteSetting::set('base_rate', $validated['ro_rate_base']);
+            }
+            if (!empty($validated['ro_rate_job'])) {
+                SiteSetting::set('job_rate', $validated['ro_rate_job']);
+            }
+            if (!empty($validated['ro_rate_drop'])) {
+                SiteSetting::set('drop_rate', $validated['ro_rate_drop']);
+            }
+            if (!empty($validated['ro_max_level'])) {
+                SiteSetting::set('max_base_level', (string) $validated['ro_max_level']);
+            }
 
             return response()->json([
                 'success' => true,
@@ -319,7 +361,173 @@ class InstallController extends Controller
         } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Setup failed: ' . $e->getMessage(),
+                'message' => 'Automated migration failed: ' . $e->getMessage() . '. If your server restricts CLI/exec processes (common on cPanel), you can import the provided SQL files directly via phpMyAdmin.',
+                'cpanel_fallback' => true,
+            ], 500);
+        }
+    }
+
+    /**
+     * Download SQL dump files for manual phpMyAdmin import (cPanel support).
+     */
+    public function downloadSql(string $type)
+    {
+        $file = match ($type) {
+            'schema' => base_path('database/sql/aether_schema.sql'),
+            'seeders' => base_path('database/sql/aether_seeders.sql'),
+            default => null,
+        };
+
+        if (!$file || !File::exists($file)) {
+            abort(404, 'SQL file not found.');
+        }
+
+        return response()->download($file, basename($file), [
+            'Content-Type' => 'application/sql',
+        ]);
+    }
+
+    /**
+     * API: Save .env settings and verify manually imported tables in phpMyAdmin (cPanel mode).
+     */
+    public function verifyManualSql(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'app_name' => 'required|string|min:2|max:50',
+            'app_url' => 'required|string|url',
+            'server_name' => 'required|string|min:2|max:50',
+            'db_host' => 'required|string',
+            'db_port' => 'required|integer|between:1,65535',
+            'db_database' => 'required|string|min:1',
+            'db_username' => 'required|string|min:1',
+            'db_password' => 'nullable|string',
+            'ro_db_host' => 'required|string',
+            'ro_db_port' => 'required|integer|between:1,65535',
+            'ro_db_database' => 'required|string|min:1',
+            'ro_db_username' => 'required|string|min:1',
+            'ro_db_password' => 'nullable|string',
+            'ro_emulator' => 'required|in:rathena,hercules',
+            'ro_renewal' => 'required|boolean',
+            'ro_password_hash' => 'required|in:plain,md5,sha256,bcrypt',
+            'ro_login_ip' => 'nullable|string',
+            'ro_login_port' => 'nullable|integer|between:1,65535',
+            'ro_char_ip' => 'nullable|string',
+            'ro_char_port' => 'nullable|integer|between:1,65535',
+            'ro_map_ip' => 'nullable|string',
+            'ro_map_port' => 'nullable|integer|between:1,65535',
+            'ro_rate_base' => 'nullable|string|max:20',
+            'ro_rate_job' => 'nullable|string|max:20',
+            'ro_rate_drop' => 'nullable|string|max:20',
+            'ro_max_level' => 'nullable|integer|min:1|max:999',
+        ]);
+
+        try {
+            // 1. Update .env file
+            $envPath = base_path('.env');
+            if (!File::exists($envPath)) {
+                if (File::exists(base_path('.env.example'))) {
+                    File::copy(base_path('.env.example'), $envPath);
+                } else {
+                    File::put($envPath, '');
+                }
+            }
+
+            $envUpdates = [
+                'APP_NAME' => '"' . $validated['app_name'] . '"',
+                'APP_URL' => $validated['app_url'],
+                'DB_HOST' => $validated['db_host'],
+                'DB_PORT' => $validated['db_port'],
+                'DB_DATABASE' => $validated['db_database'],
+                'DB_USERNAME' => $validated['db_username'],
+                'DB_PASSWORD' => '"' . ($validated['db_password'] ?? '') . '"',
+                'RO_DB_HOST' => $validated['ro_db_host'],
+                'RO_DB_PORT' => $validated['ro_db_port'],
+                'RO_DB_DATABASE' => $validated['ro_db_database'],
+                'RO_DB_USERNAME' => $validated['ro_db_username'],
+                'RO_DB_PASSWORD' => '"' . ($validated['ro_db_password'] ?? '') . '"',
+                'RO_SERVER_NAME' => '"' . $validated['server_name'] . '"',
+                'RO_EMULATOR' => $validated['ro_emulator'],
+                'RO_RENEWAL' => $validated['ro_renewal'] ? 'true' : 'false',
+                'RO_PASSWORD_HASH' => $validated['ro_password_hash'],
+                'RO_LOGIN_IP' => $validated['ro_login_ip'] ?? '127.0.0.1',
+                'RO_LOGIN_PORT' => $validated['ro_login_port'] ?? 6900,
+                'RO_CHAR_IP' => $validated['ro_char_ip'] ?? '127.0.0.1',
+                'RO_CHAR_PORT' => $validated['ro_char_port'] ?? 6121,
+                'RO_MAP_IP' => $validated['ro_map_ip'] ?? '127.0.0.1',
+                'RO_MAP_PORT' => $validated['ro_map_port'] ?? 5121,
+                'RO_RATE_BASE' => '"' . ($validated['ro_rate_base'] ?? '1000x') . '"',
+                'RO_RATE_JOB' => '"' . ($validated['ro_rate_job'] ?? '1000x') . '"',
+                'RO_RATE_DROP' => '"' . ($validated['ro_rate_drop'] ?? '100x') . '"',
+                'RO_MAX_BASE_LEVEL' => $validated['ro_max_level'] ?? 260,
+            ];
+
+            $this->updateEnvFile($envPath, $envUpdates);
+
+            // 2. Set DB config dynamically
+            config([
+                'database.connections.mysql.host' => $validated['db_host'],
+                'database.connections.mysql.port' => $validated['db_port'],
+                'database.connections.mysql.database' => $validated['db_database'],
+                'database.connections.mysql.username' => $validated['db_username'],
+                'database.connections.mysql.password' => $validated['db_password'] ?? '',
+                'database.connections.ragnarok.host' => $validated['ro_db_host'],
+                'database.connections.ragnarok.port' => $validated['ro_db_port'],
+                'database.connections.ragnarok.database' => $validated['ro_db_database'],
+                'database.connections.ragnarok.username' => $validated['ro_db_username'],
+                'database.connections.ragnarok.password' => $validated['ro_db_password'] ?? '',
+            ]);
+            DB::purge('mysql');
+            DB::purge('ragnarok');
+
+            // 3. Verify that the essential tables exist in the database
+            $requiredTables = [
+                'users',
+                'site_settings',
+                'attendance_campaigns',
+                'attendance_campaign_days',
+                'attendance_campaign_items',
+                'player_inbox_items',
+                'badge_definitions',
+                'badge_tiers',
+            ];
+
+            $missing = [];
+            foreach ($requiredTables as $tbl) {
+                if (!Schema::connection('mysql')->hasTable($tbl)) {
+                    $missing[] = $tbl;
+                }
+            }
+
+            if (!empty($missing)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Missing database tables: ' . implode(', ', $missing) . '. Please import database/sql/aether_schema.sql and database/sql/aether_seeders.sql in phpMyAdmin first, then try again.',
+                ], 422);
+            }
+
+            // 4. Update site settings
+            SiteSetting::set('server_name', $validated['server_name']);
+            if (!empty($validated['ro_rate_base'])) {
+                SiteSetting::set('base_rate', $validated['ro_rate_base']);
+            }
+            if (!empty($validated['ro_rate_job'])) {
+                SiteSetting::set('job_rate', $validated['ro_rate_job']);
+            }
+            if (!empty($validated['ro_rate_drop'])) {
+                SiteSetting::set('drop_rate', $validated['ro_rate_drop']);
+            }
+            if (!empty($validated['ro_max_level'])) {
+                SiteSetting::set('max_base_level', (string) $validated['ro_max_level']);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Database tables and configuration verified successfully via manual phpMyAdmin import! Proceeding to Administrator Setup.',
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Verification failed: ' . $e->getMessage(),
             ], 500);
         }
     }

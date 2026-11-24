@@ -12,6 +12,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // When not installed, force session and cache to file so unmigrated database doesn't crash on sessions table
+        if (!file_exists(storage_path('installed'))) {
+            config([
+                'session.driver' => 'file',
+                'cache.default' => 'file',
+            ]);
+        }
+
         $this->app->singleton(ThemeManager::class, function () {
             return new ThemeManager();
         });
