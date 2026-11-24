@@ -81,13 +81,13 @@
     <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg">
         <form method="GET" action="{{ route('admin.faq.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             <!-- Search Query -->
-            <div class="sm:col-span-2 relative" style="position: relative;">
-                <div style="position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
-                    <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px;"></i>
+            <div class="sm:col-span-2 relative" style="position: relative; display: flex; align-items: center;">
+                <div class="search-icon-centered" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); -webkit-transform: translateY(-50%); display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10; width: 16px; height: 16px; line-height: 0;">
+                    <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px; display: block;"></i>
                 </div>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search questions, keywords, or answers..." 
-                       style="padding-left: 44px !important; padding-right: 16px !important; height: 40px;"
-                       class="w-full rounded-xl text-xs bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-all">
+                       style="width: 100%; padding-left: 44px !important; padding-right: 16px !important; height: 40px; display: block;"
+                       class="rounded-xl text-xs bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-all">
             </div>
 
             <!-- Category Filter -->

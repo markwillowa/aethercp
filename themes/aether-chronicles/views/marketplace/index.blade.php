@@ -169,13 +169,13 @@
 
                     <!-- Search Row with Dedicated Icon and Generous Left Padding -->
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                        <div class="relative flex-1" style="position: relative;">
-                            <div style="position: absolute; left: 16px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
-                                <i data-lucide="search" class="w-4 h-4 text-[#C9A96E]" style="width: 16px; height: 16px;"></i>
+                        <div class="relative flex-1" style="position: relative; display: flex; align-items: center;">
+                            <div class="search-icon-centered" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); -webkit-transform: translateY(-50%); display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10; width: 16px; height: 16px; line-height: 0;">
+                                <i data-lucide="search" class="w-4 h-4 text-[#C9A96E]" style="width: 16px; height: 16px; display: block;"></i>
                             </div>
                             <input type="text" name="q" value="{{ request('q') }}" placeholder="Search by item name or ID (e.g. Blade, Tsurugi, Poring Card)..." 
-                                   style="padding-left: 48px !important; padding-right: 1.25rem !important; height: 44px;"
-                                   class="w-full bg-[#110B17] border border-[#6B537F] rounded-xl text-xs font-medium text-[#F3E5AB] placeholder:text-[#8D7D9A] focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all shadow-inner">
+                                   style="width: 100%; padding-left: 48px !important; padding-right: 1.25rem !important; height: 44px; display: block;"
+                                   class="bg-[#110B17] border border-[#6B537F] rounded-xl text-xs font-medium text-[#F3E5AB] placeholder:text-[#8D7D9A] focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all shadow-inner">
                         </div>
 
                         <div class="flex items-center gap-2 shrink-0">

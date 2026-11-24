@@ -39,13 +39,13 @@
     <!-- Search Bar Card -->
     <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
         <form method="GET" action="{{ route('itemdb.index') }}" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <div class="sm:col-span-2 relative">
-                <div class="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                    <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
+            <div class="sm:col-span-2 relative" style="position: relative; display: flex; align-items: center;">
+                <div class="search-icon-centered" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); -webkit-transform: translateY(-50%); display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10; width: 16px; height: 16px; line-height: 0;">
+                    <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px; display: block;"></i>
                 </div>
                 <input type="text" name="q" value="{{ $keyword }}" placeholder="Search by item name or item ID..."
-                       style="padding-left: 38px !important;"
-                       class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all">
+                       style="width: 100%; padding-left: 44px !important; display: block;"
+                       class="px-4 py-2.5 bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all">
             </div>
 
             <div>

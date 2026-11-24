@@ -117,13 +117,13 @@
                 <form method="GET" action="{{ route('admin.marketplace.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <input type="hidden" name="tab" value="listings">
                     
-                    <div class="md:col-span-2 relative" style="position: relative;">
-                        <div style="position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
-                            <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px;"></i>
+                    <div class="md:col-span-2 relative" style="position: relative; display: flex; align-items: center;">
+                        <div class="search-icon-centered" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); -webkit-transform: translateY(-50%); display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10; width: 16px; height: 16px; line-height: 0;">
+                            <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px; display: block;"></i>
                         </div>
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Search listing code, seller character, or item ID..." 
-                               style="padding-left: 44px !important; padding-right: 16px !important; height: 42px;"
-                               class="w-full rounded-xl text-xs bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
+                               style="width: 100%; padding-left: 44px !important; padding-right: 16px !important; height: 42px; display: block;"
+                               class="rounded-xl text-xs bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
                     </div>
 
                     <div>
@@ -276,13 +276,13 @@
                 <form method="GET" action="{{ route('admin.marketplace.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <input type="hidden" name="tab" value="custody">
                     
-                    <div class="md:col-span-2 relative" style="position: relative;">
-                        <div style="position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
-                            <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px;"></i>
+                    <div class="md:col-span-2 relative" style="position: relative; display: flex; align-items: center;">
+                        <div class="search-icon-centered" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); -webkit-transform: translateY(-50%); display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10; width: 16px; height: 16px; line-height: 0;">
+                            <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px; display: block;"></i>
                         </div>
                         <input type="text" name="custody_search" value="{{ request('custody_search') }}" placeholder="Search item ID, account ID, or username..." 
-                               style="padding-left: 44px !important; padding-right: 16px !important; height: 42px;"
-                               class="w-full rounded-xl text-xs bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
+                               style="width: 100%; padding-left: 44px !important; padding-right: 16px !important; height: 42px; display: block;"
+                               class="rounded-xl text-xs bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
                     </div>
 
                     <div>
@@ -425,13 +425,13 @@
                 <form method="GET" action="{{ route('admin.marketplace.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <input type="hidden" name="tab" value="transactions">
                     
-                    <div class="md:col-span-2 relative" style="position: relative;">
-                        <div style="position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
-                            <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px;"></i>
+                    <div class="md:col-span-2 relative" style="position: relative; display: flex; align-items: center;">
+                        <div class="search-icon-centered" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); -webkit-transform: translateY(-50%); display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10; width: 16px; height: 16px; line-height: 0;">
+                            <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px; display: block;"></i>
                         </div>
                         <input type="text" name="tx_search" value="{{ request('tx_search') }}" placeholder="Search TX reference code, buyer character, or seller..." 
-                               style="padding-left: 44px !important; padding-right: 16px !important; height: 42px;"
-                               class="w-full rounded-xl text-xs bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
+                               style="width: 100%; padding-left: 44px !important; padding-right: 16px !important; height: 42px; display: block;"
+                               class="rounded-xl text-xs bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
                     </div>
 
                     <div>

@@ -39,9 +39,13 @@
     <!-- Search Form -->
     <div class="chronicles-panel p-4">
         <form method="GET" action="{{ route('itemdb.index') }}" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <div class="sm:col-span-2">
+            <div class="sm:col-span-2 relative" style="position: relative; display: flex; align-items: center;">
+                <div class="search-icon-centered" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); -webkit-transform: translateY(-50%); display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10; width: 16px; height: 16px; line-height: 0;">
+                    <i data-lucide="search" class="w-4 h-4 text-[#A898B5]" style="width: 16px; height: 16px; display: block;"></i>
+                </div>
                 <input type="text" name="q" value="{{ $keyword }}" placeholder="Search by item name or ID (e.g. Poring Card, 501)..."
-                       class="w-full px-3 py-2 bg-[#17121D] border border-[#5A4A68] rounded text-xs text-[#E8DCC9] focus:outline-none focus:border-[#D4AF37]">
+                       style="width: 100%; padding-left: 44px !important; height: 42px; display: block;"
+                       class="bg-[#17121D] border border-[#5A4A68] rounded-xl text-xs text-[#E8DCC9] placeholder:text-[#7A6B85] focus:outline-none focus:border-[#D4AF37]">
             </div>
 
             <div>

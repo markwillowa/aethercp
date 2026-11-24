@@ -32,6 +32,28 @@
             background-color: var(--color-theme-bg) !important;
             color: {{ !empty($currentTheme['is_light']) ? '#3A2A1C' : '#e2e8f0' }} !important;
         }
+        .search-icon-centered {
+            position: absolute;
+            left: 14px;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            -webkit-transform: translateY(-50%) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            pointer-events: none !important;
+            z-index: 10 !important;
+            line-height: 0 !important;
+            width: 16px !important;
+            height: 16px !important;
+        }
+        .search-icon-centered svg,
+        .search-icon-centered i {
+            display: block !important;
+            width: 16px !important;
+            height: 16px !important;
+            margin: 0 !important;
+        }
 
         /* =====================================================================
            AETHER CHRONICLES: GLOBAL ADMIN PANEL THEME HARMONIZATION

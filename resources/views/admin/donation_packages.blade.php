@@ -281,11 +281,14 @@
                 <!-- Live Item Search Field -->
                 <div class="relative">
                     <label class="block text-[11px] font-semibold text-slate-300 mb-1">Search &amp; Select Item from Database</label>
-                    <div class="relative">
+                    <div class="relative" style="position: relative; display: flex; align-items: center;">
+                        <div class="search-icon-centered" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); -webkit-transform: translateY(-50%); pointer-events: none; z-index: 10; line-height: 0;">
+                            <i data-lucide="search" class="w-3.5 h-3.5 text-slate-500" style="width: 14px; height: 14px; display: block;"></i>
+                        </div>
                         <input type="text" id="item_search_input" placeholder="Type item name or ID (e.g. Yggdrasil, Sword, 607)..." autocomplete="off"
                             oninput="searchDatabaseItems(this.value)"
-                            class="w-full pl-8 pr-3 py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200 placeholder-slate-600">
-                        <i data-lucide="search" class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2.5"></i>
+                            style="width: 100%; padding-left: 32px !important; padding-right: 12px !important;"
+                            class="py-2 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl text-xs text-slate-200 placeholder-slate-600">
                     </div>
 
                     <!-- Search Results Dropdown -->

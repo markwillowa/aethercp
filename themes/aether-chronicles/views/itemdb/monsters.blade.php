@@ -39,13 +39,13 @@
     <!-- Search & Filter Bar -->
     <div class="chronicles-panel p-5 shadow-lg">
         <form method="GET" action="{{ route('database.monsters') }}" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <div class="sm:col-span-2 relative">
-                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <i data-lucide="search" class="w-4 h-4 text-[#A898B5]"></i>
+            <div class="sm:col-span-2 relative" style="position: relative; display: flex; align-items: center;">
+                <div class="search-icon-centered" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); -webkit-transform: translateY(-50%); display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10; width: 16px; height: 16px; line-height: 0;">
+                    <i data-lucide="search" class="w-4 h-4 text-[#A898B5]" style="width: 16px; height: 16px; display: block;"></i>
                 </div>
                 <input type="text" name="q" value="{{ $keyword }}" placeholder="Search monster by name, ID, or element (e.g. Baphomet, Holy, 1002)..."
-                       style="padding-left: 2.75rem !important; height: 42px;"
-                       class="w-full bg-[#140E1B] border border-[#5A4A68] rounded-xl text-xs text-[#E8DCC9] placeholder:text-[#7A6B85] focus:outline-none focus:border-[#D4AF37]">
+                       style="width: 100%; padding-left: 44px !important; height: 42px; display: block;"
+                       class="bg-[#140E1B] border border-[#5A4A68] rounded-xl text-xs text-[#E8DCC9] placeholder:text-[#7A6B85] focus:outline-none focus:border-[#D4AF37]">
             </div>
 
             <div>

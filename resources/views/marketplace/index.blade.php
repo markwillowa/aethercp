@@ -169,13 +169,13 @@
                     <input type="hidden" name="tab" value="browse">
 
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                        <div class="relative flex-1" style="position: relative;">
-                            <div style="position: absolute; left: 16px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
-                                <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px;"></i>
+                        <div class="relative flex-1" style="position: relative; display: flex; align-items: center;">
+                            <div class="search-icon-centered" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); -webkit-transform: translateY(-50%); display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10; width: 16px; height: 16px; line-height: 0;">
+                                <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px; display: block;"></i>
                             </div>
                             <input type="text" name="q" value="{{ request('q') }}" placeholder="Search by item name or ID (e.g. Blade, Tsurugi, Poring Card)..." 
-                                   style="padding-left: 48px !important; padding-right: 1.25rem !important; height: 44px;"
-                                   class="w-full bg-slate-950 border border-slate-800 rounded-xl text-xs font-medium text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all shadow-inner">
+                                   style="width: 100%; padding-left: 48px !important; padding-right: 1.25rem !important; height: 44px; display: block;"
+                                   class="bg-slate-950 border border-slate-800 rounded-xl text-xs font-medium text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all shadow-inner">
                         </div>
 
                         <div class="flex items-center gap-2 shrink-0">
@@ -421,31 +421,67 @@
                         </thead>
                         <tbody class="divide-y divide-slate-800">
                             @forelse($storageItems as $sItem)
+                                @php
+                                    $sId = is_array($sItem) ? ($sItem['nameid'] ?? 0) : ($sItem->nameid ?? 0);
+                                    $sName = is_array($sItem) ? ($sItem['formatted_name'] ?? $sItem['name'] ?? "Item #{$sId}") : ($sItem->formatted_name ?? $sItem->name ?? "Item #{$sId}");
+                                    $sAmount = is_array($sItem) ? ($sItem['amount'] ?? 0) : ($sItem->amount ?? 0);
+                                    $sSlots = is_array($sItem) ? ($sItem['slots'] ?? 0) : ($sItem->slots ?? 0);
+                                    $sCards = is_array($sItem) ? ($sItem['cards'] ?? []) : ($sItem->cards ?? []);
+                                    $sTransferable = is_array($sItem) ? ($sItem['is_transferable'] ?? true) : ($sItem->is_transferable ?? true);
+                                    $sReason = is_array($sItem) ? ($sItem['restriction_reason'] ?? null) : ($sItem->restriction_reason ?? null);
+                                    $sIcon = is_array($sItem) ? ($sItem['icon_url'] ?? "https://static.divine-pride.net/images/items/item/{$sId}.png") : ($sItem->icon_url ?? "https://static.divine-pride.net/images/items/item/{$sId}.png");
+                                @endphp
                                 <tr class="hover:bg-slate-800/40 transition-colors">
                                     <td class="py-3.5 px-4">
                                         <div class="flex items-center gap-3">
                                             <div class="w-9 h-9 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
-                                                <i data-lucide="package" class="w-5 h-5 text-cyan-400"></i>
+                                                <img src="{{ $sIcon }}" alt="Item" class="w-6 h-6 object-contain" onerror="this.src='/images/item-placeholder.png'">
                                             </div>
                                             <div>
-                                                <h4 class="font-bold text-white text-xs">{{ $sItem->name_japanese ?? 'Item #' . $sItem->nameid }}</h4>
-                                                <span class="text-[10px] text-slate-500 font-mono">ID #{{ $sItem->nameid }}</span>
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <h4 class="font-bold text-white text-xs">{{ $sName }}</h4>
+                                                    @if($sSlots > 0)
+                                                        <span class="px-1.5 py-0.5 rounded text-[9px] font-bold font-mono bg-slate-800 text-cyan-300 border border-cyan-500/30">
+                                                            {{ $sSlots }} {{ Str::plural('SLOT', $sSlots) }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                @if(!empty($sCards))
+                                                    <div class="flex items-center gap-1 mt-0.5 flex-wrap">
+                                                        @foreach($sCards as $card)
+                                                            <span class="px-1.5 py-0.2 rounded text-[8px] bg-rose-950/60 border border-rose-500/40 text-rose-300">
+                                                                ◆ {{ $card['name'] }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                                <span class="text-[10px] text-slate-500 font-mono">ID #{{ $sId }}</span>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="py-3.5 px-4 text-center font-mono font-bold text-slate-200">
-                                        {{ number_format($sItem->amount) }}
+                                        {{ number_format($sAmount) }}
                                     </td>
                                     <td class="py-3.5 px-4 text-center">
-                                        <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-950 text-emerald-400 border border-emerald-500/30">
-                                            Transferable
-                                        </span>
+                                        @if($sTransferable)
+                                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-950 text-emerald-400 border border-emerald-500/30">
+                                                Transferable
+                                            </span>
+                                        @else
+                                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-950 text-rose-400 border border-rose-500/30" title="{{ $sReason ?? 'Restricted' }}">
+                                                Restricted
+                                            </span>
+                                        @endif
                                     </td>
                                     <td class="py-3.5 px-4 text-right">
-                                        <button type="button" @click="openTransferModal({{ json_encode($sItem) }})" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 cursor-pointer inline-flex items-center gap-1">
-                                            <i data-lucide="arrow-down-to-dot" class="w-3.5 h-3.5 text-cyan-400"></i>
-                                            <span>Deposit into Escrow</span>
-                                        </button>
+                                        @if($sTransferable)
+                                            <button type="button" @click="openTransferModal({{ json_encode($sItem) }})" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 cursor-pointer inline-flex items-center gap-1 transition-colors">
+                                                <i data-lucide="arrow-down-to-dot" class="w-3.5 h-3.5 text-cyan-400"></i>
+                                                <span>Deposit into Escrow</span>
+                                            </button>
+                                        @else
+                                            <span class="text-slate-500 text-xs italic">{{ $sReason ?? 'Cannot Consign' }}</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty

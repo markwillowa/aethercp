@@ -24,13 +24,13 @@
             <!-- Search Console -->
             <form action="{{ route('faq.index') }}" method="GET" class="pt-2 max-w-xl mx-auto">
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-                    <div class="relative flex-1" style="position: relative;">
-                        <div style="position: absolute; left: 16px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
-                            <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px;"></i>
+                    <div class="relative flex-1" style="position: relative; display: flex; align-items: center;">
+                        <div class="search-icon-centered" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); -webkit-transform: translateY(-50%); display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10; width: 16px; height: 16px; line-height: 0;">
+                            <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px; display: block;"></i>
                         </div>
                         <input type="text" name="q" value="{{ $searchTerm }}" placeholder="Search questions, keywords, commands (e.g. rates, patcher, accounts)..." 
-                               style="height: 46px; padding-left: 48px !important; padding-right: 16px !important;"
-                               class="w-full bg-slate-950 border border-slate-700/80 rounded-xl text-slate-100 placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all shadow-inner">
+                               style="width: 100%; height: 46px; padding-left: 48px !important; padding-right: 16px !important; display: block;"
+                               class="bg-slate-950 border border-slate-700/80 rounded-xl text-slate-100 placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all shadow-inner">
                     </div>
                     <button type="submit" 
                             style="height: 46px; padding: 0 24px;"
