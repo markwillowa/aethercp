@@ -44,7 +44,7 @@
     @endif
 
     <!-- Database Stats Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 backdrop-blur-md flex items-center justify-between">
             <div>
                 <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Official Item DB (item_db)</span>
@@ -67,10 +67,20 @@
 
         <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 backdrop-blur-md flex items-center justify-between">
             <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Server Tables Available</span>
+                <div class="text-2xl font-black text-purple-400 mt-1">{{ number_format($totalTablesCount) }} <span class="text-xs font-normal text-slate-400">tables</span></div>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                <i data-lucide="layers" class="w-5 h-5"></i>
+            </div>
+        </div>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 backdrop-blur-md flex items-center justify-between">
+            <div>
                 <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Database Engine</span>
                 <div class="text-sm font-bold text-emerald-400 mt-1.5 flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <span>Dual-DB Connected</span>
+                    <span>{{ $databaseName }}</span>
                 </div>
             </div>
             <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
@@ -166,14 +176,67 @@
             </div>
 
             <!-- Target Table & Ingestion Mode -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-800/80">
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">2. Target Table</label>
-                    <select name="target_table" class="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl text-xs text-slate-200">
-                        <option value="item_db" selected>Official Item Database (`item_db`)</option>
-                        <option value="item_db2">Custom Server Items (`item_db2`)</option>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-800/80"
+                 x-data="{ 
+                     search: '', 
+                     selectedTable: 'item_db',
+                     filterTables() {
+                         const q = this.search.toLowerCase().trim();
+                         const select = document.getElementById('target_table_select');
+                         if (!select) return;
+                         let options = select.querySelectorAll('option');
+                         options.forEach(opt => {
+                             if (!q) {
+                                 opt.hidden = false;
+                             } else {
+                                 opt.hidden = !opt.value.toLowerCase().includes(q) && !opt.text.toLowerCase().includes(q);
+                             }
+                         });
+                     }
+                 }">
+                <div class="space-y-1.5">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                            2. Target Table
+                        </label>
+                        <span class="text-[10px] text-cyan-400 font-mono">{{ $totalTablesCount ?? count($availableTables) }} server tables</span>
+                    </div>
+
+                    <div class="relative">
+                        <input type="text" x-model="search" @input="filterTables()" placeholder="Filter table name (e.g. item, mob, char)..."
+                               class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-300 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500">
+                    </div>
+
+                    <select id="target_table_select" name="target_table" x-model="selectedTable" 
+                            class="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl text-xs text-slate-200 font-mono">
+                        <optgroup label="⭐ Recommended Database Tables">
+                            @php
+                                $recommended = ['item_db', 'item_db2', 'item_db_re', 'item_db2_re', 'mob_db', 'mob_db2'];
+                                $tblNames = array_column($availableTables, 'name');
+                            @endphp
+                            @foreach($recommended as $rec)
+                                @if(in_array($rec, $tblNames))
+                                    @php
+                                        $match = collect($availableTables)->firstWhere('name', $rec);
+                                    @endphp
+                                    <option value="{{ $rec }}" {{ $rec === 'item_db' ? 'selected' : '' }}>
+                                        {{ $rec }} ({{ number_format($match['rows'] ?? 0) }} rows)
+                                    </option>
+                                @endif
+                            @endforeach
+                        </optgroup>
+                        <optgroup label="📋 All Server Database Tables ({{ $totalTablesCount ?? count($availableTables) }})">
+                            @foreach($availableTables as $tbl)
+                                <option value="{{ $tbl['name'] }}">
+                                    {{ $tbl['name'] }} ({{ number_format($tbl['rows']) }} rows)
+                                </option>
+                            @endforeach
+                        </optgroup>
                     </select>
-                    <span class="text-[10px] text-slate-500 mt-1 block">Choose `item_db2` for custom server items to keep official items untouched.</span>
+                    <div class="flex items-center justify-between text-[10px] text-slate-500 pt-0.5">
+                        <span>Database: <strong class="text-slate-400 font-mono">{{ $databaseName ?? 'ragnarok' }}</strong></span>
+                        <span>Selected: <strong class="text-cyan-400 font-mono" x-text="selectedTable">item_db</strong></span>
+                    </div>
                 </div>
 
                 <div>

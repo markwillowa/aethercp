@@ -307,4 +307,26 @@ YAML;
         $response->assertSessionHas('success');
         $this->assertEquals(2, DB::connection('ragnarok')->table('item_db')->count());
     }
+
+    public function test_admin_can_import_into_any_available_server_table(): void
+    {
+        // Dynamically create a custom target table in ragnarok connection
+        Schema::connection('ragnarok')->create('custom_item_db', function ($table) {
+            $table->increments('id');
+            $table->string('name_aegis', 50)->default('');
+            $table->string('name_english', 100)->default('');
+            $table->string('type', 20)->nullable();
+        });
+
+        $response = $this->actingAs($this->admin)->post('/admin/importer', [
+            'source_type' => 'path',
+            'target_table' => 'custom_item_db',
+            'mode' => 'upsert',
+            'file_path' => $this->sampleYamlFile,
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+        $this->assertEquals(2, DB::connection('ragnarok')->table('custom_item_db')->count());
+    }
 }

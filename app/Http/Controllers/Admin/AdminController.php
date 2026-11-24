@@ -283,6 +283,8 @@ class AdminController extends Controller
         $itemDbCount = 0;
         $itemDb2Count = 0;
         $tableExists = false;
+        $availableTables = [];
+        $databaseName = config('database.connections.ragnarok.database', 'ragnarok');
 
         try {
             if (\Illuminate\Support\Facades\Schema::connection('ragnarok')->hasTable('item_db')) {
@@ -292,9 +294,53 @@ class AdminController extends Controller
             if (\Illuminate\Support\Facades\Schema::connection('ragnarok')->hasTable('item_db2')) {
                 $itemDb2Count = \Illuminate\Support\Facades\DB::connection('ragnarok')->table('item_db2')->count();
             }
+
+            $dbName = \Illuminate\Support\Facades\DB::connection('ragnarok')->getDatabaseName();
+            if ($dbName) {
+                $databaseName = $dbName;
+            }
+
+            // Query all available tables on the server connection with approximate row counts
+            $rawTables = \Illuminate\Support\Facades\DB::connection('ragnarok')->select("
+                SELECT TABLE_NAME as name, TABLE_ROWS as row_count 
+                FROM information_schema.TABLES 
+                WHERE TABLE_SCHEMA = ? 
+                ORDER BY TABLE_NAME ASC
+            ", [$databaseName]);
+
+            foreach ($rawTables as $r) {
+                $availableTables[] = [
+                    'name' => $r->name,
+                    'rows' => (int) ($r->row_count ?? 0),
+                ];
+            }
         } catch (\Throwable $e) {
-            // Ignore connection error for isolated testing
+            // Fallback to Schema table listing if information_schema query fails or in testing
+            try {
+                $tableNames = \Illuminate\Support\Facades\Schema::connection('ragnarok')->getTableListing();
+                sort($tableNames);
+                foreach ($tableNames as $t) {
+                    $availableTables[] = [
+                        'name' => $t,
+                        'rows' => 0,
+                    ];
+                }
+            } catch (\Throwable $e2) {
+                $availableTables = [
+                    ['name' => 'item_db', 'rows' => 0],
+                    ['name' => 'item_db2', 'rows' => 0],
+                ];
+            }
         }
+
+        if (empty($availableTables)) {
+            $availableTables = [
+                ['name' => 'item_db', 'rows' => 0],
+                ['name' => 'item_db2', 'rows' => 0],
+            ];
+        }
+
+        $totalTablesCount = count($availableTables);
 
         // Search for known local emulator YAML paths
         $suggestedPaths = [];
@@ -318,14 +364,14 @@ class AdminController extends Controller
             }
         }
 
-        return view('admin.importer', compact('itemDbCount', 'itemDb2Count', 'tableExists', 'suggestedPaths'));
+        return view('admin.importer', compact('itemDbCount', 'itemDb2Count', 'tableExists', 'suggestedPaths', 'availableTables', 'totalTablesCount', 'databaseName'));
     }
 
     public function runImport(Request $request, \App\Services\Database\ItemDbImporter $importer)
     {
         $request->validate([
             'source_type' => 'required|in:upload,path,url',
-            'target_table' => 'required|in:item_db,item_db2',
+            'target_table' => 'required|string|regex:/^[a-zA-Z0-9_]+$/',
             'mode' => 'required|in:upsert,truncate,insert_missing',
             'yaml_file' => 'required_if:source_type,upload|file|max:51200',
             'file_path' => 'required_if:source_type,path|nullable|string',
@@ -336,6 +382,10 @@ class AdminController extends Controller
         $targetTable = $request->input('target_table');
         $mode = $request->input('mode');
         $tempFile = null;
+
+        if (!\Illuminate\Support\Facades\Schema::connection('ragnarok')->hasTable($targetTable)) {
+            return back()->with('error', "Target table [{$targetTable}] does not exist on the database server.");
+        }
 
         try {
             if ($sourceType === 'upload') {

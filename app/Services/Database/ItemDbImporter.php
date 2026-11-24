@@ -43,9 +43,8 @@ class ItemDbImporter
             throw new \InvalidArgumentException("YAML database file does not exist or is unreadable: {$filePath}");
         }
 
-        $validTables = ['item_db', 'item_db2', 'item_db_re', 'item_db2_re'];
-        if (!in_array($targetTable, $validTables, true)) {
-            $targetTable = 'item_db';
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $targetTable)) {
+            throw new \InvalidArgumentException("Invalid target table identifier: {$targetTable}");
         }
 
         $conn = DB::connection('ragnarok');
