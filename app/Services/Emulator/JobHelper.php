@@ -36,10 +36,36 @@ class JobHelper
         return 'bg-slate-800 text-slate-300 border-slate-700';
     }
 
-    public static function getSpriteUrl(int $jobId, string $sex = 'M'): string
+    public static function getSpriteUrl(int $jobId, string $sex = 'M'): ?string
     {
-        $gender = strtoupper($sex) === 'F' ? 'f' : 'm';
-        return "https://static.divine-pride.net/images/jobs/{$gender}/{$jobId}.png";
+        $localPath = public_path("images/jobs/{$jobId}.png");
+        if (file_exists($localPath)) {
+            return asset("images/jobs/{$jobId}.png");
+        }
+
+        // Map transcendent/3rd job IDs to base equivalent if specific portrait isn't generated yet
+        $fallbackMap = [
+            4011 => 10, // Whitesmith -> Blacksmith
+            4212 => 10, // Meister -> Blacksmith
+            12   => 4013, // Assassin -> Assassin Cross
+            4059 => 4013, // Guillotine Cross -> Assassin Cross
+            4213 => 4013, // Shadow Cross -> Assassin Cross
+            14   => 4015, // Crusader -> Paladin
+            4060 => 4015, // Royal Guard -> Paladin
+            4217 => 4015, // Imperial Guard -> Paladin
+            7    => 4008, // Knight -> Lord Knight
+            4054 => 4008, // Rune Knight -> Lord Knight
+            4211 => 4008, // Dragon Knight -> Lord Knight
+        ];
+
+        if (isset($fallbackMap[$jobId])) {
+            $mappedPath = public_path("images/jobs/{$fallbackMap[$jobId]}.png");
+            if (file_exists($mappedPath)) {
+                return asset("images/jobs/{$fallbackMap[$jobId]}.png");
+            }
+        }
+
+        return null;
     }
 
     public static function getEquipSlotName(int $equipMask): string

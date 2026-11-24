@@ -40,7 +40,9 @@ Route::middleware('module:guild')->group(function () {
 // Characters & Online Roster
 Route::middleware('module:character')->group(function () {
     Route::get('/characters/{name}', [\App\Http\Controllers\Public\CharacterViewController::class, 'show'])->name('characters.show');
+    Route::get('/players/{name}', [\App\Http\Controllers\Public\CharacterViewController::class, 'show'])->name('players.show');
     Route::get('/online', [\App\Http\Controllers\Public\CharacterViewController::class, 'online'])->name('characters.online');
+    Route::post('/account/characters/{charId}/privacy', [\App\Http\Controllers\Public\CharacterViewController::class, 'updatePrivacy'])->middleware('auth')->name('account.characters.privacy');
 });
 
 // War of Emperium

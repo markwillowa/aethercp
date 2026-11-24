@@ -96,6 +96,41 @@
                             </button>
                         </form>
                     </div>
+
+                    @php
+                        $cPrivacy = \App\Models\PlayerProfileSetting::forCharacter((int) $char->char_id, (int) $user->account_id);
+                    @endphp
+                    <div x-data="{ openPrivacy: false }" class="pt-2 border-t border-slate-800/60">
+                        <button type="button" @click="openPrivacy = !openPrivacy" class="w-full flex items-center justify-between text-[11px] font-semibold text-slate-400 hover:text-cyan-400 transition-colors">
+                            <span class="flex items-center gap-1.5">
+                                <i data-lucide="shield" class="w-3.5 h-3.5"></i>
+                                <span>Profile Privacy ({{ $cPrivacy->is_public ? 'Public' : 'Private' }})</span>
+                            </span>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <form x-show="openPrivacy" style="display: none;" method="POST" action="{{ route('account.characters.privacy', $char->char_id) }}" class="mt-3 space-y-2 text-[11px] bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+                            @csrf
+                            <div class="grid grid-cols-2 gap-1.5 text-slate-300">
+                                @foreach([
+                                    'is_public' => 'Public Profile',
+                                    'show_char_info' => 'Char Info',
+                                    'show_rankings' => 'Rankings',
+                                    'show_badges' => 'Badges',
+                                    'show_achievements' => 'Achievements',
+                                    'show_stats' => 'Statistics',
+                                    'show_guild' => 'Guild',
+                                    'show_last_login' => 'Last Login',
+                                ] as $pField => $pLabel)
+                                    <label class="flex items-center gap-1.5 cursor-pointer">
+                                        <input type="checkbox" name="{{ $pField }}" value="1" {{ $cPrivacy->$pField ? 'checked' : '' }} class="rounded bg-slate-900 border-slate-700 text-cyan-500">
+                                        <span>{{ $pLabel }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                            <input type="text" name="bio" value="{{ $cPrivacy->bio }}" placeholder="Short profile bio..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-white">
+                            <button type="submit" class="w-full py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold">Save Privacy</button>
+                        </form>
+                    </div>
                 </div>
             @endforeach
         </div>

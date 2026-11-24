@@ -701,4 +701,42 @@ class RankingEngineService
 
         return array_values(array_filter(array_map('intval', explode(',', $csv)), fn($v) => $v > 0));
     }
+
+    /**
+     * Retrieve a character's current positions across categories and recent ranking events.
+     */
+    public function getCharacterRankingSummary(int $charId): array
+    {
+        $positions = [];
+        foreach (['lvl', 'job', 'pvp', 'mvp'] as $cat) {
+            $board = $this->getLeaderboard($cat, 100, 1);
+            $foundRank = null;
+            foreach ($board['items'] ?? [] as $item) {
+                if ((int) ($item['char_id'] ?? 0) === $charId) {
+                    $foundRank = (int) $item['rank'];
+                    break;
+                }
+            }
+            $positions[$cat] = $foundRank;
+        }
+
+        $stats = Schema::hasTable('ranking_character_stats')
+            ? DB::table('ranking_character_stats')->where('char_id', $charId)->first()
+            : null;
+
+        $history = Schema::hasTable('ranking_events')
+            ? DB::table('ranking_events')
+                ->where('char_id', $charId)
+                ->where('status', 'processed')
+                ->orderByDesc('occurred_at')
+                ->limit(15)
+                ->get()
+            : collect();
+
+        return [
+            'positions' => $positions,
+            'stats' => $stats,
+            'history' => $history,
+        ];
+    }
 }
