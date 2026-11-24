@@ -169,9 +169,9 @@
 
                     <!-- Search Row with Dedicated Icon and Generous Left Padding -->
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                        <div class="relative flex-1">
-                            <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10 text-[#C9A96E]">
-                                <i data-lucide="search" class="w-4 h-4 text-[#C9A96E]"></i>
+                        <div class="relative flex-1" style="position: relative;">
+                            <div style="position: absolute; left: 16px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
+                                <i data-lucide="search" class="w-4 h-4 text-[#C9A96E]" style="width: 16px; height: 16px;"></i>
                             </div>
                             <input type="text" name="q" value="{{ request('q') }}" placeholder="Search by item name or ID (e.g. Blade, Tsurugi, Poring Card)..." 
                                    style="padding-left: 48px !important; padding-right: 1.25rem !important; height: 44px;"

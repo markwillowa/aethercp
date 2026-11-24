@@ -24,15 +24,26 @@ class AdminMarketplaceController extends Controller
         $activeTab = $request->query('tab', 'listings');
 
         // 1. Overview Statistics
+        $activeCount = MarketplaceListing::where('status', 'active')->where('expires_at', '>', now())->count();
+        $inCustodyCount = MarketplaceItem::where('status', 'in_custody')->count();
+        $totalItemsAll = MarketplaceItem::count();
+        $totalSalesCount = MarketplaceTransaction::where('status', 'completed')->count();
+        $zenyVolume = (int) MarketplaceTransaction::where('status', 'completed')->where('currency_type', 'zeny')->sum('gross_amount');
+        $zenyTax = (int) MarketplaceTransaction::where('status', 'completed')->where('currency_type', 'zeny')->sum('tax_amount');
+        $pointsVolume = (int) MarketplaceTransaction::where('status', 'completed')->where('currency_type', 'cashpoints')->sum('gross_amount');
+        $pointsTax = (int) MarketplaceTransaction::where('status', 'completed')->where('currency_type', 'cashpoints')->sum('tax_amount');
+
         $stats = [
-            'active_listings' => MarketplaceListing::where('status', 'active')->where('expires_at', '>', now())->count(),
-            'total_items_in_custody' => MarketplaceItem::where('status', 'in_custody')->count(),
-            'total_items_all' => MarketplaceItem::count(),
-            'total_sales_count' => MarketplaceTransaction::where('status', 'completed')->count(),
-            'zeny_volume' => (int) MarketplaceTransaction::where('status', 'completed')->where('currency_type', 'zeny')->sum('gross_amount'),
-            'zeny_tax_collected' => (int) MarketplaceTransaction::where('status', 'completed')->where('currency_type', 'zeny')->sum('tax_amount'),
-            'points_volume' => (int) MarketplaceTransaction::where('status', 'completed')->where('currency_type', 'cashpoints')->sum('gross_amount'),
-            'points_tax_collected' => (int) MarketplaceTransaction::where('status', 'completed')->where('currency_type', 'cashpoints')->sum('tax_amount'),
+            'active_listings' => $activeCount,
+            'active_listings_count' => $activeCount,
+            'total_items_in_custody' => $inCustodyCount,
+            'escrow_items_count' => $inCustodyCount,
+            'total_items_all' => $totalItemsAll,
+            'total_sales_count' => $totalSalesCount,
+            'zeny_volume' => $zenyVolume,
+            'zeny_tax_collected' => $zenyTax,
+            'points_volume' => $pointsVolume,
+            'points_tax_collected' => $pointsTax,
         ];
 
         // 2. Listings with comprehensive filters & search

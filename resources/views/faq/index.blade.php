@@ -24,9 +24,9 @@
             <!-- Search Console -->
             <form action="{{ route('faq.index') }}" method="GET" class="pt-2 max-w-xl mx-auto">
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-                    <div class="relative flex-1">
-                        <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                            <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
+                    <div class="relative flex-1" style="position: relative;">
+                        <div style="position: absolute; left: 16px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
+                            <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px;"></i>
                         </div>
                         <input type="text" name="q" value="{{ $searchTerm }}" placeholder="Search questions, keywords, commands (e.g. rates, patcher, accounts)..." 
                                style="height: 46px; padding-left: 48px !important; padding-right: 16px !important;"

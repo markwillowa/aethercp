@@ -177,4 +177,18 @@ class AdminFaqController extends Controller
 
         return back()->with('error', $result['message']);
     }
+
+    /**
+     * Toggle FAQ Published Status
+     */
+    public function toggleStatus(int $id): RedirectResponse
+    {
+        $faq = Faq::findOrFail($id);
+        $faq->status = ($faq->status === 'published') ? 'draft' : 'published';
+        $faq->save();
+
+        ActivityLog::record('faq.status', "Toggled FAQ #{$faq->id} status to {$faq->status}");
+
+        return back()->with('success', "FAQ '{$faq->question}' status changed to " . ucfirst($faq->status) . '.');
+    }
 }

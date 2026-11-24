@@ -48,8 +48,8 @@
             </div>
             <div>
                 <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Active Listings</p>
-                <h3 class="text-2xl font-bold text-white">{{ number_format($stats['active_listings_count']) }}</h3>
-                <p class="text-[10px] text-slate-400 mt-0.5">Custody Items: <span class="text-cyan-400 font-semibold">{{ number_format($stats['escrow_items_count']) }}</span></p>
+                <h3 class="text-2xl font-bold text-white">{{ number_format($stats['active_listings_count'] ?? $stats['active_listings'] ?? 0) }}</h3>
+                <p class="text-[10px] text-slate-400 mt-0.5">Custody Items: <span class="text-cyan-400 font-semibold">{{ number_format($stats['escrow_items_count'] ?? $stats['total_items_in_custody'] ?? 0) }}</span></p>
             </div>
         </div>
 
@@ -117,9 +117,9 @@
                 <form method="GET" action="{{ route('admin.marketplace.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <input type="hidden" name="tab" value="listings">
                     
-                    <div class="md:col-span-2 relative">
-                        <div class="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                            <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
+                    <div class="md:col-span-2 relative" style="position: relative;">
+                        <div style="position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
+                            <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px;"></i>
                         </div>
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Search listing code, seller character, or item ID..." 
                                style="padding-left: 44px !important; padding-right: 16px !important; height: 42px;"
@@ -276,9 +276,9 @@
                 <form method="GET" action="{{ route('admin.marketplace.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <input type="hidden" name="tab" value="custody">
                     
-                    <div class="md:col-span-2 relative">
-                        <div class="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                            <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
+                    <div class="md:col-span-2 relative" style="position: relative;">
+                        <div style="position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
+                            <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px;"></i>
                         </div>
                         <input type="text" name="custody_search" value="{{ request('custody_search') }}" placeholder="Search item ID, account ID, or username..." 
                                style="padding-left: 44px !important; padding-right: 16px !important; height: 42px;"
@@ -425,9 +425,9 @@
                 <form method="GET" action="{{ route('admin.marketplace.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <input type="hidden" name="tab" value="transactions">
                     
-                    <div class="md:col-span-2 relative">
-                        <div class="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                            <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
+                    <div class="md:col-span-2 relative" style="position: relative;">
+                        <div style="position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
+                            <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px;"></i>
                         </div>
                         <input type="text" name="tx_search" value="{{ request('tx_search') }}" placeholder="Search TX reference code, buyer character, or seller..." 
                                style="padding-left: 44px !important; padding-right: 16px !important; height: 42px;"

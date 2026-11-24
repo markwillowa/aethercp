@@ -1,5 +1,40 @@
 @extends('layouts.app')
 
+@php
+    $galleryScreenshots = [];
+    $rawGallery = \App\Models\SiteSetting::get('chronicles_gallery_data');
+    if (!empty($rawGallery)) {
+        $decoded = json_decode($rawGallery, true);
+        if (is_array($decoded) && count($decoded) > 0) {
+            $galleryScreenshots = $decoded;
+        }
+    }
+    if (empty($galleryScreenshots)) {
+        $galleryScreenshots = [
+            [
+                'title' => 'Capital City of Prontera',
+                'image' => asset('images/screenshot_prontera.jpg'),
+                'category' => 'Towns'
+            ],
+            [
+                'title' => 'War of Emperium Castle Siege',
+                'image' => asset('images/feat_woe_boss.jpg'),
+                'category' => 'WoE'
+            ],
+            [
+                'title' => 'Grand Midgard Festival',
+                'image' => asset('images/news_festival.jpg'),
+                'category' => 'Events'
+            ],
+            [
+                'title' => 'Treasure Vaults & Ancient Ruins',
+                'image' => asset('images/news_update.jpg'),
+                'category' => 'Raids'
+            ],
+        ];
+    }
+@endphp
+
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
     <!-- Hero Banner -->
@@ -224,6 +259,56 @@
                             </div>
                         </div>
                     @endforeach
+                </div>
+            </div>
+
+            <!-- Media & Screenshots Gallery Widget (Randomly changes every 15 seconds) -->
+            <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-3"
+                 x-data="{
+                     gallery: {{ json_encode($galleryScreenshots) }},
+                     activeIdx: 0,
+                     init() {
+                         if (this.gallery.length > 1) {
+                             setInterval(() => {
+                                 let next;
+                                 do {
+                                     next = Math.floor(Math.random() * this.gallery.length);
+                                 } while (next === this.activeIdx && this.gallery.length > 1);
+                                 this.activeIdx = next;
+                             }, 15000);
+                         }
+                     }
+                 }">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="image" class="w-4 h-4 text-cyan-400"></i>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-white">Media Gallery</h3>
+                    </div>
+                    <a href="{{ route('gallery.index') }}" class="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-medium">
+                        <span>View All</span>
+                        <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                    </a>
+                </div>
+
+                <div class="relative overflow-hidden rounded-xl border border-slate-800/80 bg-slate-950 group">
+                    <a href="{{ route('gallery.index') }}" class="block relative aspect-video overflow-hidden" title="Click to view Media Gallery">
+                        <img :src="gallery[activeIdx]?.image" 
+                             :alt="gallery[activeIdx]?.title"
+                             class="w-full h-full object-cover transition-all duration-700 hover:scale-105"
+                             onerror="this.src='/images/news_update.jpg'">
+                        
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent pointer-events-none"></div>
+
+                        <div class="absolute bottom-0 inset-x-0 p-3 flex items-center justify-between">
+                            <div>
+                                <span x-text="gallery[activeIdx]?.category || 'Screenshot'" class="text-[9px] font-mono font-bold uppercase tracking-wider text-cyan-400 bg-slate-900/90 px-1.5 py-0.5 rounded border border-cyan-500/30"></span>
+                                <h4 x-text="gallery[activeIdx]?.title" class="text-xs font-bold text-white mt-1 drop-shadow-sm truncate max-w-[180px]"></h4>
+                            </div>
+                            <span class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 flex items-center justify-center shrink-0 shadow">
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                            </span>
+                        </div>
+                    </a>
                 </div>
             </div>
 

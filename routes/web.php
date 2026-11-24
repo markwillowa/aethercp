@@ -240,6 +240,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::delete('/categories/{id}', [\App\Http\Controllers\Admin\AdminFaqController::class, 'destroyCategory'])->name('categories.destroy');
         Route::get('/{id}/edit', [\App\Http\Controllers\Admin\AdminFaqController::class, 'edit'])->name('edit');
         Route::put('/{id}', [\App\Http\Controllers\Admin\AdminFaqController::class, 'update'])->name('update');
+        Route::post('/{id}/toggle', [\App\Http\Controllers\Admin\AdminFaqController::class, 'toggleStatus'])->name('toggle');
         Route::delete('/{id}', [\App\Http\Controllers\Admin\AdminFaqController::class, 'destroy'])->name('destroy');
     });
 

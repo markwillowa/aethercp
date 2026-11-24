@@ -82,9 +82,9 @@
     <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg backdrop-blur">
         <form method="GET" action="{{ route('admin.support.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
             <!-- Search Query -->
-            <div class="sm:col-span-2 relative">
-                <div class="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                    <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
+            <div class="sm:col-span-2 relative" style="position: relative;">
+                <div style="position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
+                    <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px;"></i>
                 </div>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search reference, subject, player or character..." 
                        style="padding-left: 44px !important; padding-right: 16px !important; height: 42px;"

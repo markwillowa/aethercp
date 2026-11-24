@@ -81,12 +81,12 @@
     <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg">
         <form method="GET" action="{{ route('admin.faq.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             <!-- Search Query -->
-            <div class="sm:col-span-2 relative">
-                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
+            <div class="sm:col-span-2 relative" style="position: relative;">
+                <div style="position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10;">
+                    <i data-lucide="search" class="w-4 h-4 text-cyan-400" style="width: 16px; height: 16px;"></i>
                 </div>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search questions, keywords, or answers..." 
-                       style="padding-left: 2.75rem !important; padding-right: 1rem !important; height: 40px;"
+                       style="padding-left: 44px !important; padding-right: 16px !important; height: 40px;"
                        class="w-full rounded-xl text-xs bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-all">
             </div>
 
