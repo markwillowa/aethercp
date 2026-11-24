@@ -25,6 +25,14 @@
                 <a href="{{ route('itemdb.index') }}">Database</a>
                 <span class="text-[#564766]">|</span>
                 <a href="{{ route('downloads.index') }}">Downloads</a>
+                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('faq'))
+                    <span class="text-[#564766]">|</span>
+                    <a href="{{ route('faq.index') }}">FAQ</a>
+                @endif
+                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
+                    <span class="text-[#564766]">|</span>
+                    <a href="{{ route('support.index') }}">Support</a>
+                @endif
             </div>
 
             <!-- Right: Follow Us -->

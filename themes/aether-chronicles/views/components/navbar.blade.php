@@ -30,10 +30,24 @@
                     <i data-lucide="download" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
                     <span>Client Downloads</span>
                 </a>
-                <a href="{{ route('gallery.index') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
-                    <i data-lucide="image" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
-                    <span>Media &amp; Screenshots</span>
-                </a>
+                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('faq'))
+                    <a href="{{ route('faq.index') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
+                        <i data-lucide="help-circle" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                        <span>Knowledge Base &amp; FAQ</span>
+                    </a>
+                @endif
+                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
+                    <a href="{{ route('support.index') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
+                        <i data-lucide="life-buoy" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                        <span>Support Center</span>
+                    </a>
+                @endif
+                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('gallery'))
+                    <a href="{{ route('gallery.index') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
+                        <i data-lucide="image" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                        <span>Media &amp; Screenshots</span>
+                    </a>
+                @endif
                 <a href="{{ route('characters.online') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
                     <i data-lucide="users" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
                     <span>Active Adventurers</span>
@@ -111,14 +125,6 @@
             <i data-lucide="gem" class="w-3.5 h-3.5"></i>
             <span>DONATE</span>
         </a>
-
-        <!-- SUPPORT -->
-        @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
-            <a href="{{ route('support.index') }}" class="chronicles-nav-item {{ request()->routeIs('support.*') ? 'active' : '' }}">
-                <i data-lucide="life-buoy" class="w-3.5 h-3.5"></i>
-                <span>SUPPORT</span>
-            </a>
-        @endif
     </div>
 
     <!-- Far Right: Prominent Ornate Gold "Play Now" CTA Button -->

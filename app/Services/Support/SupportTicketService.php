@@ -47,33 +47,25 @@ class SupportTicketService
      */
     public function updateSettings(array $data): void
     {
-        $booleanKeys = [
-            'enabled',
-            'allow_player_replies',
-            'allow_reopen',
-            'allow_close',
-            'allow_attachments',
-            'email_notify',
+        $keys = [
+            'support_enabled',
+            'support_allow_player_replies',
+            'support_allow_reopen',
+            'support_allow_close',
+            'support_allow_attachments',
+            'support_max_attachment_size_kb',
+            'support_max_attachments_per_msg',
+            'support_allowed_extensions',
+            'support_max_open_per_account',
+            'support_default_priority',
+            'support_announcement',
+            'support_email_notify',
         ];
 
-        foreach ($booleanKeys as $bKey) {
-            $settingKey = 'support_' . $bKey;
-            $val = !empty($data[$bKey]) ? '1' : '0';
-            SiteSetting::set($settingKey, $val);
-        }
-
-        $textKeys = [
-            'max_attachment_size_kb',
-            'max_attachments_per_msg',
-            'allowed_extensions',
-            'max_open_per_account',
-            'default_priority',
-            'announcement',
-        ];
-
-        foreach ($textKeys as $tKey) {
-            if (isset($data[$tKey])) {
-                SiteSetting::set('support_' . $tKey, (string) $data[$tKey]);
+        foreach ($keys as $k) {
+            $short = str_replace('support_', '', $k);
+            if (isset($data[$short])) {
+                SiteSetting::set($k, (string) $data[$short]);
             }
         }
     }
@@ -527,3 +519,4 @@ class SupportTicketService
         }
     }
 }
+

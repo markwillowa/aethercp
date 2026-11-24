@@ -67,7 +67,9 @@ Route::middleware('module:downloads')->group(function () {
 });
 
 // Gallery & Screenshots
-Route::get('/gallery', [\App\Http\Controllers\Public\GalleryController::class, 'index'])->name('gallery.index');
+Route::middleware('module:gallery')->group(function () {
+    Route::get('/gallery', [\App\Http\Controllers\Public\GalleryController::class, 'index'])->name('gallery.index');
+});
 
 // Donations
 Route::middleware('module:donations')->group(function () {
@@ -101,6 +103,14 @@ Route::middleware(['auth', 'module:support'])->prefix('support')->name('support.
     Route::post('/tickets/{reference}/close', [\App\Http\Controllers\Public\SupportController::class, 'close'])->name('close');
     Route::post('/tickets/{reference}/reopen', [\App\Http\Controllers\Public\SupportController::class, 'reopen'])->name('reopen');
     Route::get('/tickets/{reference}/attachments/{attachmentId}', [\App\Http\Controllers\Public\SupportController::class, 'downloadAttachment'])->name('attachment');
+});
+
+// FAQ & Knowledge Base
+Route::middleware('module:faq')->prefix('faq')->name('faq.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Public\FaqController::class, 'index'])->name('index');
+    Route::get('/category/{slug}', [\App\Http\Controllers\Public\FaqController::class, 'category'])->name('category');
+    Route::get('/{slug}', [\App\Http\Controllers\Public\FaqController::class, 'show'])->name('show');
+    Route::post('/{id}/feedback', [\App\Http\Controllers\Public\FaqController::class, 'feedback'])->name('feedback');
 });
 
 // Dynamic Theme Assets Route
@@ -218,6 +228,20 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/support/tickets/{id}/reply', [\App\Http\Controllers\Admin\AdminSupportController::class, 'reply'])->name('support.reply');
     Route::post('/support/tickets/{id}/update', [\App\Http\Controllers\Admin\AdminSupportController::class, 'update'])->name('support.update');
     Route::get('/support/tickets/{id}/attachments/{attachmentId}', [\App\Http\Controllers\Admin\AdminSupportController::class, 'downloadAttachment'])->name('support.attachment');
+
+    // FAQ Management
+    Route::prefix('faq')->name('faq.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\AdminFaqController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\AdminFaqController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\AdminFaqController::class, 'store'])->name('store');
+        Route::get('/categories', [\App\Http\Controllers\Admin\AdminFaqController::class, 'categories'])->name('categories');
+        Route::post('/categories', [\App\Http\Controllers\Admin\AdminFaqController::class, 'storeCategory'])->name('categories.store');
+        Route::put('/categories/{id}', [\App\Http\Controllers\Admin\AdminFaqController::class, 'updateCategory'])->name('categories.update');
+        Route::delete('/categories/{id}', [\App\Http\Controllers\Admin\AdminFaqController::class, 'destroyCategory'])->name('categories.destroy');
+        Route::get('/{id}/edit', [\App\Http\Controllers\Admin\AdminFaqController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\AdminFaqController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\AdminFaqController::class, 'destroy'])->name('destroy');
+    });
 
     // Item Database Search for Admin Selectors
     Route::get('/items/search', [AdminController::class, 'searchItems'])->name('items.search');

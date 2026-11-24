@@ -53,11 +53,6 @@
                 <a href="{{ route('donations.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('donations.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Donations
                 </a>
-                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
-                    <a href="{{ route('support.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('support.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
-                        Support
-                    </a>
-                @endif
             </div>
 
             <!-- Right Side Auth / User Controls -->
@@ -89,6 +84,13 @@
                                 <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i>
                                 <span>My Characters</span>
                             </a>
+
+                            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
+                                <a href="{{ route('support.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                                    <i data-lucide="life-buoy" class="w-4 h-4 text-cyan-400"></i>
+                                    <span>Support Center</span>
+                                </a>
+                            @endif
 
                             @if(auth()->user()->isAdmin())
                                 <div class="border-t border-slate-800 my-1"></div>

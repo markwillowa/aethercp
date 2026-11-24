@@ -597,10 +597,20 @@
         <div class="chronicles-bottom-col">
             <h4>Quick Links</h4>
             <ul>
-                <li><a href="{{ route('downloads.index') }}">&raquo; Downloads</a></li>
-                <li><a href="{{ route('news.index') }}">&raquo; FAQ</a></li>
-                <li><a href="{{ route('donations.index') }}">&raquo; Support</a></li>
-                <li><a href="{{ route('news.index') }}">&raquo; Contact Us</a></li>
+                <li><a href="{{ route('downloads.index') }}">&raquo; Client Downloads</a></li>
+                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('faq'))
+                    <li><a href="{{ route('faq.index') }}">&raquo; Knowledge Base &amp; FAQ</a></li>
+                @endif
+                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
+                    <li><a href="{{ route('support.index') }}">&raquo; Support Center</a></li>
+                @endif
+                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('marketplace'))
+                    <li><a href="{{ route('marketplace.index') }}">&raquo; Player Marketplace</a></li>
+                @endif
+                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('gallery'))
+                    <li><a href="{{ route('gallery.index') }}">&raquo; Media Gallery</a></li>
+                @endif
+                <li><a href="{{ route('server.status') }}">&raquo; Server Status</a></li>
             </ul>
         </div>
 

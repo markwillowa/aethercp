@@ -63,15 +63,27 @@ return [
             'version' => '1.0.0',
             'enabled' => true,
         ],
+        'gallery' => [
+            'name' => 'Media & Gallery',
+            'description' => 'Screenshots, concept art, and community media gallery.',
+            'version' => '1.0.0',
+            'enabled' => false,
+        ],
         'marketplace' => [
             'name' => 'Player Marketplace',
             'description' => 'Player-to-player trade house for escrowed items using Zeny or Cash Points.',
             'version' => '1.0.0',
-            'enabled' => true,
+            'enabled' => false,
         ],
         'support' => [
             'name' => 'Support Center & Tickets',
             'description' => 'Two-way player support ticket management system with attachments and staff assignment.',
+            'version' => '1.0.0',
+            'enabled' => false,
+        ],
+        'faq' => [
+            'name' => 'FAQ & Knowledge Base',
+            'description' => 'Categorized server questions, knowledge base, search, and player feedback.',
             'version' => '1.0.0',
             'enabled' => true,
         ],

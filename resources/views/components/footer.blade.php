@@ -34,6 +34,12 @@
                     <li><a href="{{ route('rankings.index') }}" class="hover:text-cyan-400 transition-colors">Player Rankings</a></li>
                     <li><a href="{{ route('itemdb.index') }}" class="hover:text-cyan-400 transition-colors">Item Database</a></li>
                     <li><a href="{{ route('downloads.index') }}" class="hover:text-cyan-400 transition-colors">Game Downloads</a></li>
+                    @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('faq'))
+                        <li><a href="{{ route('faq.index') }}" class="hover:text-cyan-400 transition-colors">Knowledge Base &amp; FAQ</a></li>
+                    @endif
+                    @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
+                        <li><a href="{{ route('support.index') }}" class="hover:text-cyan-400 transition-colors">Support Center</a></li>
+                    @endif
                 </ul>
             </div>
 
