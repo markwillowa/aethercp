@@ -33,5 +33,10 @@ class ActivityLog extends Model
             'details' => $details,
         ]);
     }
+
+    public static function record(string $action, string $description, array $details = []): static
+    {
+        return static::log($action, $description, null, $details);
+    }
 }
 

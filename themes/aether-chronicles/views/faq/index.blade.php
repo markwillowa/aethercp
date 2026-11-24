@@ -31,7 +31,7 @@
                             <i data-lucide="search" class="w-4 h-4 text-[#C9A96E]"></i>
                         </div>
                         <input type="text" name="q" value="{{ $searchTerm }}" placeholder="Search questions, keywords, commands (e.g. rates, patcher, accounts)..." 
-                               style="width: 100%; height: 46px; padding-left: 44px !important; padding-right: 16px !important; background-color: #110B17; border: 1px solid #6B537F; border-radius: 12px; color: #F3E5AB; font-size: 13px;"
+                               style="width: 100%; height: 46px; padding-left: 48px !important; padding-right: 16px !important; background-color: #110B17; border: 1px solid #6B537F; border-radius: 12px; color: #F3E5AB; font-size: 13px;"
                                class="focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all shadow-inner placeholder:text-[#8D7D9A]">
                     </div>
                     <button type="submit" class="chronicles-btn-gold shrink-0 cursor-pointer" 

@@ -6,19 +6,19 @@
 <div class="space-y-6">
 
     <!-- Header & Action Row -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-[#1C1425] border border-[#4A3A5A] shadow-xl">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl backdrop-blur">
         <div class="flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#FCE69B] flex items-center justify-center font-bold shrink-0 shadow-inner">
-                <i data-lucide="sliders" class="w-6 h-6 text-[#FFD700]"></i>
+            <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-bold shrink-0 shadow-inner">
+                <i data-lucide="sliders" class="w-6 h-6"></i>
             </div>
             <div>
-                <h1 class="text-xl font-black text-white font-cinzel tracking-wide uppercase">Support Center Configuration</h1>
-                <p class="text-xs text-[#C8BDAA]">Control support availability, ticket reply permissions, attachment limits, and SLA policies.</p>
+                <h1 class="text-xl font-extrabold text-white tracking-wide uppercase">Support Center Configuration</h1>
+                <p class="text-xs text-slate-400">Control support availability, ticket reply permissions, attachment limits, and SLA policies.</p>
             </div>
         </div>
 
         <div class="flex items-center gap-2">
-            <a href="{{ route('admin.support.index') }}" class="px-4 py-2 rounded-xl text-xs font-cinzel font-bold bg-[#140E1B] border border-[#5A456B] text-[#FFE894] hover:bg-[#251A33] hover:text-white transition-colors flex items-center gap-2 shadow-sm">
+            <a href="{{ route('admin.support.index') }}" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 hover:text-white transition-colors flex items-center gap-2 shadow-sm">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                 <span>Back to Tickets</span>
             </a>
@@ -45,135 +45,135 @@
         @csrf
 
         <!-- Section 1: Core Availability & Permissions -->
-        <div class="rounded-2xl bg-[#1C1425] border border-[#3E2F4D] p-5 shadow-lg space-y-4">
-            <div class="flex items-center gap-2 pb-3 border-b border-[#352643]">
-                <i data-lucide="shield-check" class="w-5 h-5 text-[#D4AF37]"></i>
-                <h2 class="text-sm font-bold text-white font-cinzel uppercase tracking-wide">Core Availability &amp; Policies</h2>
+        <div class="rounded-2xl bg-slate-900/80 border border-slate-800 p-5 shadow-lg space-y-4 backdrop-blur">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-800">
+                <i data-lucide="shield-check" class="w-5 h-5 text-cyan-400"></i>
+                <h2 class="text-sm font-bold text-white uppercase tracking-wider">Core Availability &amp; Policies</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Enable Support Center -->
-                <label class="flex items-start gap-3 p-4 rounded-xl bg-[#140E1B] border border-[#352643] hover:border-[#5A456B] cursor-pointer transition-colors">
-                    <input type="checkbox" name="enabled" value="1" {{ !empty($settings['enabled']) ? 'checked' : '' }} class="mt-0.5 w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
+                <label class="flex items-start gap-3 p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 cursor-pointer transition-colors">
+                    <input type="checkbox" name="enabled" value="1" {{ !empty($settings['enabled']) ? 'checked' : '' }} class="mt-0.5 w-4 h-4 rounded border-slate-700 text-cyan-500 focus:ring-cyan-500">
                     <div>
                         <span class="text-xs font-bold text-white block">Enable Support Center</span>
-                        <span class="text-[11px] text-[#A898B5] block mt-0.5">When disabled, players will not be able to submit new tickets or view support pages.</span>
+                        <span class="text-[11px] text-slate-400 block mt-0.5">When disabled, players will not be able to submit new tickets or view support pages.</span>
                     </div>
                 </label>
 
                 <!-- Allow Player Replies -->
-                <label class="flex items-start gap-3 p-4 rounded-xl bg-[#140E1B] border border-[#352643] hover:border-[#5A456B] cursor-pointer transition-colors">
-                    <input type="checkbox" name="allow_player_replies" value="1" {{ !empty($settings['allow_player_replies']) ? 'checked' : '' }} class="mt-0.5 w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
+                <label class="flex items-start gap-3 p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 cursor-pointer transition-colors">
+                    <input type="checkbox" name="allow_player_replies" value="1" {{ !empty($settings['allow_player_replies']) ? 'checked' : '' }} class="mt-0.5 w-4 h-4 rounded border-slate-700 text-cyan-500 focus:ring-cyan-500">
                     <div>
                         <span class="text-xs font-bold text-white block">Allow Player Replies</span>
-                        <span class="text-[11px] text-[#A898B5] block mt-0.5">Permit players to send follow-up messages on their open tickets.</span>
+                        <span class="text-[11px] text-slate-400 block mt-0.5">Permit players to send follow-up messages on their open tickets.</span>
                     </div>
                 </label>
 
                 <!-- Allow Ticket Reopening -->
-                <label class="flex items-start gap-3 p-4 rounded-xl bg-[#140E1B] border border-[#352643] hover:border-[#5A456B] cursor-pointer transition-colors">
-                    <input type="checkbox" name="allow_reopen" value="1" {{ !empty($settings['allow_reopen']) ? 'checked' : '' }} class="mt-0.5 w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
+                <label class="flex items-start gap-3 p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 cursor-pointer transition-colors">
+                    <input type="checkbox" name="allow_reopen" value="1" {{ !empty($settings['allow_reopen']) ? 'checked' : '' }} class="mt-0.5 w-4 h-4 rounded border-slate-700 text-cyan-500 focus:ring-cyan-500">
                     <div>
                         <span class="text-xs font-bold text-white block">Allow Ticket Reopening</span>
-                        <span class="text-[11px] text-[#A898B5] block mt-0.5">Permit players to reopen resolved or closed tickets if they need further assistance.</span>
+                        <span class="text-[11px] text-slate-400 block mt-0.5">Permit players to reopen resolved or closed tickets if they need further assistance.</span>
                     </div>
                 </label>
 
                 <!-- Allow Player Ticket Closure -->
-                <label class="flex items-start gap-3 p-4 rounded-xl bg-[#140E1B] border border-[#352643] hover:border-[#5A456B] cursor-pointer transition-colors">
-                    <input type="checkbox" name="allow_close" value="1" {{ !empty($settings['allow_close']) ? 'checked' : '' }} class="mt-0.5 w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
+                <label class="flex items-start gap-3 p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 cursor-pointer transition-colors">
+                    <input type="checkbox" name="allow_close" value="1" {{ !empty($settings['allow_close']) ? 'checked' : '' }} class="mt-0.5 w-4 h-4 rounded border-slate-700 text-cyan-500 focus:ring-cyan-500">
                     <div>
                         <span class="text-xs font-bold text-white block">Allow Player Ticket Closure</span>
-                        <span class="text-[11px] text-[#A898B5] block mt-0.5">Permit players to close their own tickets once their issue is settled.</span>
+                        <span class="text-[11px] text-slate-400 block mt-0.5">Permit players to close their own tickets once their issue is settled.</span>
                     </div>
                 </label>
             </div>
         </div>
 
         <!-- Section 2: Ticket Capacity & Default Priority -->
-        <div class="rounded-2xl bg-[#1C1425] border border-[#3E2F4D] p-5 shadow-lg space-y-4">
-            <div class="flex items-center gap-2 pb-3 border-b border-[#352643]">
-                <i data-lucide="layers" class="w-5 h-5 text-[#D4AF37]"></i>
-                <h2 class="text-sm font-bold text-white font-cinzel uppercase tracking-wide">Capacity &amp; Priority Defaults</h2>
+        <div class="rounded-2xl bg-slate-900/80 border border-slate-800 p-5 shadow-lg space-y-4 backdrop-blur">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-800">
+                <i data-lucide="layers" class="w-5 h-5 text-cyan-400"></i>
+                <h2 class="text-sm font-bold text-white uppercase tracking-wider">Capacity &amp; Priority Defaults</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Max Open Tickets Per Account</label>
-                    <input type="number" name="max_open_per_account" value="{{ $settings['max_open_per_account'] }}" min="1" max="20" required class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37] transition-all">
-                    <p class="text-[11px] text-[#8C7B99] mt-1">Prevents ticket spamming by capping the number of unresolved tickets a player can maintain simultaneously.</p>
+                    <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider block mb-1">Max Open Tickets Per Account</label>
+                    <input type="number" name="max_open_per_account" value="{{ $settings['max_open_per_account'] }}" min="1" max="20" required class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500 transition-all">
+                    <p class="text-[11px] text-slate-400 mt-1">Prevents ticket spamming by capping the number of unresolved tickets a player can maintain simultaneously.</p>
                 </div>
 
                 <div>
-                    <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Default Ticket Priority</label>
-                    <select name="default_priority" class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37] transition-all">
+                    <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider block mb-1">Default Ticket Priority</label>
+                    <select name="default_priority" class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500 transition-all">
                         <option value="low" {{ $settings['default_priority'] === 'low' ? 'selected' : '' }}>Low</option>
                         <option value="normal" {{ $settings['default_priority'] === 'normal' ? 'selected' : '' }}>Normal</option>
                         <option value="high" {{ $settings['default_priority'] === 'high' ? 'selected' : '' }}>High</option>
                         <option value="urgent" {{ $settings['default_priority'] === 'urgent' ? 'selected' : '' }}>Urgent</option>
                     </select>
-                    <p class="text-[11px] text-[#8C7B99] mt-1">Pre-selected priority on the public ticket submission form.</p>
+                    <p class="text-[11px] text-slate-400 mt-1">Pre-selected priority on the public ticket submission form.</p>
                 </div>
             </div>
         </div>
 
         <!-- Section 3: File Attachment Governance -->
-        <div class="rounded-2xl bg-[#1C1425] border border-[#3E2F4D] p-5 shadow-lg space-y-4">
-            <div class="flex items-center gap-2 pb-3 border-b border-[#352643]">
-                <i data-lucide="paperclip" class="w-5 h-5 text-[#D4AF37]"></i>
-                <h2 class="text-sm font-bold text-white font-cinzel uppercase tracking-wide">File Attachment Governance</h2>
+        <div class="rounded-2xl bg-slate-900/80 border border-slate-800 p-5 shadow-lg space-y-4 backdrop-blur">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-800">
+                <i data-lucide="paperclip" class="w-5 h-5 text-cyan-400"></i>
+                <h2 class="text-sm font-bold text-white uppercase tracking-wider">File Attachment Governance</h2>
             </div>
 
             <div class="space-y-4">
-                <label class="flex items-start gap-3 p-4 rounded-xl bg-[#140E1B] border border-[#352643] hover:border-[#5A456B] cursor-pointer transition-colors">
-                    <input type="checkbox" name="allow_attachments" value="1" {{ !empty($settings['allow_attachments']) ? 'checked' : '' }} class="mt-0.5 w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
+                <label class="flex items-start gap-3 p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 cursor-pointer transition-colors">
+                    <input type="checkbox" name="allow_attachments" value="1" {{ !empty($settings['allow_attachments']) ? 'checked' : '' }} class="mt-0.5 w-4 h-4 rounded border-slate-700 text-cyan-500 focus:ring-cyan-500">
                     <div>
                         <span class="text-xs font-bold text-white block">Enable Attachment Uploads</span>
-                        <span class="text-[11px] text-[#A898B5] block mt-0.5">Allow players and staff to upload screenshots and supporting documents.</span>
+                        <span class="text-[11px] text-slate-400 block mt-0.5">Allow players and staff to upload screenshots and supporting documents.</span>
                     </div>
                 </label>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Max Size per File (KB)</label>
-                        <input type="number" name="max_attachment_size_kb" value="{{ $settings['max_attachment_size_kb'] }}" min="512" max="20480" required class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37] transition-all">
-                        <p class="text-[11px] text-[#8C7B99] mt-1">5120 KB = 5 MB per file upload.</p>
+                        <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider block mb-1">Max Size per File (KB)</label>
+                        <input type="number" name="max_attachment_size_kb" value="{{ $settings['max_attachment_size_kb'] }}" min="512" max="20480" required class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500 transition-all">
+                        <p class="text-[11px] text-slate-400 mt-1">5120 KB = 5 MB per file upload.</p>
                     </div>
 
                     <div>
-                        <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Max Files per Message</label>
-                        <input type="number" name="max_attachments_per_msg" value="{{ $settings['max_attachments_per_msg'] }}" min="1" max="10" required class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37] transition-all">
-                        <p class="text-[11px] text-[#8C7B99] mt-1">Allowed attachments per ticket or reply.</p>
+                        <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider block mb-1">Max Files per Message</label>
+                        <input type="number" name="max_attachments_per_msg" value="{{ $settings['max_attachments_per_msg'] }}" min="1" max="10" required class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500 transition-all">
+                        <p class="text-[11px] text-slate-400 mt-1">Allowed attachments per ticket or reply.</p>
                     </div>
 
                     <div>
-                        <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Allowed File Extensions</label>
-                        <input type="text" name="allowed_extensions" value="{{ $settings['allowed_extensions'] }}" required class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37] transition-all">
-                        <p class="text-[11px] text-[#8C7B99] mt-1">Comma-separated: jpg, jpeg, png, webp, pdf, txt</p>
+                        <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider block mb-1">Allowed File Extensions</label>
+                        <input type="text" name="allowed_extensions" value="{{ $settings['allowed_extensions'] }}" required class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500 transition-all">
+                        <p class="text-[11px] text-slate-400 mt-1">Comma-separated: jpg, jpeg, png, webp, pdf, txt</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Section 4: Public Announcement & Notification -->
-        <div class="rounded-2xl bg-[#1C1425] border border-[#3E2F4D] p-5 shadow-lg space-y-4">
-            <div class="flex items-center gap-2 pb-3 border-b border-[#352643]">
-                <i data-lucide="bell" class="w-5 h-5 text-[#D4AF37]"></i>
-                <h2 class="text-sm font-bold text-white font-cinzel uppercase tracking-wide">Player Announcements &amp; Notifications</h2>
+        <div class="rounded-2xl bg-slate-900/80 border border-slate-800 p-5 shadow-lg space-y-4 backdrop-blur">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-800">
+                <i data-lucide="bell" class="w-5 h-5 text-cyan-400"></i>
+                <h2 class="text-sm font-bold text-white uppercase tracking-wider">Player Announcements &amp; Notifications</h2>
             </div>
 
             <div class="space-y-4">
                 <div>
-                    <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Support Center Notice / Instructions Banner</label>
-                    <textarea name="announcement" rows="3" class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37] transition-all">{{ $settings['announcement'] }}</textarea>
-                    <p class="text-[11px] text-[#8C7B99] mt-1">Displayed at the top of the Player Support Center landing page.</p>
+                    <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider block mb-1">Support Center Notice / Instructions Banner</label>
+                    <textarea name="announcement" rows="3" class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500 transition-all">{{ $settings['announcement'] }}</textarea>
+                    <p class="text-[11px] text-slate-400 mt-1">Displayed at the top of the Player Support Center landing page.</p>
                 </div>
 
-                <label class="flex items-start gap-3 p-4 rounded-xl bg-[#140E1B] border border-[#352643] hover:border-[#5A456B] cursor-pointer transition-colors">
-                    <input type="checkbox" name="email_notify" value="1" {{ !empty($settings['support_email_notify']) ? 'checked' : '' }} class="mt-0.5 w-4 h-4 rounded border-[#352643] text-[#D4AF37] focus:ring-[#D4AF37]">
+                <label class="flex items-start gap-3 p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 cursor-pointer transition-colors">
+                    <input type="checkbox" name="email_notify" value="1" {{ !empty($settings['support_email_notify']) ? 'checked' : '' }} class="mt-0.5 w-4 h-4 rounded border-slate-700 text-cyan-500 focus:ring-cyan-500">
                     <div>
                         <span class="text-xs font-bold text-white block">Email Notifications for Staff</span>
-                        <span class="text-[11px] text-[#A898B5] block mt-0.5">Send alert emails to authorized support staff when new tickets or player replies arrive.</span>
+                        <span class="text-[11px] text-slate-400 block mt-0.5">Send alert emails to authorized support staff when new tickets or player replies arrive.</span>
                     </div>
                 </label>
             </div>
@@ -181,10 +181,10 @@
 
         <!-- Submit Button -->
         <div class="flex items-center justify-end gap-3 pt-2">
-            <a href="{{ route('admin.support.index') }}" class="px-5 py-2.5 rounded-xl text-xs font-cinzel font-bold bg-[#140E1B] border border-[#4A3A5A] text-[#C8BDAA] hover:text-white transition-colors">
+            <a href="{{ route('admin.support.index') }}" class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 border border-slate-700 text-slate-300 hover:text-white transition-colors">
                 Cancel
             </a>
-            <button type="submit" class="px-6 py-2.5 rounded-xl text-xs font-cinzel font-black uppercase tracking-wider bg-gradient-to-b from-[#FFE894] to-[#8C5E09] text-[#1A1202] border border-[#FFEAA5] hover:brightness-110 shadow-lg cursor-pointer flex items-center gap-2">
+            <button type="submit" class="px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-lg cursor-pointer flex items-center gap-2 transition-all">
                 <i data-lucide="check" class="w-4 h-4"></i>
                 <span>Save Configuration</span>
             </button>

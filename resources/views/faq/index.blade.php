@@ -29,7 +29,7 @@
                             <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
                         </div>
                         <input type="text" name="q" value="{{ $searchTerm }}" placeholder="Search questions, keywords, commands (e.g. rates, patcher, accounts)..." 
-                               style="height: 46px; padding-left: 44px !important; padding-right: 16px !important;"
+                               style="height: 46px; padding-left: 48px !important; padding-right: 16px !important;"
                                class="w-full bg-slate-950 border border-slate-700/80 rounded-xl text-slate-100 placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all shadow-inner">
                     </div>
                     <button type="submit" 

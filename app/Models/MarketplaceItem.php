@@ -164,7 +164,11 @@ class MarketplaceItem extends Model
         $name = $this->item_name ?: "Item #{$this->nameid}";
         $slots = $this->slots;
 
-        $slotText = $slots > 0 ? " [{$slots}]" : '';
+        if ($slots > 0 && !preg_match('/\[\d+\]$/', trim($name))) {
+            $slotText = " [{$slots}]";
+        } else {
+            $slotText = '';
+        }
 
         return $prefix . $name . $slotText;
     }

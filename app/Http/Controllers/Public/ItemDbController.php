@@ -39,50 +39,186 @@ class ItemDbController extends Controller
     }
 
     /**
-     * Monster Database Listing and Search
+     * Monster Database Listing and Search (referencing mob_db and mob_db2)
      */
     public function monsters(Request $request)
     {
         $keyword = trim((string) $request->query('q', ''));
         $category = $request->query('category', 'all');
 
-        $allMonsters = $this->getMonstersDataset();
+        $dbMonsters = [];
+        try {
+            $hasMobDb = \Illuminate\Support\Facades\Schema::connection('ragnarok')->hasTable('mob_db');
+            $hasMobDb2 = \Illuminate\Support\Facades\Schema::connection('ragnarok')->hasTable('mob_db2');
 
-        $filtered = collect($allMonsters);
+            if ($hasMobDb || $hasMobDb2) {
+                $query = null;
+                if ($hasMobDb) {
+                    $query = \Illuminate\Support\Facades\DB::connection('ragnarok')
+                        ->table('mob_db')
+                        ->select('id', 'name_aegis', 'name_english', 'level', 'hp', 'base_exp', 'job_exp', 'size', 'race', 'element', 'element_level', 'mode_mvp');
+                }
 
-        if (!empty($keyword)) {
-            $filtered = $filtered->filter(function ($m) use ($keyword) {
-                return str_contains(strtolower($m['name']), strtolower($keyword))
-                    || str_contains((string) $m['id'], $keyword)
-                    || str_contains(strtolower($m['race']), strtolower($keyword))
-                    || str_contains(strtolower($m['element']), strtolower($keyword));
-            });
+                if ($hasMobDb2) {
+                    $q2 = \Illuminate\Support\Facades\DB::connection('ragnarok')
+                        ->table('mob_db2')
+                        ->select('id', 'name_aegis', 'name_english', 'level', 'hp', 'base_exp', 'job_exp', 'size', 'race', 'element', 'element_level', 'mode_mvp');
+
+                    $query = $query ? $query->union($q2) : $q2;
+                }
+
+                if ($query) {
+                    if (!empty($keyword)) {
+                        $query->where(function ($q) use ($keyword) {
+                            $q->where('name_english', 'like', "%{$keyword}%")
+                              ->orWhere('name_aegis', 'like', "%{$keyword}%")
+                              ->orWhere('id', $keyword)
+                              ->orWhere('race', 'like', "%{$keyword}%")
+                              ->orWhere('element', 'like', "%{$keyword}%");
+                        });
+                    }
+
+                    if ($category && $category !== 'all') {
+                        if ($category === 'mvp') {
+                            $query->where('mode_mvp', 1);
+                        } elseif ($category === 'mini') {
+                            $query->where('mode_mvp', 0)->where('level', '>=', 40);
+                        } else {
+                            $query->where('race', 'like', "%{$category}%");
+                        }
+                    }
+
+                    $rows = $query->limit(80)->get();
+                    if ($rows->isNotEmpty()) {
+                        foreach ($rows as $row) {
+                            $elemStr = ucfirst($row->element ?: 'Neutral') . ($row->element_level ? " {$row->element_level}" : '');
+                            $dbMonsters[] = [
+                                'id' => (int) $row->id,
+                                'name' => $row->name_english ?: ($row->name_aegis ?: 'Monster #' . $row->id),
+                                'level' => (int) ($row->level ?? 1),
+                                'hp' => (int) ($row->hp ?? 1),
+                                'base_exp' => (int) ($row->base_exp ?? 0),
+                                'job_exp' => (int) ($row->job_exp ?? 0),
+                                'size' => ucfirst($row->size ?: 'Medium'),
+                                'race' => ucfirst($row->race ?: 'Formless'),
+                                'element' => $elemStr,
+                                'is_mvp' => (bool) ($row->mode_mvp ?? false),
+                                'is_mini' => false,
+                            ];
+                        }
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            // Ignore and fallback if database query fails or table empty
         }
 
-        if ($category && $category !== 'all') {
-            $filtered = $filtered->filter(function ($m) use ($category) {
-                if ($category === 'mvp') {
-                    return !empty($m['is_mvp']);
-                }
-                if ($category === 'mini') {
-                    return !empty($m['is_mini']);
-                }
-                return strtolower($m['race']) === strtolower($category);
-            });
-        }
+        // If database records exist in mob_db / mob_db2, use them; otherwise fallback to curated dataset
+        if (!empty($dbMonsters)) {
+            $monsters = collect($dbMonsters)->values();
+        } else {
+            $allMonsters = $this->getMonstersDataset();
+            $filtered = collect($allMonsters);
 
-        $monsters = $filtered->values();
+            if (!empty($keyword)) {
+                $filtered = $filtered->filter(function ($m) use ($keyword) {
+                    return str_contains(strtolower($m['name']), strtolower($keyword))
+                        || str_contains((string) $m['id'], $keyword)
+                        || str_contains(strtolower($m['race']), strtolower($keyword))
+                        || str_contains(strtolower($m['element']), strtolower($keyword));
+                });
+            }
+
+            if ($category && $category !== 'all') {
+                $filtered = $filtered->filter(function ($m) use ($category) {
+                    if ($category === 'mvp') {
+                        return !empty($m['is_mvp']);
+                    }
+                    if ($category === 'mini') {
+                        return !empty($m['is_mini']);
+                    }
+                    return strtolower($m['race']) === strtolower($category);
+                });
+            }
+
+            $monsters = $filtered->values();
+        }
 
         return view('itemdb.monsters', compact('monsters', 'keyword', 'category'));
     }
 
     /**
-     * Monster Single Detail View
+     * Monster Single Detail View (from mob_db or mob_db2)
      */
     public function showMonster(int $id)
     {
-        $allMonsters = $this->getMonstersDataset();
-        $monster = collect($allMonsters)->firstWhere('id', $id);
+        $monster = null;
+
+        try {
+            $row = null;
+            if (\Illuminate\Support\Facades\Schema::connection('ragnarok')->hasTable('mob_db2')) {
+                $row = \Illuminate\Support\Facades\DB::connection('ragnarok')->table('mob_db2')->where('id', $id)->first();
+            }
+            if (!$row && \Illuminate\Support\Facades\Schema::connection('ragnarok')->hasTable('mob_db')) {
+                $row = \Illuminate\Support\Facades\DB::connection('ragnarok')->table('mob_db')->where('id', $id)->first();
+            }
+
+            if ($row) {
+                $drops = [];
+                for ($i = 1; $i <= 10; $i++) {
+                    $itemCol = "drop{$i}_item";
+                    $rateCol = "drop{$i}_rate";
+                    if (!empty($row->$itemCol)) {
+                        $rate = round(($row->$rateCol ?? 0) / 100, 2);
+                        $drops[] = [
+                            'id' => $row->$itemCol,
+                            'name' => str_replace('_', ' ', ucfirst(strtolower($row->$itemCol))),
+                            'rate' => $rate > 0 ? "{$rate}%" : '< 0.01%',
+                        ];
+                    }
+                }
+
+                for ($i = 1; $i <= 3; $i++) {
+                    $itemCol = "mvpdrop{$i}_item";
+                    $rateCol = "mvpdrop{$i}_rate";
+                    if (!empty($row->$itemCol)) {
+                        $rate = round(($row->$rateCol ?? 0) / 100, 2);
+                        $drops[] = [
+                            'id' => $row->$itemCol,
+                            'name' => '[MVP] ' . str_replace('_', ' ', ucfirst(strtolower($row->$itemCol))),
+                            'rate' => $rate > 0 ? "{$rate}%" : '< 0.01%',
+                        ];
+                    }
+                }
+
+                $elemStr = ucfirst($row->element ?: 'Neutral') . ($row->element_level ? " {$row->element_level}" : '');
+
+                $monster = [
+                    'id' => (int) $row->id,
+                    'name' => $row->name_english ?: ($row->name_aegis ?: 'Monster #' . $row->id),
+                    'level' => (int) ($row->level ?? 1),
+                    'hp' => (int) ($row->hp ?? 1),
+                    'base_exp' => (int) ($row->base_exp ?? 0),
+                    'job_exp' => (int) ($row->job_exp ?? 0),
+                    'size' => ucfirst($row->size ?: 'Medium'),
+                    'race' => ucfirst($row->race ?: 'Formless'),
+                    'element' => $elemStr,
+                    'is_mvp' => (bool) ($row->mode_mvp ?? false),
+                    'is_mini' => false,
+                    'drops' => $drops,
+                    'maps' => [
+                        ['name' => 'Midgard Fields', 'code' => 'prt_fild08', 'amount' => 'Various Spawns'],
+                    ],
+                ];
+            }
+        } catch (\Throwable $e) {
+            // Ignore error
+        }
+
+        if (!$monster) {
+            $allMonsters = $this->getMonstersDataset();
+            $monster = collect($allMonsters)->firstWhere('id', $id);
+        }
 
         if (!$monster) {
             // Generate standard schema for numeric ID
@@ -98,10 +234,12 @@ class ItemDbController extends Controller
                 'element' => 'Neutral 1',
                 'is_mvp' => false,
                 'drops' => [
-                    ['name' => 'Jellopy', 'rate' => '50%'],
-                    ['name' => 'Monster Card', 'rate' => '0.05%'],
+                    ['id' => '909', 'name' => 'Jellopy', 'rate' => '50%'],
+                    ['id' => '4001', 'name' => 'Monster Card', 'rate' => '0.05%'],
                 ],
-                'maps' => ['prt_fild08', 'gef_fild04'],
+                'maps' => [
+                    ['name' => 'Midgard Fields', 'code' => 'prt_fild08', 'amount' => 'Various Spawns'],
+                ],
             ];
         }
 

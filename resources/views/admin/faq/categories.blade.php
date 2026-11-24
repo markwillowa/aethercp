@@ -14,23 +14,23 @@
 }">
 
     <!-- Header & Action Row -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-[#1C1425] border border-[#4A3A5A] shadow-xl">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl">
         <div class="flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#FCE69B] flex items-center justify-center font-bold shrink-0 shadow-inner">
-                <i data-lucide="folder" class="w-6 h-6 text-[#FFD700]"></i>
+            <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-bold shrink-0 shadow-inner">
+                <i data-lucide="folder" class="w-6 h-6 text-cyan-400"></i>
             </div>
             <div>
-                <h1 class="text-xl font-black text-white font-cinzel tracking-wide uppercase">FAQ Categories</h1>
-                <p class="text-xs text-[#C8BDAA]">Organize your server knowledge base into logical browsing sections.</p>
+                <h1 class="text-xl font-bold text-white tracking-wide uppercase">FAQ Categories</h1>
+                <p class="text-xs text-slate-400">Organize your server knowledge base into logical browsing sections.</p>
             </div>
         </div>
 
         <div class="flex items-center gap-2">
-            <a href="{{ route('admin.faq.index') }}" class="px-4 py-2 rounded-xl text-xs font-cinzel font-bold bg-[#140E1B] border border-[#5A456B] text-[#FFE894] hover:bg-[#251A33] hover:text-white transition-colors flex items-center gap-2 shadow-sm">
+            <a href="{{ route('admin.faq.index') }}" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 hover:text-white transition-colors flex items-center gap-2 shadow-sm">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                 <span>Back to FAQs</span>
             </a>
-            <button type="button" @click="createModal = true" class="chronicles-btn-gold py-2 px-4 text-xs font-cinzel font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md cursor-pointer">
+            <button type="button" @click="createModal = true" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold py-2 px-4 rounded-xl text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md cursor-pointer transition-all">
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 <span>Add Category</span>
             </button>
@@ -53,77 +53,71 @@
     @endif
 
     <!-- Categories Table -->
-    <div class="rounded-2xl bg-[#1C1425] border border-[#3E2F4D] overflow-hidden shadow-xl">
+    <div class="rounded-2xl bg-slate-900/80 border border-slate-800 overflow-hidden shadow-xl">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse">
                 <thead>
-                    <tr class="border-b border-[#352643] bg-[#140E1B]/80 font-cinzel text-[11px] text-[#D4AF37] uppercase tracking-wider">
-                        <th class="p-3.5 pl-4">Category Name</th>
-                        <th class="p-3.5">Slug</th>
-                        <th class="p-3.5 text-center">Icon</th>
-                        <th class="p-3.5 text-center">Sort Order</th>
-                        <th class="p-3.5 text-center">Status</th>
-                        <th class="p-3.5 text-center">Questions</th>
-                        <th class="p-3.5 pr-4 text-right">Actions</th>
+                    <tr class="border-b border-slate-800 bg-slate-950/80 text-[11px] text-slate-400 uppercase tracking-wider font-semibold">
+                        <th class="py-3 px-4">Icon</th>
+                        <th class="py-3 px-4">Name &amp; Slug</th>
+                        <th class="py-3 px-4">Description</th>
+                        <th class="py-3 px-4 text-center">Questions</th>
+                        <th class="py-3 px-4 text-center">Sort Order</th>
+                        <th class="py-3 px-4 text-center">Status</th>
+                        <th class="py-3 px-4 text-right">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-[#2B1D38]">
+                <tbody class="divide-y divide-slate-800">
                     @forelse($categories as $cat)
-                        <tr class="hover:bg-[#231830] transition-colors">
-                            <!-- Name & Description -->
-                            <td class="p-3.5 pl-4 max-w-sm">
-                                <span class="font-bold text-white block">{{ $cat->name }}</span>
-                                <span class="text-[11px] text-[#A898B5] block mt-0.5 truncate">{{ $cat->description ?: 'No description provided' }}</span>
-                            </td>
-
-                            <!-- Slug -->
-                            <td class="p-3.5 font-mono text-[11px] text-[#D4AF37]">
-                                {{ $cat->slug }}
-                            </td>
-
+                        <tr class="hover:bg-slate-800/40 transition-colors group">
                             <!-- Icon -->
-                            <td class="p-3.5 text-center">
-                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-[#251A33] border border-[#4A3A5A] text-[#FFE894]">
+                            <td class="py-3 px-4 w-12 text-center">
+                                <div class="w-8 h-8 rounded-lg bg-cyan-950/40 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mx-auto">
                                     <i data-lucide="{{ $cat->icon ?: 'folder' }}" class="w-4 h-4"></i>
+                                </div>
+                            </td>
+
+                            <!-- Name & Slug -->
+                            <td class="py-3 px-4 whitespace-nowrap">
+                                <span class="font-bold text-white block">{{ $cat->name }}</span>
+                                <span class="font-mono text-[10px] text-cyan-400">/faq/category/{{ $cat->slug }}</span>
+                            </td>
+
+                            <!-- Description -->
+                            <td class="py-3 px-4 max-w-xs text-slate-400 truncate">
+                                {{ $cat->description ?: '—' }}
+                            </td>
+
+                            <!-- Question Count -->
+                            <td class="py-3 px-4 text-center whitespace-nowrap">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-800 text-slate-300">
+                                    {{ $cat->faqs_count }}
                                 </span>
                             </td>
 
                             <!-- Sort Order -->
-                            <td class="p-3.5 text-center font-mono text-white">
+                            <td class="py-3 px-4 text-center font-mono text-slate-400 whitespace-nowrap">
                                 {{ $cat->sort_order }}
                             </td>
 
                             <!-- Status -->
-                            <td class="p-3.5 text-center">
-                                @if($cat->is_active)
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-950/70 text-emerald-300 border border-emerald-500/40">
-                                        Active
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-800 text-slate-400 border border-slate-700">
-                                        Hidden
-                                    </span>
-                                @endif
-                            </td>
-
-                            <!-- Question Count -->
-                            <td class="p-3.5 text-center font-mono font-bold text-[#FFD700]">
-                                {{ $cat->faqs_count }}
+                            <td class="py-3 px-4 text-center whitespace-nowrap">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $cat->is_active ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-500' }}">
+                                    {{ $cat->is_active ? 'Active' : 'Hidden' }}
+                                </span>
                             </td>
 
                             <!-- Actions -->
-                            <td class="p-3.5 pr-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <button type="button" @click="openEdit({{ $cat->toJson() }})" class="p-1.5 rounded-lg text-cyan-400 hover:text-cyan-300 hover:bg-[#251A33] transition-colors cursor-pointer" title="Edit Category">
-                                        <i data-lucide="edit-3" class="w-4 h-4"></i>
+                            <td class="py-3 px-4 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <button type="button" @click="openEdit({{ $cat->toJson() }})" class="p-1.5 rounded-lg bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-500/30 transition-colors cursor-pointer" title="Edit Category">
+                                        <i data-lucide="edit" class="w-3.5 h-3.5"></i>
                                     </button>
-
-                                    <!-- Delete Category Form -->
-                                    <form method="POST" action="{{ route('admin.faq.categories.destroy', $cat->id) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete category \'{{ $cat->name }}\'?');">
+                                    <form action="{{ route('admin.faq.categories.destroy', $cat->id) }}" method="POST" onsubmit="return confirm('Delete category {{ $cat->name }}? All related FAQs will need reassignment.');" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="p-1.5 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 transition-colors cursor-pointer" title="Delete Category">
-                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        <button type="submit" class="p-1.5 rounded-lg bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-500/30 transition-colors cursor-pointer" title="Delete Category">
+                                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                         </button>
                                     </form>
                                 </div>
@@ -131,9 +125,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="p-8 text-center text-[#8C7B99]">
-                                <i data-lucide="folder-x" class="w-10 h-10 mx-auto text-[#5A456B] mb-2"></i>
-                                <p class="text-sm font-bold text-white">No categories created</p>
+                            <td colspan="7" class="text-center py-10 text-slate-500">
+                                <p class="text-sm font-semibold text-slate-400">No categories created yet.</p>
+                                <p class="text-xs text-slate-600 mt-0.5">Click "Add Category" to create your first knowledge base section.</p>
                             </td>
                         </tr>
                     @endforelse
@@ -143,99 +137,89 @@
     </div>
 
     <!-- Create Category Modal -->
-    <div x-show="createModal" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" style="display: none;">
-        <div @click.away="createModal = false" class="rounded-2xl bg-[#1C1425] border-2 border-[#5A456B] p-6 max-w-lg w-full space-y-4 shadow-2xl">
-            <div class="flex items-center justify-between pb-3 border-b border-[#352643]">
-                <h3 class="text-sm font-bold text-white font-cinzel uppercase tracking-wide flex items-center gap-2">
-                    <i data-lucide="folder-plus" class="w-4 h-4 text-[#D4AF37]"></i>
-                    <span>Add FAQ Category</span>
-                </h3>
-                <button type="button" @click="createModal = false" class="text-slate-400 hover:text-white cursor-pointer">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+    <div x-show="createModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl" @click.away="createModal = false">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide">Add New Category</h3>
+                <button type="button" @click="createModal = false" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
 
-            <form action="{{ route('admin.faq.categories.store') }}" method="POST" class="space-y-4">
+            <form action="{{ route('admin.faq.categories.store') }}" method="POST" class="space-y-4 text-xs">
                 @csrf
                 <div>
-                    <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Category Name *</label>
-                    <input type="text" name="name" required placeholder="e.g. Account Security" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                    <label class="block text-slate-300 font-semibold mb-1">Category Name *</label>
+                    <input type="text" name="name" required placeholder="e.g. Account & Security" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500">
                 </div>
-
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1">Description</label>
+                    <textarea name="description" rows="2" placeholder="Brief summary of topics in this category..." class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500"></textarea>
+                </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Lucide Icon</label>
-                        <input type="text" name="icon" value="help-circle" placeholder="e.g. user-check, swords, gem" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                        <label class="block text-slate-300 font-semibold mb-1">Lucide Icon Name</label>
+                        <input type="text" name="icon" value="folder" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500">
                     </div>
                     <div>
-                        <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Sort Order</label>
-                        <input type="number" name="sort_order" value="0" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                        <label class="block text-slate-300 font-semibold mb-1">Sort Order</label>
+                        <input type="number" name="sort_order" value="0" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500">
                     </div>
                 </div>
-
-                <div>
-                    <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Short Description</label>
-                    <textarea name="description" rows="2" placeholder="Brief summary of topics in this category..." class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]"></textarea>
-                </div>
-
-                <div class="flex items-center gap-2 pt-1">
-                    <input type="checkbox" name="is_active" value="1" checked id="create_active" class="w-4 h-4 rounded border-[#352643] text-[#D4AF37]">
-                    <label for="create_active" class="text-xs font-bold text-white cursor-pointer">Active (Visible to Players)</label>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 pt-3 border-t border-[#352643]">
-                    <button type="button" @click="createModal = false" class="px-4 py-2 rounded-xl text-xs font-cinzel bg-[#140E1B] border border-[#4A3A5A] text-slate-300 hover:text-white cursor-pointer">Cancel</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl text-xs font-cinzel font-bold bg-[#D4AF37] hover:bg-[#FCE69B] text-black cursor-pointer shadow">Save Category</button>
+                <label class="flex items-center gap-2 cursor-pointer pt-1">
+                    <input type="checkbox" name="is_active" value="1" checked class="rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-0">
+                    <span class="text-slate-300 font-medium">Visible to Players</span>
+                </label>
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-800">
+                    <button type="button" @click="createModal = false" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold">Save Category</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Edit Category Modal -->
-    <div x-show="editModal" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" style="display: none;">
-        <div @click.away="editModal = false" class="rounded-2xl bg-[#1C1425] border-2 border-[#5A456B] p-6 max-w-lg w-full space-y-4 shadow-2xl">
-            <div class="flex items-center justify-between pb-3 border-b border-[#352643]">
-                <h3 class="text-sm font-bold text-white font-cinzel uppercase tracking-wide flex items-center gap-2">
-                    <i data-lucide="edit-3" class="w-4 h-4 text-[#D4AF37]"></i>
-                    <span>Edit Category</span>
-                </h3>
-                <button type="button" @click="editModal = false" class="text-slate-400 hover:text-white cursor-pointer">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+    <div x-show="editModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl" @click.away="editModal = false">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide">Edit Category</h3>
+                <button type="button" @click="editModal = false" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
 
-            <form :action="'{{ url('/admin/faq/categories') }}/' + editCat.id" method="POST" class="space-y-4">
+            <form :action="'{{ url('admin/faq/categories') }}/' + editCat.id" method="POST" class="space-y-4 text-xs">
                 @csrf
                 @method('PUT')
                 <div>
-                    <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Category Name *</label>
-                    <input type="text" name="name" x-model="editCat.name" required class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                    <label class="block text-slate-300 font-semibold mb-1">Category Name *</label>
+                    <input type="text" name="name" x-model="editCat.name" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500">
                 </div>
-
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1">Slug</label>
+                    <input type="text" name="slug" x-model="editCat.slug" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1">Description</label>
+                    <textarea name="description" rows="2" x-model="editCat.description" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500"></textarea>
+                </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Lucide Icon</label>
-                        <input type="text" name="icon" x-model="editCat.icon" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                        <label class="block text-slate-300 font-semibold mb-1">Lucide Icon Name</label>
+                        <input type="text" name="icon" x-model="editCat.icon" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500">
                     </div>
                     <div>
-                        <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Sort Order</label>
-                        <input type="number" name="sort_order" x-model.number="editCat.sort_order" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]">
+                        <label class="block text-slate-300 font-semibold mb-1">Sort Order</label>
+                        <input type="number" name="sort_order" x-model="editCat.sort_order" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500">
                     </div>
                 </div>
-
-                <div>
-                    <label class="text-xs font-bold text-[#E5B358] uppercase tracking-wider block mb-1 font-cinzel">Short Description</label>
-                    <textarea name="description" x-model="editCat.description" rows="2" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#4A3A5A] text-white focus:outline-none focus:border-[#D4AF37]"></textarea>
-                </div>
-
-                <div class="flex items-center gap-2 pt-1">
-                    <input type="checkbox" name="is_active" value="1" :checked="editCat.is_active" id="edit_active" class="w-4 h-4 rounded border-[#352643] text-[#D4AF37]">
-                    <label for="edit_active" class="text-xs font-bold text-white cursor-pointer">Active (Visible to Players)</label>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 pt-3 border-t border-[#352643]">
-                    <button type="button" @click="editModal = false" class="px-4 py-2 rounded-xl text-xs font-cinzel bg-[#140E1B] border border-[#4A3A5A] text-slate-300 hover:text-white cursor-pointer">Cancel</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl text-xs font-cinzel font-bold bg-[#D4AF37] hover:bg-[#FCE69B] text-black cursor-pointer shadow">Update Category</button>
+                <label class="flex items-center gap-2 cursor-pointer pt-1">
+                    <input type="checkbox" name="is_active" value="1" x-model="editCat.is_active" class="rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-0">
+                    <span class="text-slate-300 font-medium">Visible to Players</span>
+                </label>
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-800">
+                    <button type="button" @click="editModal = false" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold">Update Category</button>
                 </div>
             </form>
         </div>

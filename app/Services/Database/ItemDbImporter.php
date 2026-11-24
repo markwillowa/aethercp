@@ -176,6 +176,56 @@ class ItemDbImporter
             return [];
         }
 
+        // If target table is a monster table (e.g. mob_db, mob_db2) or entry has monster fields
+        if (isset($validCols['hp']) || isset($validCols['base_exp']) || isset($item['Hp'])) {
+            $record = [
+                'id' => $id,
+                'name_aegis' => (string) ($item['AegisName'] ?? ''),
+                'name_english' => (string) ($item['Name'] ?? $item['AegisName'] ?? ''),
+                'level' => isset($item['Level']) ? (int) $item['Level'] : 1,
+                'hp' => isset($item['Hp']) ? (int) $item['Hp'] : 1,
+                'sp' => isset($item['Sp']) ? (int) $item['Sp'] : 0,
+                'base_exp' => isset($item['BaseExp']) ? (int) $item['BaseExp'] : 0,
+                'job_exp' => isset($item['JobExp']) ? (int) $item['JobExp'] : 0,
+                'mvp_exp' => isset($item['MvpExp']) ? (int) $item['MvpExp'] : 0,
+                'attack' => isset($item['Attack']) ? (int) $item['Attack'] : 0,
+                'attack2' => isset($item['Attack2']) ? (int) $item['Attack2'] : 0,
+                'defense' => isset($item['Defense']) ? (int) $item['Defense'] : 0,
+                'magic_defense' => isset($item['MagicDefense']) ? (int) $item['MagicDefense'] : 0,
+                'size' => isset($item['Size']) ? (string) $item['Size'] : 'Medium',
+                'race' => isset($item['Race']) ? (string) $item['Race'] : 'Formless',
+                'element' => isset($item['Element']) ? (string) $item['Element'] : 'Neutral',
+                'element_level' => isset($item['ElementLevel']) ? (int) $item['ElementLevel'] : 1,
+                'mode_mvp' => !empty($item['Modes']['Mvp']) ? 1 : 0,
+            ];
+
+            // Map drops (up to 10)
+            if (!empty($item['Drops']) && is_array($item['Drops'])) {
+                foreach (array_values($item['Drops']) as $idx => $drop) {
+                    $num = $idx + 1;
+                    if ($num > 10) break;
+                    $record["drop{$num}_item"] = (string) ($drop['Item'] ?? '');
+                    $record["drop{$num}_rate"] = (int) ($drop['Rate'] ?? 0);
+                }
+            }
+
+            // Map MVP drops (up to 3)
+            if (!empty($item['MvpDrops']) && is_array($item['MvpDrops'])) {
+                foreach (array_values($item['MvpDrops']) as $idx => $mvpDrop) {
+                    $num = $idx + 1;
+                    if ($num > 3) break;
+                    $record["mvpdrop{$num}_item"] = (string) ($mvpDrop['Item'] ?? '');
+                    $record["mvpdrop{$num}_rate"] = (int) ($mvpDrop['Rate'] ?? 0);
+                }
+            }
+
+            return array_filter(
+                $record,
+                fn($k) => isset($validCols[$k]),
+                ARRAY_FILTER_USE_KEY
+            );
+        }
+
         $buy = isset($item['Buy']) ? (int) $item['Buy'] : null;
         $sell = isset($item['Sell']) ? (int) $item['Sell'] : ($buy !== null ? (int) floor($buy / 2) : null);
         if ($buy === null && $sell !== null) {

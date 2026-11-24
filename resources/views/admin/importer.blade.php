@@ -47,21 +47,23 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 backdrop-blur-md flex items-center justify-between">
             <div>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Official Item DB (item_db)</span>
-                <div class="text-2xl font-black text-white mt-1">{{ number_format($itemDbCount) }} <span class="text-xs font-normal text-slate-400">items</span></div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Items (item_db / item_db2)</span>
+                <div class="text-2xl font-black text-white mt-1">{{ number_format($itemDbCount + $itemDb2Count) }} <span class="text-xs font-normal text-slate-400">items</span></div>
+                <span class="text-[10px] text-slate-500 font-mono">{{ number_format($itemDbCount) }} official • {{ number_format($itemDb2Count) }} custom</span>
             </div>
             <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                <i data-lucide="database" class="w-5 h-5"></i>
+                <i data-lucide="package" class="w-5 h-5"></i>
             </div>
         </div>
 
         <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 backdrop-blur-md flex items-center justify-between">
             <div>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Custom Item DB (item_db2)</span>
-                <div class="text-2xl font-black text-cyan-400 mt-1">{{ number_format($itemDb2Count) }} <span class="text-xs font-normal text-slate-400">items</span></div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Monsters (mob_db / mob_db2)</span>
+                <div class="text-2xl font-black text-amber-400 mt-1">{{ number_format(($mobDbCount ?? 0) + ($mobDb2Count ?? 0)) }} <span class="text-xs font-normal text-slate-400">mobs</span></div>
+                <span class="text-[10px] text-slate-500 font-mono">{{ number_format($mobDbCount ?? 0) }} official • {{ number_format($mobDb2Count ?? 0) }} custom</span>
             </div>
-            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
-                <i data-lucide="sparkles" class="w-5 h-5"></i>
+            <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                <i data-lucide="skull" class="w-5 h-5"></i>
             </div>
         </div>
 
@@ -69,6 +71,7 @@
             <div>
                 <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Server Tables Available</span>
                 <div class="text-2xl font-black text-purple-400 mt-1">{{ number_format($totalTablesCount) }} <span class="text-xs font-normal text-slate-400">tables</span></div>
+                <span class="text-[10px] text-slate-500 font-mono">Cataloged in {{ $databaseName }}</span>
             </div>
             <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
                 <i data-lucide="layers" class="w-5 h-5"></i>
@@ -77,11 +80,12 @@
 
         <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 backdrop-blur-md flex items-center justify-between">
             <div>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Database Engine</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Database Connection</span>
                 <div class="text-sm font-bold text-emerald-400 mt-1.5 flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                     <span>{{ $databaseName }}</span>
                 </div>
+                <span class="text-[10px] text-slate-500 font-mono">Dual-DB Live Connected</span>
             </div>
             <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <i data-lucide="server" class="w-5 h-5"></i>

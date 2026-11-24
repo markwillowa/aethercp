@@ -94,22 +94,10 @@
             </div>
         </div>
 
-        <!-- RANKINGS -->
-        <a href="{{ route('rankings.index') }}" class="chronicles-nav-item {{ request()->routeIs('rankings.*') ? 'active' : '' }}">
-            <i data-lucide="trophy" class="w-3.5 h-3.5"></i>
-            <span>RANKINGS</span>
-        </a>
-
         <!-- GUILDS -->
         <a href="{{ route('guilds.index') }}" class="chronicles-nav-item {{ request()->routeIs('guilds.*') ? 'active' : '' }}">
             <i data-lucide="shield" class="w-3.5 h-3.5"></i>
             <span>GUILDS</span>
-        </a>
-
-        <!-- DOWNLOADS -->
-        <a href="{{ route('downloads.index') }}" class="chronicles-nav-item {{ request()->routeIs('downloads.*') ? 'active' : '' }}">
-            <i data-lucide="download" class="w-3.5 h-3.5"></i>
-            <span>DOWNLOADS</span>
         </a>
 
         <!-- MARKETPLACE -->

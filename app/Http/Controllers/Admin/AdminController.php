@@ -282,6 +282,8 @@ class AdminController extends Controller
     {
         $itemDbCount = 0;
         $itemDb2Count = 0;
+        $mobDbCount = 0;
+        $mobDb2Count = 0;
         $tableExists = false;
         $availableTables = [];
         $databaseName = config('database.connections.ragnarok.database', 'ragnarok');
@@ -293,6 +295,12 @@ class AdminController extends Controller
             }
             if (\Illuminate\Support\Facades\Schema::connection('ragnarok')->hasTable('item_db2')) {
                 $itemDb2Count = \Illuminate\Support\Facades\DB::connection('ragnarok')->table('item_db2')->count();
+            }
+            if (\Illuminate\Support\Facades\Schema::connection('ragnarok')->hasTable('mob_db')) {
+                $mobDbCount = \Illuminate\Support\Facades\DB::connection('ragnarok')->table('mob_db')->count();
+            }
+            if (\Illuminate\Support\Facades\Schema::connection('ragnarok')->hasTable('mob_db2')) {
+                $mobDb2Count = \Illuminate\Support\Facades\DB::connection('ragnarok')->table('mob_db2')->count();
             }
 
             $dbName = \Illuminate\Support\Facades\DB::connection('ragnarok')->getDatabaseName();
@@ -351,6 +359,10 @@ class AdminController extends Controller
             'C:/Users/villa/Desktop/FreinyxRO/rathena/db/pre-re/item_db_etc.yml',
             'C:/Users/villa/Desktop/FreinyxRO/rathena/db/item_db.yml',
             'C:/Users/villa/Desktop/FreinyxRO/rathena/db/item_db_equip.yml',
+            'C:/Users/villa/Desktop/FreinyxRO/rathena/db/pre-re/mob_db.yml',
+            'C:/Users/villa/Desktop/FreinyxRO/rathena/db/re/mob_db.yml',
+            'C:/Users/villa/Desktop/FreinyxRO/rathena/db/mob_db.yml',
+            'C:/Users/villa/Desktop/FreinyxRO/rathena/db/import/mob_db.yml',
             base_path('database/data/item_db.yml'),
         ];
 
@@ -364,7 +376,7 @@ class AdminController extends Controller
             }
         }
 
-        return view('admin.importer', compact('itemDbCount', 'itemDb2Count', 'tableExists', 'suggestedPaths', 'availableTables', 'totalTablesCount', 'databaseName'));
+        return view('admin.importer', compact('itemDbCount', 'itemDb2Count', 'mobDbCount', 'mobDb2Count', 'tableExists', 'suggestedPaths', 'availableTables', 'totalTablesCount', 'databaseName'));
     }
 
     public function runImport(Request $request, \App\Services\Database\ItemDbImporter $importer)

@@ -142,6 +142,8 @@ class MarketplaceController extends Controller
                 ->withQueryString();
         }
 
+        $listings = $browseListings;
+
         return view('marketplace.index', compact(
             'settings',
             'characters',
@@ -150,6 +152,7 @@ class MarketplaceController extends Controller
             'accountCashPoints',
             'tab',
             'browseListings',
+            'listings',
             'storageItems',
             'custodyItems',
             'myListings',

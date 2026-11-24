@@ -6,20 +6,20 @@
 <div class="space-y-6">
 
     <!-- Header & Action Row -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-[#1C1425] border border-[#4A3A5A] shadow-xl">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl backdrop-blur">
         <div class="flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#FCE69B] flex items-center justify-center font-bold shrink-0 shadow-inner">
-                <i data-lucide="life-buoy" class="w-6 h-6 text-[#FFD700]"></i>
+            <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-bold shrink-0 shadow-inner">
+                <i data-lucide="life-buoy" class="w-6 h-6"></i>
             </div>
             <div>
-                <h1 class="text-xl font-black text-white font-cinzel tracking-wide uppercase">Support Center Management</h1>
-                <p class="text-xs text-[#C8BDAA]">Review player inquiries, assign staff, reply to tickets, and track resolution audit logs.</p>
+                <h1 class="text-xl font-extrabold text-white tracking-wide uppercase">Support Center Management</h1>
+                <p class="text-xs text-slate-400">Review player inquiries, assign staff, reply to tickets, and track resolution audit logs.</p>
             </div>
         </div>
 
         <div class="flex items-center gap-2">
-            <a href="{{ route('admin.support.settings') }}" class="px-4 py-2 rounded-xl text-xs font-cinzel font-bold bg-[#140E1B] border border-[#5A456B] text-[#FFE894] hover:bg-[#251A33] hover:text-white transition-colors flex items-center gap-2 shadow-sm">
-                <i data-lucide="sliders" class="w-4 h-4 text-[#D4AF37]"></i>
+            <a href="{{ route('admin.support.settings') }}" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 hover:text-white transition-colors flex items-center gap-2 shadow-sm">
+                <i data-lucide="sliders" class="w-4 h-4 text-cyan-400"></i>
                 <span>Support Settings</span>
             </a>
         </div>
@@ -42,58 +42,58 @@
 
     <!-- Statistics Metrics Row -->
     <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
-        <div class="p-3.5 rounded-xl bg-[#1C1425] border border-[#3E2F4D]">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Total Cases</span>
+        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 shadow-sm backdrop-blur">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block mb-1">Total Cases</span>
             <span class="text-xl font-mono font-bold text-white">{{ number_format($stats['total']) }}</span>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-[#1C1425] border border-emerald-500/30">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block mb-1">Open</span>
+        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-emerald-500/30 shadow-sm backdrop-blur">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-emerald-400 block mb-1">Open</span>
             <span class="text-xl font-mono font-bold text-emerald-300">{{ number_format($stats['open']) }}</span>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-[#1C1425] border border-cyan-500/30">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-cyan-400 block mb-1">In Progress</span>
+        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-cyan-500/30 shadow-sm backdrop-blur">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-cyan-400 block mb-1">In Progress</span>
             <span class="text-xl font-mono font-bold text-cyan-300">{{ number_format($stats['in_progress']) }}</span>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-[#1C1425] border border-amber-500/30">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400 block mb-1">Awaiting Player</span>
+        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-amber-500/30 shadow-sm backdrop-blur">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-amber-400 block mb-1">Awaiting Player</span>
             <span class="text-xl font-mono font-bold text-amber-300">{{ number_format($stats['awaiting_player']) }}</span>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-[#1C1425] border border-purple-500/30">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-purple-400 block mb-1">Awaiting Staff</span>
+        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-purple-500/30 shadow-sm backdrop-blur">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-purple-400 block mb-1">Awaiting Staff</span>
             <span class="text-xl font-mono font-bold text-purple-300">{{ number_format($stats['awaiting_staff']) }}</span>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-[#1C1425] border border-blue-500/30">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 block mb-1">Resolved</span>
+        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-blue-500/30 shadow-sm backdrop-blur">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-blue-400 block mb-1">Resolved</span>
             <span class="text-xl font-mono font-bold text-blue-300">{{ number_format($stats['resolved']) }}</span>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-[#1C1425] border border-slate-700">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Closed</span>
+        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-700 shadow-sm backdrop-blur">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block mb-1">Closed</span>
             <span class="text-xl font-mono font-bold text-slate-300">{{ number_format($stats['closed']) }}</span>
         </div>
     </div>
 
     <!-- Search & Filter Console -->
-    <div class="p-4 rounded-2xl bg-[#1C1425] border border-[#3E2F4D] shadow-lg">
+    <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg backdrop-blur">
         <form method="GET" action="{{ route('admin.support.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
             <!-- Search Query -->
             <div class="sm:col-span-2 relative">
-                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <i data-lucide="search" class="w-4 h-4 text-[#C9A96E]"></i>
+                <div class="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                    <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
                 </div>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search reference, subject, player or character..." 
-                       style="padding-left: 3rem !important; padding-right: 1rem !important; height: 40px;"
-                       class="w-full rounded-xl text-xs bg-[#140E1B] border border-[#5A456B] text-white placeholder:text-[#8D7D9A] focus:outline-none focus:border-[#D4AF37] transition-all">
+                       style="padding-left: 44px !important; padding-right: 16px !important; height: 42px;"
+                       class="w-full rounded-xl text-xs bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
             </div>
 
             <!-- Status -->
             <div>
-                <select name="status" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#5A456B] text-white focus:outline-none focus:border-[#D4AF37] cursor-pointer" style="height: 40px;">
+                <select name="status" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500 cursor-pointer" style="height: 42px;">
                     <option value="all" {{ request('status') === 'all' || !request('status') ? 'selected' : '' }}>All Statuses</option>
                     <option value="open" {{ request('status') === 'open' ? 'selected' : '' }}>Open</option>
                     <option value="in_progress" {{ request('status') === 'in_progress' ? 'selected' : '' }}>In Progress</option>
@@ -106,7 +106,7 @@
 
             <!-- Category -->
             <div>
-                <select name="category" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#5A456B] text-white focus:outline-none focus:border-[#D4AF37] cursor-pointer" style="height: 40px;">
+                <select name="category" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500 cursor-pointer" style="height: 42px;">
                     <option value="all" {{ request('category') === 'all' || !request('category') ? 'selected' : '' }}>All Categories</option>
                     <option value="account" {{ request('category') === 'account' ? 'selected' : '' }}>Account Issues</option>
                     <option value="character" {{ request('category') === 'character' ? 'selected' : '' }}>Character Issues</option>
@@ -121,7 +121,7 @@
 
             <!-- Assigned Staff -->
             <div>
-                <select name="assigned_to" class="w-full px-3 py-2 rounded-xl text-xs bg-[#140E1B] border border-[#5A456B] text-white focus:outline-none focus:border-[#D4AF37] cursor-pointer" style="height: 40px;">
+                <select name="assigned_to" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-cyan-500 cursor-pointer" style="height: 42px;">
                     <option value="" {{ !request('assigned_to') ? 'selected' : '' }}>All Staff</option>
                     <option value="unassigned" {{ request('assigned_to') === 'unassigned' ? 'selected' : '' }}>Unassigned Only</option>
                     @foreach($staffMembers as $sMember)
@@ -134,12 +134,12 @@
 
             <!-- Actions -->
             <div class="flex items-center gap-2">
-                <button type="submit" class="flex-1 py-2 px-3 rounded-xl text-xs font-cinzel font-bold bg-[#D4AF37] hover:bg-[#FFE4A0] text-black transition-colors flex items-center justify-center gap-1.5 shadow-md" style="height: 40px;">
+                <button type="submit" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 transition-all flex items-center justify-center gap-1.5 shadow-md cursor-pointer" style="height: 42px;">
                     <i data-lucide="filter" class="w-3.5 h-3.5"></i>
                     <span>Apply</span>
                 </button>
                 @if(request('search') || request('status') || request('category') || request('assigned_to'))
-                    <a href="{{ route('admin.support.index') }}" class="p-2.5 rounded-xl text-xs bg-[#140E1B] border border-[#5A456B] text-slate-300 hover:text-white transition-colors" title="Reset Filters" style="height: 40px;">
+                    <a href="{{ route('admin.support.index') }}" class="p-2.5 rounded-xl text-xs bg-slate-800 border border-slate-700 text-slate-300 hover:text-white transition-colors flex items-center justify-center shrink-0" title="Reset Filters" style="height: 42px; width: 42px;">
                         <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
                     </a>
                 @endif
@@ -148,11 +148,11 @@
     </div>
 
     <!-- Ticket Management Table -->
-    <div class="rounded-2xl bg-[#1C1425] border border-[#3E2F4D] overflow-hidden shadow-2xl">
+    <div class="rounded-2xl bg-slate-900/80 border border-slate-800 overflow-hidden shadow-2xl backdrop-blur">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
                 <thead>
-                    <tr class="border-b border-[#3E2F4D] bg-[#22172D] text-[#F3E5AB] font-cinzel text-[11px] tracking-wide uppercase">
+                    <tr class="border-b border-slate-800 bg-slate-950/80 text-slate-300 font-semibold text-[11px] tracking-wider uppercase">
                         <th class="py-3.5 px-4">Reference</th>
                         <th class="py-3.5 px-4">Player &amp; Character</th>
                         <th class="py-3.5 px-4">Subject &amp; Category</th>
@@ -163,10 +163,10 @@
                         <th class="py-3.5 px-4 text-right">Action</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-[#2F213C]">
+                <tbody class="divide-y divide-slate-800/80">
                     @forelse($tickets as $ticket)
-                        <tr class="hover:bg-[#251A33] transition-colors group">
-                            <td class="py-3.5 px-4 font-mono font-bold text-[#FFE894]">
+                        <tr class="hover:bg-slate-800/40 transition-colors group">
+                            <td class="py-3.5 px-4 font-mono font-bold text-cyan-400">
                                 {{ $ticket->ticket_reference }}
                             </td>
                             <td class="py-3.5 px-4">
@@ -176,7 +176,7 @@
                                 </p>
                             </td>
                             <td class="py-3.5 px-4">
-                                <a href="{{ route('admin.support.show', $ticket->id) }}" class="font-bold text-[#FCE69B] group-hover:text-white transition-colors block">
+                                <a href="{{ route('admin.support.show', $ticket->id) }}" class="font-bold text-slate-100 group-hover:text-cyan-400 transition-colors block">
                                     {{ $ticket->subject }}
                                 </a>
                                 <p class="text-[10px] text-slate-400 mt-0.5">{{ $ticket->category_label }}</p>
@@ -189,7 +189,7 @@
                             <td class="py-3.5 px-4">
                                 @if($ticket->assignedStaff)
                                     <span class="inline-flex items-center gap-1 font-medium text-cyan-300">
-                                        <i data-lucide="shield" class="w-3 h-3"></i>
+                                        <i data-lucide="shield" class="w-3 h-3 text-cyan-400"></i>
                                         <span>{{ $ticket->assignedStaff->username }}</span>
                                     </span>
                                 @else
@@ -202,10 +202,10 @@
                                 </span>
                             </td>
                             <td class="py-3.5 px-4 text-slate-400 font-mono text-[11px]">
-                                {{ $ticket->last_message_at->diffForHumans() }}
+                                {{ $ticket->last_message_at?->diffForHumans() ?? 'N/A' }}
                             </td>
                             <td class="py-3.5 px-4 text-right">
-                                <a href="{{ route('admin.support.show', $ticket->id) }}" class="px-3 py-1.5 rounded-lg text-xs font-cinzel font-bold bg-[#D4AF37] hover:bg-[#FFE4A0] text-black transition-colors inline-flex items-center gap-1 shadow-sm">
+                                <a href="{{ route('admin.support.show', $ticket->id) }}" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 transition-all inline-flex items-center gap-1 shadow-sm">
                                     <span>Manage</span>
                                     <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
                                 </a>
@@ -213,9 +213,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center py-12 text-[#C8BDAA] font-cinzel">
+                            <td colspan="8" class="text-center py-12 text-slate-400">
                                 <div class="flex flex-col items-center justify-center gap-2">
-                                    <i data-lucide="life-buoy" class="w-8 h-8 text-[#5A456B]"></i>
+                                    <i data-lucide="life-buoy" class="w-8 h-8 text-slate-600"></i>
                                     <p class="text-sm font-semibold text-white">No support tickets match the selected filters.</p>
                                 </div>
                             </td>
@@ -226,7 +226,7 @@
         </div>
 
         @if($tickets->hasPages())
-            <div class="p-4 border-t border-[#3E2F4D] bg-[#140E1B]">
+            <div class="p-4 border-t border-slate-800 bg-slate-950/50">
                 {{ $tickets->links() }}
             </div>
         @endif

@@ -24,9 +24,6 @@
                 <a href="{{ route('news.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('news.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     News
                 </a>
-                <a href="{{ route('rankings.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('rankings.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
-                    Rankings
-                </a>
                 <a href="{{ route('guilds.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('guilds.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Guilds
                 </a>
@@ -41,9 +38,6 @@
                 </a>
                 <a href="{{ route('itemdb.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('itemdb.*') || request()->routeIs('database.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Database
-                </a>
-                <a href="{{ route('downloads.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('downloads.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
-                    Downloads
                 </a>
                 @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('marketplace'))
                     <a href="{{ route('marketplace.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('marketplace.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
@@ -135,13 +129,20 @@
     <div x-show="mobileOpen" x-transition class="md:hidden border-b border-slate-800 bg-slate-950/95 px-4 pt-2 pb-4 space-y-1">
         <a href="{{ route('home') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Home</a>
         <a href="{{ route('news.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">News</a>
-        <a href="{{ route('rankings.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Rankings</a>
         <a href="{{ route('guilds.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Guilds</a>
         <a href="{{ route('characters.online') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Online</a>
         <a href="{{ route('woe.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">WoE</a>
         <a href="{{ route('itemdb.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Database</a>
-        <a href="{{ route('downloads.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Downloads</a>
+        @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('marketplace'))
+            <a href="{{ route('marketplace.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Marketplace</a>
+        @endif
         <a href="{{ route('donations.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Donations</a>
+        @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('faq'))
+            <a href="{{ route('faq.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">FAQ</a>
+        @endif
+        @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
+            <a href="{{ route('support.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Support</a>
+        @endif
 
         <div class="border-t border-slate-800 pt-3 mt-2">
             @auth

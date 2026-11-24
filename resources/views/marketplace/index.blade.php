@@ -161,6 +161,7 @@
 
     <!-- ==================== TAB 1: BROWSE MARKET ==================== -->
     @if($tab === 'browse')
+        @php $listings = $listings ?? $browseListings ?? collect(); @endphp
         <div class="space-y-4">
             <!-- Search & Filter Console -->
             <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg">
@@ -169,11 +170,11 @@
 
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                         <div class="relative flex-1">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
-                                <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10 text-slate-400">
+                                <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
                             </div>
                             <input type="text" name="q" value="{{ request('q') }}" placeholder="Search by item name or ID (e.g. Blade, Tsurugi, Poring Card)..." 
-                                   style="padding-left: 3rem !important; padding-right: 1.25rem !important; height: 44px;"
+                                   style="padding-left: 48px !important; padding-right: 1.25rem !important; height: 44px;"
                                    class="w-full bg-slate-950 border border-slate-800 rounded-xl text-xs font-medium text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all shadow-inner">
                         </div>
 
