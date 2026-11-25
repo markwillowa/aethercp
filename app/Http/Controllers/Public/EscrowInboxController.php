@@ -51,6 +51,7 @@ class EscrowInboxController extends Controller
             'attendance' => PlayerInboxItem::where('account_id', $user->account_id)->whereIn('source_type', ['attendance', 'daily'])->count(),
             'marketplace' => PlayerInboxItem::where('account_id', $user->account_id)->where('source_type', 'marketplace')->count(),
             'ranking' => PlayerInboxItem::where('account_id', $user->account_id)->where('source_type', 'ranking')->count(),
+            'cash_shop' => PlayerInboxItem::where('account_id', $user->account_id)->where('source_type', 'cash_shop')->count(),
             'donation' => PlayerInboxItem::where('account_id', $user->account_id)->where('source_type', 'donation')->count(),
         ];
 

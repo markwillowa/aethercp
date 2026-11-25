@@ -980,7 +980,7 @@
                         </div>
 
                         <!-- Download SQL Buttons -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                             <a href="{{ route('install.download-sql', 'schema') }}"
                                class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-left flex items-center justify-between group transition-all">
                                 <div>
@@ -1012,6 +1012,14 @@
                                     <span class="text-[10px] text-slate-400 block">Web DB: Live trade items</span>
                                 </div>
                                 <i data-lucide="download" class="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform"></i>
+                            </a>
+                            <a href="{{ route('install.download-sql', 'cash-shop-seeders') }}"
+                               class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-indigo-500/40 text-left flex items-center justify-between group transition-all">
+                                <div>
+                                    <span class="text-xs font-bold text-white group-hover:text-indigo-300 block">5. cash_shop_seeders.sql</span>
+                                    <span class="text-[10px] text-slate-400 block">Web DB: Mall &amp; categories</span>
+                                </div>
+                                <i data-lucide="download" class="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform"></i>
                             </a>
                         </div>
 

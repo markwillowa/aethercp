@@ -1142,3 +1142,89 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (18, '2026_11_25_00
 
 COMMIT;
 SET FOREIGN_KEY_CHECKS=1;
+
+
+-- --------------------------------------------------------
+-- Table structure for table `cash_shop_categories`
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `cash_shop_categories` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `slug` varchar(100) NOT NULL,
+  `icon` varchar(50) NOT NULL DEFAULT 'tag',
+  `description` text DEFAULT NULL,
+  `sort_order` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `is_featured` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cash_shop_categories_slug_unique` (`slug`),
+  KEY `cash_shop_categories_is_active_index` (`is_active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Table structure for table `cash_shop_products`
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `cash_shop_products` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `category_id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(150) NOT NULL,
+  `slug` varchar(150) NOT NULL,
+  `description` text DEFAULT NULL,
+  `item_id` int(10) UNSIGNED NOT NULL,
+  `item_quantity` int(10) UNSIGNED NOT NULL DEFAULT 1,
+  `cash_points_price` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `promotional_price` int(10) UNSIGNED DEFAULT NULL,
+  `promotion_start_at` timestamp NULL DEFAULT NULL,
+  `promotion_end_at` timestamp NULL DEFAULT NULL,
+  `stock_quantity` int(11) NOT NULL DEFAULT 0,
+  `unlimited_stock` tinyint(1) NOT NULL DEFAULT 1,
+  `purchase_limit_per_account` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `purchase_limit_daily` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `item_metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`item_metadata`)),
+  `image_url` varchar(255) DEFAULT NULL,
+  `status` enum('draft','published','archived') NOT NULL DEFAULT 'draft',
+  `is_featured` tinyint(1) NOT NULL DEFAULT 0,
+  `sort_order` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cash_shop_products_slug_unique` (`slug`),
+  KEY `cash_shop_products_item_id_index` (`item_id`),
+  KEY `cash_shop_products_status_index` (`status`),
+  KEY `cash_shop_products_is_featured_index` (`is_featured`),
+  KEY `cash_shop_products_category_id_foreign` (`category_id`),
+  CONSTRAINT `cash_shop_products_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `cash_shop_categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Table structure for table `cash_shop_purchases`
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `cash_shop_purchases` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `purchase_code` varchar(32) NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `account_id` int(10) UNSIGNED NOT NULL,
+  `product_id` bigint(20) UNSIGNED NOT NULL,
+  `product_name_snapshot` varchar(150) NOT NULL,
+  `item_id` int(10) UNSIGNED NOT NULL,
+  `item_quantity` int(10) UNSIGNED NOT NULL DEFAULT 1,
+  `cash_points_spent` int(10) UNSIGNED NOT NULL,
+  `escrow_item_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `status` enum('completed','refunded','cancelled') NOT NULL DEFAULT 'completed',
+  `ip_address` varchar(45) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cash_shop_purchases_purchase_code_unique` (`purchase_code`),
+  KEY `cash_shop_purchases_account_id_index` (`account_id`),
+  KEY `cash_shop_purchases_escrow_item_id_index` (`escrow_item_id`),
+  KEY `cash_shop_purchases_user_id_foreign` (`user_id`),
+  KEY `cash_shop_purchases_product_id_foreign` (`product_id`),
+  CONSTRAINT `cash_shop_purchases_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `cash_shop_purchases_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `cash_shop_products` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

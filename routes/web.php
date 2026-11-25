@@ -134,6 +134,14 @@ Route::get('/themes/{theme}/assets/{path}', function (string $theme, string $pat
     return response()->file($filePath, ['Content-Type' => $mime]);
 })->where('path', '.*')->name('theme.asset');
 
+// Cash Shop & Web Item Mall
+Route::prefix('cash-shop')->name('cash-shop.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Public\CashShopController::class, 'index'])->name('index');
+    Route::get('/history', [\App\Http\Controllers\Public\CashShopController::class, 'history'])->middleware('auth')->name('history');
+    Route::get('/product/{slug}', [\App\Http\Controllers\Public\CashShopController::class, 'show'])->name('show');
+    Route::post('/buy/{id}', [\App\Http\Controllers\Public\CashShopController::class, 'buy'])->middleware('auth')->name('buy');
+});
+
 // Daily Rewards & Attendance System (Gated by 'attendance' module)
 Route::middleware('module:attendance')->group(function () {
     Route::get('/attendance', [\App\Http\Controllers\Public\AttendanceController::class, 'index'])->name('attendance.index');
@@ -330,6 +338,23 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/attendance-deliveries', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'deliveries'])->name('attendance.deliveries');
         Route::post('/attendance-deliveries/{deliveryId}/retry', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'retryDelivery'])->name('attendance.deliveries.retry');
         Route::get('/attendance-reports', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'reports'])->name('attendance.reports');
+    });
+
+    // Cash Shop & Web Item Mall Management
+    Route::prefix('cash-shop')->name('cash-shop.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\AdminCashShopController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\AdminCashShopController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\AdminCashShopController::class, 'store'])->name('store');
+        Route::get('/categories', [\App\Http\Controllers\Admin\AdminCashShopController::class, 'categories'])->name('categories');
+        Route::post('/categories', [\App\Http\Controllers\Admin\AdminCashShopController::class, 'storeCategory'])->name('categories.store');
+        Route::put('/categories/{category}', [\App\Http\Controllers\Admin\AdminCashShopController::class, 'updateCategory'])->name('categories.update');
+        Route::delete('/categories/{category}', [\App\Http\Controllers\Admin\AdminCashShopController::class, 'destroyCategory'])->name('categories.destroy');
+        Route::get('/purchases', [\App\Http\Controllers\Admin\AdminCashShopController::class, 'purchases'])->name('purchases');
+        Route::get('/items/search', [\App\Http\Controllers\Admin\AdminCashShopController::class, 'searchItems'])->name('items.search');
+        Route::get('/{product}/edit', [\App\Http\Controllers\Admin\AdminCashShopController::class, 'edit'])->name('edit');
+        Route::put('/{product}', [\App\Http\Controllers\Admin\AdminCashShopController::class, 'update'])->name('update');
+        Route::post('/{product}/duplicate', [\App\Http\Controllers\Admin\AdminCashShopController::class, 'duplicate'])->name('duplicate');
+        Route::delete('/{product}', [\App\Http\Controllers\Admin\AdminCashShopController::class, 'destroy'])->name('destroy');
     });
 });
 

@@ -86,6 +86,12 @@
                 <span>Marketplace</span>
                 <span class="px-1.5 py-0.2 rounded-full text-[10px] font-mono {{ $source === 'marketplace' ? 'bg-cyan-400/30 text-cyan-200' : 'bg-slate-800 text-slate-400' }}">{{ $counts['marketplace'] }}</span>
             </a>
+            <a href="{{ route('escrow.index', ['source' => 'cash_shop', 'status' => $status]) }}"
+               class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 {{ $source === 'cash_shop' ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
+                <i data-lucide="store" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <span>Cash Shop</span>
+                <span class="px-1.5 py-0.2 rounded-full text-[10px] font-mono {{ $source === 'cash_shop' ? 'bg-indigo-400/30 text-indigo-200' : 'bg-slate-800 text-slate-400' }}">{{ $counts['cash_shop'] ?? 0 }}</span>
+            </a>
             <a href="{{ route('escrow.index', ['source' => 'ranking', 'status' => $status]) }}"
                class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 {{ $source === 'ranking' ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
                 <i data-lucide="trophy" class="w-3.5 h-3.5 text-purple-400"></i>
@@ -118,8 +124,8 @@
     </div>
 
     <!-- Escrow Items List -->
-    <div class="bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-xl">
-        <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+    <div class="bg-slate-900/80 border border-slate-800 rounded-3xl shadow-2xl backdrop-blur-xl">
+        <div class="p-5 border-b border-slate-800 flex items-center justify-between rounded-t-3xl bg-slate-950/40">
             <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
                     <i data-lucide="inbox" class="w-4 h-4"></i>
@@ -206,9 +212,9 @@
 
                                 <!-- Option 2: Transfer directly to Character Inventory -->
                                 @if(count($characters) > 0)
-                                    <div x-data="{ openCharSelect: false }" class="relative">
+                                    <div x-data="{ openCharSelect: false }" class="relative" :class="{ 'z-50': openCharSelect, 'z-10': !openCharSelect }">
                                         <button type="button" @click="openCharSelect = !openCharSelect"
-                                                class="px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5 transition-all cursor-pointer">
+                                                class="px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5 transition-all cursor-pointer shadow-sm shadow-emerald-500/10 active:scale-95">
                                             <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
                                             <span>Transfer to Character</span>
                                             <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': openCharSelect }"></i>
@@ -217,29 +223,32 @@
                                         <!-- Character Selection Dropdown -->
                                         <div x-show="openCharSelect" @click.away="openCharSelect = false"
                                              x-transition:enter="transition ease-out duration-150"
-                                             x-transition:enter-start="opacity-0 translate-y-1"
-                                             x-transition:enter-end="opacity-100 translate-y-0"
+                                             x-transition:enter-start="opacity-0 translate-y-1 scale-95"
+                                             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
                                              x-transition:leave="transition ease-in duration-100"
-                                             x-transition:leave-start="opacity-100 translate-y-0"
-                                             x-transition:leave-end="opacity-0 translate-y-1"
+                                             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                                             x-transition:leave-end="opacity-0 translate-y-1 scale-95"
                                              style="display: none;"
-                                             class="absolute right-0 top-full mt-3 w-80 bg-slate-950/95 backdrop-blur-md border border-slate-800 rounded-2xl shadow-2xl p-4 z-50 space-y-3">
+                                             class="absolute right-0 top-full mt-2 w-80 bg-slate-950 border border-emerald-500/30 rounded-2xl shadow-2xl shadow-black/80 p-4 z-50 space-y-3 ring-1 ring-white/10">
                                             <div class="border-b border-slate-800/80 pb-2.5">
-                                                <p class="text-xs font-bold text-white tracking-wide">Select Receiving Character</p>
-                                                <p class="text-[10px] text-slate-400 mt-0.5">Character must be <strong class="text-amber-400">Offline</strong> to receive inventory items safely.</p>
+                                                <p class="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
+                                                    <i data-lucide="user" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                                    <span>Select Receiving Character</span>
+                                                </p>
+                                                <p class="text-[10px] text-slate-400 mt-1">Character must be <strong class="text-amber-400 font-semibold">Offline</strong> to receive inventory items safely.</p>
                                             </div>
-                                            <div class="max-h-56 overflow-y-auto space-y-2 pr-0.5">
+                                            <div class="max-h-56 overflow-y-auto space-y-2 pr-0.5 custom-scrollbar">
                                                 @foreach($characters as $c)
                                                     <form method="POST" action="{{ route('escrow.claim-character', $item->id) }}">
                                                         @csrf
                                                         <input type="hidden" name="character_id" value="{{ $c->char_id }}">
                                                         <button type="submit"
-                                                                class="w-full text-left p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 flex items-center justify-between gap-2 transition-all group cursor-pointer">
+                                                                class="w-full text-left p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 flex items-center justify-between gap-2 transition-all group cursor-pointer">
                                                             <div class="min-w-0">
                                                                 <span class="text-xs font-bold text-white group-hover:text-emerald-300 block truncate">{{ $c->name }}</span>
                                                                 <span class="text-[10px] text-slate-400 block mt-0.5">{{ \App\Services\Emulator\JobHelper::getName($c->class) }} • Lv. {{ $c->base_level }}</span>
                                                             </div>
-                                                            <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase shrink-0 {{ (int) $c->online > 0 ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-400' }}">
+                                                            <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase shrink-0 {{ (int) $c->online > 0 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' }}">
                                                                 {{ (int) $c->online > 0 ? 'Online' : 'Ready' }}
                                                             </span>
                                                         </button>

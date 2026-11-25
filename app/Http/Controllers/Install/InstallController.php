@@ -479,6 +479,16 @@ class InstallController extends Controller
             ]);
         }
 
+        if ($type === 'cash-shop-seeders' || $type === 'cash-shop' || $type === 'cashshop') {
+            $file = base_path('database/sql/cash_shop_seeders.sql');
+            if (!File::exists($file)) {
+                abort(404, 'Cash Shop seeders file not found.');
+            }
+            return response()->download($file, 'cash_shop_seeders.sql', [
+                'Content-Type' => 'application/sql',
+            ]);
+        }
+
         abort(404, 'Invalid SQL type requested.');
     }
 
