@@ -25,12 +25,6 @@
                  x-transition:leave-end="opacity-0 transform -translate-y-2 scale-95"
                  class="absolute top-full left-0 mt-1.5 w-52 bg-[#1B1322] border-2 border-[#D4AF37]/60 rounded-lg shadow-2xl p-1.5"
                  style="z-index: 99999; box-shadow: 0 10px 25px rgba(0,0,0,0.9); display: none;">
-                @if($cModMgr->isEnabled('server_info'))
-                    <a href="{{ route('server.status') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
-                        <i data-lucide="activity" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
-                        <span>Server Status &amp; Info</span>
-                    </a>
-                @endif
                 @if($cModMgr->isEnabled('downloads'))
                     <a href="{{ route('downloads.index') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
                         <i data-lucide="download" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
@@ -120,6 +114,14 @@
             <a href="{{ route('marketplace.index') }}" class="chronicles-nav-item {{ request()->routeIs('marketplace.*') ? 'active' : '' }}">
                 <i data-lucide="scale" class="w-3.5 h-3.5"></i>
                 <span>MARKETPLACE</span>
+            </a>
+        @endif
+
+        <!-- CASH SHOP -->
+        @if($cModMgr->isEnabled('cash_shop'))
+            <a href="{{ route('cash-shop.index') }}" class="chronicles-nav-item {{ request()->routeIs('cash-shop.*') ? 'active' : '' }}">
+                <i data-lucide="store" class="w-3.5 h-3.5"></i>
+                <span>CASH SHOP</span>
             </a>
         @endif
 

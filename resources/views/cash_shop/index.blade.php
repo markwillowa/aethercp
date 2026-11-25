@@ -167,13 +167,13 @@
         <!-- Category Filter Pills -->
         <div class="flex flex-wrap items-center gap-2">
             <a href="{{ route('cash-shop.index', ['category' => 'all', 'sort' => request('sort'), 'q' => request('q')]) }}"
-               class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 {{ $selectedCategorySlug === 'all' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
+               class="h-10 px-3.5 rounded-xl text-xs font-semibold border transition-all inline-flex items-center gap-2 {{ $selectedCategorySlug === 'all' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
                 <i data-lucide="grid" class="w-3.5 h-3.5"></i>
                 <span>All Categories</span>
             </a>
             @foreach($categories as $cat)
                 <a href="{{ route('cash-shop.index', ['category' => $cat->slug, 'sort' => request('sort'), 'q' => request('q')]) }}"
-                   class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 {{ $selectedCategorySlug === $cat->slug ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
+                   class="h-10 px-3.5 rounded-xl text-xs font-semibold border transition-all inline-flex items-center gap-2 {{ $selectedCategorySlug === $cat->slug ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
                     @if(!empty($cat->icon))
                         <i data-lucide="{{ $cat->icon }}" class="w-3.5 h-3.5 text-cyan-400"></i>
                     @endif
@@ -192,10 +192,10 @@
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                 <input type="text" name="q" value="{{ request('q') }}" placeholder="Search products..."
-                       class="pl-9 pr-3 py-2 text-xs bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors w-40 sm:w-56">
+                       class="h-10 pl-9 pr-3 text-xs bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors w-44 sm:w-56 leading-none">
             </div>
 
-            <select name="sort" onchange="this.form.submit()" class="px-3 py-2 text-xs bg-slate-900 border border-slate-800 rounded-xl text-slate-300 focus:outline-none focus:border-cyan-500 transition-colors">
+            <select name="sort" onchange="this.form.submit()" class="h-10 px-3 text-xs bg-slate-900 border border-slate-800 rounded-xl text-slate-300 focus:outline-none focus:border-cyan-500 transition-colors cursor-pointer leading-none">
                 <option value="featured" {{ request('sort', 'featured') === 'featured' ? 'selected' : '' }}>Featured</option>
                 <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
                 <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
@@ -312,12 +312,12 @@
                             </div>
 
                             <div class="flex items-center gap-1.5">
-                                <a href="{{ route('cash-shop.show', $product->slug) }}" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition-colors" title="View Details">
+                                <a href="{{ route('cash-shop.show', $product->slug) }}" class="h-9 w-9 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition-colors inline-flex items-center justify-center shrink-0" title="View Details">
                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                 </a>
                                 <button type="button"
                                         @click="openModal({{ json_encode($product) }})"
-                                        class="px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer">
+                                        class="h-9 px-3.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 transition-all inline-flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shrink-0">
                                     <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
                                     <span>Buy Now</span>
                                 </button>

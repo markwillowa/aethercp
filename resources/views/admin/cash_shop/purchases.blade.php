@@ -31,20 +31,20 @@
     <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
         <form action="{{ route('admin.cash-shop.purchases') }}" method="GET" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <div class="relative flex-1">
-                <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by purchase code, account ID, username, or item..."
-                       class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-amber-500">
+                       class="w-full h-10 bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-amber-500 leading-none">
             </div>
 
             <div class="flex items-center gap-2">
-                <select name="status" onchange="this.form.submit()" class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 focus:border-amber-500 cursor-pointer">
+                <select name="status" onchange="this.form.submit()" class="h-10 bg-slate-950 border border-slate-800 rounded-xl px-3.5 text-xs text-slate-200 focus:border-amber-500 cursor-pointer leading-none">
                     <option value="">All Statuses</option>
                     <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
                     <option value="failed" {{ request('status') === 'failed' ? 'selected' : '' }}>Failed</option>
                     <option value="refunded" {{ request('status') === 'refunded' ? 'selected' : '' }}>Refunded</option>
                 </select>
 
-                <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white cursor-pointer">
+                <button type="submit" class="h-10 px-4 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white cursor-pointer inline-flex items-center justify-center leading-none">
                     Filter
                 </button>
             </div>

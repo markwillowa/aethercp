@@ -43,6 +43,16 @@
                         Downloads
                     </a>
                 @endif
+                @if($modMgr->isEnabled('marketplace'))
+                    <a href="{{ route('marketplace.index') }}" class="prestige-nav-link {{ request()->routeIs('marketplace.*') ? 'active' : '' }}">
+                        Marketplace
+                    </a>
+                @endif
+                @if($modMgr->isEnabled('cash_shop'))
+                    <a href="{{ route('cash-shop.index') }}" class="prestige-nav-link {{ request()->routeIs('cash-shop.*') ? 'active' : '' }}">
+                        Cash Shop
+                    </a>
+                @endif
             </nav>
 
             <!-- Right: User Account Profile (Matching reference: 'FERDI' with square avatar box) -->
@@ -72,6 +82,16 @@
                                 <a href="{{ route('account.characters') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432] transition-colors">
                                     <i data-lucide="users" class="w-4 h-4 text-[#D8BE8A]"></i>
                                     <span>My Characters</span>
+                                </a>
+                                @if($modMgr->isEnabled('cash_shop'))
+                                    <a href="{{ route('cash-shop.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432] transition-colors">
+                                        <i data-lucide="store" class="w-4 h-4 text-[#C6A76A]"></i>
+                                        <span>Cash Shop</span>
+                                    </a>
+                                @endif
+                                <a href="{{ route('escrow.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432] transition-colors">
+                                    <i data-lucide="inbox" class="w-4 h-4 text-[#84E1BC]"></i>
+                                    <span>Escrow Inbox</span>
                                 </a>
                                 <a href="{{ route('donations.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432] transition-colors">
                                     <i data-lucide="coins" class="w-4 h-4 text-[#C6A76A]"></i>

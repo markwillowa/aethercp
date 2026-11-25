@@ -249,14 +249,27 @@
         @php
             $modMgr = app(\App\Services\Module\ModuleManager::class);
         @endphp
-        <aside class="admin-sidebar w-64 border-r {{ $isChronicles ? 'border-[#4A3A5A] bg-[#160F1F] text-[#C8BDAA]' : (!empty($currentTheme['is_light']) ? 'border-[#8C6A2D] bg-[#22140B] text-[#E7D5BE]' : 'border-slate-800 bg-[#070a13] text-slate-400') }} p-4 space-y-6 hidden md:block shrink-0">
+        <aside class="admin-sidebar w-64 border-r {{ $isChronicles ? 'border-[#4A3A5A] bg-[#160F1F] text-[#C8BDAA]' : (!empty($currentTheme['is_light']) ? 'border-[#8C6A2D] bg-[#22140B] text-[#E7D5BE]' : 'border-slate-800 bg-[#070a13] text-slate-400') }} p-4 space-y-6 hidden md:block shrink-0 overflow-y-auto max-h-[calc(100vh-4rem)]">
+            
+            <!-- Category 1: Overview & Metrics -->
             <div>
-                <p class="text-[10px] font-bold uppercase tracking-wider {{ $isChronicles ? 'text-[#D4AF37] font-cinzel border-b border-[#3E2E4E] pb-1' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500') }} px-3 mb-2">Operations</p>
+                <p class="text-[10px] font-bold uppercase tracking-wider {{ $isChronicles ? 'text-[#D4AF37] font-cinzel border-b border-[#3E2E4E] pb-1' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500') }} px-3 mb-2">Overview</p>
                 <div class="space-y-1 text-xs">
                     <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.dashboard') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
                         <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                         <span>Dashboard</span>
                     </a>
+                    <a href="{{ route('admin.logs') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.logs*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        <span>Activity Logs</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Category 2: Players & Game World -->
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-wider {{ $isChronicles ? 'text-[#D4AF37] font-cinzel border-b border-[#3E2E4E] pb-1' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500') }} px-3 mb-2">Game &amp; Players</p>
+                <div class="space-y-1 text-xs">
                     <a href="{{ route('admin.accounts') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.accounts*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
                         <i data-lucide="users" class="w-4 h-4"></i>
                         <span>Game Accounts</span>
@@ -276,17 +289,88 @@
                 </div>
             </div>
 
+            <!-- Category 3: Commerce & Monetization -->
             @php
-                $hasContentRevenue = $modMgr->isEnabled('news') || $modMgr->isEnabled('downloads') || $modMgr->isEnabled('gallery') || $modMgr->isEnabled('marketplace') || $modMgr->isEnabled('support') || $modMgr->isEnabled('faq') || $modMgr->isEnabled('donations');
+                $hasCommerce = $modMgr->isEnabled('cash_shop') || $modMgr->isEnabled('marketplace') || $modMgr->isEnabled('donations');
             @endphp
-            @if($hasContentRevenue)
+            @if($hasCommerce)
             <div>
-                <p class="text-[10px] font-bold uppercase tracking-wider {{ $isChronicles ? 'text-[#D4AF37] font-cinzel border-b border-[#3E2E4E] pb-1' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500') }} px-3 mb-2">Content &amp; Revenue</p>
+                <p class="text-[10px] font-bold uppercase tracking-wider {{ $isChronicles ? 'text-[#D4AF37] font-cinzel border-b border-[#3E2E4E] pb-1' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500') }} px-3 mb-2">Commerce &amp; Economy</p>
+                <div class="space-y-1 text-xs">
+                    @if($modMgr->isEnabled('cash_shop'))
+                        <a href="{{ route('admin.cash-shop.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.cash-shop*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="store" class="w-4 h-4 text-amber-400"></i>
+                            <span>Cash Shop Mall</span>
+                        </a>
+                    @endif
+                    @if($modMgr->isEnabled('marketplace'))
+                        <a href="{{ route('admin.marketplace.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.marketplace*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="shopping-bag" class="w-4 h-4 text-cyan-400"></i>
+                            <span>Marketplace Escrow</span>
+                        </a>
+                    @endif
+                    @if($modMgr->isEnabled('donations'))
+                        <a href="{{ route('admin.donations') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ (request()->routeIs('admin.donations') && !request()->routeIs('admin.donations.packages*')) ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="credit-card" class="w-4 h-4 text-emerald-400"></i>
+                            <span>Donations &amp; Top-up</span>
+                        </a>
+                        <a href="{{ route('admin.donations.packages') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.donations.packages*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="gift" class="w-4 h-4 text-amber-400"></i>
+                            <span>Donation Packages</span>
+                        </a>
+                    @endif
+                </div>
+            </div>
+            @endif
+
+            <!-- Category 4: Engagements & Events -->
+            @php
+                $hasEvents = $modMgr->isEnabled('attendance') || $modMgr->isEnabled('rankings');
+            @endphp
+            @if($hasEvents)
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-wider {{ $isChronicles ? 'text-[#D4AF37] font-cinzel border-b border-[#3E2E4E] pb-1' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500') }} px-3 mb-2">Engagements &amp; Events</p>
+                <div class="space-y-1 text-xs">
+                    @if($modMgr->isEnabled('attendance'))
+                        <a href="{{ route('admin.attendance.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.attendance.index') || request()->routeIs('admin.attendance.create') || request()->routeIs('admin.attendance.edit') || request()->routeIs('admin.attendance.schedule*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="calendar" class="w-4 h-4 text-amber-400"></i>
+                            <span>Daily Rewards</span>
+                        </a>
+                        <a href="{{ route('admin.attendance.deliveries') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.attendance.deliveries*') || request()->routeIs('admin.attendance.reports*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="truck" class="w-4 h-4 text-cyan-400"></i>
+                            <span>Reward Deliveries</span>
+                        </a>
+                    @endif
+                    @if($modMgr->isEnabled('rankings'))
+                        <a href="{{ route('admin.rankings.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.rankings*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="trophy" class="w-4 h-4 text-purple-400"></i>
+                            <span>Rankings &amp; Sync</span>
+                        </a>
+                        <a href="{{ route('admin.badges.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.badges*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="award" class="w-4 h-4 text-amber-400"></i>
+                            <span>Badge Management</span>
+                        </a>
+                        <a href="{{ route('admin.rewards.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.rewards*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-indigo-400"></i>
+                            <span>Milestone Rewards</span>
+                        </a>
+                    @endif
+                </div>
+            </div>
+            @endif
+
+            <!-- Category 5: Content & Support -->
+            @php
+                $hasContent = $modMgr->isEnabled('news') || $modMgr->isEnabled('downloads') || $modMgr->isEnabled('gallery') || $modMgr->isEnabled('support') || $modMgr->isEnabled('faq');
+            @endphp
+            @if($hasContent)
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-wider {{ $isChronicles ? 'text-[#D4AF37] font-cinzel border-b border-[#3E2E4E] pb-1' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500') }} px-3 mb-2">Content &amp; Support</p>
                 <div class="space-y-1 text-xs">
                     @if($modMgr->isEnabled('news'))
                         <a href="{{ route('admin.news.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.news*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
                             <i data-lucide="newspaper" class="w-4 h-4"></i>
-                            <span>News &amp; Articles</span>
+                            <span>News &amp; CMS</span>
                         </a>
                     @endif
                     @if($modMgr->isEnabled('downloads'))
@@ -298,23 +382,13 @@
                     @if($modMgr->isEnabled('gallery'))
                         <a href="{{ route('admin.gallery.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.gallery*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
                             <i data-lucide="image" class="w-4 h-4"></i>
-                            <span>Gallery Manager</span>
+                            <span>Gallery Media</span>
                         </a>
                     @endif
-                    @if($modMgr->isEnabled('marketplace'))
-                        <a href="{{ route('admin.marketplace.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.marketplace*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                            <span>Player Marketplace</span>
-                        </a>
-                    @endif
-                    <a href="{{ route('admin.cash-shop.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.cash-shop*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="store" class="w-4 h-4 text-amber-400"></i>
-                        <span>Cash Shop / Item Mall</span>
-                    </a>
                     @if($modMgr->isEnabled('support'))
                         <a href="{{ route('admin.support.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.support*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
                             <i data-lucide="life-buoy" class="w-4 h-4"></i>
-                            <span>Support Center</span>
+                            <span>Support Tickets</span>
                         </a>
                     @endif
                     @if($modMgr->isEnabled('faq'))
@@ -323,23 +397,18 @@
                             <span>FAQ &amp; Knowledge Base</span>
                         </a>
                     @endif
-                    @if($modMgr->isEnabled('donations'))
-                        <a href="{{ route('admin.donations') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ (request()->routeIs('admin.donations') && !request()->routeIs('admin.donations.packages*')) ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                            <i data-lucide="credit-card" class="w-4 h-4"></i>
-                            <span>Donation Approvals</span>
-                        </a>
-                        <a href="{{ route('admin.donations.packages') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.donations.packages*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                            <i data-lucide="gift" class="w-4 h-4"></i>
-                            <span>Packages &amp; Rewards</span>
-                        </a>
-                    @endif
                 </div>
             </div>
             @endif
 
+            <!-- Category 6: System Configuration -->
             <div>
-                <p class="text-[10px] font-bold uppercase tracking-wider {{ $isChronicles ? 'text-[#D4AF37] font-cinzel border-b border-[#3E2E4E] pb-1' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500') }} px-3 mb-2">System</p>
+                <p class="text-[10px] font-bold uppercase tracking-wider {{ $isChronicles ? 'text-[#D4AF37] font-cinzel border-b border-[#3E2E4E] pb-1' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89] border-b border-[#3D2616] pb-1' : 'text-slate-500') }} px-3 mb-2">System Configuration</p>
                 <div class="space-y-1 text-xs">
+                    <a href="{{ route('admin.settings') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.settings*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                        <i data-lucide="sliders" class="w-4 h-4"></i>
+                        <span>Server Settings</span>
+                    </a>
                     <a href="{{ route('admin.modules') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.modules*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
                         <i data-lucide="package" class="w-4 h-4"></i>
                         <span>Modules Manager</span>
@@ -352,37 +421,9 @@
                         <i data-lucide="database" class="w-4 h-4"></i>
                         <span>Database &amp; YAML Importer</span>
                     </a>
-                    <a href="{{ route('admin.settings') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.settings*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="sliders" class="w-4 h-4"></i>
-                        <span>Server Settings</span>
-                    </a>
-                    @if($modMgr->isEnabled('rankings'))
-                    <a href="{{ route('admin.rankings.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.rankings*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="trophy" class="w-4 h-4"></i>
-                        <span>Rankings &amp; Sync</span>
-                    </a>
-                    <a href="{{ route('admin.badges.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.badges*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="award" class="w-4 h-4"></i>
-                        <span>Badge Management</span>
-                    </a>
-                    <a href="{{ route('admin.rewards.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.rewards*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="gift" class="w-4 h-4"></i>
-                        <span>Reward System</span>
-                    </a>
-                    @endif
-                    @if($modMgr->isEnabled('attendance'))
-                    <a href="{{ route('admin.attendance.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.attendance*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="calendar" class="w-4 h-4"></i>
-                        <span>Daily Rewards</span>
-                    </a>
-                    @endif
-                    <a href="{{ route('admin.logs') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.logs*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="file-text" class="w-4 h-4"></i>
-                        <span>Activity Logs</span>
-                    </a>
 
                     <!-- Developer Donation Button -->
-                    <button type="button" @click="devDonationOpen = true" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-semibold transition-all mt-3 group {{ $isChronicles ? 'bg-gradient-to-r from-[#D4AF37]/20 via-[#3A2410]/40 to-[#D4AF37]/10 text-[#FCE69B] border border-[#D4AF37]/50 hover:border-[#FFD700]' : 'bg-gradient-to-r from-amber-500/15 via-rose-500/10 to-indigo-500/15 text-amber-300 border border-amber-500/30 hover:border-amber-400 hover:text-white' }} shadow-sm">
+                    <button type="button" @click="devDonationOpen = true" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-semibold transition-all mt-4 group {{ $isChronicles ? 'bg-gradient-to-r from-[#D4AF37]/20 via-[#3A2410]/40 to-[#D4AF37]/10 text-[#FCE69B] border border-[#D4AF37]/50 hover:border-[#FFD700]' : 'bg-gradient-to-r from-amber-500/15 via-rose-500/10 to-indigo-500/15 text-amber-300 border border-amber-500/30 hover:border-amber-400 hover:text-white' }} shadow-sm">
                         <span class="flex items-center gap-2">
                             <i data-lucide="heart" class="w-4 h-4 text-rose-400 fill-rose-500/30 group-hover:scale-125 transition-transform"></i>
                             <span class="text-xs">Support Developer</span>

@@ -118,36 +118,6 @@ class CashShopProduct extends Model
         return "https://static.divine-pride.net/images/items/item/{$this->item_id}.png";
     }
 
-    public function getQuantityAttribute(): int
-    {
-        return $this->item_quantity;
-    }
-
-    public function getRefineAttribute(): int
-    {
-        return (int) ($this->item_metadata['refine'] ?? 0);
-    }
-
-    public function getSlotsAttribute(): int
-    {
-        return (int) ($this->item_metadata['slots'] ?? 0);
-    }
-
-    public function getBoundAttribute(): int
-    {
-        return (int) ($this->item_metadata['bound'] ?? 0);
-    }
-
-    public function getHasStockLimitAttribute(): bool
-    {
-        return !$this->unlimited_stock;
-    }
-
-    public function getPerAccountLimitAttribute(): int
-    {
-        return (int) $this->purchase_limit_per_account;
-    }
-
     public function scopePublished($query)
     {
         return $query->where('status', 'published');
@@ -202,3 +172,4 @@ class CashShopProduct extends Model
         return ['allowed' => true, 'reason' => null];
     }
 }
+

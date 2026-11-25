@@ -63,6 +63,12 @@ return [
             'version' => '1.0.0',
             'enabled' => true,
         ],
+        'cash_shop' => [
+            'name' => 'Cash Shop & Web Mall',
+            'description' => 'Web item mall for spending Cash Points with instant in-game escrow delivery.',
+            'version' => '1.0.0',
+            'enabled' => true,
+        ],
         'gallery' => [
             'name' => 'Media & Gallery',
             'description' => 'Screenshots, concept art, and community media gallery.',

@@ -72,6 +72,15 @@
                         <span>Base / Job:</span>
                         <strong class="text-cyan-400">{{ config('aether.rates.base') }} / {{ config('aether.rates.job') }}</strong>
                     </li>
+                    @if($ftModMgr->isEnabled('server_info'))
+                        <li class="pt-2.5">
+                            <a href="{{ route('server.status') }}" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 text-xs font-semibold hover:bg-emerald-900/50 hover:border-emerald-400 transition-all group">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span>Live Server Status</span>
+                                <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform"></i>
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </div>
         </div>

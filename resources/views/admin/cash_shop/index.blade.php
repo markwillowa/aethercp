@@ -20,15 +20,15 @@
         </div>
 
         <div class="flex items-center gap-2.5">
-            <a href="{{ route('admin.cash-shop.categories') }}" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/60 transition-colors flex items-center gap-1.5">
+            <a href="{{ route('admin.cash-shop.categories') }}" class="h-10 px-4 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/60 transition-colors inline-flex items-center gap-1.5">
                 <i data-lucide="folder-kanban" class="w-4 h-4 text-cyan-400"></i>
                 <span>Categories ({{ $stats['total_categories'] }})</span>
             </a>
-            <a href="{{ route('admin.cash-shop.purchases') }}" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/60 transition-colors flex items-center gap-1.5">
+            <a href="{{ route('admin.cash-shop.purchases') }}" class="h-10 px-4 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/60 transition-colors inline-flex items-center gap-1.5">
                 <i data-lucide="receipt" class="w-4 h-4 text-purple-400"></i>
                 <span>Purchase Ledger</span>
             </a>
-            <a href="{{ route('admin.cash-shop.create') }}" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-md shadow-amber-500/20 transition-all flex items-center gap-1.5 active:scale-95">
+            <a href="{{ route('admin.cash-shop.create') }}" class="h-10 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-md shadow-amber-500/20 transition-all inline-flex items-center gap-1.5 active:scale-95">
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 <span>New Product</span>
             </a>
@@ -82,31 +82,31 @@
     <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
         <form action="{{ route('admin.cash-shop.index') }}" method="GET" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <div class="relative flex-1">
-                <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search products by name, item ID, or slug..."
-                       class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-amber-500">
+                       class="w-full h-10 bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-amber-500 leading-none">
             </div>
 
             <div class="flex items-center gap-2 flex-wrap">
-                <select name="category_id" onchange="this.form.submit()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-amber-500 cursor-pointer">
+                <select name="category_id" onchange="this.form.submit()" class="h-10 bg-slate-950 border border-slate-800 rounded-xl px-3 text-xs text-slate-200 focus:border-amber-500 cursor-pointer leading-none">
                     <option value="">All Categories</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                     @endforeach
                 </select>
 
-                <select name="status" onchange="this.form.submit()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-amber-500 cursor-pointer">
+                <select name="status" onchange="this.form.submit()" class="h-10 bg-slate-950 border border-slate-800 rounded-xl px-3 text-xs text-slate-200 focus:border-amber-500 cursor-pointer leading-none">
                     <option value="">All Statuses</option>
                     <option value="published" {{ request('status') === 'published' ? 'selected' : '' }}>Published</option>
                     <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>Draft</option>
                     <option value="archived" {{ request('status') === 'archived' ? 'selected' : '' }}>Archived</option>
                 </select>
 
-                <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white transition-colors cursor-pointer">
+                <button type="submit" class="h-10 px-4 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white transition-colors cursor-pointer inline-flex items-center justify-center leading-none">
                     Filter
                 </button>
                 @if(request()->anyFilled(['search', 'category_id', 'status']))
-                    <a href="{{ route('admin.cash-shop.index') }}" class="px-3 py-2 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors" title="Clear Filters">
+                    <a href="{{ route('admin.cash-shop.index') }}" class="h-10 w-10 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors inline-flex items-center justify-center" title="Clear Filters">
                         <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
                     </a>
                 @endif

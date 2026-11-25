@@ -54,7 +54,7 @@
             </div>
         </div>
 
-        <button type="button" @click="openCreate()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-md shadow-amber-500/20 transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer">
+        <button type="button" @click="openCreate()" class="h-10 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-md shadow-amber-500/20 transition-all inline-flex items-center gap-1.5 active:scale-95 cursor-pointer">
             <i data-lucide="plus" class="w-4 h-4"></i>
             <span>Add Category</span>
         </button>

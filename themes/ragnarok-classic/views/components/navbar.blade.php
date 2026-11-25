@@ -134,6 +134,12 @@
                     <span>Database</span>
                 </a>
                 @endif
+                @if($modMgr->isEnabled('cash_shop'))
+                <a href="{{ route('cash-shop.index') }}" class="ro-nav-item {{ request()->routeIs('cash-shop.*') ? 'active' : '' }}">
+                    <i data-lucide="store" class="w-3.5 h-3.5"></i>
+                    <span>Cash Shop</span>
+                </a>
+                @endif
                 @if($modMgr->isEnabled('donations'))
                 <a href="{{ route('donations.index') }}" class="ro-nav-item {{ request()->routeIs('donations.*') ? 'active' : '' }}">
                     <i data-lucide="heart-handshake" class="w-3.5 h-3.5"></i>
@@ -164,6 +170,9 @@
             <a href="{{ route('woe.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">War of Emperium</a>
             @if($modMgr->isEnabled('database'))
             <a href="{{ route('itemdb.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">Item Compendium</a>
+            @endif
+            @if($modMgr->isEnabled('cash_shop'))
+            <a href="{{ route('cash-shop.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#FFDA89] hover:bg-[#3D281A] rounded">Cash Shop Mall</a>
             @endif
             @if($modMgr->isEnabled('donations'))
             <a href="{{ route('donations.index') }}" class="block px-3 py-2 text-xs font-serif font-bold text-[#E7D5BE] hover:bg-[#3D281A] rounded">Support & Donations</a>

@@ -70,36 +70,36 @@
         <!-- Source Filters -->
         <div class="flex flex-wrap items-center gap-2">
             <a href="{{ route('escrow.index', ['source' => 'all', 'status' => $status]) }}"
-               class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 {{ $source === 'all' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
+               class="h-9 px-3.5 rounded-xl text-xs font-semibold border transition-all inline-flex items-center gap-2 {{ $source === 'all' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
                 <span>All Sources</span>
                 <span class="px-1.5 py-0.2 rounded-full text-[10px] font-mono {{ $source === 'all' ? 'bg-cyan-400/30 text-cyan-200' : 'bg-slate-800 text-slate-400' }}">{{ $counts['total'] }}</span>
             </a>
             <a href="{{ route('escrow.index', ['source' => 'attendance', 'status' => $status]) }}"
-               class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 {{ $source === 'attendance' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
+               class="h-9 px-3.5 rounded-xl text-xs font-semibold border transition-all inline-flex items-center gap-2 {{ $source === 'attendance' ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
                 <i data-lucide="calendar" class="w-3.5 h-3.5 text-amber-400"></i>
                 <span>Daily Rewards</span>
                 <span class="px-1.5 py-0.2 rounded-full text-[10px] font-mono {{ $source === 'attendance' ? 'bg-amber-400/30 text-amber-200' : 'bg-slate-800 text-slate-400' }}">{{ $counts['attendance'] }}</span>
             </a>
             <a href="{{ route('escrow.index', ['source' => 'marketplace', 'status' => $status]) }}"
-               class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 {{ $source === 'marketplace' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
+               class="h-9 px-3.5 rounded-xl text-xs font-semibold border transition-all inline-flex items-center gap-2 {{ $source === 'marketplace' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
                 <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-cyan-400"></i>
                 <span>Marketplace</span>
                 <span class="px-1.5 py-0.2 rounded-full text-[10px] font-mono {{ $source === 'marketplace' ? 'bg-cyan-400/30 text-cyan-200' : 'bg-slate-800 text-slate-400' }}">{{ $counts['marketplace'] }}</span>
             </a>
             <a href="{{ route('escrow.index', ['source' => 'cash_shop', 'status' => $status]) }}"
-               class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 {{ $source === 'cash_shop' ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
+               class="h-9 px-3.5 rounded-xl text-xs font-semibold border transition-all inline-flex items-center gap-2 {{ $source === 'cash_shop' ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
                 <i data-lucide="store" class="w-3.5 h-3.5 text-indigo-400"></i>
                 <span>Cash Shop</span>
                 <span class="px-1.5 py-0.2 rounded-full text-[10px] font-mono {{ $source === 'cash_shop' ? 'bg-indigo-400/30 text-indigo-200' : 'bg-slate-800 text-slate-400' }}">{{ $counts['cash_shop'] ?? 0 }}</span>
             </a>
             <a href="{{ route('escrow.index', ['source' => 'ranking', 'status' => $status]) }}"
-               class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 {{ $source === 'ranking' ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
+               class="h-9 px-3.5 rounded-xl text-xs font-semibold border transition-all inline-flex items-center gap-2 {{ $source === 'ranking' ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
                 <i data-lucide="trophy" class="w-3.5 h-3.5 text-purple-400"></i>
                 <span>Rankings</span>
                 <span class="px-1.5 py-0.2 rounded-full text-[10px] font-mono {{ $source === 'ranking' ? 'bg-purple-400/30 text-purple-200' : 'bg-slate-800 text-slate-400' }}">{{ $counts['ranking'] }}</span>
             </a>
             <a href="{{ route('escrow.index', ['source' => 'donation', 'status' => $status]) }}"
-               class="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 {{ $source === 'donation' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
+               class="h-9 px-3.5 rounded-xl text-xs font-semibold border transition-all inline-flex items-center gap-2 {{ $source === 'donation' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
                 <i data-lucide="heart" class="w-3.5 h-3.5 text-emerald-400"></i>
                 <span>Donations</span>
                 <span class="px-1.5 py-0.2 rounded-full text-[10px] font-mono {{ $source === 'donation' ? 'bg-emerald-400/30 text-emerald-200' : 'bg-slate-800 text-slate-400' }}">{{ $counts['donation'] }}</span>
@@ -107,17 +107,17 @@
         </div>
 
         <!-- Status Filter (Unclaimed vs Claimed) -->
-        <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 shrink-0">
+        <div class="h-9 flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 shrink-0">
             <a href="{{ route('escrow.index', ['source' => $source, 'status' => 'unclaimed']) }}"
-               class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all {{ $status === 'unclaimed' ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 shadow-sm' : 'text-slate-400 hover:text-white' }}">
+               class="h-7 px-3 rounded-lg text-xs font-bold inline-flex items-center transition-all {{ $status === 'unclaimed' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm' : 'text-slate-400 hover:text-white' }}">
                 Unclaimed ({{ $counts['unclaimed'] }})
             </a>
             <a href="{{ route('escrow.index', ['source' => $source, 'status' => 'claimed']) }}"
-               class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all {{ $status === 'claimed' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-white' }}">
+               class="h-7 px-3 rounded-lg text-xs font-bold inline-flex items-center transition-all {{ $status === 'claimed' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-white' }}">
                 Claimed History ({{ $counts['claimed'] }})
             </a>
             <a href="{{ route('escrow.index', ['source' => $source, 'status' => 'all']) }}"
-               class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ $status === 'all' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white' }}">
+               class="h-7 px-2.5 rounded-lg text-xs font-bold inline-flex items-center transition-all {{ $status === 'all' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white' }}">
                 All
             </a>
         </div>
@@ -199,25 +199,25 @@
                         </div>
 
                         <!-- Actions / Transfer Controls -->
-                        <div class="shrink-0 flex items-center gap-3 flex-wrap">
+                        <div class="shrink-0 flex items-center gap-2.5 flex-wrap">
                             @if($item->status === 'unclaimed')
                                 <!-- Option 1: Transfer to Kafra Storage -->
-                                <form method="POST" action="{{ route('escrow.claim-storage', $item->id) }}">
+                                <form method="POST" action="{{ route('escrow.claim-storage', $item->id) }}" class="inline-flex m-0 p-0">
                                     @csrf
-                                    <button type="submit" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer">
-                                        <i data-lucide="archive" class="w-3.5 h-3.5"></i>
+                                    <button type="submit" class="h-9 px-4 rounded-xl text-xs font-bold bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/10 inline-flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer">
+                                        <i data-lucide="archive" class="w-3.5 h-3.5 text-cyan-400"></i>
                                         <span>Transfer to Storage</span>
                                     </button>
                                 </form>
 
                                 <!-- Option 2: Transfer directly to Character Inventory -->
                                 @if(count($characters) > 0)
-                                    <div x-data="{ openCharSelect: false }" class="relative" :class="{ 'z-50': openCharSelect, 'z-10': !openCharSelect }">
+                                    <div x-data="{ openCharSelect: false }" class="relative inline-flex" :class="{ 'z-50': openCharSelect, 'z-10': !openCharSelect }">
                                         <button type="button" @click="openCharSelect = !openCharSelect"
-                                                class="px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5 transition-all cursor-pointer shadow-sm shadow-emerald-500/10 active:scale-95">
-                                            <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
+                                                class="h-9 px-4 rounded-xl text-xs font-bold bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 shadow-sm shadow-emerald-500/10 inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95">
+                                            <i data-lucide="user-check" class="w-3.5 h-3.5 text-emerald-400"></i>
                                             <span>Transfer to Character</span>
-                                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': openCharSelect }"></i>
+                                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-emerald-400 transition-transform duration-200" :class="{ 'rotate-180': openCharSelect }"></i>
                                         </button>
 
                                         <!-- Character Selection Dropdown -->
@@ -229,7 +229,7 @@
                                              x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                                              x-transition:leave-end="opacity-0 translate-y-1 scale-95"
                                              style="display: none;"
-                                             class="absolute right-0 top-full mt-2 w-80 bg-slate-950 border border-emerald-500/30 rounded-2xl shadow-2xl shadow-black/80 p-4 z-50 space-y-3 ring-1 ring-white/10">
+                                             class="absolute right-0 top-full mt-2 w-80 bg-slate-950/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl shadow-2xl p-4 z-50 space-y-3">
                                             <div class="border-b border-slate-800/80 pb-2.5">
                                                 <p class="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
                                                     <i data-lucide="user" class="w-3.5 h-3.5 text-emerald-400"></i>
@@ -296,7 +296,7 @@
                             {{ $status === 'claimed' ? 'No Claimed History Found' : 'Your Escrow Inbox is Empty' }}
                         </h3>
                         <p class="text-xs text-slate-400 leading-relaxed max-w-md mx-auto">
-                            When you claim daily rewards, purchase items in the marketplace, climb PvP leaderboards, or contribute donations, all items arrive here safely until you transfer them to your game.
+                            When you purchase items in the Cash Shop, trade in the Marketplace, claim daily rewards, or contribute donations, all items arrive here safely until you transfer them to your game.
                         </p>
                     </div>
 
@@ -345,13 +345,19 @@
 
                     <!-- Action Buttons -->
                     <div class="pt-2 flex items-center justify-center gap-3 flex-wrap">
-                        <a href="{{ route('marketplace.index') }}" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-lg shadow-cyan-500/20 transition-all flex items-center gap-2 active:scale-95">
-                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                            <span>Browse Marketplace</span>
+                        @if(app(\App\Services\ModuleManager::class)->isEnabled('cash_shop'))
+                            <a href="{{ route('cash-shop.index') }}" class="h-10 px-5 rounded-xl text-xs font-bold bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/40 transition-colors inline-flex items-center gap-2">
+                                <i data-lucide="store" class="w-4 h-4 text-indigo-400"></i>
+                                <span>Cash Shop</span>
+                            </a>
+                        @endif
+                        <a href="{{ route('marketplace.index') }}" class="h-10 px-5 rounded-xl text-xs font-bold bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 transition-colors inline-flex items-center gap-2">
+                            <i data-lucide="shopping-bag" class="w-4 h-4 text-cyan-400"></i>
+                            <span>Marketplace</span>
                         </a>
-                        <a href="{{ route('attendance.index') }}" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 transition-colors flex items-center gap-2">
-                            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-                            <span>Claim Daily Rewards</span>
+                        <a href="{{ route('attendance.index') }}" class="h-10 px-5 rounded-xl text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 transition-colors inline-flex items-center gap-2">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5 text-amber-400"></i>
+                            <span>Daily Rewards</span>
                         </a>
                     </div>
                 </div>

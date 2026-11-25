@@ -45,7 +45,11 @@ class ThemeManager
 
     public function getActiveTheme(): string
     {
-        return 'aether-dark';
+        try {
+            return SiteSetting::get('active_theme', 'aether-dark') ?: 'aether-dark';
+        } catch (\Throwable $e) {
+            return 'aether-dark';
+        }
     }
 
     public function getActiveThemeData(): array
@@ -90,11 +94,12 @@ class ThemeManager
 
     public function setActiveTheme(string $theme): bool
     {
-        if ($theme !== 'aether-dark') {
+        if (!$this->themeExists($theme)) {
             return false;
         }
 
         SiteSetting::set('active_theme', $theme);
+        $this->activeTheme = $theme;
 
         // Apply immediately
         $this->apply();
@@ -140,9 +145,9 @@ class ThemeManager
                         'description' => $manifest['description'] ?? 'Custom Community Theme',
                         'version' => $manifest['version'] ?? '1.0.0',
                         'author' => $manifest['author'] ?? 'Third Party',
-                        'is_active' => false,
+                        'is_active' => ($activeTheme === $slug),
                         'is_core' => false,
-                        'is_disabled' => true,
+                        'is_disabled' => false,
                     ];
                 }
             }

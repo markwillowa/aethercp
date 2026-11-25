@@ -35,6 +35,7 @@
                 </h4>
                 <ul class="space-y-2 text-sm text-slate-300">
                     <li><a href="{{ route('home') }}" class="hover:text-amber-300 transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3 h-3 text-amber-500/60"></i> Server Home</a></li>
+                    <li><a href="{{ route('server.status') }}" class="hover:text-amber-300 transition-colors flex items-center gap-1.5"><i data-lucide="activity" class="w-3 h-3 text-amber-500/60"></i> Server Status</a></li>
                     @if($elysianModMgr->isEnabled('news'))
                         <li><a href="{{ route('news.index') }}" class="hover:text-amber-300 transition-colors flex items-center gap-1.5"><i data-lucide="chevron-right" class="w-3 h-3 text-amber-500/60"></i> Chronicle Dispatches</a></li>
                     @endif

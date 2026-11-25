@@ -57,6 +57,11 @@
                     Downloads
                 </a>
                 @endif
+                @if($modMgr->isEnabled('cash_shop'))
+                <a href="{{ route('cash-shop.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('cash-shop.*') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                    Cash Shop
+                </a>
+                @endif
                 @if($modMgr->isEnabled('donations'))
                 <a href="{{ route('donations.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('donations.*') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                     Donations
@@ -162,6 +167,12 @@
         @endif
         @if($modMgr->isEnabled('downloads'))
         <a href="{{ route('downloads.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Downloads</a>
+        @endif
+        @if($modMgr->isEnabled('cash_shop'))
+        <a href="{{ route('cash-shop.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-amber-300 hover:bg-slate-800">Cash Shop</a>
+        @endif
+        @if($modMgr->isEnabled('donations'))
+        <a href="{{ route('donations.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Donations</a>
         @endif
         @if($modMgr->isEnabled('donations'))
         <a href="{{ route('donations.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Donations</a>

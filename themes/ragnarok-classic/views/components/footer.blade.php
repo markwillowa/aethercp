@@ -41,6 +41,7 @@
                 </h4>
                 <ul class="space-y-1.5 text-xs text-[#C5B090]">
                     <li><a href="{{ route('home') }}" class="hover:text-[#FFDA89] transition-colors flex items-center gap-1"><i data-lucide="chevron-right" class="w-3 h-3 text-[#7D5D39]"></i> Server Home</a></li>
+                    <li><a href="{{ route('server.status') }}" class="hover:text-[#FFDA89] transition-colors flex items-center gap-1"><i data-lucide="activity" class="w-3 h-3 text-[#7D5D39]"></i> Server Status</a></li>
                     @if($rcModMgr->isEnabled('news'))
                         <li><a href="{{ route('news.index') }}" class="hover:text-[#FFDA89] transition-colors flex items-center gap-1"><i data-lucide="chevron-right" class="w-3 h-3 text-[#7D5D39]"></i> Prontera News</a></li>
                     @endif

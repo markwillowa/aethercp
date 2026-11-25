@@ -34,11 +34,6 @@
                         Guilds
                     </a>
                 @endif
-                @if($modMgr->isEnabled('server_info'))
-                    <a href="{{ route('server.status') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('server.status') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
-                        Status
-                    </a>
-                @endif
                 @if($modMgr->isEnabled('character'))
                     <a href="{{ route('characters.online') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('characters.online') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                         Online
@@ -57,12 +52,14 @@
                         Marketplace
                     </a>
                 @endif
-                <a href="{{ route('cash-shop.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('cash-shop.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
-                    <span class="flex items-center gap-1.5">
-                        <i data-lucide="store" class="w-4 h-4 text-cyan-400"></i>
-                        <span>Cash Shop</span>
-                    </span>
-                </a>
+                @if($modMgr->isEnabled('cash_shop'))
+                    <a href="{{ route('cash-shop.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('cash-shop.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                        <span class="flex items-center gap-1.5">
+                            <i data-lucide="store" class="w-4 h-4 text-cyan-400"></i>
+                            <span>Cash Shop</span>
+                        </span>
+                    </a>
+                @endif
                 @if($modMgr->isEnabled('donations'))
                     <a href="{{ route('donations.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('donations.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
                         Donations
@@ -104,14 +101,16 @@
                                 <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i>
                                 <span>My Characters</span>
                             </a>
-                            <a href="{{ route('cash-shop.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
-                                <i data-lucide="store" class="w-4 h-4 text-cyan-400"></i>
-                                <span>Cash Shop Mall</span>
-                            </a>
-                            <a href="{{ route('cash-shop.history') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
-                                <i data-lucide="receipt" class="w-4 h-4 text-slate-400"></i>
-                                <span>Shop Orders</span>
-                            </a>
+                            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('cash_shop'))
+                                <a href="{{ route('cash-shop.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                                    <i data-lucide="store" class="w-4 h-4 text-cyan-400"></i>
+                                    <span>Cash Shop Mall</span>
+                                </a>
+                                <a href="{{ route('cash-shop.history') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                                    <i data-lucide="receipt" class="w-4 h-4 text-slate-400"></i>
+                                    <span>Shop Orders</span>
+                                </a>
+                            @endif
                             @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('attendance'))
                                 <a href="{{ route('attendance.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
                                     <i data-lucide="calendar" class="w-4 h-4 text-amber-400"></i>
@@ -196,10 +195,12 @@
         @if($modMgr->isEnabled('marketplace'))
             <a href="{{ route('marketplace.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Marketplace</a>
         @endif
-        <a href="{{ route('cash-shop.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-cyan-400 hover:bg-slate-800 flex items-center justify-between">
-            <span>Cash Shop Mall</span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">New</span>
-        </a>
+        @if($modMgr->isEnabled('cash_shop'))
+            <a href="{{ route('cash-shop.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-cyan-400 hover:bg-slate-800 flex items-center justify-between">
+                <span>Cash Shop Mall</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">New</span>
+            </a>
+        @endif
         @if($modMgr->isEnabled('donations'))
             <a href="{{ route('donations.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Donations</a>
         @endif

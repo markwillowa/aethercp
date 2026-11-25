@@ -44,6 +44,13 @@
                     <span class="text-[#564766]">|</span>
                     <a href="{{ route('support.index') }}">Support</a>
                 @endif
+                @if($fModMgr->isEnabled('server_info'))
+                    <span class="text-[#564766]">|</span>
+                    <a href="{{ route('server.status') }}" class="text-[#84E1BC] hover:text-[#FFD700] inline-flex items-center gap-1 transition-colors">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse"></span>
+                        <span>Server Status</span>
+                    </a>
+                @endif
             </div>
 
             <!-- Right: Follow Us -->
