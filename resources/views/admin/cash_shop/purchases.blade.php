@@ -22,30 +22,34 @@
                 Total Sales: <strong class="text-cyan-400">{{ number_format($stats['total_sales']) }}</strong>
             </span>
             <span class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300">
-                Volume: <strong class="text-amber-400">{{ number_format($stats['total_cp']) }} CP</strong>
+                Volume: <strong class="text-purple-400">{{ number_format($stats['total_cp']) }} CP</strong>
             </span>
         </div>
     </div>
 
-    <!-- Search & Status Filter -->
-    <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+    <!-- Search & Status Filter (Marketplace Theme) -->
+    <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg">
         <form action="{{ route('admin.cash-shop.purchases') }}" method="GET" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <div class="relative flex-1">
-                <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            <div class="relative flex-1" style="position: relative; display: flex; align-items: center;">
+                <div style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; z-index: 10;">
+                    <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
+                </div>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by purchase code, account ID, username, or item..."
-                       class="w-full h-10 bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-amber-500 leading-none">
+                       style="width: 100%; padding-left: 44px !important; padding-right: 16px !important; height: 42px;"
+                       class="w-full bg-slate-950 border border-slate-800 rounded-xl text-xs font-medium text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all leading-none">
             </div>
 
             <div class="flex items-center gap-2">
-                <select name="status" onchange="this.form.submit()" class="h-10 bg-slate-950 border border-slate-800 rounded-xl px-3.5 text-xs text-slate-200 focus:border-amber-500 cursor-pointer leading-none">
+                <select name="status" onchange="this.form.submit()" style="height: 42px;" class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 cursor-pointer leading-none">
                     <option value="">All Statuses</option>
                     <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
                     <option value="failed" {{ request('status') === 'failed' ? 'selected' : '' }}>Failed</option>
                     <option value="refunded" {{ request('status') === 'refunded' ? 'selected' : '' }}>Refunded</option>
                 </select>
 
-                <button type="submit" class="h-10 px-4 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white cursor-pointer inline-flex items-center justify-center leading-none">
-                    Filter
+                <button type="submit" style="height: 42px;" class="px-5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 transition-all cursor-pointer inline-flex items-center justify-center leading-none active:scale-95">
+                    <i data-lucide="search" class="w-3.5 h-3.5 mr-1.5"></i>
+                    <span>Filter</span>
                 </button>
             </div>
         </form>

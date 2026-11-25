@@ -37,14 +37,14 @@
             <div class="flex items-center gap-3 shrink-0 flex-wrap">
                 <!-- Balance Card -->
                 <div class="p-3.5 rounded-2xl bg-slate-950/90 border border-slate-800 shadow-inner flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold text-sm shrink-0">
-                        CP
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm shrink-0">
+                        <i data-lucide="gem" class="w-5 h-5"></i>
                     </div>
                     <div>
                         <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Available Balance</span>
                         @auth
-                            <span class="text-base sm:text-lg font-black text-amber-300 font-mono block leading-tight">
-                                {{ number_format($balance) }} <span class="text-xs font-normal text-slate-400">Points</span>
+                            <span class="text-base sm:text-lg font-black text-purple-300 font-mono block leading-tight">
+                                {{ number_format($balance) }} <span class="text-xs font-normal text-purple-400/80">CP</span>
                             </span>
                         @else
                             <a href="{{ route('login') }}" class="text-xs text-cyan-400 hover:underline font-semibold block">Log in to view</a>
@@ -54,7 +54,7 @@
 
                 <!-- Action Buttons -->
                 @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('donations'))
-                    <a href="{{ route('donations.index') }}" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-md shadow-amber-500/20 transition-all flex items-center gap-2 active:scale-95">
+                    <a href="{{ route('donations.index') }}" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 transition-all flex items-center gap-2 active:scale-95">
                         <i data-lucide="plus-circle" class="w-4 h-4"></i>
                         <span>Get Cash Points</span>
                     </a>
@@ -93,20 +93,20 @@
         <div class="space-y-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                    <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400"></i>
                     <h2 class="text-sm font-bold text-white uppercase tracking-wider">Featured Items &amp; Hot Deals</h2>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 @foreach($featuredProducts as $item)
-                    <div class="p-4 rounded-2xl bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border border-amber-500/30 hover:border-amber-500/60 transition-all shadow-xl group relative overflow-hidden flex flex-col justify-between">
-                        <div class="absolute -top-12 -right-12 w-24 h-24 bg-amber-500/10 rounded-full blur-xl pointer-events-none"></div>
+                    <div class="p-4 rounded-2xl bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border border-cyan-500/30 hover:border-cyan-500/60 transition-all shadow-xl group relative overflow-hidden flex flex-col justify-between">
+                        <div class="absolute -top-12 -right-12 w-24 h-24 bg-cyan-500/10 rounded-full blur-xl pointer-events-none"></div>
 
                         <div>
                             <!-- Header with badges -->
                             <div class="flex items-center justify-between gap-2 mb-3">
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                                     ★ Featured
                                 </span>
                                 @if($item->is_on_sale)
@@ -144,14 +144,14 @@
                                         {{ number_format($item->cash_points_price) }} CP
                                     </span>
                                 @endif
-                                <span class="text-sm font-black text-amber-300 font-mono">
-                                    {{ number_format($item->effective_price) }} <span class="text-[10px] font-sans text-slate-400">CP</span>
+                                <span class="text-sm font-black text-purple-300 font-mono">
+                                    {{ number_format($item->effective_price) }} <span class="text-[10px] font-mono text-purple-400/80">CP</span>
                                 </span>
                             </div>
 
                             <button type="button"
                                     @click="openModal({{ json_encode($item) }})"
-                                    class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition-all flex items-center gap-1 shadow-sm active:scale-95 cursor-pointer">
+                                    class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 transition-all flex items-center gap-1.5 shadow-md shadow-cyan-500/20 active:scale-95 cursor-pointer">
                                 <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i>
                                 <span>Buy</span>
                             </button>
@@ -162,18 +162,53 @@
         </div>
     @endif
 
-    <!-- 3. Category Tabs & Filters Bar -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <!-- Category Filter Pills -->
-        <div class="flex flex-wrap items-center gap-2">
+    <!-- 3. Category Tabs & Search Console (Marketplace Theme) -->
+    <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg space-y-3">
+        <!-- Search, Sort & Action Row -->
+        <form method="GET" action="{{ route('cash-shop.index') }}" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <input type="hidden" name="category" value="{{ $selectedCategorySlug }}">
+
+            <div class="relative flex-1" style="position: relative; display: flex; align-items: center;">
+                <div style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; z-index: 10;">
+                    <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
+                </div>
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Search cash shop products by name, item ID, or description..."
+                       style="width: 100%; padding-left: 48px !important; padding-right: 1.25rem !important; height: 42px;"
+                       class="bg-slate-950 border border-slate-800 rounded-xl text-xs font-medium text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all shadow-inner leading-none">
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+                <select name="sort" onchange="this.form.submit()" style="height: 42px;" class="px-3.5 bg-slate-950 border border-slate-800 rounded-xl text-xs font-medium text-slate-200 focus:outline-none focus:border-cyan-500 cursor-pointer leading-none">
+                    <option value="featured" {{ request('sort', 'featured') === 'featured' ? 'selected' : '' }}>Featured First</option>
+                    <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
+                    <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
+                    <option value="newest" {{ request('sort') === 'newest' ? 'selected' : '' }}>Newest Items</option>
+                </select>
+
+                <button type="submit" style="height: 42px;" class="px-5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:from-cyan-400 hover:to-blue-500 cursor-pointer inline-flex items-center gap-1.5 shadow-md shadow-cyan-500/20 active:scale-95 leading-none">
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                    <span>Search</span>
+                </button>
+
+                @if(request('q') || request('sort') || ($selectedCategorySlug && $selectedCategorySlug !== 'all'))
+                    <a href="{{ route('cash-shop.index') }}" style="height: 42px;" class="px-3.5 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 cursor-pointer inline-flex items-center gap-1 leading-none" title="Reset Filters">
+                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                        <span>Reset</span>
+                    </a>
+                @endif
+            </div>
+        </form>
+
+        <!-- Category Filter Pills with smooth horizontal scrolling -->
+        <div class="pt-3 border-t border-slate-800 flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar">
             <a href="{{ route('cash-shop.index', ['category' => 'all', 'sort' => request('sort'), 'q' => request('q')]) }}"
-               class="h-10 px-3.5 rounded-xl text-xs font-semibold border transition-all inline-flex items-center gap-2 {{ $selectedCategorySlug === 'all' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
-                <i data-lucide="grid" class="w-3.5 h-3.5"></i>
+               class="h-9 px-4 rounded-xl text-xs font-semibold transition-all inline-flex items-center gap-2 shrink-0 {{ $selectedCategorySlug === 'all' ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 shadow-sm' : 'text-slate-400 hover:text-white bg-slate-950 border border-slate-800 hover:border-slate-700' }}">
+                <i data-lucide="grid" class="w-3.5 h-3.5 text-cyan-400"></i>
                 <span>All Categories</span>
             </a>
             @foreach($categories as $cat)
                 <a href="{{ route('cash-shop.index', ['category' => $cat->slug, 'sort' => request('sort'), 'q' => request('q')]) }}"
-                   class="h-10 px-3.5 rounded-xl text-xs font-semibold border transition-all inline-flex items-center gap-2 {{ $selectedCategorySlug === $cat->slug ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-sm' : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white' }}">
+                   class="h-9 px-4 rounded-xl text-xs font-semibold transition-all inline-flex items-center gap-2 shrink-0 {{ $selectedCategorySlug === $cat->slug ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 shadow-sm' : 'text-slate-400 hover:text-white bg-slate-950 border border-slate-800 hover:border-slate-700' }}">
                     @if(!empty($cat->icon))
                         <i data-lucide="{{ $cat->icon }}" class="w-3.5 h-3.5 text-cyan-400"></i>
                     @endif
@@ -184,31 +219,13 @@
                 </a>
             @endforeach
         </div>
-
-        <!-- Search & Sorting Controls -->
-        <form method="GET" action="{{ route('cash-shop.index') }}" class="flex items-center gap-2 shrink-0">
-            <input type="hidden" name="category" value="{{ $selectedCategorySlug }}">
-            
-            <div class="relative">
-                <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                <input type="text" name="q" value="{{ request('q') }}" placeholder="Search products..."
-                       class="h-10 pl-9 pr-3 text-xs bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors w-44 sm:w-56 leading-none">
-            </div>
-
-            <select name="sort" onchange="this.form.submit()" class="h-10 px-3 text-xs bg-slate-900 border border-slate-800 rounded-xl text-slate-300 focus:outline-none focus:border-cyan-500 transition-colors cursor-pointer leading-none">
-                <option value="featured" {{ request('sort', 'featured') === 'featured' ? 'selected' : '' }}>Featured</option>
-                <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
-                <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
-                <option value="newest" {{ request('sort') === 'newest' ? 'selected' : '' }}>Newest</option>
-            </select>
-        </form>
     </div>
 
     <!-- 4. Products Catalog Grid -->
     <div class="bg-slate-900/80 border border-slate-800 rounded-3xl shadow-2xl backdrop-blur-xl">
         <div class="p-5 border-b border-slate-800 flex items-center justify-between rounded-t-3xl bg-slate-950/40">
             <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+                <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
                     <i data-lucide="package" class="w-4 h-4"></i>
                 </div>
                 <div>
@@ -240,7 +257,7 @@
                                         -{{ $product->discount_percent }}% OFF
                                     </span>
                                 @elseif($product->is_featured)
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                                         Featured
                                     </span>
                                 @endif
@@ -257,7 +274,7 @@
                                     </a>
                                     <div class="flex items-center gap-1.5 mt-1 flex-wrap">
                                         @if($product->refine > 0)
-                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 font-mono">
+                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-cyan-600 text-white font-mono shadow">
                                                 +{{ $product->refine }} Refine
                                             </span>
                                         @endif
@@ -306,8 +323,8 @@
                                         {{ number_format($product->cash_points_price) }} CP
                                     </span>
                                 @endif
-                                <span class="text-base font-black text-amber-300 font-mono">
-                                    {{ number_format($product->effective_price) }} <span class="text-xs font-sans text-slate-400">CP</span>
+                                <span class="text-base font-black text-purple-300 font-mono">
+                                    {{ number_format($product->effective_price) }} <span class="text-xs font-mono text-purple-400/80">CP</span>
                                 </span>
                             </div>
 
@@ -399,7 +416,7 @@
                             <span class="text-cyan-400" x-text="' • ' + activeProduct?.quantity + 'x per purchase'"></span>
                         </template>
                     </p>
-                    <p class="text-xs font-mono font-bold text-amber-300 mt-1" x-text="formatNumber(unitPrice) + ' CP each'"></p>
+                    <p class="text-xs font-mono font-bold text-purple-300 mt-1" x-text="formatNumber(unitPrice) + ' CP each'"></p>
                 </div>
             </div>
 
@@ -428,7 +445,7 @@
                 </div>
                 <div class="flex items-center justify-between text-slate-400">
                     <span>Order Total:</span>
-                    <span class="font-mono font-bold text-amber-300" x-text="'-' + formatNumber(totalCost) + ' CP'"></span>
+                    <span class="font-mono font-bold text-purple-300" x-text="'-' + formatNumber(totalCost) + ' CP'"></span>
                 </div>
                 <div class="border-t border-slate-800 pt-2 flex items-center justify-between font-bold">
                     <span :class="remainingBalance < 0 ? 'text-rose-400' : 'text-slate-300'">Balance After Purchase:</span>
@@ -443,7 +460,7 @@
                     <span>Insufficient Cash Points.</span>
                 </div>
                 @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('donations'))
-                    <a href="{{ route('donations.index') }}" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-500 text-slate-950 hover:bg-amber-400 shrink-0">
+                    <a href="{{ route('donations.index') }}" class="px-3 py-1 rounded-lg text-[10px] font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-sm shrink-0">
                         Top up
                     </a>
                 @endif

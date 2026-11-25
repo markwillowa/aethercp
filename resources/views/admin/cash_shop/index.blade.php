@@ -9,7 +9,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-2">
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
                     Monetization &amp; Economy
                 </span>
                 <span class="text-xs text-slate-500">•</span>
@@ -28,7 +28,7 @@
                 <i data-lucide="receipt" class="w-4 h-4 text-purple-400"></i>
                 <span>Purchase Ledger</span>
             </a>
-            <a href="{{ route('admin.cash-shop.create') }}" class="h-10 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-md shadow-amber-500/20 transition-all inline-flex items-center gap-1.5 active:scale-95">
+            <a href="{{ route('admin.cash-shop.create') }}" class="h-10 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 transition-all inline-flex items-center gap-1.5 active:scale-95">
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 <span>New Product</span>
             </a>
@@ -38,7 +38,7 @@
     <!-- Metric Summary Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+            <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
                 <i data-lucide="shopping-bag" class="w-5 h-5"></i>
             </div>
             <div>
@@ -78,36 +78,41 @@
         </div>
     </div>
 
-    <!-- Filter Console -->
-    <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+    <!-- Filter Console (Marketplace Theme) -->
+    <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-lg">
         <form action="{{ route('admin.cash-shop.index') }}" method="GET" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <div class="relative flex-1">
-                <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            <div class="relative flex-1" style="position: relative; display: flex; align-items: center;">
+                <div style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; z-index: 10;">
+                    <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
+                </div>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search products by name, item ID, or slug..."
-                       class="w-full h-10 bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-amber-500 leading-none">
+                       style="width: 100%; padding-left: 44px !important; padding-right: 16px !important; height: 42px;"
+                       class="w-full bg-slate-950 border border-slate-800 rounded-xl text-xs font-medium text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all leading-none">
             </div>
 
             <div class="flex items-center gap-2 flex-wrap">
-                <select name="category_id" onchange="this.form.submit()" class="h-10 bg-slate-950 border border-slate-800 rounded-xl px-3 text-xs text-slate-200 focus:border-amber-500 cursor-pointer leading-none">
+                <select name="category_id" onchange="this.form.submit()" style="height: 42px;" class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 cursor-pointer leading-none">
                     <option value="">All Categories</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                     @endforeach
                 </select>
 
-                <select name="status" onchange="this.form.submit()" class="h-10 bg-slate-950 border border-slate-800 rounded-xl px-3 text-xs text-slate-200 focus:border-amber-500 cursor-pointer leading-none">
+                <select name="status" onchange="this.form.submit()" style="height: 42px;" class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 cursor-pointer leading-none">
                     <option value="">All Statuses</option>
                     <option value="published" {{ request('status') === 'published' ? 'selected' : '' }}>Published</option>
                     <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>Draft</option>
                     <option value="archived" {{ request('status') === 'archived' ? 'selected' : '' }}>Archived</option>
                 </select>
 
-                <button type="submit" class="h-10 px-4 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white transition-colors cursor-pointer inline-flex items-center justify-center leading-none">
-                    Filter
+                <button type="submit" style="height: 42px;" class="px-5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 transition-all cursor-pointer inline-flex items-center justify-center leading-none active:scale-95">
+                    <i data-lucide="search" class="w-3.5 h-3.5 mr-1.5"></i>
+                    <span>Filter</span>
                 </button>
                 @if(request()->anyFilled(['search', 'category_id', 'status']))
-                    <a href="{{ route('admin.cash-shop.index') }}" class="h-10 w-10 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors inline-flex items-center justify-center" title="Clear Filters">
+                    <a href="{{ route('admin.cash-shop.index') }}" style="height: 42px;" class="px-3.5 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors inline-flex items-center justify-center gap-1 leading-none" title="Clear Filters">
                         <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                        <span>Reset</span>
                     </a>
                 @endif
             </div>
@@ -137,7 +142,7 @@
                                     <div class="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 p-1 relative overflow-hidden shadow-inner">
                                         <img src="{{ $p->icon_url }}" alt="{{ $p->name }}" class="w-7 h-7 object-contain" onerror="this.src='/images/item-placeholder.png'">
                                         @if(($p->item_metadata['refine'] ?? 0) > 0)
-                                            <span class="absolute -top-1 -right-1 px-1 rounded text-[8px] font-bold bg-amber-600 text-white font-mono shadow">
+                                            <span class="absolute -top-1 -right-1 px-1 rounded text-[8px] font-bold bg-cyan-600 text-white font-mono shadow">
                                                 +{{ $p->item_metadata['refine'] }}
                                             </span>
                                         @endif
@@ -146,7 +151,7 @@
                                         <div class="flex items-center gap-1.5 flex-wrap">
                                             <span class="font-bold text-white text-sm">{{ $p->name }}</span>
                                             @if($p->is_featured)
-                                                <span class="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                                <span class="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                                                     Featured
                                                 </span>
                                             @endif
@@ -171,7 +176,7 @@
                                         <span class="text-[10px] line-through text-slate-500 block">{{ number_format($p->cash_points_price) }} CP</span>
                                     </div>
                                 @else
-                                    <span class="text-amber-300 text-sm">{{ number_format($p->cash_points_price) }} CP</span>
+                                    <span class="text-purple-300 text-sm">{{ number_format($p->cash_points_price) }} <span class="text-[10px] text-purple-400 font-mono">CP</span></span>
                                 @endif
                             </td>
 
@@ -233,7 +238,7 @@
                                 <i data-lucide="shopping-bag" class="w-10 h-10 text-slate-600 mx-auto mb-2"></i>
                                 <p class="text-sm font-bold text-white">No products found</p>
                                 <p class="text-xs text-slate-500 mt-1">Get started by creating your first Cash Shop product.</p>
-                                <a href="{{ route('admin.cash-shop.create') }}" class="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 hover:bg-amber-400 transition-colors">
+                                <a href="{{ route('admin.cash-shop.create') }}" class="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 transition-all">
                                     <i data-lucide="plus" class="w-4 h-4"></i>
                                     <span>Create Product</span>
                                 </a>

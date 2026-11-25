@@ -338,7 +338,7 @@
 
                 <div class="flex items-center gap-4 pt-6">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }} class="rounded bg-slate-950 border-slate-800 text-amber-500">
+                        <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }} class="rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-cyan-500">
                         <span class="text-xs font-semibold text-white">Highlight as Featured Product</span>
                     </label>
                 </div>
@@ -350,7 +350,7 @@
             <a href="{{ route('admin.cash-shop.index') }}" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800 transition-colors">
                 Cancel
             </a>
-            <button type="submit" class="px-6 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+            <button type="submit" class="px-6 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-lg shadow-cyan-500/20 transition-all flex items-center gap-2 cursor-pointer active:scale-95">
                 <i data-lucide="check" class="w-4 h-4"></i>
                 <span>{{ $isEdit ? 'Update Product' : 'Create Product' }}</span>
             </button>

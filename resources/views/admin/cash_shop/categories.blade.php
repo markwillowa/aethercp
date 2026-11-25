@@ -54,7 +54,7 @@
             </div>
         </div>
 
-        <button type="button" @click="openCreate()" class="h-10 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-md shadow-amber-500/20 transition-all inline-flex items-center gap-1.5 active:scale-95 cursor-pointer">
+        <button type="button" @click="openCreate()" class="h-10 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 transition-all inline-flex items-center gap-1.5 active:scale-95 cursor-pointer">
             <i data-lucide="plus" class="w-4 h-4"></i>
             <span>Add Category</span>
         </button>
@@ -79,7 +79,7 @@
                         <tr class="hover:bg-slate-800/40 transition-colors">
                             <td class="py-3.5 px-4">
                                 <div class="flex items-center gap-2.5">
-                                    <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                                    <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
                                         <i data-lucide="{{ $cat->icon ?: 'tag' }}" class="w-4 h-4"></i>
                                     </div>
                                     <div>
@@ -179,23 +179,23 @@
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Description (Optional)</label>
                     <textarea name="description" x-model="description" rows="2" placeholder="Brief category summary..."
-                              class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-amber-500"></textarea>
+                              class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500"></textarea>
                 </div>
 
                 <div class="flex items-center gap-4 pt-1">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" name="is_active" value="1" x-model="is_active" class="rounded bg-slate-950 border-slate-800 text-amber-500">
+                        <input type="checkbox" name="is_active" value="1" x-model="is_active" class="rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-cyan-500">
                         <span class="text-xs text-slate-200 font-semibold">Active &amp; Visible</span>
                     </label>
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" name="is_featured" value="1" x-model="is_featured" class="rounded bg-slate-950 border-slate-800 text-amber-500">
+                        <input type="checkbox" name="is_featured" value="1" x-model="is_featured" class="rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-cyan-500">
                         <span class="text-xs text-slate-200 font-semibold">Featured</span>
                     </label>
                 </div>
 
                 <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-800">
                     <button type="button" @click="modalOpen = false" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800">Cancel</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition-colors" x-text="editMode ? 'Update' : 'Create'"></button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 transition-all cursor-pointer" x-text="editMode ? 'Update' : 'Create'"></button>
                 </div>
             </form>
         </div>

@@ -72,15 +72,15 @@
                                             <p class="text-[10px] text-slate-400">
                                                 ID: #{{ $order->item_id }} • {{ $order->total_quantity }}x Total
                                                 @if($order->refine > 0)
-                                                    • <span class="text-amber-400 font-bold">+{{ $order->refine }}</span>
+                                                    • <span class="text-cyan-400 font-bold">+{{ $order->refine }}</span>
                                                 @endif
                                             </p>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="py-4 px-4 whitespace-nowrap">
-                                    <span class="font-mono font-bold text-amber-300 text-xs">
-                                        {{ number_format($order->total_cash_points) }} CP
+                                    <span class="font-mono font-bold text-purple-300 text-xs">
+                                        {{ number_format($order->total_cash_points) }} <span class="text-[10px] text-purple-400 font-mono">CP</span>
                                     </span>
                                     <span class="block text-[10px] text-slate-500 font-mono">
                                         ({{ number_format($order->unit_price) }} CP ea)
@@ -94,7 +94,7 @@
                                                 <span>Transferred ({{ $order->escrowItem->claimed_destination_label }})</span>
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase bg-amber-500/15 text-amber-300 border border-amber-500/30 animate-pulse">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 animate-pulse">
                                                 <i data-lucide="clock" class="w-3 h-3"></i>
                                                 <span>In Escrow Ready</span>
                                             </span>
@@ -107,7 +107,7 @@
                                 </td>
                                 <td class="py-4 px-5 text-right whitespace-nowrap">
                                     @if($order->escrowItem && $order->escrowItem->status === 'unclaimed')
-                                        <a href="{{ route('escrow.index') }}" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition-colors inline-flex items-center gap-1">
+                                        <a href="{{ route('escrow.index') }}" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-sm transition-all inline-flex items-center gap-1">
                                             <span>Transfer Item</span>
                                             <i data-lucide="arrow-right" class="w-3 h-3"></i>
                                         </a>

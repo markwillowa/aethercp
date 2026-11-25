@@ -64,7 +64,7 @@
                         @if($product->refine > 0)
                             <div class="flex items-center justify-between text-slate-400">
                                 <span>Refinement:</span>
-                                <span class="font-mono text-amber-300 font-bold">+{{ $product->refine }}</span>
+                                <span class="font-mono text-cyan-300 font-bold">+{{ $product->refine }}</span>
                             </div>
                         @endif
                         @if($product->bound > 0)
@@ -86,7 +86,7 @@
                             {{ $product->category?->name ?? 'Shop Item' }}
                         </span>
                         @if($product->is_featured)
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                                 Featured Item
                             </span>
                         @endif
@@ -116,8 +116,8 @@
                                     {{ number_format($product->cash_points_price) }} CP
                                 </span>
                             @endif
-                            <span class="text-2xl font-black text-amber-300 font-mono">
-                                {{ number_format($product->effective_price) }} <span class="text-xs font-sans text-slate-400">CP</span>
+                            <span class="text-2xl font-black text-purple-300 font-mono">
+                                {{ number_format($product->effective_price) }} <span class="text-xs font-mono text-purple-400/80">CP</span>
                             </span>
                         </div>
                     </div>
@@ -183,7 +183,7 @@
                     <div class="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2 text-xs">
                         <div class="flex items-center justify-between text-slate-400">
                             <span>Order Total:</span>
-                            <span class="font-mono font-bold text-amber-300" x-text="formatNumber(totalCost) + ' CP'"></span>
+                            <span class="font-mono font-bold text-purple-300" x-text="formatNumber(totalCost) + ' CP'"></span>
                         </div>
                         <div class="flex items-center justify-between">
                             <span :class="remainingBalance < 0 ? 'text-rose-400 font-bold' : 'text-slate-400'">Balance After Order:</span>
