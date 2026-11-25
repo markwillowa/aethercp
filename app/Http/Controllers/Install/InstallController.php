@@ -459,6 +459,16 @@ class InstallController extends Controller
             ]);
         }
 
+        if ($type === 'ragnarok-seeders' || $type === 'ragnarok' || $type === 'ro-seeders') {
+            $file = base_path('database/sql/ragnarok_seeders.sql');
+            if (!File::exists($file)) {
+                abort(404, 'Ragnarok seeders file not found.');
+            }
+            return response()->download($file, 'ragnarok_seeders.sql', [
+                'Content-Type' => 'application/sql',
+            ]);
+        }
+
         abort(404, 'Invalid SQL type requested.');
     }
 
@@ -757,9 +767,10 @@ class InstallController extends Controller
                         'email' => $validated['email'] ?? ($username . '@aethercp.local'),
                         'password' => Hash::make($validated['password']),
                         'role' => 'admin',
-                        'account_id' => 1,
                     ]
                 );
+                $user->plain_password = $validated['password'];
+                $user->syncToRagnarokLogin();
             }
 
             // 6. Write installation lock file
@@ -856,21 +867,39 @@ class InstallController extends Controller
     }
 
     /**
-     * Helper to update key-value pairs in a .env file safely.
+     * Helper to update key-value pairs in a .env file safely without duplicates.
      */
     protected function updateEnvFile(string $filePath, array $values): void
     {
         $content = File::get($filePath);
 
         foreach ($values as $key => $value) {
-            // Check if key exists in file
-            $pattern = "/^{$key}=.*/m";
+            $pattern = "/^{$key}=[^\r\n]*/m";
             if (preg_match($pattern, $content)) {
                 $content = preg_replace($pattern, "{$key}={$value}", $content);
             } else {
                 $content .= "\n{$key}={$value}";
             }
         }
+
+        // Clean up any duplicate keys
+        $lines = explode("\n", str_replace("\r\n", "\n", $content));
+        $seenKeys = [];
+        $cleanedLines = [];
+        // Walk backwards so the latest assignment of any key is preserved
+        for ($i = count($lines) - 1; $i >= 0; $i--) {
+            $line = $lines[$i];
+            if (preg_match('/^\s*([A-Za-z0-9_]+)\s*=/', $line, $matches)) {
+                $k = $matches[1];
+                if (isset($seenKeys[$k])) {
+                    continue; // skip duplicate older definition
+                }
+                $seenKeys[$k] = true;
+            }
+            $cleanedLines[] = $line;
+        }
+        $cleanedLines = array_reverse($cleanedLines);
+        $content = implode("\n", $cleanedLines);
 
         File::put($filePath, $content);
     }

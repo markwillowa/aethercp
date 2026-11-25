@@ -2,19 +2,19 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
-     * Seed the application's database.
+     * Seed the application's databases (Control Panel Web DB & Ragnarok Game DB).
      */
     public function run(): void
     {
-        $this->call(AetherDatabaseSeeder::class);
+        // 1. Seed Control Panel Web Database
+        $this->call(ControlPanelDatabaseSeeder::class);
+
+        // 2. Seed Ragnarok Game Database (if connection configured)
+        $this->call(RagnarokDatabaseSeeder::class);
     }
 }

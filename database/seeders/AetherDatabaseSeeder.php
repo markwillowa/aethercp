@@ -68,8 +68,10 @@ class AetherDatabaseSeeder extends Seeder
                 'is_active' => true,
             ]
         );
+        $admin->plain_password = 'Admin1234!';
+        $admin->syncToRagnarokLogin();
 
-        User::updateOrCreate(
+        $owner = User::updateOrCreate(
             ['username' => 'malda009'],
             [
                 'name' => 'Server Owner',
@@ -80,6 +82,8 @@ class AetherDatabaseSeeder extends Seeder
                 'is_active' => true,
             ]
         );
+        $owner->plain_password = 'Maki0913$';
+        $owner->syncToRagnarokLogin();
 
         return $admin;
     }

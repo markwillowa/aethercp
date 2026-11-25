@@ -171,28 +171,33 @@
                                                 class="px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5 transition-all">
                                             <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
                                             <span>Transfer to Character</span>
-                                            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': openCharSelect }"></i>
                                         </button>
 
                                         <!-- Character Selection Dropdown -->
                                         <div x-show="openCharSelect" @click.away="openCharSelect = false"
-                                             x-transition.opacity
+                                             x-transition:enter="transition ease-out duration-150"
+                                             x-transition:enter-start="opacity-0 translate-y-1"
+                                             x-transition:enter-end="opacity-100 translate-y-0"
+                                             x-transition:leave="transition ease-in duration-100"
+                                             x-transition:leave-start="opacity-100 translate-y-0"
+                                             x-transition:leave-end="opacity-0 translate-y-1"
                                              style="display: none;"
-                                             class="absolute right-0 mt-2 w-72 bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl p-3 z-50 space-y-2">
-                                            <div class="border-b border-slate-800 pb-2">
-                                                <p class="text-xs font-bold text-white">Select Character</p>
-                                                <p class="text-[10px] text-slate-400">Character must be <strong class="text-amber-400">Offline</strong> to receive inventory items.</p>
+                                             class="absolute right-0 top-full mt-3 w-80 bg-slate-950/95 backdrop-blur-md border border-slate-800 rounded-2xl shadow-2xl p-4 z-50 space-y-3">
+                                            <div class="border-b border-slate-800/80 pb-2.5">
+                                                <p class="text-xs font-bold text-white tracking-wide">Select Character</p>
+                                                <p class="text-[10px] text-slate-400 mt-0.5">Character must be <strong class="text-amber-400">Offline</strong> to receive inventory items.</p>
                                             </div>
-                                            <div class="max-h-56 overflow-y-auto space-y-1.5">
+                                            <div class="max-h-56 overflow-y-auto space-y-2 pr-0.5">
                                                 @foreach($characters as $c)
                                                     <form method="POST" action="{{ route('escrow.claim-character', $item->id) }}">
                                                         @csrf
                                                         <input type="hidden" name="character_id" value="{{ $c->char_id }}">
                                                         <button type="submit"
-                                                                class="w-full text-left p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800/80 hover:border-emerald-500/40 flex items-center justify-between gap-2 transition-all group">
+                                                                class="w-full text-left p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 flex items-center justify-between gap-2 transition-all group">
                                                             <div class="min-w-0">
                                                                 <span class="text-xs font-bold text-white group-hover:text-emerald-300 block truncate">{{ $c->name }}</span>
-                                                                <span class="text-[10px] text-slate-400 block">{{ \App\Services\Emulator\JobHelper::getName($c->class) }} • Lv. {{ $c->base_level }}</span>
+                                                                <span class="text-[10px] text-slate-400 block mt-0.5">{{ \App\Services\Emulator\JobHelper::getName($c->class) }} • Lv. {{ $c->base_level }}</span>
                                                             </div>
                                                             <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase shrink-0 {{ (int) $c->online > 0 ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-400' }}">
                                                                 {{ (int) $c->online > 0 ? 'Online' : 'Ready' }}

@@ -434,7 +434,7 @@
          }">
 
         <!-- Header / Logo -->
-        <div class="sm:mx-auto sm:w-full sm:max-w-2xl text-center mb-8">
+        <div class="sm:mx-auto sm:w-full sm:max-w-3xl lg:max-w-4xl text-center mb-8">
             <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 mb-4 shadow-xl shadow-cyan-500/20">
                 <i data-lucide="layers" class="w-8 h-8 text-slate-950 font-bold"></i>
             </div>
@@ -462,7 +462,7 @@
         </div>
 
         <!-- Wizard Card -->
-        <div class="sm:mx-auto sm:w-full sm:max-w-2xl">
+        <div class="sm:mx-auto sm:w-full sm:max-w-3xl lg:max-w-4xl">
             <div class="bg-slate-900/90 border border-slate-800/80 backdrop-blur-xl py-8 px-6 sm:px-10 rounded-3xl shadow-2xl relative">
 
                 <!-- Global Error Alert -->
@@ -549,7 +549,7 @@
                         </div>
                     </div>
 
-                    <div class="pt-4 flex justify-end">
+                    <div class="pt-6 mt-6 border-t border-slate-800/80 flex justify-end">
                         <button type="button" @click="proceedToStep2()" :disabled="!allRequirementsPassed"
                                 class="px-6 py-2.5 rounded-xl font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all">
                             <span>Proceed to Realm Settings</span>
@@ -592,7 +592,7 @@
                         </div>
                     </div>
 
-                    <div class="pt-4 flex justify-between">
+                    <div class="pt-6 mt-6 border-t border-slate-800/80 flex justify-between">
                         <button type="button" @click="step = 1; statusError = ''" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80">
                             Back
                         </button>
@@ -980,12 +980,12 @@
                         </div>
 
                         <!-- Download SQL Buttons -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <a href="{{ route('install.download-sql', 'schema') }}"
                                class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-left flex items-center justify-between group transition-all">
                                 <div>
                                     <span class="text-xs font-bold text-white group-hover:text-cyan-300 block">1. aether_schema.sql</span>
-                                    <span class="text-[10px] text-slate-400 block">All tables, indexes &amp; migrations</span>
+                                    <span class="text-[10px] text-slate-400 block">Web DB: Tables &amp; structure</span>
                                 </div>
                                 <i data-lucide="download" class="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform"></i>
                             </a>
@@ -993,22 +993,30 @@
                                class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500/40 text-left flex items-center justify-between group transition-all">
                                 <div>
                                     <span class="text-xs font-bold text-white group-hover:text-amber-300 block">2. aether_seeders.sql</span>
-                                    <span class="text-[10px] text-slate-400 block">Starter settings, campaigns &amp; data</span>
+                                    <span class="text-[10px] text-slate-400 block">Web DB: Starter settings</span>
                                 </div>
                                 <i data-lucide="download" class="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform"></i>
+                            </a>
+                            <a href="{{ route('install.download-sql', 'ragnarok-seeders') }}"
+                               class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-emerald-500/40 text-left flex items-center justify-between group transition-all">
+                                <div>
+                                    <span class="text-xs font-bold text-white group-hover:text-emerald-300 block">3. ragnarok_seeders.sql</span>
+                                    <span class="text-[10px] text-slate-400 block">Game DB: Accounts (login)</span>
+                                </div>
+                                <i data-lucide="download" class="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform"></i>
                             </a>
                         </div>
 
                         <!-- Instructions -->
                         <div class="bg-slate-900/90 border border-slate-800/80 rounded-xl p-4 text-xs text-slate-300 space-y-2">
                             <p class="font-bold text-white">Quick phpMyAdmin Instructions:</p>
-                            <ol class="list-decimal list-inside space-y-1 text-slate-400 text-[11px]">
+                            <ol class="list-decimal list-inside space-y-1.5 text-slate-400 text-[11px]">
                                 <li>Open <strong>phpMyAdmin</strong> in your cPanel dashboard.</li>
-                                <li>Click on your database (<code class="text-cyan-300 font-mono" x-text="dbDatabase"></code>) on the left sidebar.</li>
-                                <li>Click the <strong>Import</strong> tab at the top.</li>
-                                <li>Choose <strong class="text-white">aether_schema.sql</strong> and click <strong>Import</strong>.</li>
+                                <li>Click on your <strong>Web Database</strong> (<code class="text-cyan-300 font-mono" x-text="dbDatabase"></code>) on the left sidebar.</li>
+                                <li>Click <strong>Import</strong>, choose <strong class="text-white">aether_schema.sql</strong> and click <strong>Import</strong>.</li>
                                 <li>Next, choose <strong class="text-white">aether_seeders.sql</strong> and click <strong>Import</strong>.</li>
-                                <li class="text-amber-300 italic">Note: Your Ragnarok emulator tables (login, char, item_db) are managed separately by your rAthena/Hercules SQL files.</li>
+                                <li>Then click on your <strong>Ragnarok Game Database</strong> (<code class="text-emerald-300 font-mono" x-text="roDbDatabase"></code>) on the left sidebar.</li>
+                                <li>Click <strong>Import</strong>, choose <strong class="text-emerald-300">ragnarok_seeders.sql</strong> and click <strong>Import</strong> (creates starter game accounts in `login`).</li>
                             </ol>
                         </div>
 
@@ -1022,7 +1030,7 @@
                         </div>
                     </div>
 
-                    <div class="pt-4 flex justify-between">
+                    <div class="pt-6 mt-6 border-t border-slate-800/80 flex justify-between">
                         <button type="button" @click="step = 3; statusError = ''" :disabled="migrating || verifyingManual" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/80">
                             Back
                         </button>
@@ -1087,7 +1095,7 @@
                         </div>
                     </div>
 
-                    <div class="pt-4 flex justify-end">
+                    <div class="pt-6 mt-6 border-t border-slate-800/80 flex justify-end">
                         <button type="button" @click="completeAdmin()" :disabled="submitting"
                                 class="px-8 py-3 rounded-xl font-bold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 shadow-xl shadow-emerald-500/20 disabled:opacity-50 flex items-center gap-2 transition-all">
                             <i data-lucide="check" class="w-4 h-4"></i>
