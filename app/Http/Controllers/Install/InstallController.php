@@ -469,6 +469,16 @@ class InstallController extends Controller
             ]);
         }
 
+        if ($type === 'marketplace-seeders' || $type === 'marketplace') {
+            $file = base_path('database/sql/marketplace_seeders.sql');
+            if (!File::exists($file)) {
+                abort(404, 'Marketplace seeders file not found.');
+            }
+            return response()->download($file, 'marketplace_seeders.sql', [
+                'Content-Type' => 'application/sql',
+            ]);
+        }
+
         abort(404, 'Invalid SQL type requested.');
     }
 

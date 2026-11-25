@@ -980,7 +980,7 @@
                         </div>
 
                         <!-- Download SQL Buttons -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                             <a href="{{ route('install.download-sql', 'schema') }}"
                                class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-left flex items-center justify-between group transition-all">
                                 <div>
@@ -1001,9 +1001,17 @@
                                class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-emerald-500/40 text-left flex items-center justify-between group transition-all">
                                 <div>
                                     <span class="text-xs font-bold text-white group-hover:text-emerald-300 block">3. ragnarok_seeders.sql</span>
-                                    <span class="text-[10px] text-slate-400 block">Game DB: Accounts (login)</span>
+                                    <span class="text-[10px] text-slate-400 block">Game DB: Accounts &amp; chars</span>
                                 </div>
                                 <i data-lucide="download" class="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                            </a>
+                            <a href="{{ route('install.download-sql', 'marketplace-seeders') }}"
+                               class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-purple-500/40 text-left flex items-center justify-between group transition-all">
+                                <div>
+                                    <span class="text-xs font-bold text-white group-hover:text-purple-300 block">4. marketplace_seeders.sql</span>
+                                    <span class="text-[10px] text-slate-400 block">Web DB: Live trade items</span>
+                                </div>
+                                <i data-lucide="download" class="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform"></i>
                             </a>
                         </div>
 

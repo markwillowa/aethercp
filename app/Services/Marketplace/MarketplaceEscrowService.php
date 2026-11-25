@@ -732,6 +732,9 @@ class MarketplaceEscrowService
 
             // 2. Deliver purchased item to buyer's Escrow Inbox (claimable to Storage or Character)
             $item = $listing->item;
+            $itemName = $item->item_name ?: ($item->formatted_name ?: "Item #{$item->nameid}");
+            $sellerName = $listing->seller_char_name ?: ($listing->sellerUser->username ?? 'Marketplace Seller');
+
             app(\App\Services\Escrow\EscrowInboxService::class)->depositItem(
                 (int) $buyer->account_id,
                 [
@@ -740,7 +743,7 @@ class MarketplaceEscrowService
                     'source_id' => $listing->id,
                     'reward_type' => 'item',
                     'item_id' => (int) $item->nameid,
-                    'item_name' => $item->name,
+                    'item_name' => $itemName,
                     'quantity' => $quantity,
                     'refine' => (int) ($item->refine ?? 0),
                     'card0' => (int) ($item->card0 ?? 0),
@@ -749,8 +752,8 @@ class MarketplaceEscrowService
                     'card3' => (int) ($item->card3 ?? 0),
                     'identified' => (bool) ($item->identify ?? true),
                     'bound' => (int) ($item->bound ?? 0),
-                    'title' => "Marketplace Purchase: " . ($item->name ?? "Item #{$item->nameid}"),
-                    'message' => "Purchased from {$listing->seller_name} ({$quantity}x). Ready to transfer into your game.",
+                    'title' => "Marketplace Purchase: {$itemName}",
+                    'message' => "Purchased from {$sellerName} ({$quantity}x). Ready to transfer into your game.",
                 ]
             );
 

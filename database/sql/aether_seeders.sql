@@ -352,5 +352,48 @@ INSERT INTO `downloads` (`id`, `title`, `category`, `version`, `file_size`, `url
 INSERT INTO `downloads` (`id`, `title`, `category`, `version`, `file_size`, `url_mirror1`, `url_mirror2`, `description`, `sort_order`, `is_active`, `created_at`, `updated_at`) VALUES (2, 'Lite Client Installer', 'Lite Client', 'v1.4.0', '350 MB', 'https://mega.nz/file/freynix-lite', 'https://drive.google.com/freynix-lite', 'Requires existing kRO installation. Extract into your clean Ragnarok directory.', 2, 1, '2026-11-23 01:52:24', '2026-11-23 01:52:24');
 INSERT INTO `downloads` (`id`, `title`, `category`, `version`, `file_size`, `url_mirror1`, `url_mirror2`, `description`, `sort_order`, `is_active`, `created_at`, `updated_at`) VALUES (3, 'Cumulative Manual Patch', 'Manual Patch', 'Patch 2026-11-20', '45 MB', 'https://mega.nz/file/freynix-patch', NULL, 'Extract into game folder if your auto-patcher cannot connect.', 3, 1, '2026-11-23 01:52:24', '2026-11-23 01:52:24');
 
+-- -----------------------------------------------------
+-- Dumping data for table `marketplace_items`
+-- -----------------------------------------------------
+INSERT INTO `marketplace_items` (`id`, `user_id`, `account_id`, `char_id`, `nameid`, `item_name`, `amount`, `equip`, `identify`, `refine`, `attribute`, `card0`, `card1`, `card2`, `card3`, `expire_time`, `bound`, `unique_id`, `item_type`, `status`, `deposited_at`, `created_at`, `updated_at`) VALUES
+(101, 3, 2000002, 150002, 1119, 'Tsurugi', 1, 0, 1, 8, 0, 4105, 4105, 0, 0, 0, 0, 0, 'Weapon', 'listed', NOW(), NOW(), NOW()),
+(102, 3, 2000002, 150002, 1123, 'Haedonggum', 1, 0, 1, 9, 0, 0, 0, 0, 0, 0, 0, 0, 'Weapon', 'listed', NOW(), NOW(), NOW()),
+(103, 4, 2000003, 150003, 1704, 'Composite Bow', 1, 0, 1, 10, 0, 4003, 4003, 4003, 4003, 0, 0, 0, 'Weapon', 'listed', NOW(), NOW(), NOW()),
+(104, 4, 2000003, 150003, 2357, 'Valkyrian Armor', 1, 0, 1, 7, 0, 0, 0, 0, 0, 0, 0, 0, 'Armor', 'listed', NOW(), NOW(), NOW()),
+(105, 3, 2000002, 150002, 2101, 'Guard', 1, 0, 1, 6, 0, 4054, 0, 0, 0, 0, 0, 0, 'Armor', 'listed', NOW(), NOW(), NOW()),
+(106, 4, 2000003, 150003, 2256, 'Elven Ears', 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Armor', 'listed', NOW(), NOW(), NOW()),
+(107, 5, 2000004, 150004, 4142, 'Ghostring Card', 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Card', 'listed', NOW(), NOW(), NOW()),
+(108, 5, 2000004, 150004, 4001, 'Poring Card', 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Card', 'listed', NOW(), NOW(), NOW()),
+(109, 5, 2000004, 150004, 4122, 'Raydric Card', 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Card', 'listed', NOW(), NOW(), NOW()),
+(110, 6, 2000005, 150005, 607, 'Yggdrasil Berry', 50, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Consumable', 'listed', NOW(), NOW(), NOW()),
+(111, 6, 2000005, 150005, 504, 'White Potion', 200, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Consumable', 'listed', NOW(), NOW(), NOW()),
+(112, 6, 2000005, 150005, 984, 'Oridecon', 50, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Etc', 'listed', NOW(), NOW(), NOW())
+ON DUPLICATE KEY UPDATE
+    `item_name` = VALUES(`item_name`),
+    `status` = VALUES(`status`),
+    `refine` = VALUES(`refine`);
+
+-- -----------------------------------------------------
+-- Dumping data for table `marketplace_listings`
+-- -----------------------------------------------------
+INSERT INTO `marketplace_listings` (`id`, `listing_code`, `item_id`, `seller_user_id`, `seller_account_id`, `seller_char_id`, `seller_char_name`, `currency_type`, `unit_price`, `total_price`, `quantity`, `remaining_quantity`, `duration_hours`, `status`, `expires_at`, `created_at`, `updated_at`) VALUES
+(101, 'MKT-TSURUGI8Z', 101, 3, 2000002, 150002, 'RuneSmith', 'zeny', 2500000, 2500000, 1, 1, 168, 'active', DATE_ADD(NOW(), INTERVAL 7 DAY), NOW(), NOW()),
+(102, 'MKT-HAEDONG9Z', 102, 3, 2000002, 150002, 'RuneSmith', 'zeny', 4800000, 4800000, 1, 1, 168, 'active', DATE_ADD(NOW(), INTERVAL 7 DAY), NOW(), NOW()),
+(103, 'MKT-QUADHYDRA', 103, 4, 2000003, 150003, 'KafraTrader', 'zeny', 7500000, 7500000, 1, 1, 168, 'active', DATE_ADD(NOW(), INTERVAL 7 DAY), NOW(), NOW()),
+(104, 'MKT-VALKARM7Z', 104, 4, 2000003, 150003, 'KafraTrader', 'zeny', 12000000, 12000000, 1, 1, 168, 'active', DATE_ADD(NOW(), INTERVAL 7 DAY), NOW(), NOW()),
+(105, 'MKT-CRANGUAR6', 105, 3, 2000002, 150002, 'RuneSmith', 'zeny', 1800000, 1800000, 1, 1, 168, 'active', DATE_ADD(NOW(), INTERVAL 7 DAY), NOW(), NOW()),
+(106, 'MKT-ELVEARSCP', 106, 4, 2000003, 150003, 'KafraTrader', 'cashpoints', 150, 150, 1, 1, 168, 'active', DATE_ADD(NOW(), INTERVAL 7 DAY), NOW(), NOW()),
+(107, 'MKT-GHOSTRING', 107, 5, 2000004, 150004, 'CardCollector', 'zeny', 25000000, 25000000, 1, 1, 168, 'active', DATE_ADD(NOW(), INTERVAL 7 DAY), NOW(), NOW()),
+(108, 'MKT-PORINGCRD', 108, 5, 2000004, 150004, 'CardCollector', 'zeny', 50000, 50000, 1, 1, 168, 'active', DATE_ADD(NOW(), INTERVAL 7 DAY), NOW(), NOW()),
+(109, 'MKT-RAYDRICRD', 109, 5, 2000004, 150004, 'CardCollector', 'zeny', 3200000, 3200000, 1, 1, 168, 'active', DATE_ADD(NOW(), INTERVAL 7 DAY), NOW(), NOW()),
+(110, 'MKT-YGGDBERRY', 110, 6, 2000005, 150005, 'AlchemistPro', 'cashpoints', 25, 1250, 50, 50, 168, 'active', DATE_ADD(NOW(), INTERVAL 7 DAY), NOW(), NOW()),
+(111, 'MKT-WHITEPOTN', 111, 6, 2000005, 150005, 'AlchemistPro', 'zeny', 1200, 240000, 200, 200, 168, 'active', DATE_ADD(NOW(), INTERVAL 7 DAY), NOW(), NOW()),
+(112, 'MKT-ORIDECONX', 112, 6, 2000005, 150005, 'AlchemistPro', 'zeny', 45000, 2250000, 50, 50, 168, 'active', DATE_ADD(NOW(), INTERVAL 7 DAY), NOW(), NOW())
+ON DUPLICATE KEY UPDATE
+    `unit_price` = VALUES(`unit_price`),
+    `remaining_quantity` = VALUES(`remaining_quantity`),
+    `status` = VALUES(`status`),
+    `expires_at` = VALUES(`expires_at`);
+
 COMMIT;
 SET FOREIGN_KEY_CHECKS=1;
