@@ -1,39 +1,42 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="space-y-8">
-    <!-- Header Banner -->
-    <div class="ro-panel p-6 bg-[#FCF7ED] border border-[#DECBB1] shadow-md">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-                <span class="inline-block text-[10px] font-bold uppercase tracking-widest text-[#B89553] bg-[#493322] px-2.5 py-0.5 rounded border border-[#65482D] mb-2">
-                    Rune-Midgard Support & Kafra Services
-                </span>
-                <h1 class="text-2xl font-bold font-serif text-[#2D1D13] tracking-wide">
-                    Server Donations & Cash Shop Points
-                </h1>
-                <p class="text-xs text-[#77644E] mt-1 max-w-2xl">
-                    Help sustain dedicated server hosting, DDoS filtering, anti-cheat licenses, and community events.
-                    Automatic PayPal payments instantly credit Cash Points and deliver bonus items straight into your Kafra Storage.
-                </p>
+<div class="space-y-6">
+    <!-- Forum-Style Classic Header Panel -->
+    <div class="ro-panel overflow-hidden">
+        <div class="ro-panel-header justify-between">
+            <div class="flex items-center gap-2">
+                <i data-lucide="heart-handshake" class="w-4 h-4"></i>
+                <span>Rune-Midgard Treasury &amp; Donations</span>
             </div>
-
             @if(!empty($paypalConfig['enabled']) && !empty($paypalConfig['email']))
-                <div class="shrink-0 flex items-center gap-2 bg-[#F3E6CB] border border-[#C8A66A] p-2.5 rounded text-xs text-[#5C4228]">
-                    <i data-lucide="shield-check" class="w-5 h-5 text-[#2E7D32] shrink-0"></i>
-                    <div>
-                        <strong class="block text-[#3A2A1C]">Instant Automated Checkout</strong>
-                        <span class="text-[10px] text-[#77644E]">Verified PayPal IPN Gateway</span>
-                    </div>
-                </div>
+                <span class="text-[11px] font-mono text-[#FFDA89]">Instant Automated PayPal IPN</span>
             @endif
         </div>
 
+        <div class="p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-[#FCF7ED]">
+            <div class="space-y-1 max-w-2xl">
+                <h1 class="text-2xl font-serif font-bold text-[#2D1D13] tracking-tight">
+                    Server Donations &amp; Cash Shop Points
+                </h1>
+                <p class="text-xs text-[#5C4632]">
+                    Help sustain dedicated server hosting, DDoS filtering, anti-cheat licenses, and community events.
+                    Payments credit Cash Points and deliver bonus items straight into your Kafra Storage.
+                </p>
+            </div>
+            @auth
+                <div class="shrink-0 flex items-center gap-2 bg-[#F5EBD5] border border-[#C8A66A] px-3.5 py-2 rounded text-xs text-[#3A2A1C]">
+                    <i data-lucide="user-check" class="w-4 h-4 text-[#315B88]"></i>
+                    <span>Account: <strong>{{ auth()->user()->username ?? auth()->user()->name }}</strong></span>
+                </div>
+            @endauth
+        </div>
+
         @if(!empty($donationSettings['instructions']))
-            <div class="mt-4 pt-3 border-t border-[#DECBB1] text-xs text-[#5C4228] leading-relaxed flex items-start gap-2.5 bg-[#F5EBD5] p-3 rounded border border-[#DECBB1]">
+            <div class="px-5 py-3 border-t border-[#DECBB1] text-xs text-[#5C4228] leading-relaxed flex items-start gap-2.5 bg-[#F5EBD5]">
                 <i data-lucide="scroll" class="w-4 h-4 text-[#8C6A2D] shrink-0 mt-0.5"></i>
                 <div>
-                    <strong class="block text-[#3A2A1C] font-serif font-bold mb-0.5">Donation Notice & Guidelines:</strong>
+                    <strong class="block text-[#3A2A1C] font-serif font-bold mb-0.5">Donation Notice &amp; Guidelines:</strong>
                     <p class="whitespace-pre-line">{{ $donationSettings['instructions'] }}</p>
                 </div>
             </div>
