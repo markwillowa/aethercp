@@ -544,8 +544,10 @@ html[data-theme="ragnarok-classic"] textarea:focus {
    Global Fallback Resets for Existing Views (Converting Dark Mode to Classic)
    ========================================================================== */
 html[data-theme="ragnarok-classic"] .bg-slate-900,
+html[data-theme="ragnarok-classic"] .bg-slate-900\/45,
 html[data-theme="ragnarok-classic"] .bg-slate-900\/60,
 html[data-theme="ragnarok-classic"] .bg-slate-900\/70,
+html[data-theme="ragnarok-classic"] .bg-slate-900\/75,
 html[data-theme="ragnarok-classic"] .bg-slate-900\/80,
 html[data-theme="ragnarok-classic"] .bg-slate-900\/90,
 html[data-theme="ragnarok-classic"] .bg-slate-950,
@@ -559,6 +561,19 @@ html[data-theme="ragnarok-classic"] .aether-glass {
     box-shadow: inset 0 0 0 1px #C8A66A, 0 3px 6px rgba(45, 30, 15, 0.2) !important;
     color: #3A2A1C !important;
     border-radius: 4px !important;
+}
+
+html[data-theme="ragnarok-classic"] main .bg-slate-800,
+html[data-theme="ragnarok-classic"] main .bg-slate-800\/90,
+html[data-theme="ragnarok-classic"] main .bg-slate-800\/80,
+html[data-theme="ragnarok-classic"] main .bg-slate-800\/60 {
+    background-color: #EBDDBF !important;
+    border-color: #8C6A2D !important;
+    color: #3A2A1C !important;
+}
+
+html[data-theme="ragnarok-classic"] main input.pl-10 {
+    padding-left: 2.5rem !important;
 }
 
 /* Modal Backdrops & Overlays MUST always remain dark semi-transparent dimming scrims */
