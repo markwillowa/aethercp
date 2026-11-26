@@ -219,6 +219,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/email', [AccountController::class, 'changeEmail'])->name('email');
         Route::post('/pincode', [AccountController::class, 'changePincode'])->name('pincode');
         Route::get('/characters', [AccountController::class, 'characters'])->name('characters');
+        Route::get('/characters/create', [\App\Http\Controllers\Public\CharacterCreationController::class, 'create'])->middleware('module:character_creation')->name('characters.create');
+        Route::get('/characters/sprite-preview', [\App\Http\Controllers\Public\CharacterCreationController::class, 'spritePreview'])->middleware('module:character_creation')->name('characters.sprite-preview');
+        Route::get('/characters/hair-preview', [\App\Http\Controllers\Public\CharacterCreationController::class, 'hairPreview'])->middleware('module:character_creation')->name('characters.hair-preview');
+        Route::post('/characters', [\App\Http\Controllers\Public\CharacterCreationController::class, 'store'])->middleware('module:character_creation')->name('characters.store');
         Route::post('/characters/{id}/unstuck', [AccountController::class, 'unstuck'])->name('unstuck');
         Route::post('/characters/{id}/reset-position', [AccountController::class, 'unstuck'])->name('characters.reset-position');
         Route::delete('/characters/{id}', [AccountController::class, 'deleteCharacter'])->name('characters.delete');
@@ -239,6 +243,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Character Management
     Route::get('/characters', [AdminController::class, 'characters'])->name('characters');
+    Route::get('/character-creation', [\App\Http\Controllers\Admin\AdminCharacterCreationController::class, 'index'])->name('character-creation.index');
+    Route::post('/character-creation', [\App\Http\Controllers\Admin\AdminCharacterCreationController::class, 'update'])->name('character-creation.update');
+    Route::post('/character-creation/preset', [\App\Http\Controllers\Admin\AdminCharacterCreationController::class, 'applyPreset'])->name('character-creation.preset');
 
     // Guild Management
     Route::get('/guilds', [AdminController::class, 'guilds'])->name('guilds');

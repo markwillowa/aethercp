@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('admin_content')
-<div class="space-y-6" x-data="{ tab: 'definitions', previewName: 'First to Max Level', previewColor: '#f59e0b', previewStyle: 'glow', previewIcon: 'crown' }">
+<div class="space-y-6" x-data="{ tab: 'definitions', previewName: 'First to Max Level', previewColor: '#f59e0b', previewStyle: 'glow', previewIcon: 'crown', editingBadge: null }">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
             <h1 class="text-2xl font-bold text-white">Badge &amp; Tier Management</h1>
@@ -156,7 +156,26 @@
                                     {{ $b->is_enabled ? 'Enabled' : 'Disabled' }}
                                 </span>
                             </td>
-                            <td class="py-3 px-4 text-right">
+                            <td class="py-3 px-4 text-right space-x-1.5 whitespace-nowrap">
+                                <button type="button"
+                                        @click="editingBadge = {{ Js::from([
+                                            'id' => $b->id,
+                                            'name' => $b->name,
+                                            'description' => $b->description ?? '',
+                                            'category' => $b->category,
+                                            'auto_condition_type' => $b->auto_condition_type ?? 'manual',
+                                            'priority' => $b->priority,
+                                            'color' => $b->color,
+                                            'visual_style' => $b->visual_style,
+                                            'icon_type' => $b->icon_type,
+                                            'icon' => $b->icon,
+                                            'is_enabled' => (bool) $b->is_enabled,
+                                            'is_permanent' => (bool) $b->is_permanent,
+                                            'action' => route('admin.badges.update', $b->id),
+                                        ]) }}"
+                                        class="px-3 py-1 rounded-lg text-[11px] font-semibold bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 cursor-pointer">
+                                    Edit
+                                </button>
                                 <form method="POST" action="{{ route('admin.badges.toggle', $b->id) }}" class="inline">
                                     @csrf
                                     <button type="submit" class="px-3 py-1 rounded-lg text-[11px] font-semibold {{ $b->is_enabled ? 'bg-red-950/70 text-red-300 border border-red-500/30' : 'bg-emerald-950/70 text-emerald-300 border border-emerald-500/30' }}">
@@ -316,6 +335,105 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Edit Badge Modal -->
+    <div x-show="editingBadge" style="display: none;"
+         class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div @click.away="editingBadge = null"
+             class="w-full max-w-2xl bg-slate-900 border border-slate-700 rounded-2xl p-6 shadow-2xl space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-cyan-400">Edit Badge Definition</h3>
+                <button type="button" @click="editingBadge = null" class="text-slate-400 hover:text-white cursor-pointer">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <template x-if="editingBadge">
+                <form method="POST" :action="editingBadge.action" enctype="multipart/form-data" class="space-y-4 text-xs">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-slate-400 font-semibold mb-1.5">Badge Name</label>
+                            <input type="text" name="name" x-model="editingBadge.name" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 font-semibold mb-1.5">Category</label>
+                            <select name="category" x-model="editingBadge.category" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                                @foreach(['level', 'job', 'pvp', 'mvp', 'guild', 'special', 'event', 'achievement'] as $cat)
+                                    <option value="{{ $cat }}">{{ ucfirst($cat) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 font-semibold mb-1.5">Auto Assignment Condition</label>
+                            <select name="auto_condition_type" x-model="editingBadge.auto_condition_type" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                                <option value="manual">Manual Assignment Only</option>
+                                <option value="first_max_base">First to Max Base Level</option>
+                                <option value="max_base">Reached Max Base Level</option>
+                                <option value="first_max_job">First to Max Job Level</option>
+                                <option value="max_job">Reached Max Job Level</option>
+                                <option value="guild_rank_1">Top 1 Guild</option>
+                                <option value="guild_rank_2">Top 2 Guild</option>
+                                <option value="guild_rank_3">Top 3 Guild</option>
+                                <option value="guild_rank_top10">Top 4–10 Guild</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 font-semibold mb-1.5">Priority</label>
+                            <input type="number" name="priority" x-model="editingBadge.priority" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 font-semibold mb-1.5">Color (Hex)</label>
+                            <input type="color" name="color" x-model="editingBadge.color" class="w-full h-9 bg-slate-950 border border-slate-800 rounded-xl px-1 py-1 cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 font-semibold mb-1.5">Visual Style</label>
+                            <select name="visual_style" x-model="editingBadge.visual_style" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                                <option value="solid">Solid</option>
+                                <option value="glow">Glow</option>
+                                <option value="gradient">Gradient</option>
+                                <option value="outline">Outline</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 font-semibold mb-1.5">Icon Source</label>
+                            <select name="icon_type" x-model="editingBadge.icon_type" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                                <option value="lucide">Lucide Icon</option>
+                                <option value="image">Upload Image</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 font-semibold mb-1.5">Lucide Icon / Upload</label>
+                            <input type="text" name="icon" x-model="editingBadge.icon" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white mb-1.5">
+                            <input type="file" name="icon_file" accept=".png,.jpg,.jpeg,.webp,.svg" class="text-[11px] text-slate-400 w-full">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-400 font-semibold mb-1.5">Description</label>
+                        <input type="text" name="description" x-model="editingBadge.description" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-5 pt-2 border-t border-slate-800">
+                        <label class="flex items-center gap-2 text-slate-200 cursor-pointer">
+                            <input type="checkbox" name="is_enabled" value="1" :checked="editingBadge.is_enabled" class="rounded bg-slate-950 border-slate-700 text-cyan-500">
+                            <span>Enabled</span>
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-200 cursor-pointer">
+                            <input type="checkbox" name="is_permanent" value="1" :checked="editingBadge.is_permanent" class="rounded bg-slate-950 border-slate-700 text-cyan-500">
+                            <span>Permanent</span>
+                        </label>
+                        <div class="ml-auto flex items-center gap-2">
+                            <button type="button" @click="editingBadge = null" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold cursor-pointer">Cancel</button>
+                            <button type="submit" class="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold cursor-pointer">Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </template>
         </div>
     </div>
 </div>

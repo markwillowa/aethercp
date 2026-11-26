@@ -198,18 +198,40 @@ class BadgeService
         $cfg = $this->rankingEngine->getConfig();
         $stat = RankingCharacterStat::where('char_id', $charId)->first();
 
+        $excludedAccountIds = $cfg['excluded_accounts'] ?? [];
+        if (!empty($cfg['hide_gm'])) {
+            $gmAccounts = DB::connection('ragnarok')
+                ->table($this->emulator->getTableName('login'))
+                ->where('group_id', '>=', $cfg['gm_threshold'])
+                ->pluck('account_id')
+                ->map(fn ($id) => (int) $id)
+                ->all();
+            $excludedAccountIds = array_values(array_unique(array_merge($excludedAccountIds, $gmAccounts)));
+        }
+        $excludedCharIds = $cfg['excluded_chars'] ?? [];
+
         // 1. Level & Job Definition Badges
         $defs = BadgeDefinition::where('is_enabled', true)
             ->whereIn('auto_condition_type', ['first_max_base', 'max_base', 'first_max_job', 'max_job'])
             ->get();
 
-        $firstMaxBaseCharId = RankingCharacterStat::whereNotNull('max_base_reached_at')
-            ->orderBy('max_base_reached_at')
-            ->value('char_id');
+        $firstBaseQuery = RankingCharacterStat::whereNotNull('max_base_reached_at');
+        if (!empty($excludedAccountIds)) {
+            $firstBaseQuery->whereNotIn('account_id', $excludedAccountIds);
+        }
+        if (!empty($excludedCharIds)) {
+            $firstBaseQuery->whereNotIn('char_id', $excludedCharIds);
+        }
+        $firstMaxBaseCharId = $firstBaseQuery->orderBy('max_base_reached_at')->orderBy('char_id')->value('char_id');
 
-        $firstMaxJobCharId = RankingCharacterStat::whereNotNull('max_job_reached_at')
-            ->orderBy('max_job_reached_at')
-            ->value('char_id');
+        $firstJobQuery = RankingCharacterStat::whereNotNull('max_job_reached_at');
+        if (!empty($excludedAccountIds)) {
+            $firstJobQuery->whereNotIn('account_id', $excludedAccountIds);
+        }
+        if (!empty($excludedCharIds)) {
+            $firstJobQuery->whereNotIn('char_id', $excludedCharIds);
+        }
+        $firstMaxJobCharId = $firstJobQuery->orderBy('max_job_reached_at')->orderBy('char_id')->value('char_id');
 
         foreach ($defs as $def) {
             $qualifies = match ($def->auto_condition_type) {
@@ -327,9 +349,96 @@ class BadgeService
     public function recalculateAll(): array
     {
         $this->ensureDefaultDefinitionsExist();
+        $cfg = $this->rankingEngine->getConfig();
+        $charTable = $this->emulator->getTableName('char');
+        $roConn = DB::connection('ragnarok');
 
-        $charIds = DB::connection('ragnarok')
-            ->table($this->emulator->getTableName('char'))
+        // Reconcile max_base_reached_at and max_job_reached_at so First to Max Level / Job can always be awarded
+        $maxBaseChars = $roConn->table($charTable)
+            ->select('char_id', 'account_id', 'base_level')
+            ->where('base_level', '>=', $cfg['max_base_level'])
+            ->orderBy('char_id')
+            ->get();
+
+        foreach ($maxBaseChars as $c) {
+            $stat = RankingCharacterStat::firstOrCreate(
+                ['char_id' => (int) $c->char_id],
+                ['account_id' => (int) $c->account_id]
+            );
+            if ($stat->max_base_reached_at === null) {
+                $stat->max_base_reached_at = now();
+                $stat->max_base_level_achieved = (int) $c->base_level;
+                $stat->save();
+            }
+        }
+
+        $maxJobChars = $roConn->table($charTable)
+            ->select('char_id', 'account_id', 'job_level')
+            ->where('job_level', '>=', $cfg['max_job_level'])
+            ->orderBy('char_id')
+            ->get();
+
+        foreach ($maxJobChars as $c) {
+            $stat = RankingCharacterStat::firstOrCreate(
+                ['char_id' => (int) $c->char_id],
+                ['account_id' => (int) $c->account_id]
+            );
+            if ($stat->max_job_reached_at === null) {
+                $stat->max_job_reached_at = now();
+                $stat->max_job_level_achieved = (int) $c->job_level;
+                $stat->save();
+            }
+        }
+
+        // Revoke stale first_max_base / first_max_job if held by a GM or excluded character
+        $excludedAccountIds = $cfg['excluded_accounts'] ?? [];
+        if (!empty($cfg['hide_gm'])) {
+            $gmAccounts = $roConn->table($this->emulator->getTableName('login'))
+                ->where('group_id', '>=', $cfg['gm_threshold'])
+                ->pluck('account_id')
+                ->map(fn ($id) => (int) $id)
+                ->all();
+            $excludedAccountIds = array_values(array_unique(array_merge($excludedAccountIds, $gmAccounts)));
+        }
+        $excludedCharIds = $cfg['excluded_chars'] ?? [];
+
+        $firstBaseQuery = RankingCharacterStat::whereNotNull('max_base_reached_at');
+        if (!empty($excludedAccountIds)) {
+            $firstBaseQuery->whereNotIn('account_id', $excludedAccountIds);
+        }
+        if (!empty($excludedCharIds)) {
+            $firstBaseQuery->whereNotIn('char_id', $excludedCharIds);
+        }
+        $eligibleFirstBaseId = (int) ($firstBaseQuery->orderBy('max_base_reached_at')->orderBy('char_id')->value('char_id') ?? 0);
+
+        $firstJobQuery = RankingCharacterStat::whereNotNull('max_job_reached_at');
+        if (!empty($excludedAccountIds)) {
+            $firstJobQuery->whereNotIn('account_id', $excludedAccountIds);
+        }
+        if (!empty($excludedCharIds)) {
+            $firstJobQuery->whereNotIn('char_id', $excludedCharIds);
+        }
+        $eligibleFirstJobId = (int) ($firstJobQuery->orderBy('max_job_reached_at')->orderBy('char_id')->value('char_id') ?? 0);
+
+        $firstDefIds = BadgeDefinition::whereIn('auto_condition_type', ['first_max_base', 'first_max_job'])
+            ->pluck('id', 'auto_condition_type');
+
+        if ($firstDefIds->has('first_max_base') && $eligibleFirstBaseId > 0) {
+            BadgeAssignment::where('badge_id', $firstDefIds->get('first_max_base'))
+                ->where('target_type', 'character')
+                ->where('target_id', '!=', $eligibleFirstBaseId)
+                ->where('is_active', true)
+                ->update(['is_active' => false, 'revoked_at' => now()]);
+        }
+        if ($firstDefIds->has('first_max_job') && $eligibleFirstJobId > 0) {
+            BadgeAssignment::where('badge_id', $firstDefIds->get('first_max_job'))
+                ->where('target_type', 'character')
+                ->where('target_id', '!=', $eligibleFirstJobId)
+                ->where('is_active', true)
+                ->update(['is_active' => false, 'revoked_at' => now()]);
+        }
+
+        $charIds = $roConn->table($charTable)
             ->pluck('char_id')
             ->all();
 

@@ -14,7 +14,20 @@
                 <img src="{{ route('guilds.emblem', $guild->guild_id) }}" alt="{{ $guild->name }}" class="w-10 h-10 object-contain image-rendering-pixelated">
             </div>
             <div>
-                <h1 class="text-3xl font-extrabold text-white tracking-tight">{{ $guild->name }}</h1>
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <h1 class="text-3xl font-extrabold text-white tracking-tight">{{ $guild->name }}</h1>
+                    @foreach($guildBadges as $badge)
+                        <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold border inline-flex items-center gap-1"
+                              style="color: {{ $badge['color'] }}; border-color: {{ $badge['color'] }}66; background-color: {{ $badge['color'] }}1f;">
+                            @if(!empty($badge['icon_url']))
+                                <img src="{{ $badge['icon_url'] }}" alt="" class="w-3.5 h-3.5 object-contain">
+                            @elseif(!empty($badge['icon']))
+                                <i data-lucide="{{ $badge['icon'] }}" class="w-3.5 h-3.5"></i>
+                            @endif
+                            <span>{{ $badge['label'] }}</span>
+                        </span>
+                    @endforeach
+                </div>
                 <p class="text-xs text-slate-400 mt-1 flex items-center gap-2">
                     <span>Guild Master: <strong class="text-cyan-400">{{ $guild->master }}</strong></span>
                     <span>•</span>
@@ -57,7 +70,15 @@
                     @forelse($members as $m)
                         <tr class="hover:bg-slate-800/30">
                             <td class="py-3 px-4 font-bold text-white">
-                                <a href="{{ route('characters.show', $m->name) }}" class="hover:text-cyan-400">{{ $m->name }}</a>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <a href="{{ route('characters.show', $m->name) }}" class="hover:text-cyan-400">{{ $m->name }}</a>
+                                    @foreach(array_slice($memberBadges[(int) ($m->char_id ?? 0)] ?? [], 0, 2) as $mb)
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold border"
+                                              style="color: {{ $mb['color'] }}; border-color: {{ $mb['color'] }}66; background-color: {{ $mb['color'] }}1f;">
+                                            {{ $mb['label'] }}
+                                        </span>
+                                    @endforeach
+                                </div>
                             </td>
                             <td class="py-3 px-4 text-center font-mono text-slate-400">{{ $m->class }}</td>
                             <td class="py-3 px-4 text-center font-bold text-slate-200">{{ $m->lv }}</td>

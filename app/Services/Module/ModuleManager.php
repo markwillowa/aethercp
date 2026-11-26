@@ -116,6 +116,8 @@ class ModuleManager
             SiteSetting::set("module_enabled_itemdb", $newState ? '1' : '0');
         } elseif ($key === 'itemdb') {
             SiteSetting::set("module_enabled_database", $newState ? '1' : '0');
+        } elseif ($key === 'character_creation') {
+            SiteSetting::set('char_create_enabled', $newState ? '1' : '0', 'character_creation');
         }
 
         return $newState;

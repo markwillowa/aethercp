@@ -33,7 +33,15 @@
                                 <img src="{{ route('guilds.emblem', $g->guild_id) }}" alt="{{ $g->name }}" class="w-6 h-6 inline-block rounded shadow-sm border border-slate-800" loading="lazy">
                             </td>
                             <td class="py-3 px-4 font-bold text-white hover:text-cyan-400">
-                                <a href="{{ route('guilds.show', $g->guild_id) }}">{{ $g->name }}</a>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <a href="{{ route('guilds.show', $g->guild_id) }}">{{ $g->name }}</a>
+                                    @foreach(($guildBadges[(int) $g->guild_id] ?? []) as $badge)
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold border"
+                                              style="color: {{ $badge['color'] }}; border-color: {{ $badge['color'] }}66; background-color: {{ $badge['color'] }}1f;">
+                                            {{ $badge['label'] }}
+                                        </span>
+                                    @endforeach
+                                </div>
                             </td>
                             <td class="py-3 px-4 text-slate-300">
                                 <a href="{{ route('characters.show', $g->master) }}" class="hover:underline">{{ $g->master }}</a>

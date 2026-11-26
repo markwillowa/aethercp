@@ -21,6 +21,12 @@ return [
             'version' => '1.0.0',
             'enabled' => true,
         ],
+        'character_creation' => [
+            'name' => 'Online Character Creation',
+            'description' => 'Web-based Ragnarok Online character creation with configurable jobs, levels, appearance, and starting gear.',
+            'version' => '1.0.0',
+            'enabled' => true,
+        ],
         'rankings' => [
             'name' => 'Rankings & Leaderboards',
             'description' => 'Base/Job level, Zeny, MVP kills, Guild, and PvP leaderboards.',

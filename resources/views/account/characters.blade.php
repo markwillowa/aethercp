@@ -7,17 +7,33 @@
             <h1 class="text-2xl font-bold text-white">My Characters</h1>
             <p class="text-xs text-slate-400 mt-1">Characters linked to game account #{{ $user->account_id }}</p>
         </div>
-        <a href="{{ route('account.profile') }}" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-medium">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            <span>Back to Account</span>
-        </a>
+        <div class="flex items-center gap-3">
+            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('character_creation'))
+                <a href="{{ route('account.characters.create') }}" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 inline-flex items-center gap-1.5 transition-all">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i>
+                    <span>Create New Character</span>
+                </a>
+            @endif
+            <a href="{{ route('account.profile') }}" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-medium">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>Back to Account</span>
+            </a>
+        </div>
     </div>
 
     @if(count($characters) === 0)
-        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-12 text-center text-slate-400">
-            <i data-lucide="user-x" class="w-12 h-12 mx-auto mb-3 text-slate-600"></i>
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-12 text-center text-slate-400 space-y-3">
+            <i data-lucide="user-x" class="w-12 h-12 mx-auto text-slate-600"></i>
             <h3 class="text-lg font-bold text-slate-200">No Characters Created</h3>
-            <p class="text-xs text-slate-400 mt-1">Launch your Ragnarok game client to create your first adventurer!</p>
+            <p class="text-xs text-slate-400">Create your first adventurer online or launch your Ragnarok game client.</p>
+            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('character_creation'))
+                <div class="pt-2">
+                    <a href="{{ route('account.characters.create') }}" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 inline-flex items-center gap-2 shadow-lg shadow-cyan-500/20">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i>
+                        <span>Create Character Online</span>
+                    </a>
+                </div>
+            @endif
         </div>
     @else
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
