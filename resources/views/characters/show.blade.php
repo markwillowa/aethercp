@@ -282,10 +282,20 @@
                 </thead>
                 <tbody class="divide-y divide-slate-800/60">
                     @forelse($rankingSummary['history'] ?? [] as $evt)
+                        @php
+                            $eventLabel = match ($evt->event_type) {
+                                'pvp_kill' => 'PvP Kills',
+                                'pvp_death' => 'PvP Deaths',
+                                'mvp_kill' => 'MVP Kills',
+                                'base_level' => 'Base Level',
+                                'job_level' => 'Job Level',
+                                default => \Illuminate\Support\Str::headline((string) $evt->event_type),
+                            };
+                        @endphp
                         <tr>
-                            <td class="py-2.5 px-4 font-mono text-cyan-400">{{ $evt->event_type }}</td>
-                            <td class="py-2.5 px-4 text-slate-200">{{ $evt->value }}</td>
-                            <td class="py-2.5 px-4 text-slate-400 font-mono">{{ $evt->occurred_at }}</td>
+                            <td class="py-2.5 px-4 font-semibold text-cyan-300">{{ $eventLabel }}</td>
+                            <td class="py-2.5 px-4 font-mono text-slate-200">{{ number_format((int) $evt->value) }}</td>
+                            <td class="py-2.5 px-4 text-slate-400">{{ \Carbon\Carbon::parse($evt->occurred_at)->format('M d, Y H:i') }}</td>
                         </tr>
                     @empty
                         <tr><td colspan="3" class="py-6 text-center text-slate-500">No historical ranking events recorded yet.</td></tr>
