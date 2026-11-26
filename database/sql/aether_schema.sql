@@ -1124,25 +1124,21 @@ TRUNCATE TABLE `migrations`;
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (1, '0001_01_01_000000_create_users_table', 1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (2, '0001_01_01_000001_create_cache_table', 1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (3, '0001_01_01_000002_create_jobs_table', 1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (4, '2026_11_23_000001_enhance_users_for_aether', 1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (5, '2026_11_23_000002_create_aether_news_table', 1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (6, '2026_11_23_000003_create_aether_downloads_table', 1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (7, '2026_11_23_000004_create_aether_donations_table', 1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (8, '2026_11_23_000005_create_aether_settings_and_logs_tables', 1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (9, '2026_11_23_000006_add_item_rewards_and_paypal_to_donations', 2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (10, '2026_11_24_000001_create_aether_marketplace_tables', 3);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (11, '2026_11_24_000002_create_aether_support_ticket_tables', 4);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (12, '2026_11_24_000003_create_aether_faq_tables', 5);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (13, '2026_11_25_000001_create_ranking_tracking_tables', 6);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (14, '2026_11_25_000002_create_badge_system_tables', 7);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (15, '2026_11_25_000003_create_reward_system_tables', 8);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (16, '2026_11_25_000004_create_player_profiles_tables', 9);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (17, '2026_11_25_000005_add_profile_customization_fields', 10);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (18, '2026_11_25_000006_create_attendance_and_daily_rewards_tables', 11);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (19, '2026_11_26_000001_create_cash_shop_tables', 12);
-
-COMMIT;
-SET FOREIGN_KEY_CHECKS=1;
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (4, '2026_11_23_000002_create_aether_news_table', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (5, '2026_11_23_000003_create_aether_downloads_table', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (6, '2026_11_23_000004_create_aether_donations_table', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (7, '2026_11_23_000005_create_aether_settings_and_logs_tables', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (8, '2026_11_24_000001_create_aether_marketplace_tables', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (9, '2026_11_24_000002_create_aether_support_ticket_tables', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (10, '2026_11_24_000003_create_aether_faq_tables', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (11, '2026_11_25_000001_create_ranking_tracking_tables', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (12, '2026_11_25_000002_create_badge_system_tables', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (13, '2026_11_25_000003_create_reward_system_tables', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (14, '2026_11_25_000004_create_player_profiles_tables', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (15, '2026_11_25_000006_create_attendance_and_daily_rewards_tables', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (16, '2026_11_26_000001_create_cash_shop_tables', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (17, '2026_11_26_000002_create_forum_tables', 1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (18, '2026_11_26_000003_create_forum_identity_and_reputation_tables', 1);
 
 
 -- --------------------------------------------------------
@@ -1231,3 +1227,289 @@ CREATE TABLE IF NOT EXISTS `cash_shop_purchases` (
   CONSTRAINT `cash_shop_purchases_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `cash_shop_purchases_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `cash_shop_products` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------
+-- Table structure for `forum_categories`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `forum_categories`;
+CREATE TABLE IF NOT EXISTS `forum_categories` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `icon` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'message-square',
+  `sort_order` int NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `forum_categories_slug_unique` (`slug`),
+  KEY `forum_categories_is_active_index` (`is_active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------
+-- Table structure for `forum_boards`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `forum_boards`;
+CREATE TABLE IF NOT EXISTS `forum_boards` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `category_id` bigint unsigned NOT NULL,
+  `name` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(140) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `icon` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'hash',
+  `sort_order` int NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `is_locked` tinyint(1) NOT NULL DEFAULT '0',
+  `allow_topics_roles` json DEFAULT NULL,
+  `topics_count` int unsigned NOT NULL DEFAULT '0',
+  `posts_count` int unsigned NOT NULL DEFAULT '0',
+  `last_topic_id` bigint unsigned DEFAULT NULL,
+  `last_post_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `forum_boards_slug_unique` (`slug`),
+  KEY `forum_boards_category_id_foreign` (`category_id`),
+  KEY `forum_boards_is_active_index` (`is_active`),
+  KEY `forum_boards_last_topic_id_index` (`last_topic_id`),
+  KEY `forum_boards_last_post_at_index` (`last_post_at`),
+  CONSTRAINT `forum_boards_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `forum_categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------
+-- Table structure for `forum_topics`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `forum_topics`;
+CREATE TABLE IF NOT EXISTS `forum_topics` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `board_id` bigint unsigned NOT NULL,
+  `user_id` bigint unsigned NOT NULL,
+  `title` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(220) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_pinned` tinyint(1) NOT NULL DEFAULT '0',
+  `is_locked` tinyint(1) NOT NULL DEFAULT '0',
+  `is_solved` tinyint(1) NOT NULL DEFAULT '0',
+  `is_announcement` tinyint(1) NOT NULL DEFAULT '0',
+  `is_approved_guide` tinyint(1) NOT NULL DEFAULT '0',
+  `accepted_post_id` bigint unsigned DEFAULT NULL,
+  `views_count` int unsigned NOT NULL DEFAULT '0',
+  `replies_count` int unsigned NOT NULL DEFAULT '0',
+  `last_post_id` bigint unsigned DEFAULT NULL,
+  `last_post_user_id` bigint unsigned DEFAULT NULL,
+  `last_activity_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `forum_topics_slug_unique` (`slug`),
+  KEY `forum_topics_is_pinned_index` (`is_pinned`),
+  KEY `forum_topics_is_solved_index` (`is_solved`),
+  KEY `forum_topics_is_announcement_index` (`is_announcement`),
+  KEY `forum_topics_last_activity_at_index` (`last_activity_at`),
+  KEY `forum_topics_board_listing_idx` (`board_id`,`is_pinned`,`last_activity_at`),
+  KEY `forum_topics_user_created_idx` (`user_id`,`created_at`),
+  CONSTRAINT `forum_topics_board_id_foreign` FOREIGN KEY (`board_id`) REFERENCES `forum_boards` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `forum_topics_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------
+-- Table structure for `forum_posts`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `forum_posts`;
+CREATE TABLE IF NOT EXISTS `forum_posts` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `topic_id` bigint unsigned NOT NULL,
+  `user_id` bigint unsigned NOT NULL,
+  `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_first_post` tinyint(1) NOT NULL DEFAULT '0',
+  `is_accepted_answer` tinyint(1) NOT NULL DEFAULT '0',
+  `likes_count` int unsigned NOT NULL DEFAULT '0',
+  `edited_at` timestamp NULL DEFAULT NULL,
+  `edited_by` bigint unsigned DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `forum_posts_is_first_post_index` (`is_first_post`),
+  KEY `forum_posts_topic_created_idx` (`topic_id`,`created_at`),
+  KEY `forum_posts_user_created_idx` (`user_id`,`created_at`),
+  CONSTRAINT `forum_posts_topic_id_foreign` FOREIGN KEY (`topic_id`) REFERENCES `forum_topics` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `forum_posts_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------
+-- Table structure for `forum_post_reactions`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `forum_post_reactions`;
+CREATE TABLE IF NOT EXISTS `forum_post_reactions` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `post_id` bigint unsigned NOT NULL,
+  `user_id` bigint unsigned NOT NULL,
+  `type` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'like',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `forum_post_reactions_unique` (`post_id`,`user_id`,`type`),
+  KEY `forum_post_reactions_user_id_foreign` (`user_id`),
+  CONSTRAINT `forum_post_reactions_post_id_foreign` FOREIGN KEY (`post_id`) REFERENCES `forum_posts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `forum_post_reactions_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------
+-- Table structure for `forum_post_attachments`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `forum_post_attachments`;
+CREATE TABLE IF NOT EXISTS `forum_post_attachments` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `post_id` bigint unsigned NOT NULL,
+  `user_id` bigint unsigned NOT NULL,
+  `original_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file_path` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mime_type` varchar(120) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `file_size` bigint unsigned NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `forum_post_attachments_post_id_foreign` (`post_id`),
+  KEY `forum_post_attachments_user_id_foreign` (`user_id`),
+  CONSTRAINT `forum_post_attachments_post_id_foreign` FOREIGN KEY (`post_id`) REFERENCES `forum_posts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `forum_post_attachments_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------
+-- Table structure for `forum_topic_subscriptions`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `forum_topic_subscriptions`;
+CREATE TABLE IF NOT EXISTS `forum_topic_subscriptions` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `topic_id` bigint unsigned NOT NULL,
+  `user_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `forum_topic_subscriptions_unique` (`topic_id`,`user_id`),
+  KEY `forum_topic_subscriptions_user_id_foreign` (`user_id`),
+  CONSTRAINT `forum_topic_subscriptions_topic_id_foreign` FOREIGN KEY (`topic_id`) REFERENCES `forum_topics` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `forum_topic_subscriptions_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------
+-- Table structure for `forum_reports`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `forum_reports`;
+CREATE TABLE IF NOT EXISTS `forum_reports` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `reporter_id` bigint unsigned NOT NULL,
+  `topic_id` bigint unsigned DEFAULT NULL,
+  `post_id` bigint unsigned DEFAULT NULL,
+  `reason` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `details` text COLLATE utf8mb4_unicode_ci,
+  `status` enum('pending','reviewed','dismissed') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
+  `reviewed_by` bigint unsigned DEFAULT NULL,
+  `reviewed_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `forum_reports_reporter_id_foreign` (`reporter_id`),
+  KEY `forum_reports_topic_id_index` (`topic_id`),
+  KEY `forum_reports_post_id_index` (`post_id`),
+  KEY `forum_reports_status_index` (`status`),
+  CONSTRAINT `forum_reports_reporter_id_foreign` FOREIGN KEY (`reporter_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------
+-- Table structure for `forum_user_profiles`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `forum_user_profiles`;
+CREATE TABLE IF NOT EXISTS `forum_user_profiles` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned NOT NULL,
+  `identity_mode` enum('username','character') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'username',
+  `selected_char_id` int unsigned DEFAULT NULL,
+  `reputation_points` int NOT NULL DEFAULT '0',
+  `forum_title` varchar(80) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `signature` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `forum_user_profiles_user_id_unique` (`user_id`),
+  KEY `forum_user_profiles_selected_char_id_index` (`selected_char_id`),
+  KEY `forum_user_profiles_reputation_points_index` (`reputation_points`),
+  CONSTRAINT `forum_user_profiles_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------
+-- Table structure for `reputation_levels`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `reputation_levels`;
+CREATE TABLE IF NOT EXISTS `reputation_levels` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `min_points` int NOT NULL DEFAULT '0',
+  `badge_color` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '#64748b',
+  `badge_icon` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'award',
+  `badge_style` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'solid',
+  `sort_order` int NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `reputation_levels_slug_unique` (`slug`),
+  KEY `reputation_levels_min_points_index` (`min_points`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------
+-- Table structure for `reputation_transactions`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `reputation_transactions`;
+CREATE TABLE IF NOT EXISTS `reputation_transactions` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `recipient_user_id` bigint unsigned NOT NULL,
+  `source_user_id` bigint unsigned DEFAULT NULL,
+  `event_type` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `points` int NOT NULL,
+  `topic_id` bigint unsigned DEFAULT NULL,
+  `post_id` bigint unsigned DEFAULT NULL,
+  `event_reference` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_reversal` tinyint(1) NOT NULL DEFAULT '0',
+  `reversed_transaction_id` bigint unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `reputation_transactions_event_reference_unique` (`event_reference`),
+  KEY `reputation_transactions_source_user_id_index` (`source_user_id`),
+  KEY `reputation_transactions_event_type_index` (`event_type`),
+  KEY `reputation_transactions_topic_id_index` (`topic_id`),
+  KEY `reputation_transactions_post_id_index` (`post_id`),
+  KEY `rep_tx_recipient_created_idx` (`recipient_user_id`,`created_at`),
+  KEY `rep_tx_event_created_idx` (`event_type`,`created_at`),
+  CONSTRAINT `reputation_transactions_recipient_user_id_foreign` FOREIGN KEY (`recipient_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------
+-- Table structure for `reputation_audit_logs`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `reputation_audit_logs`;
+CREATE TABLE IF NOT EXISTS `reputation_audit_logs` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `admin_user_id` bigint unsigned NOT NULL,
+  `recipient_user_id` bigint unsigned NOT NULL,
+  `points_delta` int NOT NULL,
+  `previous_total` int NOT NULL,
+  `new_total` int NOT NULL,
+  `reason` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `transaction_id` bigint unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `reputation_audit_logs_admin_user_id_foreign` (`admin_user_id`),
+  KEY `reputation_audit_logs_recipient_user_id_foreign` (`recipient_user_id`),
+  CONSTRAINT `reputation_audit_logs_admin_user_id_foreign` FOREIGN KEY (`admin_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `reputation_audit_logs_recipient_user_id_foreign` FOREIGN KEY (`recipient_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+COMMIT;
+SET FOREIGN_KEY_CHECKS=1;

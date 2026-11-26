@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('currency', 3)->default('USD');
             $table->integer('points');
             $table->integer('bonus_points')->default(0);
+            $table->unsignedInteger('item_id')->nullable();
+            $table->unsignedInteger('item_amount')->default(0);
+            $table->string('item_name', 100)->nullable();
             $table->boolean('is_popular')->default(false);
             $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->default(0);
@@ -29,10 +32,15 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->string('currency', 3)->default('USD');
             $table->integer('points_awarded')->default(0);
+            $table->boolean('points_delivered')->default(false);
+            $table->boolean('items_delivered')->default(false);
             $table->string('payment_method')->default('manual');
             $table->string('transaction_reference')->unique()->nullable();
+            $table->string('payer_email')->nullable();
+            $table->string('payer_id')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected', 'refunded'])->default('pending');
             $table->text('notes')->nullable();
+            $table->text('ipn_data')->nullable();
             $table->unsignedBigInteger('verified_by')->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->timestamps();

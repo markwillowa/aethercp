@@ -23,7 +23,14 @@ class EscrowInboxController extends Controller
             return redirect()->route('login');
         }
 
-        $characters = $this->characterRepo->getCharactersByAccount((int) $user->account_id);
+        $characters = collect();
+        if (!empty($user->account_id)) {
+            try {
+                $characters = $this->characterRepo->getCharactersByAccount((int) $user->account_id);
+            } catch (\Throwable $e) {
+                $characters = collect();
+            }
+        }
 
         $source = (string) $request->query('source', 'all');
         $status = (string) $request->query('status', 'unclaimed');

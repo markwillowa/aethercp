@@ -13,6 +13,8 @@ return new class extends Migration
             $table->unsignedBigInteger('account_id')->index();
             $table->boolean('is_public')->default(true)->index();
             $table->boolean('show_char_info')->default(true);
+            $table->boolean('show_equipments')->default(true);
+            $table->boolean('show_zeny')->default(true);
             $table->boolean('show_rankings')->default(true);
             $table->boolean('show_badges')->default(true);
             $table->boolean('show_achievements')->default(true);
@@ -20,6 +22,7 @@ return new class extends Migration
             $table->boolean('show_guild')->default(true);
             $table->boolean('show_last_login')->default(false);
             $table->string('bio', 255)->nullable();
+            $table->string('avatar_path', 255)->nullable();
             $table->timestamps();
         });
 

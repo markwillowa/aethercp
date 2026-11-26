@@ -328,6 +328,7 @@ class InstallController extends Controller
             $envUpdates = [
                 'APP_NAME' => '"' . $validated['app_name'] . '"',
                 'APP_URL' => $validated['app_url'],
+                'DB_CONNECTION' => 'mysql',
                 'DB_HOST' => $validated['db_host'],
                 'DB_PORT' => $validated['db_port'],
                 'DB_DATABASE' => $validated['db_database'],
@@ -361,6 +362,7 @@ class InstallController extends Controller
 
             // Set DB config dynamically for immediate migration in this turn
             config([
+                'database.default' => 'mysql',
                 'database.connections.mysql.host' => $validated['db_host'],
                 'database.connections.mysql.port' => $validated['db_port'],
                 'database.connections.mysql.database' => $validated['db_database'],
@@ -381,8 +383,21 @@ class InstallController extends Controller
             }
 
             // 4. Run database migrations for AetherCP tables
-            Artisan::call('migrate', ['--force' => true]);
+            Artisan::call('migrate', ['--database' => 'mysql', '--force' => true]);
             $migrateOutput = trim(Artisan::output());
+
+            // Verify all core tables exist; if any migration was skipped or failed, run SQL migration files in order
+            $essentialTables = ['users', 'site_settings', 'reward_definitions', 'cash_shop_categories', 'forum_categories'];
+            $missingAfterMigrate = array_filter($essentialTables, fn ($t) => !Schema::connection('mysql')->hasTable($t));
+            if (!empty($missingAfterMigrate)) {
+                $sqlFiles = File::glob(database_path('sql/migrations/*.sql'));
+                sort($sqlFiles);
+                foreach ($sqlFiles as $sqlFile) {
+                    $sql = preg_replace('/^\s*(START TRANSACTION|COMMIT)\s*;\s*$/im', '', File::get($sqlFile));
+                    DB::connection('mysql')->unprepared($sql);
+                }
+                $migrateOutput .= "\nExecuted SQL migration fallback for missing tables: " . implode(', ', $missingAfterMigrate);
+            }
 
             // 5. Seed selected configuration and starter data modules
             $selectedSeeders = $request->input('selected_seeders', ['settings', 'badges', 'attendance', 'donations', 'news', 'downloads']);
@@ -620,6 +635,7 @@ class InstallController extends Controller
             $envUpdates = [
                 'APP_NAME' => '"' . $validated['app_name'] . '"',
                 'APP_URL' => $validated['app_url'],
+                'DB_CONNECTION' => 'mysql',
                 'DB_HOST' => $validated['db_host'],
                 'DB_PORT' => $validated['db_port'],
                 'DB_DATABASE' => $validated['db_database'],
@@ -674,6 +690,10 @@ class InstallController extends Controller
                 'player_inbox_items',
                 'badge_definitions',
                 'badge_tiers',
+                'reward_definitions',
+                'cash_shop_categories',
+                'forum_categories',
+                'reputation_levels',
             ];
 
             $missing = [];

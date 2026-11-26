@@ -345,7 +345,7 @@
 
                     <!-- Action Buttons -->
                     <div class="pt-2 flex items-center justify-center gap-3 flex-wrap">
-                        @if(app(\App\Services\ModuleManager::class)->isEnabled('cash_shop'))
+                        @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('cash_shop'))
                             <a href="{{ route('cash-shop.index') }}" class="h-10 px-5 rounded-xl text-xs font-bold bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/40 transition-colors inline-flex items-center gap-2">
                                 <i data-lucide="store" class="w-4 h-4 text-indigo-400"></i>
                                 <span>Cash Shop</span>

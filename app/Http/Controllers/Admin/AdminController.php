@@ -255,10 +255,18 @@ class AdminController extends Controller
 
     public function toggleModule(\App\Services\Module\ModuleManager $moduleManager, string $key)
     {
-        $res = $moduleManager->toggle($key);
-        ActivityLog::log('admin.module_toggle', "Toggled module [{$key}].");
+        $newState = $moduleManager->toggle($key);
+        $migrationNote = $moduleManager->getLastMigrationNote();
+        $stateLabel = $newState ? 'enabled' : 'disabled';
 
-        return back()->with('success', "Module [{$key}] state updated.");
+        ActivityLog::log('admin.module_toggle', "Toggled module [{$key}] ({$stateLabel})." . ($migrationNote ? " {$migrationNote}" : ''));
+
+        $message = "Module [{$key}] {$stateLabel}.";
+        if ($migrationNote) {
+            $message .= ' ' . $migrationNote;
+        }
+
+        return back()->with('success', $message);
     }
 
     public function themes(\App\Services\Theme\ThemeManager $themeManager)

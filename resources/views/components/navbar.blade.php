@@ -84,8 +84,8 @@
                             <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
                         </button>
 
-                        <div x-show="userDropdown" x-transition.opacity.duration.150ms class="absolute right-0 mt-2 w-52 bg-slate-900/95 border border-slate-800 rounded-xl shadow-2xl py-1.5 backdrop-blur-xl z-50">
-                            <div class="px-4 py-2 border-b border-slate-800/80">
+                        <div x-show="userDropdown" x-transition.opacity.duration.150ms class="absolute right-0 mt-2 w-56 max-h-[82vh] overflow-y-auto bg-slate-900/95 border border-slate-800 rounded-xl shadow-2xl py-1.5 backdrop-blur-xl z-50">
+                            <div class="px-4 py-2.5 border-b border-slate-800/80">
                                 <p class="text-xs text-slate-400">Signed in as</p>
                                 <p class="text-sm font-semibold text-cyan-400 truncate">{{ auth()->user()->username }}</p>
                                 <span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded bg-slate-800 text-slate-300">
@@ -93,69 +93,92 @@
                                 </span>
                             </div>
 
-                            <a href="{{ route('account.profile') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                            <!-- Account -->
+                            <div class="pt-2 pb-1 px-4">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Account</span>
+                            </div>
+                            <a href="{{ route('account.profile') }}" class="flex items-center gap-2 px-4 py-1.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
                                 <i data-lucide="user" class="w-4 h-4 text-cyan-400"></i>
                                 <span>My Account</span>
                             </a>
-                            <a href="{{ route('account.characters') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                            <a href="{{ route('account.characters') }}" class="flex items-center gap-2 px-4 py-1.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
                                 <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i>
                                 <span>My Characters</span>
                             </a>
-                            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('cash_shop'))
-                                <a href="{{ route('cash-shop.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+
+                            <!-- Shop & Rewards -->
+                            <div class="border-t border-slate-800/80 my-1.5"></div>
+                            <div class="pt-1 pb-1 px-4">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Shop &amp; Rewards</span>
+                            </div>
+                            @if($modMgr->isEnabled('cash_shop'))
+                                <a href="{{ route('cash-shop.index') }}" class="flex items-center gap-2 px-4 py-1.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
                                     <i data-lucide="store" class="w-4 h-4 text-cyan-400"></i>
                                     <span>Cash Shop Mall</span>
                                 </a>
-                                <a href="{{ route('cash-shop.history') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                                <a href="{{ route('cash-shop.history') }}" class="flex items-center gap-2 px-4 py-1.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
                                     <i data-lucide="receipt" class="w-4 h-4 text-slate-400"></i>
                                     <span>Shop Orders</span>
                                 </a>
                             @endif
-                            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('attendance'))
-                                <a href="{{ route('attendance.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                            @if($modMgr->isEnabled('attendance'))
+                                <a href="{{ route('attendance.index') }}" class="flex items-center gap-2 px-4 py-1.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
                                     <i data-lucide="calendar" class="w-4 h-4 text-amber-400"></i>
                                     <span>Daily Rewards</span>
                                 </a>
                             @endif
-                            <a href="{{ route('escrow.index') }}" class="flex items-center justify-between px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                            <a href="{{ route('escrow.index') }}" class="flex items-center justify-between px-4 py-1.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
                                 <span class="flex items-center gap-2">
                                     <i data-lucide="inbox" class="w-4 h-4 text-cyan-400"></i>
                                     <span>Escrow Inbox</span>
                                 </span>
                                 @php
-                                    $userUnclaimed = \App\Models\PlayerInboxItem::where('account_id', auth()->user()->account_id)->where('status', 'unclaimed')->count();
+                                    $userUnclaimed = auth()->user()->account_id
+                                        ? \App\Models\PlayerInboxItem::where('account_id', auth()->user()->account_id)->where('status', 'unclaimed')->count()
+                                        : 0;
                                 @endphp
                                 @if($userUnclaimed > 0)
                                     <span class="px-2 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-slate-950 font-mono">{{ $userUnclaimed }}</span>
                                 @endif
                             </a>
 
-                            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('support'))
-                                <a href="{{ route('support.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
-                                    <i data-lucide="life-buoy" class="w-4 h-4 text-cyan-400"></i>
-                                    <span>Support Center</span>
-                                </a>
-                            @endif
-                            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('forum'))
-                                <a href="{{ route('forum.profile.show', auth()->user()->username) }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
-                                    <i data-lucide="messages-square" class="w-4 h-4 text-cyan-400"></i>
-                                    <span>Forum Profile</span>
-                                </a>
-                                <a href="{{ route('forum.identity.settings') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
-                                    <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
-                                    <span>Forum Identity</span>
-                                </a>
+                            <!-- Community & Support -->
+                            @if($modMgr->isEnabled('forum') || $modMgr->isEnabled('support'))
+                                <div class="border-t border-slate-800/80 my-1.5"></div>
+                                <div class="pt-1 pb-1 px-4">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Community &amp; Support</span>
+                                </div>
+                                @if($modMgr->isEnabled('forum'))
+                                    <a href="{{ route('forum.profile.show', auth()->user()->username) }}" class="flex items-center gap-2 px-4 py-1.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                                        <i data-lucide="messages-square" class="w-4 h-4 text-cyan-400"></i>
+                                        <span>Forum Profile</span>
+                                    </a>
+                                    <a href="{{ route('forum.identity.settings') }}" class="flex items-center gap-2 px-4 py-1.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                                        <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                                        <span>Forum Identity</span>
+                                    </a>
+                                @endif
+                                @if($modMgr->isEnabled('support'))
+                                    <a href="{{ route('support.index') }}" class="flex items-center gap-2 px-4 py-1.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                                        <i data-lucide="life-buoy" class="w-4 h-4 text-cyan-400"></i>
+                                        <span>Support Center</span>
+                                    </a>
+                                @endif
                             @endif
 
+                            <!-- Administration -->
                             @if(auth()->user()->isAdmin())
-                                <div class="border-t border-slate-800 my-1"></div>
-                                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-amber-300 hover:text-amber-200 hover:bg-amber-950/30 transition-colors">
+                                <div class="border-t border-slate-800/80 my-1.5"></div>
+                                <div class="pt-1 pb-1 px-4">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-amber-500/80">Administration</span>
+                                </div>
+                                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-1.5 text-sm text-amber-300 hover:text-amber-200 hover:bg-amber-950/30 transition-colors">
                                     <i data-lucide="layout-dashboard" class="w-4 h-4 text-amber-400"></i>
                                     <span>Admin Panel</span>
                                 </a>
                             @endif
 
-                            <div class="border-t border-slate-800 my-1"></div>
+                            <div class="border-t border-slate-800 my-1.5"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-950/20 transition-colors text-left">
