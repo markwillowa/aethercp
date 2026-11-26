@@ -1067,6 +1067,7 @@ html, body {
 [data-theme="aether-prestige"] main .bg-slate-800\/60,
 [data-theme="aether-prestige"] main .bg-slate-800\/50,
 [data-theme="aether-prestige"] main .bg-slate-800,
+[data-theme="aether-prestige"] main .bg-slate-850,
 [data-theme="aether-prestige"] main .bg-slate-700 {
     background-color: #1B2432 !important;
     border-color: rgba(255, 255, 255, 0.1) !important;
@@ -1078,6 +1079,7 @@ html, body {
 [data-theme="aether-prestige"] main .hover\:bg-slate-900\/80:hover,
 [data-theme="aether-prestige"] main .hover\:bg-slate-900\/60:hover,
 [data-theme="aether-prestige"] main .hover\:bg-slate-900:hover,
+[data-theme="aether-prestige"] main .hover\:bg-slate-850:hover,
 [data-theme="aether-prestige"] main .hover\:bg-slate-800\/80:hover,
 [data-theme="aether-prestige"] main .hover\:bg-slate-800\/60:hover,
 [data-theme="aether-prestige"] main .hover\:bg-slate-800\/50:hover,
@@ -1217,6 +1219,21 @@ html, body {
     border-color: rgba(245, 222, 179, 0.5) !important;
 }
 
+[data-theme="aether-prestige"] main .hover\:from-cyan-400:hover,
+[data-theme="aether-prestige"] main .hover\:from-cyan-500:hover,
+[data-theme="aether-prestige"] main .hover\:to-blue-500:hover {
+    background: linear-gradient(135deg, #F5DEB3 0%, #D8BE8A 60%, #C6A76A 100%) !important;
+    color: #101725 !important;
+}
+
+[data-theme="aether-prestige"] main .bg-cyan-500 *,
+[data-theme="aether-prestige"] main .bg-cyan-600 *,
+[data-theme="aether-prestige"] main .bg-blue-600 *,
+[data-theme="aether-prestige"] main .from-cyan-500 *,
+[data-theme="aether-prestige"] main .from-cyan-600 * {
+    color: #101725 !important;
+}
+
 [data-theme="aether-prestige"] main .shadow-cyan-500\/10,
 [data-theme="aether-prestige"] main .shadow-cyan-500\/20,
 [data-theme="aether-prestige"] main .shadow-cyan-500\/25,
@@ -1236,6 +1253,16 @@ html, body {
 [data-theme="aether-prestige"] main h2,
 [data-theme="aether-prestige"] main h3 {
     font-family: 'Cinzel', Georgia, serif;
+}
+
+[data-theme="aether-prestige"] main > div.max-w-7xl,
+[data-theme="aether-prestige"] main > div.max-w-6xl,
+[data-theme="aether-prestige"] main > div.max-w-5xl,
+[data-theme="aether-prestige"] main > div.max-w-4xl {
+    max-width: 1280px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 2.5rem 1.5rem !important;
 }
 
 [data-theme="aether-prestige"] main > div.max-w-7xl,
