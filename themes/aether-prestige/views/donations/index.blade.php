@@ -35,30 +35,23 @@
     }
 }" class="prestige-container py-10 space-y-10">
 
-    <!-- ======================================================================
-         TOP VAULT HERO STRIP (FAQ-Style Centered Hero)
-         ====================================================================== -->
-    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#151B26] to-[#101725] border border-[#C6A76A]/30 p-6 sm:p-10 shadow-2xl">
-        <div class="relative z-10 text-center max-w-2xl mx-auto space-y-3">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C6A76A]/10 border border-[#C6A76A]/30 text-[#D8BE8A] text-[10px] font-bold uppercase tracking-luxury font-cinzel">
-                <i data-lucide="crown" class="w-3.5 h-3.5 text-[#C6A76A]"></i>
-                <span>Sovereign Treasury &amp; Patronage Vault</span>
-            </div>
-            <h1 class="font-cinzel text-2xl sm:text-4xl font-extrabold text-white tracking-wider uppercase">
-                Acquire Cash Shop Points
+    <!-- News & Media Style Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/[0.08] pb-6">
+        <div>
+            <h1 class="font-cinzel text-2xl sm:text-3xl font-extrabold text-[#F4F5F7] tracking-wider uppercase">
+                Sovereign Treasury &amp; Donations
             </h1>
-            <p class="text-xs sm:text-sm text-[#AAB3C1] leading-relaxed">
-                Directly empower high-frequency dedicated server infrastructure, anti-cheat licensing, and content expansions. Cash Points (#CASHPOINTS) and complimentary bonus items deliver in real time.
+            <p class="text-xs text-[#788394] mt-1">
+                Acquire Cash Points (#CASHPOINTS) and bonus items with real-time account fulfillment.
             </p>
-            @auth
-                <div class="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-[#101725]/80 border border-white/[0.08] text-xs mt-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span class="text-[#AAB3C1]">Account: <strong class="font-cinzel text-white">{{ auth()->user()->username ?? auth()->user()->name }}</strong></span>
-                    <span class="text-[#C6A76A] font-mono">• Instant Fulfillment Ready</span>
-                </div>
-            @endauth
         </div>
-        <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-[#C6A76A]/10 rounded-full blur-3xl pointer-events-none"></div>
+        @auth
+            <div class="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-[#151B26] border border-white/[0.08] text-xs shrink-0">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-[#AAB3C1]">Account: <strong class="font-cinzel text-white">{{ auth()->user()->username ?? auth()->user()->name }}</strong></span>
+                <span class="text-[#C6A76A] font-mono">• Instant Delivery</span>
+            </div>
+        @endauth
     </div>
 
     <!-- Instructions Notice (if present) -->

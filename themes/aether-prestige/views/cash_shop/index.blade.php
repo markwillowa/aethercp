@@ -1,55 +1,47 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="prestige-container py-10 space-y-8 max-w-6xl mx-auto" x-data="cashShopModal()">
-    <!-- FAQ-Style Centered Prestige Hero -->
-    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#151B26] to-[#101725] border border-[#C6A76A]/30 p-6 sm:p-10 shadow-2xl">
-        <div class="relative z-10 text-center max-w-2xl mx-auto space-y-4">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C6A76A]/10 border border-[#C6A76A]/30 text-[#D8BE8A] text-xs font-semibold tracking-wider uppercase font-cinzel">
-                <i data-lucide="store" class="w-3.5 h-3.5 text-[#C6A76A]"></i>
-                <span>Sovereign Item Mall • Escrow Delivery</span>
-            </div>
-
-            <h1 class="font-cinzel text-2xl sm:text-4xl font-extrabold text-white tracking-wider uppercase">
-                Cash Shop
+<div class="prestige-container py-10 space-y-8" x-data="cashShopModal()">
+    <!-- News & Media Style Header -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-white/[0.08] pb-6">
+        <div>
+            <h1 class="font-cinzel text-2xl sm:text-3xl font-extrabold text-[#F4F5F7] tracking-wider uppercase">
+                Cash Shop &amp; Item Mall
             </h1>
-
-            <p class="text-xs sm:text-sm text-[#AAB3C1] leading-relaxed">
-                Spend your Cash Points on consumables, refinement supplies, and rare equipment delivered safely to your Escrow Inbox.
+            <p class="text-xs text-[#788394] mt-1">
+                Spend Cash Points on consumables, refinement supplies, and gear delivered to your Escrow Inbox.
             </p>
-
-            <div class="flex flex-wrap items-center justify-center gap-3 text-xs">
-                <span class="px-4 py-2 rounded-xl bg-[#101725] border border-[#C6A76A]/30 font-mono text-[#D8BE8A]">
-                    Balance: <strong>{{ auth()->check() ? number_format($balance) . ' CP' : 'Guest' }}</strong>
-                </span>
-                @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('donations'))
-                    <a href="{{ route('donations.index') }}" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#D8BE8A] to-[#C6A76A] text-[#101725] font-bold">Get Cash Points</a>
-                @endif
-                @auth
-                    <a href="{{ route('cash-shop.history') }}" class="px-4 py-2 rounded-xl bg-[#1B2432] border border-white/10 text-[#AAB3C1] hover:text-white">My Purchases</a>
-                    <a href="{{ route('escrow.index') }}" class="px-4 py-2 rounded-xl bg-[#1B2432] border border-white/10 text-[#D8BE8A]">Escrow Inbox</a>
-                @endauth
-            </div>
-
-            <form method="GET" action="{{ route('cash-shop.index') }}" class="pt-2 max-w-xl mx-auto">
-                <input type="hidden" name="category" value="{{ $selectedCategorySlug }}">
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Search cash shop products by name or item ID..."
-                           class="flex-1 h-11 px-4 rounded-xl bg-[#101725] border border-white/10 text-white text-xs sm:text-sm focus:border-[#C6A76A] focus:outline-none">
-                    <select name="sort" onchange="this.form.submit()" class="h-11 px-3 rounded-xl bg-[#101725] border border-white/10 text-xs text-[#D9DEE7]">
-                        <option value="featured" {{ request('sort', 'featured') === 'featured' ? 'selected' : '' }}>Featured</option>
-                        <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>Price: Low-High</option>
-                        <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Price: High-Low</option>
-                        <option value="newest" {{ request('sort') === 'newest' ? 'selected' : '' }}>Newest</option>
-                    </select>
-                    <button type="submit" class="h-11 px-6 rounded-xl bg-gradient-to-r from-[#D8BE8A] to-[#C6A76A] text-[#101725] font-cinzel font-bold text-xs uppercase tracking-wider cursor-pointer shrink-0">
-                        Search
-                    </button>
-                </div>
-            </form>
         </div>
-        <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-[#C6A76A]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-wrap items-center gap-2">
+            <span class="h-9 px-3.5 rounded-xl bg-[#151B26] border border-[#C6A76A]/30 font-mono text-xs text-[#D8BE8A] inline-flex items-center">
+                Balance: <strong class="ml-1">{{ auth()->check() ? number_format($balance) . ' CP' : 'Guest' }}</strong>
+            </span>
+            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('donations'))
+                <a href="{{ route('donations.index') }}" class="h-9 px-4 rounded-xl bg-gradient-to-r from-[#D8BE8A] to-[#C6A76A] text-[#101725] font-cinzel font-bold text-xs uppercase tracking-wider inline-flex items-center">Top Up</a>
+            @endif
+            @auth
+                <a href="{{ route('cash-shop.history') }}" class="h-9 px-3.5 rounded-xl bg-[#151B26] border border-white/[0.08] text-[#AAB3C1] hover:text-white text-xs font-bold inline-flex items-center">Purchases</a>
+                <a href="{{ route('escrow.index') }}" class="h-9 px-3.5 rounded-xl bg-[#151B26] border border-white/[0.08] text-[#D8BE8A] text-xs font-bold inline-flex items-center">Escrow</a>
+            @endauth
+        </div>
     </div>
+
+    <!-- Search & Sort Bar -->
+    <form method="GET" action="{{ route('cash-shop.index') }}" class="prestige-card p-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <input type="hidden" name="category" value="{{ $selectedCategorySlug }}">
+        <input type="text" name="q" value="{{ request('q') }}" placeholder="Search cash shop products by name or item ID..."
+               class="flex-1 h-10 px-4 rounded-xl bg-[#101725] border border-white/10 text-white text-xs focus:border-[#C6A76A] focus:outline-none">
+        <select name="sort" onchange="this.form.submit()" class="h-10 px-3 rounded-xl bg-[#101725] border border-white/10 text-xs text-[#D9DEE7]">
+            <option value="featured" {{ request('sort', 'featured') === 'featured' ? 'selected' : '' }}>Featured</option>
+            <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>Price: Low-High</option>
+            <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Price: High-Low</option>
+            <option value="newest" {{ request('sort') === 'newest' ? 'selected' : '' }}>Newest</option>
+        </select>
+        <button type="submit" class="h-10 px-5 rounded-xl bg-gradient-to-r from-[#D8BE8A] to-[#C6A76A] text-[#101725] font-cinzel font-bold text-xs uppercase tracking-wider cursor-pointer shrink-0">
+            Search
+        </button>
+    </form>
 
     <!-- Category Pills -->
     <div class="flex items-center gap-2 overflow-x-auto pb-1">

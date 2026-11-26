@@ -1,37 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="prestige-container py-10 space-y-8 max-w-6xl mx-auto">
-    <!-- FAQ-Style Centered Prestige Hero -->
-    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#151B26] to-[#101725] border border-[#C6A76A]/30 p-6 sm:p-10 shadow-2xl">
-        <div class="relative z-10 text-center max-w-2xl mx-auto space-y-4">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C6A76A]/10 border border-[#C6A76A]/30 text-[#D8BE8A] text-xs font-semibold tracking-wider uppercase font-cinzel">
-                <i data-lucide="messages-square" class="w-3.5 h-3.5 text-[#C6A76A]"></i>
-                <span>Adventurer Community &amp; Tavern</span>
-            </div>
-
-            <h1 class="font-cinzel text-2xl sm:text-4xl font-extrabold text-white tracking-wider uppercase">
-                Community Discussions
+<div class="prestige-container py-10 space-y-8">
+    <!-- News & Media Style Header -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-white/[0.08] pb-6">
+        <div>
+            <h1 class="font-cinzel text-2xl sm:text-3xl font-extrabold text-[#F4F5F7] tracking-wider uppercase">
+                Community &amp; Tavern
             </h1>
-
-            <p class="text-xs sm:text-sm text-[#AAB3C1] leading-relaxed">
-                Share class guides, War of Emperium strategies, market offers, and server feedback with fellow Midgardians.
+            <p class="text-xs text-[#788394] mt-1">
+                Share class guides, War of Emperium strategies, market offers, and server feedback.
             </p>
-
-            <form action="{{ route('forum.index') }}" method="GET" class="pt-2 max-w-xl mx-auto">
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-                    <input type="text" name="q" value="{{ $search ?? '' }}" placeholder="Search topics, guides, or discussions..."
-                           class="flex-1 h-11 px-4 rounded-xl bg-[#101725] border border-white/10 text-white text-xs sm:text-sm focus:border-[#C6A76A] focus:outline-none">
-                    <button type="submit" class="h-11 px-6 rounded-xl bg-gradient-to-r from-[#D8BE8A] to-[#C6A76A] text-[#101725] font-cinzel font-bold text-xs uppercase tracking-wider cursor-pointer shrink-0">
-                        Search
-                    </button>
-                    <a href="{{ route('forum.leaderboard') }}" class="h-11 px-4 rounded-xl bg-[#1B2432] border border-white/10 text-[#D8BE8A] text-xs font-bold flex items-center justify-center shrink-0">
-                        Leaderboard
-                    </a>
-                </div>
-            </form>
         </div>
-        <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-[#C6A76A]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <form action="{{ route('forum.index') }}" method="GET" class="flex flex-wrap items-center gap-2">
+            <input type="text" name="q" value="{{ $search ?? '' }}" placeholder="Search discussions..."
+                   class="h-9 px-3.5 rounded-xl bg-[#151B26] border border-white/[0.08] text-white text-xs focus:border-[#C6A76A] focus:outline-none">
+            <button type="submit" class="h-9 px-4 rounded-xl bg-gradient-to-r from-[#D8BE8A] to-[#C6A76A] text-[#101725] font-cinzel font-bold text-xs uppercase tracking-wider cursor-pointer">
+                Search
+            </button>
+            <a href="{{ route('forum.leaderboard') }}" class="h-9 px-4 rounded-xl bg-[#151B26] border border-white/[0.08] text-[#D8BE8A] hover:border-[#C6A76A]/40 text-xs font-bold inline-flex items-center">
+                Reputation
+            </a>
+        </form>
     </div>
 
     <!-- Forum Content Grid -->
