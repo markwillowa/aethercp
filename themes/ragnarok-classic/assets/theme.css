@@ -945,16 +945,13 @@ html[data-theme="ragnarok-classic"] header.bg-\[\#0b0f19\] a.bg-slate-900 i {
 }
 
 /* Admin Sidebar */
-html[data-theme="ragnarok-classic"] .admin-sidebar,
-html[data-theme="ragnarok-classic"] aside.bg-\[\#070a13\],
-html[data-theme="ragnarok-classic"] aside {
+html[data-theme="ragnarok-classic"] .admin-sidebar {
     background: linear-gradient(180deg, #2D1D13 0%, #1D1109 100%) !important;
     border-right: 2px solid #8C6A2D !important;
     box-shadow: 3px 0 10px rgba(0, 0, 0, 0.35) !important;
 }
 
-html[data-theme="ragnarok-classic"] .admin-sidebar p,
-html[data-theme="ragnarok-classic"] aside p {
+html[data-theme="ragnarok-classic"] .admin-sidebar p {
     color: #FFDA89 !important;
     font-family: Georgia, serif !important;
     font-size: 11px !important;
@@ -964,35 +961,29 @@ html[data-theme="ragnarok-classic"] aside p {
     padding-bottom: 4px !important;
 }
 
-html[data-theme="ragnarok-classic"] .admin-sidebar a,
-html[data-theme="ragnarok-classic"] aside a {
+html[data-theme="ragnarok-classic"] .admin-sidebar a {
     color: #E7D5BE !important;
     font-family: Tahoma, Arial, sans-serif !important;
     border-radius: 4px !important;
     transition: all 0.15s ease-in-out !important;
 }
 
-html[data-theme="ragnarok-classic"] .admin-sidebar a i,
-html[data-theme="ragnarok-classic"] aside a i {
+html[data-theme="ragnarok-classic"] .admin-sidebar a i {
     color: #C8A66A !important;
 }
 
-html[data-theme="ragnarok-classic"] .admin-sidebar a:hover,
-html[data-theme="ragnarok-classic"] aside a:hover {
+html[data-theme="ragnarok-classic"] .admin-sidebar a:hover {
     background: #4D3522 !important;
     color: #FFDA89 !important;
 }
 
-html[data-theme="ragnarok-classic"] .admin-sidebar a:hover i,
-html[data-theme="ragnarok-classic"] aside a:hover i {
+html[data-theme="ragnarok-classic"] .admin-sidebar a:hover i {
     color: #FFDA89 !important;
 }
 
 /* Admin Sidebar Active Item */
 html[data-theme="ragnarok-classic"] .admin-sidebar a.bg-cyan-500\/10,
-html[data-theme="ragnarok-classic"] .admin-sidebar a.text-cyan-400,
-html[data-theme="ragnarok-classic"] aside a.bg-cyan-500\/10,
-html[data-theme="ragnarok-classic"] aside a.text-cyan-400 {
+html[data-theme="ragnarok-classic"] .admin-sidebar a.text-cyan-400 {
     background: linear-gradient(180deg, #3D6A99 0%, #264A73 100%) !important;
     border: 1px solid #6392C2 !important;
     color: #FFFFFF !important;
@@ -1000,9 +991,7 @@ html[data-theme="ragnarok-classic"] aside a.text-cyan-400 {
 }
 
 html[data-theme="ragnarok-classic"] .admin-sidebar a.bg-cyan-500\/10 i,
-html[data-theme="ragnarok-classic"] .admin-sidebar a.text-cyan-400 i,
-html[data-theme="ragnarok-classic"] aside a.bg-cyan-500\/10 i,
-html[data-theme="ragnarok-classic"] aside a.text-cyan-400 i {
+html[data-theme="ragnarok-classic"] .admin-sidebar a.text-cyan-400 i {
     color: #FFDA89 !important;
 }
 
