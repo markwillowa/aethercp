@@ -24,6 +24,7 @@
                     'base' => ['label' => 'Base Level', 'icon' => 'trending-up'],
                     'job' => ['label' => 'Job Level', 'icon' => 'award'],
                     'zeny' => ['label' => 'Zeny Wealth', 'icon' => 'coins'],
+                    'pvp' => ['label' => 'PvP Kills', 'icon' => 'swords'],
                     'mvp' => ['label' => 'MVP Kills', 'icon' => 'skull'],
                     'guild' => ['label' => 'Guild Rankings', 'icon' => 'shield'],
                 ];
@@ -70,6 +71,8 @@
                             @endif
                             @if($type === 'zeny')
                                 <th class="text-right">Carried Zeny</th>
+                            @elseif($type === 'pvp')
+                                <th class="text-right">PvP Kills</th>
                             @elseif($type === 'mvp')
                                 <th class="text-right">MVP Kills</th>
                             @else
@@ -101,45 +104,67 @@
                             </td>
 
                             @if($type === 'guild')
+                                @php
+                                    $gId = (int) data_get($row, 'guild_id', 0);
+                                    $gName = data_get($row, 'name', 'Unknown');
+                                    $gBadges = data_get($row, 'badges', []);
+                                @endphp
                                 <td class="text-left">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded bg-[#1B1522] border border-[#5A4A68] flex items-center justify-center shrink-0">
-                                            @if($row->guild_id > 0)
-                                                <img src="{{ route('guilds.emblem', $row->guild_id) }}" alt="Emblem" class="w-6 h-6 rounded" loading="lazy">
+                                            @if($gId > 0)
+                                                <img src="{{ route('guilds.emblem', $gId) }}" alt="Emblem" class="w-6 h-6 rounded" loading="lazy">
                                             @else
                                                 <i data-lucide="shield" class="w-4 h-4 text-[#D4AF37]"></i>
                                             @endif
                                         </div>
-                                        <a href="{{ route('guilds.show', $row->guild_id) }}" class="font-cinzel font-bold text-[#F3E5AB] hover:text-[#FFD700] transition-colors">
-                                            {{ $row->name }}
-                                        </a>
+                                        <div class="flex flex-wrap items-center gap-1.5">
+                                            <a href="{{ route('guilds.show', $gId) }}" class="font-cinzel font-bold text-[#F3E5AB] hover:text-[#FFD700] transition-colors">
+                                                {{ $gName }}
+                                            </a>
+                                            @foreach(array_slice($gBadges, 0, 2) as $gb)
+                                                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold border" style="color: {{ $gb['color'] }}; border-color: {{ $gb['color'] }}66; background-color: {{ $gb['color'] }}1f;">{{ $gb['label'] }}</span>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="text-left text-[#E2D9EB]">{{ $row->master }}</td>
-                                <td class="text-center font-mono font-bold text-[#FFD700]">Lv. {{ $row->guild_lv }}</td>
-                                <td class="text-center font-mono text-[#E2D9EB]">{{ $row->connect_member ?? 0 }} / {{ $row->max_member }}</td>
-                                <td class="text-right font-mono text-xs text-[#FFD700] font-bold">{{ number_format($row->exp) }}</td>
+                                <td class="text-left text-[#E2D9EB]">{{ data_get($row, 'master', '-') }}</td>
+                                <td class="text-center font-mono font-bold text-[#FFD700]">Lv. {{ data_get($row, 'guild_lv', 1) }}</td>
+                                <td class="text-center font-mono text-[#E2D9EB]">{{ data_get($row, 'connect_member', 0) }} / {{ data_get($row, 'max_member', 0) }}</td>
+                                <td class="text-right font-mono text-xs text-[#FFD700] font-bold">{{ number_format((int) data_get($row, 'exp', 0)) }}</td>
                             @else
+                                @php
+                                    $cName = data_get($row, 'name', 'Unknown');
+                                    $cClass = (int) data_get($row, 'class', 0);
+                                    $cBadges = data_get($row, 'badges', []);
+                                @endphp
                                 <td class="text-left">
-                                    <a href="{{ route('characters.show', $row->name) }}" class="font-cinzel font-bold text-[#F3E5AB] hover:text-[#FFD700] transition-colors">
-                                        {{ $row->name }}
-                                    </a>
+                                    <div class="flex flex-wrap items-center gap-1.5">
+                                        <a href="{{ route('characters.show', $cName) }}" class="font-cinzel font-bold text-[#F3E5AB] hover:text-[#FFD700] transition-colors">
+                                            {{ $cName }}
+                                        </a>
+                                        @foreach(array_slice($cBadges, 0, 2) as $cb)
+                                            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold border" style="color: {{ $cb['color'] }}; border-color: {{ $cb['color'] }}66; background-color: {{ $cb['color'] }}1f;">{{ $cb['label'] }}</span>
+                                        @endforeach
+                                    </div>
                                 </td>
                                 <td class="text-center">
                                     <span class="px-2.5 py-1 rounded text-[11px] font-semibold bg-[#1F1926] text-[#CBB488] border border-[#5A4A68]">
-                                        {{ \App\Services\Emulator\JobHelper::getName($row->class) }}
+                                        {{ \App\Services\Emulator\JobHelper::getName($cClass) }}
                                     </span>
                                 </td>
-                                <td class="text-center font-mono font-bold text-[#FFD700]">Lv. {{ $row->base_level }}</td>
+                                <td class="text-center font-mono font-bold text-[#FFD700]">Lv. {{ data_get($row, 'base_level', 1) }}</td>
                                 @if($type === 'job')
-                                    <td class="text-center font-mono font-bold text-[#E5A823]">Lv. {{ $row->job_level }}</td>
+                                    <td class="text-center font-mono font-bold text-[#E5A823]">Lv. {{ data_get($row, 'job_level', 1) }}</td>
                                 @endif
                                 @if($type === 'zeny')
-                                    <td class="text-right font-mono text-xs font-bold text-[#FFD700]">{{ number_format($row->zeny) }} Z</td>
+                                    <td class="text-right font-mono text-xs font-bold text-[#FFD700]">{{ number_format((int) data_get($row, 'zeny', 0)) }} Z</td>
+                                @elseif($type === 'pvp')
+                                    <td class="text-right font-mono text-xs font-bold text-[#FFD700]">{{ number_format((int) data_get($row, 'pvp_kills', data_get($row, 'score', 0))) }}</td>
                                 @elseif($type === 'mvp')
-                                    <td class="text-right font-mono text-xs font-bold text-[#E53935]">{{ number_format($row->mvp_kills ?? $row->score ?? 0) }}</td>
+                                    <td class="text-right font-mono text-xs font-bold text-[#E53935]">{{ number_format((int) data_get($row, 'mvp_kills', data_get($row, 'score', 0))) }}</td>
                                 @else
-                                    <td class="text-right font-mono text-xs text-[#A396AD]">{{ number_format($row->base_exp) }}</td>
+                                    <td class="text-right font-mono text-xs text-[#A396AD]">{{ number_format((int) data_get($row, 'base_exp', 0)) }}</td>
                                 @endif
                             @endif
                         </tr>

@@ -1013,3 +1013,23 @@ body.chronicles-theme main .chronicles-panel-ivy h2,
 body.chronicles-theme main .chronicles-panel-ivy h3 {
     color: #4A2200;
 }
+
+body.chronicles-theme main .bg-slate-900\/45,
+body.chronicles-theme main .bg-slate-900\/50,
+body.chronicles-theme main .bg-slate-900\/90,
+body.chronicles-theme main .bg-slate-950\/50 {
+    background-color: rgba(24, 17, 33, 0.92) !important;
+    border-color: #4A3A5A !important;
+}
+
+body.chronicles-theme main .bg-indigo-500\/15,
+body.chronicles-theme main .bg-purple-500\/10,
+body.chronicles-theme main .bg-purple-500\/15 {
+    background-color: rgba(212, 175, 55, 0.14) !important;
+    border-color: rgba(212, 175, 55, 0.4) !important;
+}
+
+body.chronicles-theme main .text-purple-300,
+body.chronicles-theme main .text-indigo-300 {
+    color: #F3D179 !important;
+}

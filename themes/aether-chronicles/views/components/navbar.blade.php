@@ -151,15 +151,16 @@
 
         <!-- ACCOUNT & SERVICES DROPDOWN -->
         @auth
-        <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false" @click.away="open = false" style="position: relative; z-index: 150;">
+        <div class="relative" x-data="{ open: false }" @click.away="open = false" @keydown.escape.window="open = false" style="position: relative; z-index: 150;">
             <button type="button" @click="open = !open" class="chronicles-nav-item flex items-center gap-1 cursor-pointer {{ request()->routeIs('account.*') || request()->routeIs('escrow.*') || request()->routeIs('attendance.*') ? 'active' : '' }}" :class="open ? 'active' : ''">
                 <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
                 <span>ACCOUNT</span>
                 <i data-lucide="chevron-down" class="w-3 h-3 text-[#A88B57] transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
             </button>
             <div x-show="open"
-                 class="absolute top-full right-0 mt-1.5 w-56 bg-[#1B1322] border-2 border-[#D4AF37]/60 rounded-lg shadow-2xl p-1.5"
-                 style="z-index: 99999; box-shadow: 0 10px 25px rgba(0,0,0,0.9); display: none;">
+                 class="absolute top-full right-0 pt-1 w-56"
+                 style="z-index: 99999; display: none;">
+                <div class="bg-[#1B1322] border-2 border-[#D4AF37]/60 rounded-lg shadow-2xl p-1.5" style="box-shadow: 0 10px 25px rgba(0,0,0,0.9);">
                 <a href="{{ route('account.profile') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
                     <i data-lucide="user" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
                     <span>My Account</span>
@@ -209,6 +210,7 @@
                         <span>Logout</span>
                     </button>
                 </form>
+                </div>
             </div>
         </div>
         @endauth
