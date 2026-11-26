@@ -29,7 +29,13 @@
                     @endforeach
                 </div>
                 <p class="text-xs text-slate-400 mt-1 flex items-center gap-2">
-                    <span>Guild Master: <strong class="text-cyan-400">{{ $guild->master }}</strong></span>
+                    <span>Guild Master:
+                        @if(!empty($guild->master_char_name))
+                            <a href="{{ route('characters.show', $guild->master_char_name) }}" class="font-bold text-cyan-400 hover:underline">{{ $guild->master }}</a>
+                        @else
+                            <strong class="text-cyan-400">{{ $guild->master }}</strong>
+                        @endif
+                    </span>
                     <span>•</span>
                     <span>Level <strong class="text-slate-200">{{ $guild->guild_lv }}</strong></span>
                     <span>•</span>
@@ -60,7 +66,7 @@
                 <thead class="bg-slate-950/80 text-slate-400 uppercase text-[10px] font-semibold border-b border-slate-800">
                     <tr>
                         <th class="py-3 px-4">Character Name</th>
-                        <th class="py-3 px-4 text-center">Class ID</th>
+                        <th class="py-3 px-4 text-center">Class</th>
                         <th class="py-3 px-4 text-center">Base / Job</th>
                         <th class="py-3 px-4 text-right">Contributed EXP</th>
                         <th class="py-3 px-4 text-center">Online</th>
@@ -72,6 +78,9 @@
                             <td class="py-3 px-4 font-bold text-white">
                                 <div class="flex flex-wrap items-center gap-2">
                                     <a href="{{ route('characters.show', $m->name) }}" class="hover:text-cyan-400">{{ $m->name }}</a>
+                                    @if((int)($guild->char_id ?? 0) === (int)($m->char_id ?? 0))
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">Guild Master</span>
+                                    @endif
                                     @foreach(array_slice($memberBadges[(int) ($m->char_id ?? 0)] ?? [], 0, 2) as $mb)
                                         <span class="px-1.5 py-0.5 rounded text-[10px] font-bold border"
                                               style="color: {{ $mb['color'] }}; border-color: {{ $mb['color'] }}66; background-color: {{ $mb['color'] }}1f;">
@@ -80,8 +89,8 @@
                                     @endforeach
                                 </div>
                             </td>
-                            <td class="py-3 px-4 text-center font-mono text-slate-400">{{ $m->class }}</td>
-                            <td class="py-3 px-4 text-center font-bold text-slate-200">{{ $m->lv }}</td>
+                            <td class="py-3 px-4 text-center text-cyan-300 font-medium">{{ \App\Services\Emulator\JobHelper::getName((int) $m->class) }}</td>
+                            <td class="py-3 px-4 text-center font-bold text-slate-200">{{ $m->lv }} / {{ $m->job_level ?? '-' }}</td>
                             <td class="py-3 px-4 text-right font-mono text-slate-300">{{ number_format($m->exp) }}</td>
                             <td class="py-3 px-4 text-center">
                                 <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase {{ $m->online > 0 ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-500' }}">

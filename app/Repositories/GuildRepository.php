@@ -19,27 +19,73 @@ class GuildRepository implements GuildRepositoryInterface
 
     public function findById(int $guildId): ?object
     {
+        $guildTable = $this->getTable();
+        $charTable = $this->emulator->getTableName('char');
+
         return DB::connection('ragnarok')
-            ->table($this->getTable())
-            ->where('guild_id', $guildId)
+            ->table($guildTable . ' as g')
+            ->leftJoin($charTable . ' as gm', 'g.char_id', '=', 'gm.char_id')
+            ->where('g.guild_id', $guildId)
+            ->select([
+                'g.*',
+                DB::raw('COALESCE(gm.name, g.master) as master'),
+                'gm.name as master_char_name',
+            ])
             ->first();
     }
 
     public function findByName(string $name): ?object
     {
+        $guildTable = $this->getTable();
+        $charTable = $this->emulator->getTableName('char');
+
         return DB::connection('ragnarok')
-            ->table($this->getTable())
-            ->where('name', $name)
+            ->table($guildTable . ' as g')
+            ->leftJoin($charTable . ' as gm', 'g.char_id', '=', 'gm.char_id')
+            ->where('g.name', $name)
+            ->select([
+                'g.*',
+                DB::raw('COALESCE(gm.name, g.master) as master'),
+                'gm.name as master_char_name',
+            ])
             ->first();
     }
 
     public function getMembers(int $guildId): array
     {
+        $guildTable = $this->getTable();
+        $charTable = $this->emulator->getTableName('char');
         $memberTable = $this->emulator->getTableName('guild_member');
+
+        $guild = DB::connection('ragnarok')->table($guildTable)->where('guild_id', $guildId)->select('char_id')->first();
+        $masterCharId = $guild ? (int) $guild->char_id : 0;
+
         return DB::connection('ragnarok')
-            ->table($memberTable)
-            ->where('guild_id', $guildId)
-            ->orderBy('exp', 'desc')
+            ->table($charTable . ' as c')
+            ->leftJoin($memberTable . ' as gm', function ($join) use ($guildId) {
+                $join->on('gm.char_id', '=', 'c.char_id')
+                     ->where('gm.guild_id', '=', $guildId);
+            })
+            ->where(function ($q) use ($guildId, $masterCharId) {
+                $q->where('c.guild_id', $guildId);
+                if ($masterCharId > 0) {
+                    $q->orWhere('c.char_id', $masterCharId);
+                }
+            })
+            ->select([
+                'c.char_id',
+                'c.account_id',
+                'c.name',
+                'c.class',
+                'c.base_level as lv',
+                'c.job_level',
+                'c.online',
+                DB::raw('COALESCE(gm.exp, 0) as exp'),
+                DB::raw('COALESCE(gm.position, 0) as position'),
+            ])
+            ->orderByRaw('CASE WHEN c.char_id = ? THEN 0 ELSE 1 END', [$masterCharId])
+            ->orderByDesc('exp')
+            ->orderByDesc('c.base_level')
             ->get()
             ->toArray();
     }
@@ -47,12 +93,25 @@ class GuildRepository implements GuildRepositoryInterface
     public function getGuilds(int $limit = 20, int $page = 1): array
     {
         $offset = ($page - 1) * $limit;
+        $guildTable = $this->getTable();
+        $charTable = $this->emulator->getTableName('char');
 
         return DB::connection('ragnarok')
-            ->table($this->getTable())
-            ->select('guild_id', 'name', 'master', 'guild_lv', 'connect_member', 'max_member', 'average_lv', 'exp')
-            ->orderBy('guild_lv', 'desc')
-            ->orderBy('exp', 'desc')
+            ->table($guildTable . ' as g')
+            ->leftJoin($charTable . ' as gm', 'g.char_id', '=', 'gm.char_id')
+            ->select([
+                'g.guild_id',
+                'g.char_id',
+                'g.name',
+                DB::raw('COALESCE(gm.name, g.master) as master'),
+                'g.guild_lv',
+                'g.connect_member',
+                'g.max_member',
+                'g.average_lv',
+                'g.exp',
+            ])
+            ->orderBy('g.guild_lv', 'desc')
+            ->orderBy('g.exp', 'desc')
             ->offset($offset)
             ->limit($limit)
             ->get()
