@@ -188,8 +188,15 @@
                                     </div>
                                     <div class="min-w-0 flex-1">
                                         @if($eqSlot['item'])
-                                            <p class="font-bold text-white truncate">{{ $eqSlot['item']->refine > 0 ? "+{$eqSlot['item']->refine} " : '' }}{{ $eqSlot['item']->item_name }}</p>
-                                            <p class="text-[10px] text-cyan-400">{{ $eqSlot['label'] }}</p>
+                                            <p class="font-bold text-white truncate">
+                                                @if((int)$eqSlot['item']->refine > 0)
+                                                    <span class="text-amber-300">+{{ $eqSlot['item']->refine }}</span>
+                                                @endif
+                                                {{ $eqSlot['item']->item_name }}
+                                            </p>
+                                            <p class="text-[10px] text-cyan-400 truncate">
+                                                {{ $eqSlot['label'] }}@if(!empty($eqSlot['item']->cards)) • <span class="text-emerald-400">{{ implode(', ', $eqSlot['item']->cards) }}</span>@endif
+                                            </p>
                                         @else
                                             <p class="text-[11px] text-slate-600 italic">{{ $eqSlot['label'] }}</p>
                                         @endif
@@ -211,8 +218,15 @@
                                     </div>
                                     <div class="min-w-0 flex-1">
                                         @if($eqSlot['item'])
-                                            <p class="font-bold text-white truncate">{{ $eqSlot['item']->refine > 0 ? "+{$eqSlot['item']->refine} " : '' }}{{ $eqSlot['item']->item_name }}</p>
-                                            <p class="text-[10px] text-cyan-400">{{ $eqSlot['label'] }}</p>
+                                            <p class="font-bold text-white truncate">
+                                                @if((int)$eqSlot['item']->refine > 0)
+                                                    <span class="text-amber-300">+{{ $eqSlot['item']->refine }}</span>
+                                                @endif
+                                                {{ $eqSlot['item']->item_name }}
+                                            </p>
+                                            <p class="text-[10px] text-cyan-400 truncate">
+                                                {{ $eqSlot['label'] }}@if(!empty($eqSlot['item']->cards)) • <span class="text-emerald-400">{{ implode(', ', $eqSlot['item']->cards) }}</span>@endif
+                                            </p>
                                         @else
                                             <p class="text-[11px] text-slate-600 italic">{{ $eqSlot['label'] }}</p>
                                         @endif
@@ -237,8 +251,15 @@
                                 <div class="h-12 px-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-2.5 text-right">
                                     <div class="min-w-0 flex-1">
                                         @if($eqSlot['item'])
-                                            <p class="font-bold text-white truncate">{{ $eqSlot['item']->refine > 0 ? "+{$eqSlot['item']->refine} " : '' }}{{ $eqSlot['item']->item_name }}</p>
-                                            <p class="text-[10px] text-cyan-400">{{ $eqSlot['label'] }}</p>
+                                            <p class="font-bold text-white truncate">
+                                                @if((int)$eqSlot['item']->refine > 0)
+                                                    <span class="text-amber-300">+{{ $eqSlot['item']->refine }}</span>
+                                                @endif
+                                                {{ $eqSlot['item']->item_name }}
+                                            </p>
+                                            <p class="text-[10px] text-cyan-400 truncate">
+                                                {{ $eqSlot['label'] }}@if(!empty($eqSlot['item']->cards)) • <span class="text-emerald-400">{{ implode(', ', $eqSlot['item']->cards) }}</span>@endif
+                                            </p>
                                         @else
                                             <p class="text-[11px] text-slate-600 italic">{{ $eqSlot['label'] }}</p>
                                         @endif
@@ -260,8 +281,15 @@
                                 <div class="h-12 px-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-2.5 text-right">
                                     <div class="min-w-0 flex-1">
                                         @if($eqSlot['item'])
-                                            <p class="font-bold text-white truncate">{{ $eqSlot['item']->refine > 0 ? "+{$eqSlot['item']->refine} " : '' }}{{ $eqSlot['item']->item_name }}</p>
-                                            <p class="text-[10px] text-cyan-400">{{ $eqSlot['label'] }}</p>
+                                            <p class="font-bold text-white truncate">
+                                                @if((int)$eqSlot['item']->refine > 0)
+                                                    <span class="text-amber-300">+{{ $eqSlot['item']->refine }}</span>
+                                                @endif
+                                                {{ $eqSlot['item']->item_name }}
+                                            </p>
+                                            <p class="text-[10px] text-cyan-400 truncate">
+                                                {{ $eqSlot['label'] }}@if(!empty($eqSlot['item']->cards)) • <span class="text-emerald-400">{{ implode(', ', $eqSlot['item']->cards) }}</span>@endif
+                                            </p>
                                         @else
                                             <p class="text-[11px] text-slate-600 italic">{{ $eqSlot['label'] }}</p>
                                         @endif
@@ -423,11 +451,17 @@
                     </div>
 
                     <!-- Selected Item Inspector Bar -->
-                    <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-[11px] min-h-[28px]">
+                    <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-[11px] min-h-[32px]">
                         <template x-if="selectedItem">
-                            <div class="flex items-center justify-between w-full gap-2">
-                                <span class="font-bold text-white truncate" x-text="(selectedItem.refine > 0 ? '+' + selectedItem.refine + ' ' : '') + selectedItem.name"></span>
-                                <span class="font-mono text-cyan-300 shrink-0" x-text="'#' + selectedItem.nameid + ' • Qty: ' + selectedItem.amount"></span>
+                            <div class="w-full space-y-0.5">
+                                <div class="flex items-center justify-between w-full gap-2">
+                                    <span class="font-bold text-white truncate">
+                                        <span x-show="selectedItem.refine > 0" class="text-amber-300" x-text="'+' + selectedItem.refine + ' '"></span>
+                                        <span x-text="selectedItem.name"></span>
+                                    </span>
+                                    <span class="font-mono text-cyan-300 shrink-0" x-text="'#' + selectedItem.nameid + ' • Qty: ' + selectedItem.amount"></span>
+                                </div>
+                                <div x-show="selectedItem.cards && selectedItem.cards.length > 0" class="text-[10px] text-emerald-400 truncate" x-text="'Cards: ' + (selectedItem.cards || []).join(', ')"></div>
                             </div>
                         </template>
                         <template x-if="!selectedItem">
@@ -466,8 +500,14 @@
                                         <img :src="item.icon" :alt="item.name" class="w-6 h-6 object-contain" onerror="this.src='/images/item-placeholder.png'">
                                     </div>
                                     <div class="min-w-0">
-                                        <p class="font-bold text-white truncate" x-text="(item.refine > 0 ? '+' + item.refine + ' ' : '') + item.name"></p>
-                                        <p class="text-[10px] font-mono text-slate-500" x-text="'#' + item.nameid"></p>
+                                        <p class="font-bold text-white truncate">
+                                            <span x-show="item.refine > 0" class="text-amber-300" x-text="'+' + item.refine + ' '"></span>
+                                            <span x-text="item.name"></span>
+                                        </p>
+                                        <p class="text-[10px] font-mono text-slate-500 truncate">
+                                            <span x-text="'#' + item.nameid"></span>
+                                            <span x-show="item.cards && item.cards.length > 0" class="text-emerald-400 font-sans ml-1.5" x-text="'• ' + (item.cards || []).join(', ')"></span>
+                                        </p>
                                     </div>
                                 </div>
                                 <span class="font-mono font-bold text-cyan-300 shrink-0" x-text="item.amount + 'x'"></span>
