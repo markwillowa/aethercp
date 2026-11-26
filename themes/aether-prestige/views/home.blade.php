@@ -419,6 +419,10 @@
 
                     <div class="divide-y divide-white/[0.04]">
                         @forelse($topPlayers as $idx => $player)
+                            @php
+                                $pName = data_get($player, 'name', 'Unknown');
+                                $pClass = (int) data_get($player, 'class', 0);
+                            @endphp
                             <div class="p-3.5 flex items-center justify-between hover:bg-[#1B2432]/50 transition-colors">
                                 <div class="flex items-center gap-3">
                                     <div class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs {{ $idx === 0 ? 'rank-badge-1' : ($idx === 1 ? 'rank-badge-2' : ($idx === 2 ? 'rank-badge-3' : 'bg-[#101725] text-[#AAB3C1] border border-white/10')) }}">
@@ -426,18 +430,18 @@
                                     </div>
 
                                     <div>
-                                        <a href="{{ route('characters.show', $player->name) }}" class="font-cinzel text-xs font-bold text-white hover:text-[#C6A76A] transition-colors block">
-                                            {{ $player->name }}
+                                        <a href="{{ route('characters.show', $pName) }}" class="font-cinzel text-xs font-bold text-white hover:text-[#C6A76A] transition-colors block">
+                                            {{ $pName }}
                                         </a>
                                         <span class="text-[10px] text-[#788394]">
-                                            {{ \App\Services\Emulator\JobHelper::getName($player->class) }}
+                                            {{ \App\Services\Emulator\JobHelper::getName($pClass) }}
                                         </span>
                                     </div>
                                 </div>
 
                                 <div class="text-right">
-                                    <span class="text-xs font-mono font-bold text-[#C6A76A]">Lv {{ $player->base_level }}</span>
-                                    <span class="block text-[10px] text-[#788394]">Job {{ $player->job_level }}</span>
+                                    <span class="text-xs font-mono font-bold text-[#C6A76A]">Lv {{ data_get($player, 'base_level', 1) }}</span>
+                                    <span class="block text-[10px] text-[#788394]">Job {{ data_get($player, 'job_level', 1) }}</span>
                                 </div>
                             </div>
                         @empty

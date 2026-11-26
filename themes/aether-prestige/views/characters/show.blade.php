@@ -90,15 +90,25 @@
             <h3 class="font-cinzel text-xs font-bold uppercase tracking-wider text-white">Equipped Gear & Armaments</h3>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            @forelse($equippedItems as $item)
-                <div class="bg-[#101725] border border-white/[0.06] rounded-xl p-3 flex items-center gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            @forelse($equippedItems as $eq)
+                <div class="bg-[#101725] border border-white/[0.06] rounded-xl p-3.5 flex items-center gap-3">
                     <div class="w-10 h-10 rounded-lg bg-[#151B26] border border-white/10 flex items-center justify-center shrink-0">
-                        <i data-lucide="package" class="w-5 h-5 text-[#C6A76A]"></i>
+                        <img src="{{ $eq['icon_url'] }}" alt="{{ $eq['name'] }}" class="w-7 h-7 object-contain" onerror="this.src='/images/item-placeholder.png'">
                     </div>
-                    <div class="min-w-0">
-                        <h4 class="text-xs font-bold text-white truncate font-cinzel">{{ $item->name ?? "Item #{$item->nameid}" }}</h4>
-                        <span class="text-[10px] font-mono text-[#D8BE8A]">Slot: {{ $item->equip ?? 'Gear' }}</span>
+                    <div class="min-w-0 flex-1">
+                        <span class="text-[10px] font-mono uppercase text-[#C6A76A] block">{{ $eq['slot_label'] }}</span>
+                        <a href="{{ route('itemdb.show', $eq['nameid']) }}" class="text-xs font-bold text-white hover:text-[#D8BE8A] truncate block font-cinzel">
+                            @if($eq['refine'] > 0)<span class="text-amber-300">+{{ $eq['refine'] }}</span> @endif
+                            {{ $eq['name'] }}{{ $eq['slots'] > 0 ? ' [' . $eq['slots'] . ']' : '' }}
+                        </a>
+                        @if(!empty($eq['cards']))
+                            <div class="flex flex-wrap gap-1 mt-1">
+                                @foreach($eq['cards'] as $card)
+                                    <span class="px-1.5 py-0.5 rounded text-[9px] bg-[#151B26] text-[#D8BE8A] border border-[#C6A76A]/30">{{ $card['name'] }}</span>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
                 </div>
             @empty
@@ -108,5 +118,41 @@
             @endforelse
         </div>
     </div>
+
+    @if(!empty($rankingSummary['history']))
+        <div class="prestige-card overflow-hidden">
+            <div class="p-4 border-b border-white/[0.08] bg-[#101725]/60">
+                <h3 class="font-cinzel text-xs font-bold uppercase tracking-wider text-white">Verified Ranking Event History</h3>
+            </div>
+            <table class="prestige-table">
+                <thead>
+                    <tr>
+                        <th>Event Type</th>
+                        <th>Value</th>
+                        <th>Recorded At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($rankingSummary['history'] as $evt)
+                        @php
+                            $eventLabel = match ($evt->event_type) {
+                                'pvp_kill' => 'PvP Kills',
+                                'pvp_death' => 'PvP Deaths',
+                                'mvp_kill' => 'MVP Kills',
+                                'base_level' => 'Base Level',
+                                'job_level' => 'Job Level',
+                                default => \Illuminate\Support\Str::headline((string) $evt->event_type),
+                            };
+                        @endphp
+                        <tr>
+                            <td class="font-semibold text-[#D8BE8A]">{{ $eventLabel }}</td>
+                            <td class="font-mono text-white">{{ number_format((int) $evt->value) }}</td>
+                            <td class="text-[#788394]">{{ \Carbon\Carbon::parse($evt->occurred_at)->format('M d, Y H:i') }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
 </div>
 @endsection

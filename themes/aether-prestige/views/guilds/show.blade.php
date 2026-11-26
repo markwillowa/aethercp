@@ -69,28 +69,40 @@
                 <thead>
                     <tr>
                         <th>Character Name</th>
-                        <th class="text-center">Class ID</th>
+                        <th class="text-center">Class</th>
                         <th class="text-center">Base Level</th>
                         <th class="text-center">Job Level</th>
-                        <th class="text-right">Guild Tax / Contribution</th>
+                        <th class="text-right">Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($members as $m)
                         <tr>
                             <td>
-                                <a href="{{ route('characters.show', $m->name) }}" class="font-cinzel text-sm font-bold text-white hover:text-[#C6A76A]">
-                                    {{ $m->name }}
-                                </a>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <a href="{{ route('characters.show', $m->name) }}" class="font-cinzel text-sm font-bold text-white hover:text-[#C6A76A]">
+                                        {{ $m->name }}
+                                    </a>
+                                    @if((int)($guild->char_id ?? 0) === (int)($m->char_id ?? 0))
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#C6A76A]/20 text-[#D8BE8A] border border-[#C6A76A]/40">Guild Master</span>
+                                    @endif
+                                    @foreach(array_slice($memberBadges[(int) ($m->char_id ?? 0)] ?? [], 0, 2) as $mb)
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold border" style="color: {{ $mb['color'] }}; border-color: {{ $mb['color'] }}66; background-color: {{ $mb['color'] }}1f;">{{ $mb['label'] }}</span>
+                                    @endforeach
+                                </div>
                             </td>
                             <td class="text-center">
-                                <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-[#101725] text-[#AAB3C1] border border-white/10">
-                                    {{ $m->class }}
+                                <span class="px-2 py-0.5 rounded text-[11px] bg-[#101725] text-[#D8BE8A] border border-white/10">
+                                    {{ \App\Services\Emulator\JobHelper::getName((int) $m->class) }}
                                 </span>
                             </td>
-                            <td class="text-center font-mono font-bold text-[#C6A76A]">Lv {{ $m->lv }}</td>
+                            <td class="text-center font-mono font-bold text-[#C6A76A]">Lv {{ $m->base_level ?? $m->lv }}</td>
                             <td class="text-center font-mono font-bold text-[#D8BE8A]">Lv {{ $m->job_level ?? '-' }}</td>
-                            <td class="text-right font-mono text-xs text-[#AAB3C1]">{{ number_format($m->exp ?? 0) }} EXP</td>
+                            <td class="text-right text-xs">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase {{ ($m->online ?? 0) > 0 ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/30' : 'text-[#788394]' }}">
+                                    {{ ($m->online ?? 0) > 0 ? 'Online' : 'Offline' }}
+                                </span>
+                            </td>
                         </tr>
                     @empty
                         <tr>

@@ -9,10 +9,18 @@
             </h1>
             <p class="text-xs text-[#788394] mt-1">Review your active game characters, inspect stats, and reset position if stuck.</p>
         </div>
-        <a href="{{ route('account.profile') }}" class="prestige-btn-outline text-xs">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            <span>Account Profile</span>
-        </a>
+        <div class="flex items-center gap-3">
+            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('character_creation'))
+                <a href="{{ route('account.characters.create') }}" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-[#D8BE8A] to-[#C6A76A] text-[#101725] inline-flex items-center gap-1.5">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i>
+                    <span>Create Character</span>
+                </a>
+            @endif
+            <a href="{{ route('account.profile') }}" class="prestige-btn-outline text-xs">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>Account Profile</span>
+            </a>
+        </div>
     </div>
 
     <!-- Characters Grid -->
@@ -75,16 +83,25 @@
                     </div>
                 </div>
 
-                <!-- Unstuck Action -->
-                <div class="pt-4 border-t border-white/[0.06] flex items-center justify-between gap-3">
-                    <a href="{{ route('characters.show', $char->name) }}" class="text-xs text-[#C6A76A] hover:underline font-semibold">
-                        View Public Profile â†’
-                    </a>
-
-                    <form method="POST" action="{{ route('account.unstuck', $char->char_id) }}">
+                @php $charModuleEnabled = app(\App\Services\Module\ModuleManager::class)->isEnabled('character'); @endphp
+                <div class="pt-4 border-t border-white/[0.06] grid {{ $charModuleEnabled ? 'grid-cols-3' : 'grid-cols-2' }} gap-2">
+                    @if($charModuleEnabled)
+                        <a href="{{ route('account.characters.manage', $char->char_id) }}" class="px-2.5 py-2 rounded-lg bg-[#C6A76A]/20 hover:bg-[#C6A76A]/30 border border-[#C6A76A]/40 text-[11px] font-bold text-[#D8BE8A] flex items-center justify-center gap-1 whitespace-nowrap">
+                            <i data-lucide="settings-2" class="w-3.5 h-3.5 shrink-0"></i>
+                            <span>Manage</span>
+                        </a>
+                    @endif
+                    <form method="POST" action="{{ route('account.unstuck', $char->char_id) }}" class="w-full">
                         @csrf
-                        <button type="submit" class="px-3 py-1.5 rounded-lg bg-[#101725] hover:bg-white/10 border border-white/10 text-[11px] text-[#AAB3C1] hover:text-white transition-colors" title="Resets position to savepoint if stuck">
-                            Reset Position
+                        <button type="submit" {{ $char->online > 0 ? 'disabled' : '' }} class="w-full px-2.5 py-2 rounded-lg bg-[#101725] hover:bg-white/10 border border-white/10 text-[11px] text-[#AAB3C1] hover:text-white disabled:opacity-50 transition-colors cursor-pointer whitespace-nowrap">
+                            Unstuck
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ route('account.characters.delete', $char->char_id) }}" class="w-full" onsubmit="return confirm('Delete character {{ $char->name }}?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" {{ $char->online > 0 ? 'disabled' : '' }} class="w-full px-2.5 py-2 rounded-lg bg-rose-950/50 hover:bg-rose-900/70 border border-rose-500/30 text-[11px] text-rose-300 disabled:opacity-50 transition-colors cursor-pointer whitespace-nowrap">
+                            Delete
                         </button>
                     </form>
                 </div>

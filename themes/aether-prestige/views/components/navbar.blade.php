@@ -53,6 +53,11 @@
                         Cash Shop
                     </a>
                 @endif
+                @if($modMgr->isEnabled('forum'))
+                    <a href="{{ route('forum.index') }}" class="prestige-nav-link {{ request()->routeIs('forum.*') ? 'active' : '' }}">
+                        Community
+                    </a>
+                @endif
             </nav>
 
             <!-- Right: User Account Profile (Matching reference: 'FERDI' with square avatar box) -->
@@ -83,6 +88,24 @@
                                     <i data-lucide="users" class="w-4 h-4 text-[#D8BE8A]"></i>
                                     <span>My Characters</span>
                                 </a>
+                                @if($modMgr->isEnabled('character_creation'))
+                                    <a href="{{ route('account.characters.create') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432] transition-colors">
+                                        <i data-lucide="user-plus" class="w-4 h-4 text-[#D8BE8A]"></i>
+                                        <span>Create Character</span>
+                                    </a>
+                                @endif
+                                @if($modMgr->isEnabled('attendance'))
+                                    <a href="{{ route('attendance.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs text-[#D8BE8A] hover:text-white hover:bg-[#1B2432] transition-colors">
+                                        <i data-lucide="calendar-check" class="w-4 h-4 text-[#D8BE8A]"></i>
+                                        <span>Daily Rewards</span>
+                                    </a>
+                                @endif
+                                @if($modMgr->isEnabled('redeem_codes'))
+                                    <a href="{{ route('account.redeem.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432] transition-colors">
+                                        <i data-lucide="ticket" class="w-4 h-4 text-[#C6A76A]"></i>
+                                        <span>Redeem Code</span>
+                                    </a>
+                                @endif
                                 @if($modMgr->isEnabled('cash_shop'))
                                     <a href="{{ route('cash-shop.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432] transition-colors">
                                         <i data-lucide="store" class="w-4 h-4 text-[#C6A76A]"></i>
