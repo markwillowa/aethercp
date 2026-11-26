@@ -208,6 +208,12 @@ class CharacterManagementSystemTest extends TestCase
 
     public function test_ownership_enforcement_prevents_accessing_another_accounts_character(): void
     {
+        $this->actingAs($this->player)
+            ->get(route('account.characters.manage', 150001))
+            ->assertOk()
+            ->assertSee('Freynix')
+            ->assertSee('Equip &amp; Status', false);
+
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Character not found or does not belong to your account.');
 

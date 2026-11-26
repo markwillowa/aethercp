@@ -175,21 +175,21 @@
                 <div class="space-y-2.5">
                     <template x-if="equipTab === 'general'">
                         <div class="space-y-2.5">
-                            @foreach($generalLeft as $slot)
+                            @foreach($generalLeft as $eqSlot)
                                 <div class="h-12 px-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center gap-2.5">
                                     <div class="w-8 h-8 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
-                                        @if($slot['item'])
-                                            <img src="{{ $slot['item']->icon_url }}" alt="" class="w-6 h-6 object-contain" onerror="this.src='/images/item-placeholder.png'">
+                                        @if($eqSlot['item'])
+                                            <img src="{{ $eqSlot['item']->icon_url }}" alt="" class="w-6 h-6 object-contain" onerror="this.src='/images/item-placeholder.png'">
                                         @else
                                             <span class="w-4 h-2 rounded-full bg-slate-800"></span>
                                         @endif
                                     </div>
                                     <div class="min-w-0 flex-1">
-                                        @if($slot['item'])
-                                            <p class="font-bold text-white truncate">{{ $slot['item']->refine > 0 ? "+{$slot['item']->refine} " : '' }}{{ $slot['item']->item_name }}</p>
-                                            <p class="text-[10px] text-cyan-400">{{ $slot['label'] }}</p>
+                                        @if($eqSlot['item'])
+                                            <p class="font-bold text-white truncate">{{ $eqSlot['item']->refine > 0 ? "+{$eqSlot['item']->refine} " : '' }}{{ $eqSlot['item']->item_name }}</p>
+                                            <p class="text-[10px] text-cyan-400">{{ $eqSlot['label'] }}</p>
                                         @else
-                                            <p class="text-[11px] text-slate-600 italic">{{ $slot['label'] }}</p>
+                                            <p class="text-[11px] text-slate-600 italic">{{ $eqSlot['label'] }}</p>
                                         @endif
                                     </div>
                                 </div>
@@ -198,21 +198,21 @@
                     </template>
                     <template x-if="equipTab === 'special'">
                         <div class="space-y-2.5">
-                            @foreach($specialLeft as $slot)
+                            @foreach($specialLeft as $eqSlot)
                                 <div class="h-12 px-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center gap-2.5">
                                     <div class="w-8 h-8 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
-                                        @if($slot['item'])
-                                            <img src="{{ $slot['item']->icon_url }}" alt="" class="w-6 h-6 object-contain" onerror="this.src='/images/item-placeholder.png'">
+                                        @if($eqSlot['item'])
+                                            <img src="{{ $eqSlot['item']->icon_url }}" alt="" class="w-6 h-6 object-contain" onerror="this.src='/images/item-placeholder.png'">
                                         @else
                                             <span class="w-4 h-2 rounded-full bg-slate-800"></span>
                                         @endif
                                     </div>
                                     <div class="min-w-0 flex-1">
-                                        @if($slot['item'])
-                                            <p class="font-bold text-white truncate">{{ $slot['item']->refine > 0 ? "+{$slot['item']->refine} " : '' }}{{ $slot['item']->item_name }}</p>
-                                            <p class="text-[10px] text-cyan-400">{{ $slot['label'] }}</p>
+                                        @if($eqSlot['item'])
+                                            <p class="font-bold text-white truncate">{{ $eqSlot['item']->refine > 0 ? "+{$eqSlot['item']->refine} " : '' }}{{ $eqSlot['item']->item_name }}</p>
+                                            <p class="text-[10px] text-cyan-400">{{ $eqSlot['label'] }}</p>
                                         @else
-                                            <p class="text-[11px] text-slate-600 italic">{{ $slot['label'] }}</p>
+                                            <p class="text-[11px] text-slate-600 italic">{{ $eqSlot['label'] }}</p>
                                         @endif
                                     </div>
                                 </div>
@@ -231,19 +231,19 @@
                 <div class="space-y-2.5">
                     <template x-if="equipTab === 'general'">
                         <div class="space-y-2.5">
-                            @foreach($generalRight as $slot)
+                            @foreach($generalRight as $eqSlot)
                                 <div class="h-12 px-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-2.5 text-right">
                                     <div class="min-w-0 flex-1">
-                                        @if($slot['item'])
-                                            <p class="font-bold text-white truncate">{{ $slot['item']->refine > 0 ? "+{$slot['item']->refine} " : '' }}{{ $slot['item']->item_name }}</p>
-                                            <p class="text-[10px] text-cyan-400">{{ $slot['label'] }}</p>
+                                        @if($eqSlot['item'])
+                                            <p class="font-bold text-white truncate">{{ $eqSlot['item']->refine > 0 ? "+{$eqSlot['item']->refine} " : '' }}{{ $eqSlot['item']->item_name }}</p>
+                                            <p class="text-[10px] text-cyan-400">{{ $eqSlot['label'] }}</p>
                                         @else
-                                            <p class="text-[11px] text-slate-600 italic">{{ $slot['label'] }}</p>
+                                            <p class="text-[11px] text-slate-600 italic">{{ $eqSlot['label'] }}</p>
                                         @endif
                                     </div>
                                     <div class="w-8 h-8 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
-                                        @if($slot['item'])
-                                            <img src="{{ $slot['item']->icon_url }}" alt="" class="w-6 h-6 object-contain" onerror="this.src='/images/item-placeholder.png'">
+                                        @if($eqSlot['item'])
+                                            <img src="{{ $eqSlot['item']->icon_url }}" alt="" class="w-6 h-6 object-contain" onerror="this.src='/images/item-placeholder.png'">
                                         @else
                                             <span class="w-4 h-2 rounded-full bg-slate-800"></span>
                                         @endif
@@ -254,19 +254,19 @@
                     </template>
                     <template x-if="equipTab === 'special'">
                         <div class="space-y-2.5">
-                            @foreach($specialRight as $slot)
+                            @foreach($specialRight as $eqSlot)
                                 <div class="h-12 px-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-2.5 text-right">
                                     <div class="min-w-0 flex-1">
-                                        @if($slot['item'])
-                                            <p class="font-bold text-white truncate">{{ $slot['item']->refine > 0 ? "+{$slot['item']->refine} " : '' }}{{ $slot['item']->item_name }}</p>
-                                            <p class="text-[10px] text-cyan-400">{{ $slot['label'] }}</p>
+                                        @if($eqSlot['item'])
+                                            <p class="font-bold text-white truncate">{{ $eqSlot['item']->refine > 0 ? "+{$eqSlot['item']->refine} " : '' }}{{ $eqSlot['item']->item_name }}</p>
+                                            <p class="text-[10px] text-cyan-400">{{ $eqSlot['label'] }}</p>
                                         @else
-                                            <p class="text-[11px] text-slate-600 italic">{{ $slot['label'] }}</p>
+                                            <p class="text-[11px] text-slate-600 italic">{{ $eqSlot['label'] }}</p>
                                         @endif
                                     </div>
                                     <div class="w-8 h-8 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
-                                        @if($slot['item'])
-                                            <img src="{{ $slot['item']->icon_url }}" alt="" class="w-6 h-6 object-contain" onerror="this.src='/images/item-placeholder.png'">
+                                        @if($eqSlot['item'])
+                                            <img src="{{ $eqSlot['item']->icon_url }}" alt="" class="w-6 h-6 object-contain" onerror="this.src='/images/item-placeholder.png'">
                                         @else
                                             <span class="w-4 h-2 rounded-full bg-slate-800"></span>
                                         @endif
