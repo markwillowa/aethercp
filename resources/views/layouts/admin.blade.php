@@ -326,6 +326,13 @@
             border-color: rgba(255, 255, 255, 0.1) !important;
             color: #D9DEE7 !important;
         }
+        html[data-theme="aether-prestige"] input[type="file"]::file-selector-button,
+        html[data-theme="aether-prestige"] input[type="file"]::-webkit-file-upload-button {
+            background: linear-gradient(135deg, #D8BE8A 0%, #C6A76A 100%) !important;
+            color: #101725 !important;
+            border: 1px solid #E5CFA0 !important;
+            font-weight: 700 !important;
+        }
     </style>
 
     @if(!empty($currentTheme['has_css']) && !empty($currentTheme['slug']))

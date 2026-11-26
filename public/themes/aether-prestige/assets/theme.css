@@ -1378,3 +1378,11 @@ body {
     margin-right: auto !important;
     padding: 2.5rem 1.5rem !important;
 }
+
+[data-theme="aether-prestige"] input[type="file"]::file-selector-button,
+[data-theme="aether-prestige"] input[type="file"]::-webkit-file-upload-button {
+    background: linear-gradient(135deg, #D8BE8A 0%, #C6A76A 100%) !important;
+    color: #101725 !important;
+    border: 1px solid rgba(245, 222, 179, 0.5) !important;
+    font-weight: 700 !important;
+}
