@@ -244,12 +244,16 @@ class CharacterManagementService
 
         $inventory = $this->enrichItems($this->getRawItems('inventory', 'char_id', $charId));
         $equipped = array_values(array_filter($inventory, fn ($item) => (int) ($item->equip ?? 0) > 0));
+        $bagInventory = array_values(array_filter($inventory, fn ($item) => (int) ($item->equip ?? 0) === 0));
+        $storage = $this->enrichItems($this->getRawItems('storage', 'account_id', $accountId));
 
         return [
             'character' => $char,
             'account' => $login,
             'cash_points' => $this->cashPointsService->getBalance($accountId),
             'equipped' => $equipped,
+            'inventory' => $bagInventory,
+            'storage' => $storage,
             'active_lock' => CharacterLock::where('char_id', $charId)->where('is_locked', true)->latest('id')->first(),
             'deletion_request' => CharacterDeletionRequest::where('char_id', $charId)->latest('id')->first(),
             'transactions' => CharacterServiceTransaction::where('char_id', $charId)->latest('id')->limit(15)->get(),
@@ -1278,6 +1282,8 @@ class CharacterManagementService
         foreach ($rows as $row) {
             $item = $this->itemRepository->findById((int) $row->nameid);
             $row->item_name = $item->name_english ?? $item->name_aegis ?? "Item #{$row->nameid}";
+            $row->item_type = strtolower((string) ($item->type ?? 'etc'));
+            $row->icon_url = $item->icon_url ?? "https://static.divine-pride.net/images/items/item/{$row->nameid}.png";
             $row->equip_slot_name = (int) ($row->equip ?? 0) > 0 ? JobHelper::getEquipSlotName((int) $row->equip) : null;
         }
         return $rows;
