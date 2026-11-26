@@ -183,8 +183,16 @@ class EscrowInboxService
             return ['success' => false, 'message' => 'This item has already been transferred into the game.'];
         }
 
-        if ($item->reward_type !== 'item' || !$item->item_id) {
-            return ['success' => false, 'message' => 'Only item rewards can be transferred to character inventory.'];
+        if (!in_array($item->reward_type, ['item', 'zeny'], true)) {
+            return ['success' => false, 'message' => 'This reward type cannot be transferred to a character.'];
+        }
+
+        if ($item->reward_type === 'item' && !$item->item_id) {
+            return ['success' => false, 'message' => 'Invalid item reward.'];
+        }
+
+        if ($item->reward_type === 'zeny' && (int) $item->zeny_amount <= 0) {
+            return ['success' => false, 'message' => 'Invalid Zeny amount.'];
         }
 
         $conn = DB::connection('ragnarok');
@@ -211,6 +219,38 @@ class EscrowInboxService
 
         try {
             return DB::transaction(function () use ($conn, $item, $user, $char, $charId) {
+                if ($item->reward_type === 'zeny') {
+                    $maxZeny = 2147483647;
+                    $currentZeny = (int) $char->zeny;
+                    $addZeny = (int) $item->zeny_amount;
+                    if ($currentZeny + $addZeny > $maxZeny) {
+                        return [
+                            'success' => false,
+                            'message' => "Character \"{$char->name}\" would exceed the maximum Zeny limit (" . number_format($maxZeny) . ').',
+                        ];
+                    }
+
+                    $conn->table('char')->where('char_id', $charId)->update(['zeny' => $currentZeny + $addZeny]);
+
+                    $item->update([
+                        'status' => 'claimed',
+                        'claimed_to' => 'inventory',
+                        'claimed_character_id' => $charId,
+                        'claimed_at' => now(),
+                    ]);
+
+                    ActivityLog::log(
+                        'escrow.claim_character_zeny',
+                        "Transferred Escrow Zeny #{$item->id} ({$item->formatted_title}) to {$char->name}.",
+                        $user->account_id
+                    );
+
+                    return [
+                        'success' => true,
+                        'message' => "Successfully transferred {$item->formatted_title} to {$char->name}!",
+                    ];
+                }
+
                 // 2. Validate inventory slot capacity (< 100)
                 $currentCount = $conn->table('inventory')
                     ->where('char_id', $charId)

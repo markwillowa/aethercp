@@ -64,8 +64,7 @@ class RedeemRedemptionService
             return ['ok' => false, 'message' => 'This code has no configured rewards.'];
         }
 
-        $requiresCharacter = $rewards->contains(fn ($r) => $r->reward_type === 'zeny' && $r->delivery_scope === 'character')
-            || $campaign->one_per_character
+        $requiresCharacter = $campaign->one_per_character
             || $campaign->min_base_level !== null
             || $campaign->max_base_level !== null
             || !empty($campaign->allowed_classes)
@@ -263,21 +262,17 @@ class RedeemRedemptionService
                 ]);
                 $delivery->destination_reference = "Escrow Inbox #{$inboxItem->id}";
             } elseif ($delivery->reward_type === 'zeny') {
-                $scope = (string) ($payload['delivery_scope'] ?? 'character');
-                if ($scope === 'escrow') {
-                    $inboxItem = $this->escrowService->depositItem((int) $delivery->account_id, [
-                        'character_id' => $delivery->character_id,
-                        'source_type' => 'redeem_code',
-                        'source_id' => $delivery->redemption_id,
-                        'reward_type' => 'zeny',
-                        'zeny_amount' => (int) $delivery->amount,
-                        'title' => "Redeem Reward: {$campaignName}",
-                        'message' => 'Zeny reward deposited safely to Escrow Inbox.',
-                    ]);
-                    $delivery->destination_reference = "Escrow Inbox #{$inboxItem->id} (" . number_format((int) $delivery->amount) . ' Zeny)';
-                } else {
-                    $this->deliverZenySafely($delivery);
-                }
+                // Deliver all redeem Zeny safely to Escrow Inbox so player chooses target character there
+                $inboxItem = $this->escrowService->depositItem((int) $delivery->account_id, [
+                    'character_id' => $delivery->character_id,
+                    'source_type' => 'redeem_code',
+                    'source_id' => $delivery->redemption_id,
+                    'reward_type' => 'zeny',
+                    'zeny_amount' => (int) $delivery->amount,
+                    'title' => "Redeem Reward: {$campaignName}",
+                    'message' => 'Zeny reward deposited safely to Escrow Inbox. Select a character to claim.',
+                ]);
+                $delivery->destination_reference = "Escrow Inbox #{$inboxItem->id} (" . number_format((int) $delivery->amount) . ' Zeny)';
             } elseif ($delivery->reward_type === 'custom') {
                 if (!empty($payload['custom_payload']['simulate_failure'])) {
                     throw new \RuntimeException('Simulated custom reward delivery failure.');

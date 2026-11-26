@@ -22,26 +22,18 @@
     <div class="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 space-y-5">
         <form method="POST" action="{{ route('account.redeem.preview') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
             @csrf
-            <div class="md:col-span-1">
+            <div class="md:col-span-2">
                 <label class="block text-xs font-semibold text-slate-300 mb-1.5">Redeem Code</label>
                 <input type="text" name="code" value="{{ old('code', session('redeem_preview.code', '')) }}" required placeholder="e.g. WELCOME-2027"
                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm font-mono uppercase text-white">
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Target Character (If Required)</label>
-                <select name="character_id" class="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white">
-                    <option value="">Account-wide / Select Character</option>
-                    @foreach($characters as $c)
-                        <option value="{{ $c->char_id }}" {{ (int) old('character_id', session('redeem_preview.character_id')) === (int) $c->char_id ? 'selected' : '' }}>
-                            {{ $c->name }} (Lv. {{ $c->base_level }})
-                        </option>
-                    @endforeach
-                </select>
             </div>
             <button type="submit" class="py-2.5 px-5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-sm font-bold cursor-pointer">
                 Validate &amp; Preview Rewards
             </button>
         </form>
+        <p class="text-[11px] text-slate-400">
+            Items and Zeny from redeemed codes are delivered safely to your <a href="{{ route('escrow.index') }}" class="text-cyan-400 hover:underline font-semibold">Escrow Inbox</a>, where you can choose which character receives them.
+        </p>
 
         <!-- Step 2: Reward Preview & Confirmation -->
         @if(session('redeem_preview'))

@@ -201,14 +201,16 @@
                         <!-- Actions / Transfer Controls -->
                         <div class="shrink-0 flex items-center gap-2.5 flex-wrap">
                             @if($item->status === 'unclaimed')
-                                <!-- Option 1: Transfer to Kafra Storage -->
-                                <form method="POST" action="{{ route('escrow.claim-storage', $item->id) }}" class="inline-flex m-0 p-0">
-                                    @csrf
-                                    <button type="submit" class="h-9 px-4 rounded-xl text-xs font-bold bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/10 inline-flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer">
-                                        <i data-lucide="archive" class="w-3.5 h-3.5 text-cyan-400"></i>
-                                        <span>Transfer to Storage</span>
-                                    </button>
-                                </form>
+                                @if($item->reward_type === 'item')
+                                    <!-- Option 1: Transfer to Kafra Storage (Items only; Zeny cannot go to Kafra Storage) -->
+                                    <form method="POST" action="{{ route('escrow.claim-storage', $item->id) }}" class="inline-flex m-0 p-0">
+                                        @csrf
+                                        <button type="submit" class="h-9 px-4 rounded-xl text-xs font-bold bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/10 inline-flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer">
+                                            <i data-lucide="archive" class="w-3.5 h-3.5 text-cyan-400"></i>
+                                            <span>Transfer to Storage</span>
+                                        </button>
+                                    </form>
+                                @endif
 
                                 <!-- Option 2: Transfer directly to Character Inventory -->
                                 @if(count($characters) > 0)

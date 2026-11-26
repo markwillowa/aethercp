@@ -154,9 +154,16 @@ class RedeemCodeSystemTest extends TestCase
         $this->assertTrue($res['ok']);
         $this->assertSame('completed', $res['redemption']->status);
 
-        // Verify Cash Points, Zeny, and Escrow Item
+        // Verify Cash Points, Escrow Zeny, and Escrow Item
         $cp = DB::connection('ragnarok')->table('acc_reg_num')->where('account_id', 3001)->where('key', '#CASHPOINTS')->value('value');
         $this->assertSame(500, (int) $cp);
+
+        $zenyInbox = PlayerInboxItem::where('account_id', 3001)->where('reward_type', 'zeny')->where('zeny_amount', 25000)->first();
+        $this->assertNotNull($zenyInbox);
+
+        // Claiming Zeny to Kafra Storage must be blocked, claiming to offline character must succeed
+        $this->actingAs($player)->post(route('escrow.claim-storage', $zenyInbox->id))->assertSessionHas('error');
+        $this->actingAs($player)->post(route('escrow.claim-character', $zenyInbox->id), ['character_id' => $charId])->assertSessionHas('success');
 
         $zeny = DB::connection('ragnarok')->table('char')->where('char_id', $charId)->value('zeny');
         $this->assertSame(26000, (int) $zeny);
@@ -218,7 +225,7 @@ class RedeemCodeSystemTest extends TestCase
 
         $campaign = $svc->createCampaign(['name' => 'Partial Fail', 'status' => 'active'], $admin);
         $svc->addReward($campaign, ['reward_type' => 'cash_points', 'amount' => 200], $admin);
-        $svc->addReward($campaign, ['reward_type' => 'zeny', 'amount' => 10000, 'delivery_scope' => 'character'], $admin);
+        $svc->addReward($campaign, ['reward_type' => 'custom', 'amount' => 1, 'custom_payload' => ['label' => 'Special', 'simulate_failure' => true]], $admin);
 
         $svc->generateCodes($campaign, ['mode' => 'single_manual', 'manual_code' => 'PARTIAL-1'], $admin);
 
@@ -227,13 +234,15 @@ class RedeemCodeSystemTest extends TestCase
         $this->assertTrue($res['partial']);
         $this->assertSame('partially_failed', $res['redemption']->status);
 
-        // Cash points delivered, zeny failed
+        // Cash points delivered, custom failed
         $failedDelivery = RedeemRewardDelivery::where('redemption_id', $res['redemption']->id)->where('status', 'failed')->first();
         $this->assertNotNull($failedDelivery);
-        $this->assertSame('zeny', $failedDelivery->reward_type);
+        $this->assertSame('custom', $failedDelivery->reward_type);
 
-        // Player logs out, admin retries failed delivery
-        DB::connection('ragnarok')->table('char')->where('char_id', $charId)->update(['online' => 0]);
+        // Clear simulated failure flag, admin retries failed delivery
+        $payload = $failedDelivery->payload;
+        $payload['custom_payload']['simulate_failure'] = false;
+        $failedDelivery->update(['payload' => $payload]);
 
         $this->actingAs($admin)
             ->post(route('admin.redeem.deliveries.retry', $failedDelivery->id))
@@ -241,7 +250,6 @@ class RedeemCodeSystemTest extends TestCase
             ->assertSessionHas('success');
 
         $this->assertSame('completed', $res['redemption']->fresh()->status);
-        $this->assertSame(11000, (int) DB::connection('ragnarok')->table('char')->where('char_id', $charId)->value('zeny'));
     }
 
     public function test_permissions_and_player_history_endpoint(): void
