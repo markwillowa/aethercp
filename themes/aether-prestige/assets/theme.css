@@ -1026,3 +1026,68 @@ html, body {
     background: linear-gradient(135deg, #F5DEB3 0%, #D8BE8A 60%, #C6A76A 100%) !important;
     box-shadow: 0 6px 20px rgba(198, 167, 106, 0.45) !important;
 }
+
+/* ==========================================================================
+   AETHER PRESTIGE — UNIVERSAL THEME BRIDGE FOR SHARED VIEWS
+   Harmonizes FAQ, Community Forum, Cash Shop, Marketplace, Escrow, & Redeem
+   with Prestige Midnight Navy (#101725 / #151B26) & Champagne Gold (#C6A76A)
+   ========================================================================== */
+[data-theme="aether-prestige"] main .bg-slate-900\/80,
+[data-theme="aether-prestige"] main .bg-slate-900\/70,
+[data-theme="aether-prestige"] main .bg-slate-900\/65,
+[data-theme="aether-prestige"] main .bg-slate-900\/60,
+[data-theme="aether-prestige"] main .bg-slate-900\/45,
+[data-theme="aether-prestige"] main .bg-slate-900 {
+    background-color: #151B26 !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme="aether-prestige"] main .bg-slate-950\/90,
+[data-theme="aether-prestige"] main .bg-slate-950\/80,
+[data-theme="aether-prestige"] main .bg-slate-950\/70,
+[data-theme="aether-prestige"] main .bg-slate-950\/60,
+[data-theme="aether-prestige"] main .bg-slate-950\/50,
+[data-theme="aether-prestige"] main .bg-slate-950\/40,
+[data-theme="aether-prestige"] main .bg-slate-950 {
+    background-color: #101725 !important;
+    border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+[data-theme="aether-prestige"] main .bg-slate-800\/80,
+[data-theme="aether-prestige"] main .bg-slate-800 {
+    background-color: #1B2432 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="aether-prestige"] main .border-slate-800,
+[data-theme="aether-prestige"] main .border-slate-800\/80,
+[data-theme="aether-prestige"] main .border-slate-700 {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme="aether-prestige"] main .text-cyan-300,
+[data-theme="aether-prestige"] main .text-cyan-400,
+[data-theme="aether-prestige"] main .text-cyan-500 {
+    color: #D8BE8A !important;
+}
+
+[data-theme="aether-prestige"] main .bg-cyan-500\/10,
+[data-theme="aether-prestige"] main .bg-cyan-500\/15,
+[data-theme="aether-prestige"] main .bg-cyan-500\/20 {
+    background-color: rgba(198, 167, 106, 0.14) !important;
+    border-color: rgba(198, 167, 106, 0.35) !important;
+    color: #D8BE8A !important;
+}
+
+[data-theme="aether-prestige"] main .bg-cyan-500,
+[data-theme="aether-prestige"] main .from-cyan-500 {
+    background: linear-gradient(135deg, #D8BE8A 0%, #C6A76A 60%, #B08D4C 100%) !important;
+    color: #101725 !important;
+    border-color: rgba(245, 222, 179, 0.5) !important;
+}
+
+[data-theme="aether-prestige"] main h1,
+[data-theme="aether-prestige"] main h2,
+[data-theme="aether-prestige"] main h3 {
+    font-family: 'Cinzel', Georgia, serif;
+}

@@ -36,51 +36,29 @@
 }" class="prestige-container py-10 space-y-10">
 
     <!-- ======================================================================
-         TOP VAULT HERO STRIP (Sovereign Treasury Banner)
+         TOP VAULT HERO STRIP (FAQ-Style Centered Hero)
          ====================================================================== -->
-    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#101725] via-[#151B26] to-[#101725] border border-[#C6A76A]/30 p-6 sm:p-8 shadow-2xl">
-        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div class="space-y-2">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C6A76A]/10 border border-[#C6A76A]/30 text-[#D8BE8A] text-[10px] font-bold uppercase tracking-luxury font-cinzel">
-                    <i data-lucide="crown" class="w-3.5 h-3.5 text-[#C6A76A]"></i>
-                    <span>Sovereign Treasury &amp; Patronage Vault</span>
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#151B26] to-[#101725] border border-[#C6A76A]/30 p-6 sm:p-10 shadow-2xl">
+        <div class="relative z-10 text-center max-w-2xl mx-auto space-y-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C6A76A]/10 border border-[#C6A76A]/30 text-[#D8BE8A] text-[10px] font-bold uppercase tracking-luxury font-cinzel">
+                <i data-lucide="crown" class="w-3.5 h-3.5 text-[#C6A76A]"></i>
+                <span>Sovereign Treasury &amp; Patronage Vault</span>
+            </div>
+            <h1 class="font-cinzel text-2xl sm:text-4xl font-extrabold text-white tracking-wider uppercase">
+                Acquire Cash Shop Points
+            </h1>
+            <p class="text-xs sm:text-sm text-[#AAB3C1] leading-relaxed">
+                Directly empower high-frequency dedicated server infrastructure, anti-cheat licensing, and content expansions. Cash Points (#CASHPOINTS) and complimentary bonus items deliver in real time.
+            </p>
+            @auth
+                <div class="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-[#101725]/80 border border-white/[0.08] text-xs mt-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-[#AAB3C1]">Account: <strong class="font-cinzel text-white">{{ auth()->user()->username ?? auth()->user()->name }}</strong></span>
+                    <span class="text-[#C6A76A] font-mono">• Instant Fulfillment Ready</span>
                 </div>
-                <h1 class="font-cinzel text-2xl sm:text-3xl font-extrabold text-white tracking-wider uppercase">
-                    Acquire Cash Shop Points
-                </h1>
-                <p class="text-xs text-[#AAB3C1] max-w-2xl leading-relaxed">
-                    Directly empower high-frequency dedicated server infrastructure, anti-cheat licensing, and content expansions. Cash Points (#CASHPOINTS) and complimentary bonus items deliver in real time to your account.
-                </p>
-            </div>
-
-            <!-- Player Status / Login Badge -->
-            <div class="shrink-0 bg-[#101725]/80 border border-white/[0.08] rounded-xl p-4 flex items-center gap-4">
-                @auth
-                    <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-[#D8BE8A] to-[#C6A76A] text-[#101725] flex items-center justify-center font-bold text-sm font-cinzel shadow-md">
-                        {{ strtoupper(substr(auth()->user()->username ?? auth()->user()->name, 0, 1)) }}
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span class="text-[10px] text-[#788394] uppercase tracking-wider font-semibold">Master Account</span>
-                        </div>
-                        <p class="font-cinzel text-xs font-bold text-white">{{ auth()->user()->username ?? auth()->user()->name }}</p>
-                        <span class="text-[10px] text-[#C6A76A] font-mono">Instant Fulfillment Ready</span>
-                    </div>
-                @else
-                    <div class="w-11 h-11 rounded-lg bg-[#151B26] border border-white/10 flex items-center justify-center text-[#788394]">
-                        <i data-lucide="lock" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <p class="text-[11px] text-[#788394]">Guest Session</p>
-                        <a href="{{ route('login') }}" class="font-cinzel text-xs font-bold text-[#C6A76A] hover:underline flex items-center gap-1">
-                            <span>Sign in to link points</span>
-                            <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                        </a>
-                    </div>
-                @endauth
-            </div>
+            @endauth
         </div>
+        <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-[#C6A76A]/10 rounded-full blur-3xl pointer-events-none"></div>
     </div>
 
     <!-- Instructions Notice (if present) -->
