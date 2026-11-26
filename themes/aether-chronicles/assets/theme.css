@@ -925,3 +925,91 @@ body.chronicles-theme {
 .chronicles-table tr:hover td {
     background-color: rgba(255, 255, 255, 0.03);
 }
+
+
+/* ==========================================================================
+   AETHER CHRONICLES — UNIVERSAL THEME BRIDGE FOR FALLBACK VIEWS
+   Ensures all shared views (Forum, Cash Shop, Attendance, Escrow, Redeem,
+   Create Character, etc.) automatically inherit Chronicles Obsidian & Gold
+   instead of Aether Dark's slate/cyan palette.
+   ========================================================================== */
+body.chronicles-theme main {
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
+}
+
+body.chronicles-theme main .bg-slate-900\/80,
+body.chronicles-theme main .bg-slate-900\/70,
+body.chronicles-theme main .bg-slate-900\/60,
+body.chronicles-theme main .bg-slate-900 {
+    background-color: rgba(30, 21, 40, 0.92) !important;
+    border-color: #4A3A5A !important;
+}
+
+body.chronicles-theme main .bg-slate-950\/90,
+body.chronicles-theme main .bg-slate-950\/80,
+body.chronicles-theme main .bg-slate-950\/70,
+body.chronicles-theme main .bg-slate-950\/60,
+body.chronicles-theme main .bg-slate-950\/40,
+body.chronicles-theme main .bg-slate-950 {
+    background-color: #140E1B !important;
+    border-color: #3E2E4E !important;
+}
+
+body.chronicles-theme main .bg-slate-800\/80,
+body.chronicles-theme main .bg-slate-800\/60,
+body.chronicles-theme main .bg-slate-800 {
+    background-color: #261B33 !important;
+    border-color: #4A3A5A !important;
+}
+
+body.chronicles-theme main .border-slate-800,
+body.chronicles-theme main .border-slate-800\/80,
+body.chronicles-theme main .border-slate-800\/60,
+body.chronicles-theme main .border-slate-700,
+body.chronicles-theme main .border-slate-700\/80 {
+    border-color: #4A3A5A !important;
+}
+
+body.chronicles-theme main .text-cyan-400,
+body.chronicles-theme main .text-cyan-300 {
+    color: #F3D179 !important;
+}
+
+body.chronicles-theme main .border-cyan-500\/30,
+body.chronicles-theme main .border-cyan-500\/40,
+body.chronicles-theme main .border-cyan-500\/50,
+body.chronicles-theme main .border-cyan-500\/60,
+body.chronicles-theme main .border-cyan-400 {
+    border-color: rgba(212, 175, 55, 0.55) !important;
+}
+
+body.chronicles-theme main .bg-cyan-500\/10,
+body.chronicles-theme main .bg-cyan-500\/15,
+body.chronicles-theme main .bg-cyan-500\/20 {
+    background-color: rgba(212, 175, 55, 0.16) !important;
+}
+
+body.chronicles-theme main .bg-cyan-500,
+body.chronicles-theme main .from-cyan-500 {
+    background: linear-gradient(180deg, #F5D77F 0%, #D4AF37 55%, #A67C1E 100%) !important;
+    color: #1E1306 !important;
+    border-color: #FFE9A3 !important;
+}
+
+body.chronicles-theme main .bg-cyan-500:hover,
+body.chronicles-theme main .hover\:bg-cyan-400:hover {
+    filter: brightness(1.08);
+}
+
+body.chronicles-theme main h1,
+body.chronicles-theme main h2,
+body.chronicles-theme main h3 {
+    font-family: 'Cinzel', serif;
+}
+
+body.chronicles-theme main .chronicles-panel-ivy h1,
+body.chronicles-theme main .chronicles-panel-ivy h2,
+body.chronicles-theme main .chronicles-panel-ivy h3 {
+    color: #4A2200;
+}
