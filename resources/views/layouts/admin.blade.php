@@ -229,11 +229,14 @@
         <link rel="stylesheet" href="{{ route('theme.asset', ['theme' => $currentTheme['slug'], 'path' => 'theme.css']) }}?v={{ $cssVer }}">
     @endif
 </head>
-<body x-data="{ devDonationOpen: false }" @open-dev-donation-modal.window="devDonationOpen = true" class="{{ $isChronicles ? 'bg-[#120D18] text-[#EDE4D2]' : (!empty($currentTheme['is_light']) ? 'bg-[#EDE2C7] text-[#3A2A1C]' : 'bg-[#070a13] text-slate-200') }} min-h-screen flex flex-col font-sans antialiased">
+<body x-data="{ devDonationOpen: false, sidebarOpen: false }" @open-dev-donation-modal.window="devDonationOpen = true" class="{{ $isChronicles ? 'bg-[#120D18] text-[#EDE4D2]' : (!empty($currentTheme['is_light']) ? 'bg-[#EDE2C7] text-[#3A2A1C]' : 'bg-[#070a13] text-slate-200') }} min-h-screen flex flex-col font-sans antialiased">
     <!-- Top Admin Bar -->
-    <header class="admin-header border-b {{ $isChronicles ? 'border-[#5A456C] bg-[#1B1324]' : (!empty($currentTheme['is_light']) ? 'border-[#8C6A2D] bg-[#2D1D13]' : 'border-slate-800 bg-[#0b0f19]') }} sticky top-0 z-30">
+    <header class="admin-header border-b {{ $isChronicles ? 'border-[#5A456C] bg-[#1B1324]' : (!empty($currentTheme['is_light']) ? 'border-[#8C6A2D] bg-[#2D1D13]' : 'border-slate-800 bg-[#0b0f19]') }} sticky top-0 z-40">
         <div class="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
+                <button type="button" @click="sidebarOpen = !sidebarOpen" class="md:hidden p-2 rounded-lg border border-slate-700/70 text-slate-300 hover:text-white cursor-pointer" aria-label="Toggle Navigation">
+                    <i data-lucide="menu" class="w-4 h-4"></i>
+                </button>
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 group">
                     <div class="w-8 h-8 rounded-lg {{ $isChronicles ? 'bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#FCE69B]' : (!empty($currentTheme['is_light']) ? 'bg-[#4A301D] border border-[#FFDA89] text-[#FFE082]' : 'bg-amber-500/20 border border-amber-500/40 text-amber-400') }} flex items-center justify-center font-bold shrink-0">
                         <i data-lucide="shield-alert" class="w-4 h-4"></i>
@@ -265,11 +268,15 @@
     </header>
 
     <div class="flex-grow flex">
+        <!-- Mobile Sidebar Backdrop -->
+        <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false" class="fixed inset-0 z-30 bg-black/70 md:hidden"></div>
+
         <!-- Sidebar Navigation -->
         @php
             $modMgr = app(\App\Services\Module\ModuleManager::class);
         @endphp
-        <aside class="admin-sidebar w-64 border-r {{ $isChronicles ? 'border-[#4A3A5A] bg-[#160F1F] text-[#C8BDAA]' : (!empty($currentTheme['is_light']) ? 'border-[#8C6A2D] bg-[#22140B] text-[#E7D5BE]' : 'border-slate-800 bg-[#070a13] text-slate-400') }} p-4 space-y-6 hidden md:block shrink-0 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto self-start">
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
+               class="admin-sidebar w-64 border-r {{ $isChronicles ? 'border-[#4A3A5A] bg-[#160F1F] text-[#C8BDAA]' : (!empty($currentTheme['is_light']) ? 'border-[#8C6A2D] bg-[#22140B] text-[#E7D5BE]' : 'border-slate-800 bg-[#070a13] text-slate-400') }} p-4 space-y-6 shrink-0 fixed md:sticky top-16 left-0 z-30 h-[calc(100vh-4rem)] overflow-y-auto self-start transition-transform duration-200">
             
             <!-- Category 1: Overview & Metrics -->
             <div>
