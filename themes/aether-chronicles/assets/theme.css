@@ -1033,3 +1033,21 @@ body.chronicles-theme main .text-purple-300,
 body.chronicles-theme main .text-indigo-300 {
     color: #F3D179 !important;
 }
+
+body.chronicles-theme main .from-slate-900,
+body.chronicles-theme main .via-slate-900,
+body.chronicles-theme main .to-slate-950 {
+    --tw-gradient-from: #1E1528 !important;
+    --tw-gradient-via: #191122 !important;
+    --tw-gradient-to: #140E1B !important;
+}
+
+body.chronicles-theme main .text-slate-400,
+body.chronicles-theme main .text-slate-500 {
+    color: #B8AA96 !important;
+}
+
+body.chronicles-theme main .text-slate-300,
+body.chronicles-theme main .text-slate-200 {
+    color: #EDE4D2 !important;
+}

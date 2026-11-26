@@ -89,17 +89,25 @@
         html[data-theme="aether-chronicles"] .bg-slate-900,
         html[data-theme="aether-chronicles"] .bg-slate-900\/80,
         html[data-theme="aether-chronicles"] .bg-slate-900\/70,
-        html[data-theme="aether-chronicles"] .bg-slate-950 {
+        html[data-theme="aether-chronicles"] .bg-slate-900\/60,
+        html[data-theme="aether-chronicles"] .bg-slate-900\/40,
+        html[data-theme="aether-chronicles"] .bg-slate-950,
+        html[data-theme="aether-chronicles"] .bg-slate-950\/80,
+        html[data-theme="aether-chronicles"] .bg-slate-950\/70,
+        html[data-theme="aether-chronicles"] .bg-slate-950\/60 {
             background-color: #1C1425 !important;
             border-color: #4A3A5A !important;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
         }
 
-        html[data-theme="aether-chronicles"] .border-slate-800 {
+        html[data-theme="aether-chronicles"] .border-slate-800,
+        html[data-theme="aether-chronicles"] .border-slate-700 {
             border-color: #3E2F4D !important;
         }
 
-        html[data-theme="aether-chronicles"] .divide-slate-800 > :not([hidden]) ~ :not([hidden]) {
+        html[data-theme="aether-chronicles"] .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+        html[data-theme="aether-chronicles"] .divide-slate-800\/60 > :not([hidden]) ~ :not([hidden]),
+        html[data-theme="aether-chronicles"] .divide-slate-800\/50 > :not([hidden]) ~ :not([hidden]) {
             border-color: #3E2F4D !important;
         }
 
@@ -110,6 +118,7 @@
         }
 
         /* Replace Cyan Accents with Antique Gold */
+        html[data-theme="aether-chronicles"] .text-cyan-300,
         html[data-theme="aether-chronicles"] .text-cyan-400 {
             color: #E5B358 !important;
         }
@@ -117,20 +126,29 @@
             color: #D4AF37 !important;
         }
 
-        html[data-theme="aether-chronicles"] .bg-cyan-500\/10 {
-            background-color: rgba(212, 175, 55, 0.15) !important;
-            border-color: rgba(212, 175, 55, 0.4) !important;
+        html[data-theme="aether-chronicles"] .bg-cyan-500\/10,
+        html[data-theme="aether-chronicles"] .bg-cyan-500\/15,
+        html[data-theme="aether-chronicles"] .bg-cyan-500\/20,
+        html[data-theme="aether-chronicles"] .bg-cyan-500\/25 {
+            background-color: rgba(212, 175, 55, 0.16) !important;
+            border-color: rgba(212, 175, 55, 0.45) !important;
             color: #FCE69B !important;
         }
 
-        html[data-theme="aether-chronicles"] .border-cyan-500\/20 {
-            border-color: rgba(212, 175, 55, 0.4) !important;
+        html[data-theme="aether-chronicles"] .border-cyan-500\/20,
+        html[data-theme="aether-chronicles"] .border-cyan-500\/30,
+        html[data-theme="aether-chronicles"] .border-cyan-500\/40,
+        html[data-theme="aether-chronicles"] .border-cyan-500\/50 {
+            border-color: rgba(212, 175, 55, 0.45) !important;
         }
 
-        /* Primary Action Buttons (Gold Gradient) */
+        /* Primary & Gradient Action Buttons (Gold Gradient) */
         html[data-theme="aether-chronicles"] .bg-cyan-500,
-        html[data-theme="aether-chronicles"] .bg-cyan-600 {
+        html[data-theme="aether-chronicles"] .bg-cyan-600,
+        html[data-theme="aether-chronicles"] .from-cyan-500,
+        html[data-theme="aether-chronicles"] .from-cyan-600 {
             background: linear-gradient(180deg, #E5B358 0%, #B8860B 100%) !important;
+            background-image: linear-gradient(180deg, #E5B358 0%, #B8860B 100%) !important;
             color: #17111F !important;
             font-weight: 700 !important;
             border: 1px solid #FCE69B !important;
@@ -138,8 +156,10 @@
         }
 
         html[data-theme="aether-chronicles"] .hover\:bg-cyan-400:hover,
-        html[data-theme="aether-chronicles"] .hover\:bg-cyan-500:hover {
+        html[data-theme="aether-chronicles"] .hover\:bg-cyan-500:hover,
+        html[data-theme="aether-chronicles"] .hover\:from-cyan-400:hover {
             background: linear-gradient(180deg, #F5C66C 0%, #CD9A1A 100%) !important;
+            background-image: linear-gradient(180deg, #F5C66C 0%, #CD9A1A 100%) !important;
             color: #0E0A13 !important;
         }
 

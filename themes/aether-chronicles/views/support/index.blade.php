@@ -92,9 +92,9 @@
         <div class="chronicles-panel p-4" style="background: #181120; border: 1.5px solid #4A3A5A;">
             <div class="flex items-center justify-between">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-[#A898B5] font-cinzel">Total Inquiries</span>
-                <i data-lucide="folder" class="w-4 h-4 text-cyan-400"></i>
+                <i data-lucide="folder" class="w-4 h-4 text-[#D4AF37]"></i>
             </div>
-            <div class="mt-2 text-2xl font-black font-mono text-cyan-300">{{ $stats['total'] }}</div>
+            <div class="mt-2 text-2xl font-black font-mono text-[#FFD700]">{{ $stats['total'] }}</div>
             <p class="text-[10px] text-[#8C7B99] mt-0.5">All time submissions</p>
         </div>
     </div>
@@ -110,7 +110,7 @@
         </div>
 
         <div class="p-4 rounded-xl bg-[#181120] border border-[#3E2E4E] hover:border-[#D4AF37]/50 transition-colors">
-            <div class="w-9 h-9 rounded-lg bg-[#251A33] border border-[#5A456B] flex items-center justify-center text-cyan-400 mb-3">
+            <div class="w-9 h-9 rounded-lg bg-[#251A33] border border-[#5A456B] flex items-center justify-center text-[#D4AF37] mb-3">
                 <i data-lucide="sword" class="w-5 h-5"></i>
             </div>
             <h4 class="font-cinzel font-bold text-sm text-[#F3E5AB]">Character &amp; Gameplay</h4>

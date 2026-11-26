@@ -782,7 +782,7 @@
                                     </td>
                                     <td class="py-3.5 px-4">
                                         @if($isBuyer)
-                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">Buyer</span>
+                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#D4AF37]/20 text-[#FFD700] border border-[#D4AF37]/40">Buyer</span>
                                         @else
                                             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">Seller</span>
                                         @endif
