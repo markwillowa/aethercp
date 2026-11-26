@@ -63,13 +63,7 @@
                         <input type="number" name="amount" value="100" min="1" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
                     </div>
                 </div>
-                <div x-show="rtype === 'zeny'" style="display: none;">
-                    <label class="block text-slate-400 mb-1">Zeny Delivery Method</label>
-                    <select name="delivery_scope" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <option value="character">Direct to Offline Character</option>
-                        <option value="escrow">Deliver to Escrow Inbox</option>
-                    </select>
-                </div>
+
                 <div x-show="rtype === 'item'" style="display: none;" class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-slate-400 mb-1">Item ID (from item_db)</label>

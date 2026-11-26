@@ -97,7 +97,13 @@
                         </div>
                     </div>
 
-                    <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                    <div class="pt-2 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
+                        <a href="{{ route('account.characters.manage', $char->char_id) }}"
+                           class="px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 transition-colors flex items-center gap-1.5">
+                            <i data-lucide="settings-2" class="w-3.5 h-3.5"></i>
+                            <span>Manage &amp; Services</span>
+                        </a>
+
                         <form method="POST" action="{{ route('account.unstuck', $char->char_id) }}">
                             @csrf
                             <button type="submit" {{ $char->online > 0 ? 'disabled' : '' }}
@@ -117,82 +123,6 @@
                                 title="Delete Character">
                                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                 <span>Delete</span>
-                            </button>
-                        </form>
-                    </div>
-
-                    <div x-data="{ openCustom: false }" class="pt-2 border-t border-slate-800/60">
-                        <button type="button" @click="openCustom = !openCustom" class="w-full flex items-center justify-between text-[11px] font-semibold text-slate-400 hover:text-cyan-400 transition-colors py-1">
-                            <span class="flex items-center gap-1.5">
-                                <i data-lucide="sliders" class="w-3.5 h-3.5 text-cyan-400"></i>
-                                <span>Profile Customization &amp; Privacy</span>
-                            </span>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] px-2 py-0.2 rounded font-mono {{ $cPrivacy->is_public ? 'text-emerald-400 bg-emerald-950/60' : 'text-amber-400 bg-amber-950/60' }}">
-                                    {{ $cPrivacy->is_public ? 'Public' : 'Private' }}
-                                </span>
-                                <i data-lucide="chevron-down" class="w-3.5 h-3.5" :class="openCustom ? 'rotate-180' : ''"></i>
-                            </div>
-                        </button>
-                        <form x-show="openCustom" style="display: none;" method="POST" action="{{ route('account.characters.privacy', $char->char_id) }}" enctype="multipart/form-data" class="mt-3 space-y-3 text-[11px] bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/80">
-                            @csrf
-                            @php
-                                $acctRankingsEnabled = app(\App\Services\Module\ModuleManager::class)->isEnabled('rankings');
-                                $privacyFields = [
-                                    'is_public' => 'Public Profile',
-                                    'show_char_info' => 'Basic Info',
-                                    'show_equipments' => 'Equipments',
-                                    'show_stats' => 'Stats & Attributes',
-                                    'show_zeny' => 'Zeny Balance',
-                                    'show_guild' => 'Guild Standing',
-                                    'show_last_login' => 'Last Login Time',
-                                ];
-                                if ($acctRankingsEnabled) {
-                                    $privacyFields['show_badges'] = 'Earned Badges';
-                                    $privacyFields['show_rankings'] = 'Leaderboard Standings';
-                                    $privacyFields['show_achievements'] = 'Achievements';
-                                }
-                            @endphp
-
-                            <!-- Visibility Checkboxes -->
-                            <div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">Display &amp; Visibility</span>
-                                <div class="grid grid-cols-2 gap-2 text-slate-300">
-                                    @foreach($privacyFields as $pField => $pLabel)
-                                        <label class="flex items-center gap-2 cursor-pointer hover:text-white">
-                                            <input type="checkbox" name="{{ $pField }}" value="1" {{ ($cPrivacy->$pField ?? true) ? 'checked' : '' }} class="rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-0">
-                                            <span>{{ $pLabel }}</span>
-                                        </label>
-                                    @endforeach
-                                </div>
-                            </div>
-
-                            <!-- Avatar Customization -->
-                            <div class="border-t border-slate-800/80 pt-2.5 space-y-2">
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Character Avatar / Portrait</span>
-                                <div class="space-y-1.5">
-                                    <input type="url" name="avatar_url" value="{{ !empty($cPrivacy->avatar_path) && filter_var($cPrivacy->avatar_path, FILTER_VALIDATE_URL) ? $cPrivacy->avatar_path : '' }}" placeholder="Image URL (e.g. from Google or RateMyServer)..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-white text-xs placeholder:text-slate-600 focus:border-cyan-500">
-                                    <div class="flex items-center gap-2">
-                                        <label class="text-[10px] text-slate-400 shrink-0">Or Upload:</label>
-                                        <input type="file" name="avatar_file" accept="image/*" class="w-full text-[10px] text-slate-400 file:mr-2 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-slate-800 file:text-cyan-400 hover:file:bg-slate-700">
-                                    </div>
-                                    @if(!empty($cPrivacy->avatar_path))
-                                        <label class="flex items-center gap-1.5 text-[10px] text-amber-400 cursor-pointer pt-0.5">
-                                            <input type="checkbox" name="remove_avatar" value="1" class="rounded bg-slate-900 border-slate-700 text-amber-500">
-                                            <span>Reset to default job portrait</span>
-                                        </label>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <!-- Bio Input -->
-                            <div class="border-t border-slate-800/80 pt-2.5 space-y-1">
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Adventurer Bio / Motto</span>
-                                <input type="text" name="bio" value="{{ $cPrivacy->bio }}" placeholder="Short adventurer motto or story..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-white text-xs placeholder:text-slate-600 focus:border-cyan-500">
-                            </div>
-
-                            <button type="submit" class="w-full py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold transition-colors">
-                                Save Profile &amp; Privacy
                             </button>
                         </form>
                     </div>

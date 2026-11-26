@@ -225,6 +225,7 @@ class AdminRedeemCodeController extends Controller
 
         try {
             $this->codeService->addReward($campaign, array_merge($validated, [
+                'delivery_scope' => $validated['reward_type'] === 'zeny' ? 'escrow' : ($validated['delivery_scope'] ?? 'account'),
                 'is_bound' => $request->has('is_bound'),
                 'custom_payload' => $validated['reward_type'] === 'custom' ? ['label' => $validated['custom_label'] ?? 'Custom Reward'] : null,
             ]), Auth::user());

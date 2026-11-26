@@ -63,6 +63,21 @@ class User extends Authenticatable
         return in_array($permission, $perms, true);
     }
 
+    public function hasCharMgmtPermission(string $permission): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+        if (!$this->isStaff()) {
+            return false;
+        }
+
+        $raw = SiteSetting::get('charmgmt_staff_permissions', null);
+        $perms = $raw ? (json_decode((string) $raw, true) ?: []) : [];
+
+        return in_array($permission, $perms, true);
+    }
+
     /**
      * Plaintext password temporary attribute for synchronizing to emulator.
      */

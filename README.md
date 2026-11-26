@@ -30,11 +30,15 @@ AetherCP is an independent, modern, high-performance web-based control panel eng
 - **Category-Isolated Badges**: Badges are strictly segmented by domain—Base Level leaderboards only show Base progression badges; PvP leaderboards only show PvP combat badges; MVP leaderboards only show MVP conqueror badges.
 - **Automated Ranking Seasons**: Configurable season reward schedules with automatic prize distribution into winners' Escrow Inboxes.
 
-### 4. Character Profile Customization & Privacy Controls
-- **Public Profile Customizer**: Players can select their featured job portrait, bio, and showcase specific earned badges.
-- **Granular Privacy Toggles**: Players can independently toggle the visibility of their gear, equipment refine levels, base stats, and inventory on their public profile.
+### 4. Character Management, Self-Services & Privacy Controls
+- **Player Character Management (`/account/characters/{id}/manage`)**: Tabbed character console featuring full **Profile Overview, Attributes, Equipment**, **Self-Services** (Character Rename, Appearance Change, Stat Reset, Skill Reset, Account-Level Gender Change, Self-Lock, and Waiting-Period Deletion/Cancellation), **Profile Customization & Privacy** (featured portrait/avatar, bio, and granular visibility toggles), and **Service History**.
+- **Admin Character Administration (`/admin/characters` & `/admin/characters/settings`)**: Searchable/filterable character roster, full inventory/equipment/cart/storage inspection & item delivery (via Escrow Inbox or offline insert), offline-guarded attribute editing, moderation actions (lock/unlock, move to save point, reset stats/skills, recovery approval, internal notes), Cash Point service refunds, configurable pricing/cooldowns, and complete audit logs.
 
-### 5. Enhanced Item Database & Player Marketplace
+### 5. Redeem Code & Campaign System
+- **Admin Campaign & Code Generator (`/admin/redeem`)**: Multi-campaign management, single/bulk secure hashed code generation with one-time CSV export, configurable eligibility restrictions (level, job class, account age, per-account/per-character limits), and Cash Point, Zeny, Item, and Custom rewards.
+- **Escrow-First Redemption**: Player-facing `/account/redeem` validates eligibility, previews rewards, and deposits Zeny and Item rewards directly into the **Escrow Inbox** so players choose the receiving character safely.
+
+### 6. Enhanced Item Database & Player Marketplace
 - **Visual Divine Pride Integration**: Dynamic sprite and collection image lookups for weapons, armor, headgears, and cards.
 - **Player-to-Player Web Marketplace**: Browse, list, and buy in-game items through the web control panel, with items escrowed automatically.
 

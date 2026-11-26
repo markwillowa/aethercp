@@ -222,42 +222,52 @@
                                             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-emerald-400 transition-transform duration-200" :class="{ 'rotate-180': openCharSelect }"></i>
                                         </button>
 
-                                        <!-- Character Selection Dropdown -->
-                                        <div x-show="openCharSelect" @click.away="openCharSelect = false"
-                                             x-transition:enter="transition ease-out duration-150"
-                                             x-transition:enter-start="opacity-0 translate-y-1 scale-95"
-                                             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                                             x-transition:leave="transition ease-in duration-100"
-                                             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                                             x-transition:leave-end="opacity-0 translate-y-1 scale-95"
-                                             style="display: none;"
-                                             class="absolute right-0 top-full mt-2 w-80 bg-slate-950/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl shadow-2xl p-4 z-50 space-y-3">
-                                            <div class="border-b border-slate-800/80 pb-2.5">
-                                                <p class="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
-                                                    <i data-lucide="user" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                                    <span>Select Receiving Character</span>
-                                                </p>
-                                                <p class="text-[10px] text-slate-400 mt-1">Character must be <strong class="text-amber-400 font-semibold">Offline</strong> to receive inventory items safely.</p>
-                                            </div>
-                                            <div class="max-h-56 overflow-y-auto space-y-2 pr-0.5 custom-scrollbar">
-                                                @foreach($characters as $c)
-                                                    <form method="POST" action="{{ route('escrow.claim-character', $item->id) }}">
-                                                        @csrf
-                                                        <input type="hidden" name="character_id" value="{{ $c->char_id }}">
-                                                        <button type="submit"
-                                                                class="w-full text-left p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 flex items-center justify-between gap-2 transition-all group cursor-pointer">
-                                                            <div class="min-w-0">
-                                                                <span class="text-xs font-bold text-white group-hover:text-emerald-300 block truncate">{{ $c->name }}</span>
-                                                                <span class="text-[10px] text-slate-400 block mt-0.5">{{ \App\Services\Emulator\JobHelper::getName($c->class) }} • Lv. {{ $c->base_level }}</span>
-                                                            </div>
-                                                            <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase shrink-0 {{ (int) $c->online > 0 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' }}">
-                                                                {{ (int) $c->online > 0 ? 'Online' : 'Ready' }}
-                                                            </span>
+                                        <!-- Character Selection Modal -->
+                                        <template x-teleport="body">
+                                            <div x-show="openCharSelect" x-cloak
+                                                 class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+                                                 @keydown.escape.window="openCharSelect = false">
+                                                <div @click.away="openCharSelect = false"
+                                                     x-transition:enter="transition ease-out duration-150"
+                                                     x-transition:enter-start="opacity-0 scale-95"
+                                                     x-transition:enter-end="opacity-100 scale-100"
+                                                     x-transition:leave="transition ease-in duration-100"
+                                                     x-transition:leave-start="opacity-100 scale-100"
+                                                     x-transition:leave-end="opacity-0 scale-95"
+                                                     class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl p-5 space-y-4">
+                                                    <div class="flex items-start justify-between gap-3 border-b border-slate-800 pb-3">
+                                                        <div>
+                                                            <p class="text-sm font-bold text-white tracking-wide flex items-center gap-2">
+                                                                <i data-lucide="user-check" class="w-4 h-4 text-emerald-400"></i>
+                                                                <span>Select Receiving Character</span>
+                                                            </p>
+                                                            <p class="text-xs text-slate-400 mt-1">Character must be <strong class="text-amber-400 font-semibold">Offline</strong> to receive items or Zeny safely.</p>
+                                                        </div>
+                                                        <button type="button" @click="openCharSelect = false" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer">
+                                                            <i data-lucide="x" class="w-4 h-4"></i>
                                                         </button>
-                                                    </form>
-                                                @endforeach
+                                                    </div>
+                                                    <div class="max-h-72 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                                                        @foreach($characters as $c)
+                                                            <form method="POST" action="{{ route('escrow.claim-character', $item->id) }}">
+                                                                @csrf
+                                                                <input type="hidden" name="character_id" value="{{ $c->char_id }}">
+                                                                <button type="submit"
+                                                                        class="w-full text-left p-3 rounded-xl bg-slate-950/90 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 flex items-center justify-between gap-3 transition-all group cursor-pointer">
+                                                                    <div class="min-w-0">
+                                                                        <span class="text-sm font-bold text-white group-hover:text-emerald-300 block truncate">{{ $c->name }}</span>
+                                                                        <span class="text-xs text-slate-400 block mt-0.5">{{ \App\Services\Emulator\JobHelper::getName($c->class) }} • Lv. {{ $c->base_level }}</span>
+                                                                    </div>
+                                                                    <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase shrink-0 {{ (int) $c->online > 0 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' }}">
+                                                                        {{ (int) $c->online > 0 ? 'Online' : 'Ready' }}
+                                                                    </span>
+                                                                </button>
+                                                            </form>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </template>
                                     </div>
                                 @endif
                             @elseif($item->status === 'claimed')
