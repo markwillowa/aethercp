@@ -219,17 +219,17 @@
 
                 <!-- Payment Method Switcher Tabs -->
                 <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-2 bg-[#101725] p-1 rounded-xl border border-white/[0.06] text-xs font-semibold">
+                    <div class="grid grid-cols-2 gap-2 bg-[#101725] p-1 rounded-xl border border-white/[0.08] text-xs font-semibold">
                         <button type="button" @click="paymentMode = 'paypal'"
-                            :class="paymentMode === 'paypal' ? 'bg-[#1B2432] text-white border border-[#C6A76A]/40 shadow-md font-cinzel' : 'text-[#788394] hover:text-white'"
-                            class="py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5">
+                            :class="paymentMode === 'paypal' ? 'bg-[#C6A76A]/20 text-[#D8BE8A] border border-[#C6A76A]/50 font-cinzel' : 'text-[#AAB3C1] hover:text-white border border-transparent'"
+                            class="h-9 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer">
                             <i data-lucide="credit-card" class="w-3.5 h-3.5 text-[#C6A76A]"></i>
                             <span>Instant PayPal</span>
                         </button>
 
                         <button type="button" @click="paymentMode = 'manual'"
-                            :class="paymentMode === 'manual' ? 'bg-[#1B2432] text-white border border-[#C6A76A]/40 shadow-md font-cinzel' : 'text-[#788394] hover:text-white'"
-                            class="py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5">
+                            :class="paymentMode === 'manual' ? 'bg-[#C6A76A]/20 text-[#D8BE8A] border border-[#C6A76A]/50 font-cinzel' : 'text-[#AAB3C1] hover:text-white border border-transparent'"
+                            class="h-9 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer">
                             <i data-lucide="wallet" class="w-3.5 h-3.5 text-[#D8BE8A]"></i>
                             <span>Manual / Offline</span>
                         </button>
@@ -241,7 +241,7 @@
                             @if(!empty($paypalConfig['enabled']) && !empty($paypalConfig['email']))
                                 <form method="POST" :action="current.checkout_url" class="space-y-3">
                                     @csrf
-                                    <button type="submit" class="prestige-btn-primary w-full py-3.5 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#C6A76A]/20">
+                                    <button type="submit" class="w-full h-11 px-5 rounded-xl bg-gradient-to-r from-[#D8BE8A] to-[#C6A76A] text-[#101725] font-cinzel font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer">
                                         <i data-lucide="credit-card" class="w-4 h-4"></i>
                                         <span>Instant PayPal Checkout</span>
                                     </button>
@@ -258,7 +258,7 @@
                                 </div>
                             @endif
                         @else
-                            <a href="{{ route('login') }}" class="prestige-btn-primary w-full py-3 text-xs font-bold flex items-center justify-center gap-2">
+                            <a href="{{ route('login') }}" class="w-full h-11 px-5 rounded-xl bg-gradient-to-r from-[#D8BE8A] to-[#C6A76A] text-[#101725] font-cinzel font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2">
                                 <i data-lucide="log-in" class="w-4 h-4"></i>
                                 <span>Sign In to Acquire Points</span>
                             </a>
@@ -296,13 +296,13 @@
                                         class="w-full px-3.5 py-2 bg-[#101725] border border-white/[0.12] focus:border-[#C6A76A] rounded-xl text-xs text-white placeholder-[#788394] outline-none"></textarea>
                                 </div>
 
-                                <button type="submit" class="prestige-btn-primary w-full py-2.5 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer">
+                                <button type="submit" class="w-full h-11 px-5 rounded-xl bg-gradient-to-r from-[#D8BE8A] to-[#C6A76A] text-[#101725] font-cinzel font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer">
                                     <i data-lucide="send" class="w-3.5 h-3.5"></i>
                                     <span>Submit Claim for GM Verification</span>
                                 </button>
                             </form>
                         @else
-                            <a href="{{ route('login') }}" class="prestige-btn-primary w-full py-2.5 text-xs font-bold flex items-center justify-center gap-2">
+                            <a href="{{ route('login') }}" class="w-full h-11 px-5 rounded-xl bg-gradient-to-r from-[#D8BE8A] to-[#C6A76A] text-[#101725] font-cinzel font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2">
                                 <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
                                 <span>Sign In to Submit Claim</span>
                             </a>

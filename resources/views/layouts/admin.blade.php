@@ -249,6 +249,11 @@
             background-color: #162033 !important;
             color: #F4F5F7 !important;
         }
+        html[data-theme="aether-prestige"] .admin-sidebar a.bg-cyan-500\/10 {
+            background-color: rgba(198, 167, 106, 0.16) !important;
+            border-color: rgba(198, 167, 106, 0.45) !important;
+            color: #D8BE8A !important;
+        }
         html[data-theme="aether-prestige"] h1,
         html[data-theme="aether-prestige"] h2,
         html[data-theme="aether-prestige"] h3 {
@@ -340,25 +345,25 @@
                     <i data-lucide="menu" class="w-4 h-4"></i>
                 </button>
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 group">
-                    <div class="w-8 h-8 rounded-lg {{ $isChronicles ? 'bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#FCE69B]' : (!empty($currentTheme['is_light']) ? 'bg-[#4A301D] border border-[#FFDA89] text-[#FFE082]' : 'bg-amber-500/20 border border-amber-500/40 text-amber-400') }} flex items-center justify-center font-bold shrink-0">
+                    <div class="w-8 h-8 rounded-lg {{ $isChronicles ? 'bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#FCE69B]' : ($isPrestige ? 'bg-[#C6A76A]/20 border border-[#C6A76A]/50 text-[#D8BE8A]' : (!empty($currentTheme['is_light']) ? 'bg-[#4A301D] border border-[#FFDA89] text-[#FFE082]' : 'bg-amber-500/20 border border-amber-500/40 text-amber-400')) }} flex items-center justify-center font-bold shrink-0">
                         <i data-lucide="shield-alert" class="w-4 h-4"></i>
                     </div>
                     <div class="shrink-0">
-                        <span class="text-sm font-bold {{ $isChronicles ? 'text-[#F3E5AB] font-cinzel' : (!empty($currentTheme['is_light']) ? 'text-[#FFF0D4]' : 'text-white') }} tracking-wide">
-                            AetherCP <span class="{{ $isChronicles ? 'text-[#E5B358]' : 'text-amber-400' }}">Admin</span>
+                        <span class="text-sm font-bold {{ $isChronicles ? 'text-[#F3E5AB] font-cinzel' : ($isPrestige ? 'text-[#F4F5F7] font-cinzel' : (!empty($currentTheme['is_light']) ? 'text-[#FFF0D4]' : 'text-white')) }} tracking-wide">
+                            AetherCP <span class="{{ $isChronicles ? 'text-[#E5B358]' : ($isPrestige ? 'text-[#D8BE8A]' : 'text-amber-400') }}">Admin</span>
                         </span>
-                        <span class="block text-[10px] {{ $isChronicles ? 'text-[#C8BDAA]' : (!empty($currentTheme['is_light']) ? 'text-[#C5B090]' : 'text-slate-500') }}">{{ config('aether.server_name') }}</span>
+                        <span class="block text-[10px] {{ $isChronicles ? 'text-[#C8BDAA]' : ($isPrestige ? 'text-[#788394]' : (!empty($currentTheme['is_light']) ? 'text-[#C5B090]' : 'text-slate-500')) }}">{{ config('aether.server_name') }}</span>
                     </div>
                 </a>
             </div>
 
             <div class="flex items-center space-x-3">
-                <a href="{{ route('home') }}" target="_blank" class="px-3 py-1.5 rounded-lg text-xs font-semibold {{ $isChronicles ? 'bg-[#281D35] border border-[#5A456C] text-[#EDE4D2] hover:border-[#D4AF37] hover:text-[#FFD700]' : (!empty($currentTheme['is_light']) ? 'bg-[#315B88] border border-[#6392C2] text-[#F8EBD2] hover:bg-[#3d6e9f]' : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800') }} flex items-center gap-1.5 transition-colors">
-                    <i data-lucide="globe" class="w-3.5 h-3.5 {{ $isChronicles ? 'text-[#D4AF37]' : 'text-cyan-400' }}"></i>
+                <a href="{{ route('home') }}" target="_blank" class="px-3 py-1.5 rounded-lg text-xs font-semibold {{ $isChronicles ? 'bg-[#281D35] border border-[#5A456C] text-[#EDE4D2] hover:border-[#D4AF37] hover:text-[#FFD700]' : ($isPrestige ? 'bg-[#151B26] border border-[#C6A76A]/35 text-[#D9DEE7] hover:border-[#C6A76A] hover:text-white' : (!empty($currentTheme['is_light']) ? 'bg-[#315B88] border border-[#6392C2] text-[#F8EBD2] hover:bg-[#3d6e9f]' : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800')) }} flex items-center gap-1.5 transition-colors">
+                    <i data-lucide="globe" class="w-3.5 h-3.5 {{ $isChronicles ? 'text-[#D4AF37]' : ($isPrestige ? 'text-[#C6A76A]' : 'text-cyan-400') }}"></i>
                     <span>View Public Site</span>
                 </a>
                 <span class="text-xs text-slate-400">|</span>
-                <span class="text-xs font-semibold {{ $isChronicles ? 'text-[#FCE69B] font-cinzel' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89]' : 'text-cyan-400') }}">{{ auth()->user()?->username ?? 'Administrator' }}</span>
+                <span class="text-xs font-semibold {{ $isChronicles ? 'text-[#FCE69B] font-cinzel' : ($isPrestige ? 'text-[#D8BE8A] font-cinzel' : (!empty($currentTheme['is_light']) ? 'text-[#FFDA89]' : 'text-cyan-400')) }}">{{ auth()->user()?->username ?? 'Administrator' }}</span>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="p-1.5 text-slate-400 hover:text-red-400 rounded-lg hover:bg-slate-900 transition-colors" title="Log Out">
