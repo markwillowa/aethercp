@@ -236,8 +236,18 @@
         }
         html[data-theme="aether-prestige"] .admin-sidebar {
             background-color: #0D131F !important;
-            border-right: 1px solid rgba(198, 167, 106, 0.18) !important;
+            border-right: 1px solid rgba(198, 167, 106, 0.2) !important;
             color: #AAB3C1 !important;
+        }
+        html[data-theme="aether-prestige"] .admin-sidebar p {
+            color: #C6A76A !important;
+            font-family: 'Cinzel', Georgia, serif !important;
+            border-bottom: 1px solid rgba(198, 167, 106, 0.22) !important;
+            padding-bottom: 0.25rem !important;
+        }
+        html[data-theme="aether-prestige"] .admin-sidebar a:hover {
+            background-color: #162033 !important;
+            color: #F4F5F7 !important;
         }
         html[data-theme="aether-prestige"] h1,
         html[data-theme="aether-prestige"] h2,
