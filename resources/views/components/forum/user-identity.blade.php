@@ -50,7 +50,7 @@
                 </span>
                 <span>Lv.{{ $char['base_level'] }}/{{ $char['job_level'] }}</span>
                 <span class="text-slate-600">&bull;</span>
-                <span class="text-slate-500">@{{ $username }}</span>
+                <span class="text-slate-500">{{ '@' . $username }}</span>
             </div>
         @endif
     </div>
