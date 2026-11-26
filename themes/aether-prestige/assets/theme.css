@@ -1091,3 +1091,8 @@ html, body {
 [data-theme="aether-prestige"] main h3 {
     font-family: 'Cinzel', Georgia, serif;
 }
+
+[data-theme="aether-prestige"] main .from-cyan-600 {
+    background: linear-gradient(135deg, #D8BE8A 0%, #C6A76A 100%) !important;
+    color: #101725 !important;
+}
