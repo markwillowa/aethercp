@@ -404,6 +404,90 @@
         html[data-theme="ragnarok-classic"] .text-cyan-400 {
             color: #315B88 !important;
         }
+
+        /* =====================================================================
+           AETHER PAYON: ADMIN PANEL THEME HARMONIZATION
+           Deep Forest (#263D2C), Dark Wood (#493322), Aged Parchment (#F2E8CF)
+           ===================================================================== */
+        html[data-theme="aether-payon"] body {
+            background-color: #F2E8CF !important;
+            color: #35291F !important;
+        }
+        html[data-theme="aether-payon"] .admin-header {
+            background-color: #263D2C !important;
+            border-bottom: 2px solid #493322 !important;
+            color: #FFF8E8 !important;
+        }
+        html[data-theme="aether-payon"] .admin-sidebar {
+            background-color: #263D2C !important;
+            border-right: 3px solid #493322 !important;
+            color: #F2E8CF !important;
+        }
+        html[data-theme="aether-payon"] .admin-sidebar p {
+            color: #A88950 !important;
+            font-family: 'Cinzel', Georgia, serif !important;
+            border-bottom: 1px solid rgba(168, 137, 80, 0.35) !important;
+            padding-bottom: 4px !important;
+        }
+        html[data-theme="aether-payon"] .admin-sidebar a {
+            color: #E7D8B5 !important;
+        }
+        html[data-theme="aether-payon"] .admin-sidebar a:hover {
+            background-color: #526D3A !important;
+            color: #FFF8E8 !important;
+        }
+        html[data-theme="aether-payon"] .admin-sidebar a.bg-cyan-500\/10 {
+            background-color: #493322 !important;
+            border-color: #A88950 !important;
+            color: #FFF8E8 !important;
+        }
+        html[data-theme="aether-payon"] main {
+            background-color: #F2E8CF !important;
+            color: #35291F !important;
+        }
+        html[data-theme="aether-payon"] main .bg-slate-900,
+        html[data-theme="aether-payon"] main .bg-slate-900\/80,
+        html[data-theme="aether-payon"] main .bg-slate-900\/60,
+        html[data-theme="aether-payon"] main .bg-slate-950,
+        html[data-theme="aether-payon"] main .bg-slate-950\/80 {
+            background-color: #F8F0DD !important;
+            border-color: #A88950 !important;
+            color: #35291F !important;
+        }
+        html[data-theme="aether-payon"] main h1,
+        html[data-theme="aether-payon"] main h2,
+        html[data-theme="aether-payon"] main h3,
+        html[data-theme="aether-payon"] main .text-white {
+            color: #35291F !important;
+        }
+        html[data-theme="aether-payon"] main .text-slate-400,
+        html[data-theme="aether-payon"] main .text-slate-500 {
+            color: #80633B !important;
+        }
+        html[data-theme="aether-payon"] main .bg-cyan-500,
+        html[data-theme="aether-payon"] main .bg-cyan-600,
+        html[data-theme="aether-payon"] main .from-cyan-500,
+        html[data-theme="aether-payon"] main .from-amber-500 {
+            background: #263D2C !important;
+            color: #FFF8E8 !important;
+            border: 1px solid #A88950 !important;
+        }
+        html[data-theme="aether-payon"] main th {
+            background-color: #493322 !important;
+            color: #FFF8E8 !important;
+            border-color: #A88950 !important;
+        }
+        html[data-theme="aether-payon"] main td {
+            color: #35291F !important;
+            border-color: rgba(168, 137, 80, 0.35) !important;
+        }
+        html[data-theme="aether-payon"] main input,
+        html[data-theme="aether-payon"] main select,
+        html[data-theme="aether-payon"] main textarea {
+            background-color: #FFF8E8 !important;
+            border: 1px solid #80633B !important;
+            color: #35291F !important;
+        }
     </style>
 
     @if(!empty($currentTheme['has_css']) && !empty($currentTheme['slug']))

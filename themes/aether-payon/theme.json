@@ -1,0 +1,29 @@
+{
+    "name": "Aether Payon",
+    "slug": "aether-payon",
+    "description": "An enchanting eastern fantasy theme inspired by the legendary forests and traditional architecture of Payon. Featuring bamboo textures, handcrafted wooden structures, ancient parchment, forest-green accents, and traditional Asian decorative elements.",
+    "version": "1.0.0",
+    "author": "AetherCP Studios",
+    "category": "Traditional Asian Fantasy MMORPG",
+    "license": "MIT",
+    "is_light": true,
+    "preview": "images/hero-payon.jpg",
+    "colors": {
+        "primary": "#263D2C",
+        "accent": "#A88950",
+        "bamboo": "#526D3A",
+        "moss": "#75864C",
+        "wood": "#493322",
+        "background": "#F2E8CF",
+        "surface": "#F8F0DD",
+        "parchment_light": "#E7D8B5",
+        "sage": "#A8B08B",
+        "bronze": "#80633B",
+        "ink": "#35291F",
+        "cream": "#FFF8E8"
+    },
+    "typography": {
+        "heading": "'Cinzel', Georgia, 'Times New Roman', serif",
+        "body": "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif"
+    }
+}

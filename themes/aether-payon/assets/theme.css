@@ -1,0 +1,485 @@
+/* ==========================================================================
+   AETHER PAYON — Traditional Asian Fantasy MMORPG Theme
+   Palette: Deep Forest (#263D2C), Bamboo Green (#526D3A), Moss (#75864C),
+            Ancient Gold (#A88950), Dark Wood (#493322),
+            Aged Parchment (#F2E8CF), Light Parchment (#E7D8B5),
+            Warm Paper (#F8F0DD), Ink Brown (#35291F), Soft Cream (#FFF8E8)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root,
+html[data-theme="aether-payon"] {
+    --payon-forest: #263D2C;
+    --payon-bamboo: #526D3A;
+    --payon-moss: #75864C;
+    --payon-gold: #A88950;
+    --payon-wood: #493322;
+    --payon-parchment: #F2E8CF;
+    --payon-parchment-light: #E7D8B5;
+    --payon-paper: #F8F0DD;
+    --payon-sage: #A8B08B;
+    --payon-bronze: #80633B;
+    --payon-ink: #35291F;
+    --payon-cream: #FFF8E8;
+    --font-serif: 'Cinzel', Georgia, 'Times New Roman', serif;
+    --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+html[data-theme="aether-payon"],
+html[data-theme="aether-payon"] body {
+    background-color: var(--payon-parchment) !important;
+    background-image:
+        radial-gradient(circle at 15% 10%, rgba(117, 134, 76, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 90%, rgba(168, 137, 80, 0.1) 0%, transparent 45%) !important;
+    color: var(--payon-ink) !important;
+    font-family: var(--font-sans);
+    overflow-x: clip;
+    scroll-behavior: smooth;
+}
+
+html[data-theme="aether-payon"] ::selection {
+    background-color: var(--payon-forest) !important;
+    color: var(--payon-cream) !important;
+}
+
+html[data-theme="aether-payon"] h1,
+html[data-theme="aether-payon"] h2,
+html[data-theme="aether-payon"] h3,
+html[data-theme="aether-payon"] .font-serif,
+html[data-theme="aether-payon"] .font-cinzel {
+    font-family: var(--font-serif) !important;
+}
+
+.payon-container {
+    width: 100%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+}
+
+/* ==========================================================================
+   SIGNATURE PAYON COMPONENTS
+   ========================================================================== */
+
+/* 1. Eastern Kingdom Signboard Navigation */
+.payon-nav-signboard {
+    background: linear-gradient(180deg, #263D2C 0%, #1E3123 100%);
+    border-bottom: 3px solid #493322;
+    box-shadow: 0 4px 18px rgba(53, 41, 31, 0.25), inset 0 -1px 0 rgba(168, 137, 80, 0.45);
+}
+
+.payon-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #F2E8CF;
+    border: 1px solid transparent;
+    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    white-space: nowrap;
+}
+
+.payon-nav-link:hover {
+    background-color: rgba(82, 109, 58, 0.35);
+    color: #FFF8E8;
+    border-color: rgba(168, 137, 80, 0.4);
+}
+
+.payon-nav-link.active {
+    background-color: #493322;
+    color: #FFF8E8;
+    border-color: #A88950;
+    box-shadow: inset 0 1px 0 rgba(255, 248, 232, 0.15);
+}
+
+/* 2. Wooden Frame Component */
+.payon-wood-frame {
+    background-color: #F8F0DD;
+    border: 3px solid #493322;
+    border-radius: 8px;
+    box-shadow:
+        inset 0 0 0 1px #A88950,
+        0 8px 24px -6px rgba(53, 41, 31, 0.22);
+    color: #35291F;
+}
+
+.payon-wood-header {
+    background: linear-gradient(180deg, #493322 0%, #382619 100%);
+    color: #FFF8E8;
+    border-bottom: 2px solid #A88950;
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+/* 3. Parchment Panel */
+.payon-parchment-panel {
+    background-color: #F8F0DD;
+    border: 1px solid #A88950;
+    border-radius: 8px;
+    box-shadow:
+        inset 0 0 24px rgba(231, 216, 181, 0.65),
+        0 4px 14px rgba(53, 41, 31, 0.1);
+    color: #35291F;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.payon-parchment-panel:hover {
+    border-color: #80633B;
+}
+
+/* 4. Ancient Scroll Panel */
+.payon-scroll-panel {
+    background: linear-gradient(180deg, #FFF8E8 0%, #F2E8CF 100%);
+    border-top: 6px solid #493322;
+    border-bottom: 6px solid #493322;
+    border-left: 1px solid #A88950;
+    border-right: 1px solid #A88950;
+    border-radius: 6px;
+    box-shadow: 0 10px 26px -8px rgba(53, 41, 31, 0.22);
+    color: #35291F;
+}
+
+/* 5. Bamboo Divider */
+.payon-bamboo-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.5rem 0;
+}
+
+.payon-bamboo-divider::before,
+.payon-bamboo-divider::after {
+    content: "";
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #526D3A 30%, #A8B08B 50%, #526D3A 70%, transparent);
+}
+
+.payon-bamboo-knot {
+    width: 10px;
+    height: 10px;
+    transform: rotate(45deg);
+    background-color: #526D3A;
+    border: 2px solid #A88950;
+    flex-shrink: 0;
+}
+
+/* 6. Kingdom Notice Board */
+.payon-notice-card {
+    background-color: #FFF8E8;
+    border: 1px solid #C8B48A;
+    border-left: 4px solid #526D3A;
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 2px 8px rgba(53, 41, 31, 0.08);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.payon-notice-card:hover {
+    border-left-color: #263D2C;
+    transform: translateY(-1px);
+}
+
+/* 7. Eastern Ranking Board */
+.payon-ranking-board {
+    background-color: #F8F0DD;
+    border: 2px solid #493322;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(53, 41, 31, 0.16);
+}
+
+.payon-rank-badge-1 {
+    background: #A88950;
+    color: #FFF8E8;
+    border: 1px solid #493322;
+}
+
+.payon-rank-badge-2 {
+    background: #526D3A;
+    color: #FFF8E8;
+    border: 1px solid #263D2C;
+}
+
+.payon-rank-badge-3 {
+    background: #80633B;
+    color: #FFF8E8;
+    border: 1px solid #493322;
+}
+
+/* 8. Treasure Reward Card */
+.payon-reward-card {
+    background: linear-gradient(180deg, #FFF8E8 0%, #E7D8B5 100%);
+    border: 2px solid #A88950;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(53, 41, 31, 0.12);
+}
+
+/* 9. Payon Buttons */
+.payon-btn-forest {
+    background-color: #263D2C;
+    color: #FFF8E8 !important;
+    border: 1px solid #A88950;
+    border-radius: 6px;
+    padding: 0.55rem 1.15rem;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    cursor: pointer;
+    transition: background-color 0.18s ease, transform 0.15s ease;
+}
+
+.payon-btn-forest:hover {
+    background-color: #526D3A;
+    transform: translateY(-1px);
+}
+
+.payon-btn-gold {
+    background-color: #A88950;
+    color: #FFF8E8 !important;
+    border: 1px solid #493322;
+    border-radius: 6px;
+    padding: 0.55rem 1.15rem;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    cursor: pointer;
+    transition: background-color 0.18s ease, transform 0.15s ease;
+}
+
+.payon-btn-gold:hover {
+    background-color: #80633B;
+    transform: translateY(-1px);
+}
+
+.payon-btn-wood {
+    background-color: #493322;
+    color: #FFF8E8 !important;
+    border: 1px solid #A88950;
+    border-radius: 6px;
+    padding: 0.55rem 1.15rem;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+}
+
+.payon-btn-wood:hover {
+    background-color: #5D422D;
+}
+
+/* Respect Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    html[data-theme="aether-payon"] *,
+    html[data-theme="aether-payon"] *::before,
+    html[data-theme="aether-payon"] *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ==========================================================================
+   UNIVERSAL PUBLIC THEME BRIDGE (Shared Views Harmonization)
+   Converts dark-slate/cyan shared views into Warm Parchment, Deep Forest,
+   Bamboo Green, and Dark Wood without leaking into other themes.
+   ========================================================================== */
+html[data-theme="aether-payon"] main > div.max-w-7xl,
+html[data-theme="aether-payon"] main > div.max-w-6xl,
+html[data-theme="aether-payon"] main > div.max-w-5xl,
+html[data-theme="aether-payon"] main > div.max-w-4xl {
+    max-width: 1280px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 2rem 1.25rem !important;
+}
+
+html[data-theme="aether-payon"] main .bg-slate-900,
+html[data-theme="aether-payon"] main .bg-slate-900\/40,
+html[data-theme="aether-payon"] main .bg-slate-900\/45,
+html[data-theme="aether-payon"] main .bg-slate-900\/50,
+html[data-theme="aether-payon"] main .bg-slate-900\/55,
+html[data-theme="aether-payon"] main .bg-slate-900\/60,
+html[data-theme="aether-payon"] main .bg-slate-900\/65,
+html[data-theme="aether-payon"] main .bg-slate-900\/70,
+html[data-theme="aether-payon"] main .bg-slate-900\/75,
+html[data-theme="aether-payon"] main .bg-slate-900\/80,
+html[data-theme="aether-payon"] main .bg-slate-900\/90,
+html[data-theme="aether-payon"] main .bg-slate-900\/95 {
+    background-color: #F8F0DD !important;
+    border-color: #A88950 !important;
+    color: #35291F !important;
+    box-shadow: 0 4px 14px rgba(53, 41, 31, 0.1) !important;
+}
+
+html[data-theme="aether-payon"] main .bg-slate-950,
+html[data-theme="aether-payon"] main .bg-slate-950\/30,
+html[data-theme="aether-payon"] main .bg-slate-950\/40,
+html[data-theme="aether-payon"] main .bg-slate-950\/50,
+html[data-theme="aether-payon"] main .bg-slate-950\/60,
+html[data-theme="aether-payon"] main .bg-slate-950\/70,
+html[data-theme="aether-payon"] main .bg-slate-950\/80,
+html[data-theme="aether-payon"] main .bg-slate-950\/90 {
+    background-color: #F2E8CF !important;
+    border-color: rgba(128, 99, 59, 0.35) !important;
+    color: #35291F !important;
+}
+
+html[data-theme="aether-payon"] main .bg-slate-800,
+html[data-theme="aether-payon"] main .bg-slate-800\/50,
+html[data-theme="aether-payon"] main .bg-slate-800\/60,
+html[data-theme="aether-payon"] main .bg-slate-800\/80,
+html[data-theme="aether-payon"] main .bg-slate-800\/90,
+html[data-theme="aether-payon"] main .bg-slate-850,
+html[data-theme="aether-payon"] main .bg-slate-700 {
+    background-color: #E7D8B5 !important;
+    border-color: #A88950 !important;
+    color: #35291F !important;
+}
+
+html[data-theme="aether-payon"] main .hover\:bg-slate-800:hover,
+html[data-theme="aether-payon"] main .hover\:bg-slate-800\/40:hover,
+html[data-theme="aether-payon"] main .hover\:bg-slate-900:hover,
+html[data-theme="aether-payon"] main .hover\:bg-slate-950\/40:hover {
+    background-color: #E7D8B5 !important;
+}
+
+html[data-theme="aether-payon"] main .border-slate-800,
+html[data-theme="aether-payon"] main .border-slate-800\/80,
+html[data-theme="aether-payon"] main .border-slate-700,
+html[data-theme="aether-payon"] main .border-slate-700\/80,
+html[data-theme="aether-payon"] main .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+html[data-theme="aether-payon"] main .divide-slate-800\/80 > :not([hidden]) ~ :not([hidden]),
+html[data-theme="aether-payon"] main .divide-slate-800\/60 > :not([hidden]) ~ :not([hidden]) {
+    border-color: rgba(128, 99, 59, 0.3) !important;
+}
+
+html[data-theme="aether-payon"] main .text-white,
+html[data-theme="aether-payon"] main .text-slate-100,
+html[data-theme="aether-payon"] main .text-slate-200,
+html[data-theme="aether-payon"] main .text-slate-300 {
+    color: #35291F !important;
+}
+
+html[data-theme="aether-payon"] main .text-slate-400,
+html[data-theme="aether-payon"] main .text-slate-500 {
+    color: #80633B !important;
+}
+
+html[data-theme="aether-payon"] main .text-cyan-200,
+html[data-theme="aether-payon"] main .text-cyan-300,
+html[data-theme="aether-payon"] main .text-cyan-400,
+html[data-theme="aether-payon"] main .text-cyan-500,
+html[data-theme="aether-payon"] main .text-blue-300,
+html[data-theme="aether-payon"] main .text-blue-400,
+html[data-theme="aether-payon"] main .text-indigo-300,
+html[data-theme="aether-payon"] main .text-indigo-400 {
+    color: #263D2C !important;
+}
+
+html[data-theme="aether-payon"] main .bg-cyan-500\/10,
+html[data-theme="aether-payon"] main .bg-cyan-500\/15,
+html[data-theme="aether-payon"] main .bg-cyan-500\/20,
+html[data-theme="aether-payon"] main .bg-cyan-500\/25,
+html[data-theme="aether-payon"] main .bg-cyan-950\/40,
+html[data-theme="aether-payon"] main .bg-cyan-950\/60,
+html[data-theme="aether-payon"] main .bg-blue-500\/10,
+html[data-theme="aether-payon"] main .bg-indigo-500\/15,
+html[data-theme="aether-payon"] main .bg-indigo-500\/20 {
+    background-color: rgba(82, 109, 58, 0.14) !important;
+    border-color: rgba(82, 109, 58, 0.45) !important;
+    color: #263D2C !important;
+}
+
+html[data-theme="aether-payon"] main .bg-cyan-400,
+html[data-theme="aether-payon"] main .bg-cyan-500,
+html[data-theme="aether-payon"] main .bg-cyan-600,
+html[data-theme="aether-payon"] main .bg-blue-600,
+html[data-theme="aether-payon"] main .from-cyan-500,
+html[data-theme="aether-payon"] main .from-cyan-600,
+html[data-theme="aether-payon"] main .from-amber-500,
+html[data-theme="aether-payon"] main .bg-amber-500 {
+    background: #263D2C !important;
+    color: #FFF8E8 !important;
+    border-color: #A88950 !important;
+}
+
+html[data-theme="aether-payon"] main .bg-cyan-500 *,
+html[data-theme="aether-payon"] main .bg-cyan-600 *,
+html[data-theme="aether-payon"] main .from-cyan-500 *,
+html[data-theme="aether-payon"] main .from-cyan-600 *,
+html[data-theme="aether-payon"] main .payon-wood-header *,
+html[data-theme="aether-payon"] main .payon-btn-forest *,
+html[data-theme="aether-payon"] main .payon-btn-gold *,
+html[data-theme="aether-payon"] main .payon-btn-wood * {
+    color: #FFF8E8 !important;
+}
+
+html[data-theme="aether-payon"] main input[type="text"],
+html[data-theme="aether-payon"] main input[type="email"],
+html[data-theme="aether-payon"] main input[type="password"],
+html[data-theme="aether-payon"] main input[type="number"],
+html[data-theme="aether-payon"] main select,
+html[data-theme="aether-payon"] main textarea {
+    background-color: #FFF8E8 !important;
+    border: 1px solid #80633B !important;
+    color: #35291F !important;
+}
+
+html[data-theme="aether-payon"] main input:focus,
+html[data-theme="aether-payon"] main select:focus,
+html[data-theme="aether-payon"] main textarea:focus {
+    border-color: #263D2C !important;
+    outline: none !important;
+}
+
+html[data-theme="aether-payon"] main th {
+    background-color: #493322 !important;
+    color: #FFF8E8 !important;
+    border-color: #A88950 !important;
+}
+
+html[data-theme="aether-payon"] main input[type="file"]::file-selector-button,
+html[data-theme="aether-payon"] main input[type="file"]::-webkit-file-upload-button {
+    background: #263D2C !important;
+    color: #FFF8E8 !important;
+    border: 1px solid #A88950 !important;
+    font-weight: 700 !important;
+}
+
+html[data-theme="aether-payon"] main .aether-gradient-text {
+    background: linear-gradient(135deg, #263D2C 0%, #493322 60%, #80633B 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
