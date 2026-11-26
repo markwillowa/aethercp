@@ -54,13 +54,14 @@ ON DUPLICATE KEY UPDATE
     `updated_at` = NOW();
 
 -- 3. Milestone Reward Definitions
-INSERT INTO `reward_definitions` (`id`, `name`, `category`, `trigger_type`, `badge_id`, `badge_tier_id`, `reward_type`, `item_id`, `item_name`, `item_amount`, `zeny_amount`, `cashpoints_amount`, `policy`, `message`, `is_enabled`, `created_at`, `updated_at`) VALUES
-(1, 'First to Max Level Grand Prize', 'level', 'badge', 1, NULL, 'zeny', NULL, NULL, 1, 500000, 0, 'one_time', 'Congratulations on being the first to reach Maximum Base Level!', 1, NOW(), NOW()),
-(2, 'Max Base Level Milestone', 'level', 'badge', 2, NULL, 'zeny', NULL, NULL, 1, 100000, 0, 'one_time', 'Congratulations on reaching Maximum Base Level!', 1, NOW(), NOW()),
-(3, 'PvP Bronze 5-Star Milestone', 'pvp', 'tier', NULL, 9, 'zeny', NULL, NULL, 1, 25000, 0, 'one_time', 'You reached Bronze 5 Stars in PvP!', 1, NOW(), NOW()),
-(4, 'MVP Hunter Bronze 5-Star Milestone', 'mvp', 'tier', NULL, 10, 'zeny', NULL, NULL, 1, 25000, 0, 'one_time', 'You reached Bronze 5 Stars in MVP Hunts!', 1, NOW(), NOW())
+INSERT INTO `reward_definitions` (`id`, `name`, `category`, `trigger_type`, `badge_id`, `badge_tier_id`, `reward_type`, `zeny_amount`, `items_json`, `policy`, `period_key`, `message`, `is_enabled`, `created_at`, `updated_at`) VALUES
+(1, 'First to Max Level Grand Prize', 'level', 'badge', 1, NULL, 'zeny', 500000, NULL, 'one_time', NULL, 'Congratulations on being the first to reach Maximum Base Level!', 1, NOW(), NOW()),
+(2, 'Max Base Level Milestone', 'level', 'badge', 2, NULL, 'zeny', 100000, NULL, 'one_time', NULL, 'Congratulations on reaching Maximum Base Level!', 1, NOW(), NOW()),
+(3, 'PvP Bronze 5-Star Milestone', 'pvp', 'tier', NULL, 9, 'zeny', 25000, NULL, 'one_time', NULL, 'You reached Bronze 5 Stars in PvP!', 1, NOW(), NOW()),
+(4, 'MVP Hunter Bronze 5-Star Milestone', 'mvp', 'tier', NULL, 10, 'zeny', 25000, NULL, 'one_time', NULL, 'You reached Bronze 5 Stars in MVP Hunts!', 1, NOW(), NOW())
 ON DUPLICATE KEY UPDATE
     `zeny_amount` = VALUES(`zeny_amount`),
+    `items_json` = VALUES(`items_json`),
     `message` = VALUES(`message`),
     `is_enabled` = VALUES(`is_enabled`),
     `updated_at` = NOW();
