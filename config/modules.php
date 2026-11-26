@@ -111,6 +111,12 @@ return [
             'version' => '1.0.0',
             'enabled' => true,
         ],
+        'redeem_codes' => [
+            'name' => 'Redeem Codes & Promotions',
+            'description' => 'Promotional code campaigns, bulk code generation, and multi-reward escrow/currency delivery.',
+            'version' => '1.0.0',
+            'enabled' => true,
+        ],
     ],
 ];
 

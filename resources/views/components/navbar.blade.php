@@ -127,6 +127,12 @@
                                     <span>Daily Rewards</span>
                                 </a>
                             @endif
+                            @if($modMgr->isEnabled('redeem_codes'))
+                                <a href="{{ route('account.redeem.index') }}" class="flex items-center gap-2 px-4 py-1.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                                    <i data-lucide="ticket" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Redeem Code</span>
+                                </a>
+                            @endif
                             <a href="{{ route('escrow.index') }}" class="flex items-center justify-between px-4 py-1.5 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
                                 <span class="flex items-center gap-2">
                                     <i data-lucide="inbox" class="w-4 h-4 text-cyan-400"></i>

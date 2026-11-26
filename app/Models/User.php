@@ -48,6 +48,21 @@ class User extends Authenticatable
         return in_array($this->role, ['admin', 'staff'], true);
     }
 
+    public function hasRedeemPermission(string $permission): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+        if (!$this->isStaff()) {
+            return false;
+        }
+
+        $raw = SiteSetting::get('redeem_staff_permissions', null);
+        $perms = $raw ? (json_decode((string) $raw, true) ?: []) : [];
+
+        return in_array($permission, $perms, true);
+    }
+
     /**
      * Plaintext password temporary attribute for synchronizing to emulator.
      */

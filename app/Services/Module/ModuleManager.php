@@ -185,6 +185,10 @@ class ModuleManager
                     '2026_11_26_000003_create_forum_identity_and_reputation_tables',
                 ],
             ],
+            'redeem_codes' => [
+                'tables' => ['redeem_campaigns', 'redeem_codes', 'redeem_code_rewards', 'redeem_redemptions', 'redeem_reward_deliveries', 'redeem_campaign_logs'],
+                'migrations' => ['2026_11_27_000001_create_redeem_code_tables'],
+            ],
         ];
 
         $ranMigrations = [];

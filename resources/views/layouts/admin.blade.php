@@ -331,7 +331,7 @@
 
             <!-- Category 4: Engagements & Events -->
             @php
-                $hasEvents = $modMgr->isEnabled('attendance') || $modMgr->isEnabled('rankings');
+                $hasEvents = $modMgr->isEnabled('attendance') || $modMgr->isEnabled('rankings') || $modMgr->isEnabled('redeem_codes');
             @endphp
             @if($hasEvents)
             <div>
@@ -359,6 +359,12 @@
                         <a href="{{ route('admin.rewards.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.rewards*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
                             <i data-lucide="sparkles" class="w-4 h-4 text-indigo-400"></i>
                             <span>Milestone Rewards</span>
+                        </a>
+                    @endif
+                    @if($modMgr->isEnabled('redeem_codes'))
+                        <a href="{{ route('admin.redeem.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.redeem*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="ticket" class="w-4 h-4 text-emerald-400"></i>
+                            <span>Redeem Codes</span>
                         </a>
                     @endif
                 </div>

@@ -226,6 +226,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/characters/{id}/unstuck', [AccountController::class, 'unstuck'])->name('unstuck');
         Route::post('/characters/{id}/reset-position', [AccountController::class, 'unstuck'])->name('characters.reset-position');
         Route::delete('/characters/{id}', [AccountController::class, 'deleteCharacter'])->name('characters.delete');
+
+        // Redeem Codes (Player)
+        Route::middleware('module:redeem_codes')->prefix('redeem')->name('redeem.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Public\RedeemCodeController::class, 'index'])->name('index');
+            Route::post('/preview', [\App\Http\Controllers\Public\RedeemCodeController::class, 'preview'])->middleware('throttle:15,1')->name('preview');
+            Route::post('/', [\App\Http\Controllers\Public\RedeemCodeController::class, 'store'])->middleware('throttle:10,1')->name('store');
+        });
     });
 });
 
@@ -240,6 +247,23 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Account Management
     Route::get('/accounts', [AdminController::class, 'accounts'])->name('accounts');
     Route::post('/accounts/{id}/ban', [AdminController::class, 'toggleBan'])->name('accounts.ban');
+
+    // Redeem Codes Management
+    Route::middleware('module:redeem_codes')->prefix('redeem-codes')->name('redeem.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\AdminRedeemCodeController::class, 'index'])->name('index');
+        Route::post('/campaigns', [\App\Http\Controllers\Admin\AdminRedeemCodeController::class, 'storeCampaign'])->name('campaigns.store');
+        Route::get('/campaigns/{id}', [\App\Http\Controllers\Admin\AdminRedeemCodeController::class, 'showCampaign'])->name('show');
+        Route::put('/campaigns/{id}', [\App\Http\Controllers\Admin\AdminRedeemCodeController::class, 'updateCampaign'])->name('campaigns.update');
+        Route::post('/campaigns/{id}/codes', [\App\Http\Controllers\Admin\AdminRedeemCodeController::class, 'generateCodes'])->name('codes.generate');
+        Route::get('/campaigns/{id}/export-csv', [\App\Http\Controllers\Admin\AdminRedeemCodeController::class, 'exportGeneratedCsv'])->name('codes.export');
+        Route::post('/codes/{codeId}/toggle', [\App\Http\Controllers\Admin\AdminRedeemCodeController::class, 'toggleCode'])->name('codes.toggle');
+        Route::post('/campaigns/{id}/rewards', [\App\Http\Controllers\Admin\AdminRedeemCodeController::class, 'addReward'])->name('rewards.store');
+        Route::delete('/rewards/{rewardId}', [\App\Http\Controllers\Admin\AdminRedeemCodeController::class, 'deleteReward'])->name('rewards.delete');
+        Route::get('/logs', [\App\Http\Controllers\Admin\AdminRedeemCodeController::class, 'logs'])->name('logs');
+        Route::get('/logs/export', [\App\Http\Controllers\Admin\AdminRedeemCodeController::class, 'exportLogs'])->name('logs.export');
+        Route::post('/deliveries/{deliveryId}/retry', [\App\Http\Controllers\Admin\AdminRedeemCodeController::class, 'retryDelivery'])->name('deliveries.retry');
+        Route::post('/permissions', [\App\Http\Controllers\Admin\AdminRedeemCodeController::class, 'updatePermissions'])->name('permissions.update');
+    });
 
     // Character Management
     Route::get('/characters', [AdminController::class, 'characters'])->name('characters');
