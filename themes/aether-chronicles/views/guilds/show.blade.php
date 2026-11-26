@@ -34,9 +34,23 @@
 
             <div class="flex-1 space-y-5 w-full">
                 <div class="border-b border-[#3E324A] pb-4">
-                    <h2 class="font-cinzel text-2xl font-black text-[#F3E5AB] uppercase">{{ $guild->name }}</h2>
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <h2 class="font-cinzel text-2xl font-black text-[#F3E5AB] uppercase">{{ $guild->name }}</h2>
+                        @foreach($guildBadges ?? [] as $badge)
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold border inline-flex items-center gap-1"
+                                  style="color: {{ $badge['color'] }}; border-color: {{ $badge['color'] }}66; background-color: {{ $badge['color'] }}1f;">
+                                {{ $badge['label'] }}
+                            </span>
+                        @endforeach
+                    </div>
                     <div class="text-xs text-[#A396AD] mt-1 flex flex-wrap items-center gap-4">
-                        <span>Guild Master: <strong class="text-[#FFD700]">{{ $guild->master }}</strong></span>
+                        <span>Guild Master:
+                            @if(!empty($guild->master_char_name))
+                                <a href="{{ route('characters.show', $guild->master_char_name) }}" class="font-bold text-[#FFD700] hover:underline">{{ $guild->master }}</a>
+                            @else
+                                <strong class="text-[#FFD700]">{{ $guild->master }}</strong>
+                            @endif
+                        </span>
                         <span>Level: <strong class="text-[#E5A823] font-mono">Lv. {{ $guild->guild_lv }}</strong></span>
                         <span>Guild ID: <strong class="text-white font-mono">#{{ $guild->guild_id }}</strong></span>
                     </div>
@@ -88,18 +102,33 @@
                     @forelse($members as $m)
                         <tr class="hover:bg-white/[0.04] transition-colors">
                             <td>
-                                <a href="{{ route('characters.show', $m->name) }}" class="font-cinzel font-bold text-[#F3E5AB] hover:text-[#FFD700] transition-colors">
-                                    {{ $m->name }}
-                                </a>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <a href="{{ route('characters.show', $m->name) }}" class="font-cinzel font-bold text-[#F3E5AB] hover:text-[#FFD700] transition-colors">
+                                        {{ $m->name }}
+                                    </a>
+                                    @if((int)($guild->char_id ?? 0) === (int)($m->char_id ?? 0))
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#D4AF37]/20 text-[#FFD700] border border-[#D4AF37]/40">Guild Master</span>
+                                    @endif
+                                    @foreach(array_slice($memberBadges[(int) ($m->char_id ?? 0)] ?? [], 0, 2) as $mb)
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold border"
+                                              style="color: {{ $mb['color'] }}; border-color: {{ $mb['color'] }}66; background-color: {{ $mb['color'] }}1f;">
+                                            {{ $mb['label'] }}
+                                        </span>
+                                    @endforeach
+                                </div>
                             </td>
                             <td class="text-center">
                                 <span class="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-[#181120] text-[#CBB488] border border-[#5A4A68]">
                                     {{ \App\Services\Emulator\JobHelper::getName($m->class) }}
                                 </span>
                             </td>
-                            <td class="text-center font-mono font-bold text-[#FFD700]">Lv. {{ $m->base_level }}</td>
+                            <td class="text-center font-mono font-bold text-[#FFD700]">Lv. {{ $m->base_level ?? $m->lv }}</td>
                             <td class="text-center font-mono font-bold text-[#E5A823]">Lv. {{ $m->job_level }}</td>
-                            <td class="text-right text-xs font-semibold text-[#A396AD]">{{ $m->position_name ?? 'Member' }}</td>
+                            <td class="text-right text-xs font-semibold">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase {{ ($m->online ?? 0) > 0 ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/40' : 'text-[#A396AD]' }}">
+                                    {{ ($m->online ?? 0) > 0 ? 'Online' : ($m->position_name ?? 'Offline') }}
+                                </span>
+                            </td>
                         </tr>
                     @empty
                         <tr>

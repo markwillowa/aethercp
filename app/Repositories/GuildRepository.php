@@ -77,6 +77,7 @@ class GuildRepository implements GuildRepositoryInterface
                 'c.account_id',
                 'c.name',
                 'c.class',
+                'c.base_level',
                 'c.base_level as lv',
                 'c.job_level',
                 'c.online',

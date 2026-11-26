@@ -110,5 +110,82 @@
         </div>
     </div>
 
+    <!-- Equipped Gear (Chronicles Parchment Style) -->
+    @if(($privacy->show_equipments ?? true) || ($isOwnerOrAdmin ?? false))
+        <div class="chronicles-panel-ivy space-y-4">
+            <h3 class="text-xs font-cinzel font-bold text-[#4A3319] uppercase border-b border-[#DECBB1] pb-2">
+                Equipped Gear ({{ count($equippedItems ?? []) }})
+            </h3>
+            @if(!empty($equippedItems))
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    @foreach($equippedItems as $eq)
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-[#FAF4EA] border border-[#DECBB1]">
+                            <div class="w-10 h-10 rounded-xl bg-white border border-[#DECBB1] flex items-center justify-center shrink-0">
+                                <img src="{{ $eq['icon_url'] }}" alt="{{ $eq['name'] }}" class="w-7 h-7 object-contain" onerror="this.src='/images/item-placeholder.png'">
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-[#9E5600] block">{{ $eq['slot_label'] }}</span>
+                                <a href="{{ route('itemdb.show', $eq['nameid']) }}" class="text-xs font-bold text-[#4A2200] hover:text-[#D4441D] truncate block">
+                                    @if($eq['refine'] > 0)
+                                        <span class="text-[#D4441D]">+{{ $eq['refine'] }}</span>
+                                    @endif
+                                    {{ $eq['name'] }}{{ $eq['slots'] > 0 ? ' [' . $eq['slots'] . ']' : '' }}
+                                </a>
+                                @if(!empty($eq['cards']))
+                                    <div class="flex flex-wrap gap-1 mt-1">
+                                        @foreach($eq['cards'] as $card)
+                                            <span class="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[#EFE4D0] text-[#5A3D28] border border-[#DECBB1]">{{ $card['name'] }}</span>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-xs text-[#8C7A68] text-center py-4">No equipment currently equipped on this character.</p>
+            @endif
+        </div>
+    @endif
+
+    <!-- Verified Ranking Event History -->
+    @if(!empty($rankingSummary['history']))
+        <div class="chronicles-panel-ivy space-y-3">
+            <h3 class="text-xs font-cinzel font-bold text-[#4A3319] uppercase border-b border-[#DECBB1] pb-2">
+                Verified Ranking Event History
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="text-[#8C7A68] uppercase text-[10px] border-b border-[#DECBB1]">
+                        <tr>
+                            <th class="py-2 px-3">Event Type</th>
+                            <th class="py-2 px-3">Value</th>
+                            <th class="py-2 px-3">Recorded At</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#DECBB1]/60">
+                        @foreach($rankingSummary['history'] as $evt)
+                            @php
+                                $eventLabel = match ($evt->event_type) {
+                                    'pvp_kill' => 'PvP Kills',
+                                    'pvp_death' => 'PvP Deaths',
+                                    'mvp_kill' => 'MVP Kills',
+                                    'base_level' => 'Base Level',
+                                    'job_level' => 'Job Level',
+                                    default => \Illuminate\Support\Str::headline((string) $evt->event_type),
+                                };
+                            @endphp
+                            <tr>
+                                <td class="py-2 px-3 font-bold text-[#9E5600]">{{ $eventLabel }}</td>
+                                <td class="py-2 px-3 font-mono text-[#4A2200]">{{ number_format((int) $evt->value) }}</td>
+                                <td class="py-2 px-3 text-[#795E43]">{{ \Carbon\Carbon::parse($evt->occurred_at)->format('M d, Y H:i') }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    @endif
+
 </div>
 @endsection

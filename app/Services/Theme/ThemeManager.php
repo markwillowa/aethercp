@@ -114,12 +114,14 @@ class ThemeManager
 
     public function themeExists(string $theme): bool
     {
-        return $theme === 'aether-dark' || File::isDirectory($this->themesPath . DIRECTORY_SEPARATOR . $theme);
+        return in_array($theme, ['aether-dark', 'aether-chronicles'], true)
+            && ($theme === 'aether-dark' || File::isDirectory($this->themesPath . DIRECTORY_SEPARATOR . $theme));
     }
 
     public function getInstalledThemes(): array
     {
         $activeTheme = $this->getActiveTheme();
+        $allowedSlugs = ['aether-dark', 'aether-chronicles'];
 
         $themes = [
             'aether-dark' => [
@@ -136,6 +138,9 @@ class ThemeManager
             $dirs = File::directories($this->themesPath);
             foreach ($dirs as $dir) {
                 $slug = basename($dir);
+                if (!in_array($slug, $allowedSlugs, true)) {
+                    continue;
+                }
                 $manifestFile = $dir . DIRECTORY_SEPARATOR . 'theme.json';
 
                 if (File::exists($manifestFile)) {

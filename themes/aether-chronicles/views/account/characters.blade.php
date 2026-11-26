@@ -12,10 +12,18 @@
                 Inspect your characters, statistics, and rescue stuck adventurers
             </p>
         </div>
-        <a href="{{ route('account.profile') }}" class="chronicles-btn-wood text-xs py-2 px-4 w-auto">
-            <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-[#FFD700]"></i>
-            <span>Account Profile</span>
-        </a>
+        <div class="flex items-center gap-2">
+            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('character_creation'))
+                <a href="{{ route('account.characters.create') }}" class="chronicles-btn-gold text-xs py-2 px-4 w-auto flex items-center gap-1.5">
+                    <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+                    <span>Create Character</span>
+                </a>
+            @endif
+            <a href="{{ route('account.profile') }}" class="chronicles-btn-wood text-xs py-2 px-4 w-auto">
+                <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-[#FFD700]"></i>
+                <span>Account Profile</span>
+            </a>
+        </div>
     </div>
 
     <!-- Characters Grid -->
@@ -67,18 +75,34 @@
                     </div>
                 </div>
 
-                <div class="pt-3 border-t border-[#DECBB1] flex items-center justify-between gap-2">
-                    <a href="{{ route('characters.show', $char->name) }}" class="text-xs font-bold text-[#8B5A2B] hover:text-[#D4441D] flex items-center gap-1">
-                        <span>Inspect Profile</span>
-                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-                    </a>
+                @php $charModuleEnabled = app(\App\Services\Module\ModuleManager::class)->isEnabled('character'); @endphp
+                <div class="pt-3 border-t border-[#DECBB1] grid {{ $charModuleEnabled ? 'grid-cols-3' : 'grid-cols-2' }} gap-2">
+                    @if($charModuleEnabled)
+                        <a href="{{ route('account.characters.manage', $char->char_id) }}"
+                           class="px-2.5 py-2 rounded-lg text-[11px] font-bold bg-[#4A2200] hover:bg-[#5E2C00] text-[#FFE4A0] border border-[#8B5A2B] flex items-center justify-center gap-1 whitespace-nowrap transition-colors">
+                            <i data-lucide="settings-2" class="w-3.5 h-3.5 shrink-0"></i>
+                            <span>Manage</span>
+                        </a>
+                    @endif
 
-                    <form method="POST" action="{{ route('account.unstuck', $char->char_id) }}">
+                    <form method="POST" action="{{ route('account.unstuck', $char->char_id) }}" class="w-full">
                         @csrf
-                        <button type="submit" 
+                        <button type="submit" {{ $char->online > 0 ? 'disabled' : '' }}
                                 onclick="return confirm('Reset {{ $char->name }} position back to Prontera?')"
-                                class="text-[10px] font-bold text-[#A82508] hover:underline uppercase tracking-wider">
-                            Rescue Character
+                                class="w-full px-2.5 py-2 rounded-lg text-[11px] font-bold bg-[#FAF4EA] hover:bg-[#EFE4D0] text-[#5A3D28] border border-[#DECBB1] disabled:opacity-50 flex items-center justify-center gap-1 whitespace-nowrap cursor-pointer">
+                            <i data-lucide="compass" class="w-3.5 h-3.5 text-[#9E5600] shrink-0"></i>
+                            <span>Unstuck</span>
+                        </button>
+                    </form>
+
+                    <form method="POST" action="{{ route('account.characters.delete', $char->char_id) }}" class="w-full"
+                          onsubmit="return confirm('Are you sure you want to permanently delete character {{ $char->name }}?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" {{ $char->online > 0 ? 'disabled' : '' }}
+                                class="w-full px-2.5 py-2 rounded-lg text-[11px] font-bold bg-[#FCE8E6] hover:bg-[#F9D2CE] text-[#A82508] border border-[#E6B0AA] disabled:opacity-50 flex items-center justify-center gap-1 whitespace-nowrap cursor-pointer">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5 shrink-0"></i>
+                            <span>Delete</span>
                         </button>
                     </form>
                 </div>
