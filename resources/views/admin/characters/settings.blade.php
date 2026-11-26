@@ -156,6 +156,39 @@
                 </div>
             </div>
 
+            <!-- Job Change -->
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <h2 class="text-sm font-bold text-white">Job Change</h2>
+                    <label class="inline-flex items-center gap-2 text-slate-300 cursor-pointer">
+                        <input type="checkbox" name="job_change_enabled" value="1" {{ $settings['job_change_enabled'] ? 'checked' : '' }} class="rounded bg-slate-950 border-slate-700 text-cyan-500">
+                        <span>Enabled</span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Cash Points Cost</label>
+                        <input type="number" name="job_change_cost" value="{{ $settings['job_change_cost'] }}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Cooldown (Hours)</label>
+                        <input type="number" name="job_change_cooldown_hours" value="{{ $settings['job_change_cooldown_hours'] }}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Min Base Level</label>
+                        <input type="number" name="job_change_min_level" value="{{ $settings['job_change_min_level'] }}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Allowed Job IDs (comma-separated, blank = all jobs)</label>
+                    <input type="text" name="job_change_allowed_jobs" value="{{ $settings['job_change_allowed_jobs'] }}" placeholder="e.g. 4008,4009,4010,4013" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                </div>
+                <label class="inline-flex items-center gap-2 text-slate-300 cursor-pointer">
+                    <input type="checkbox" name="job_change_reset_skills" value="1" {{ $settings['job_change_reset_skills'] ? 'checked' : '' }} class="rounded bg-slate-950 border-slate-700 text-cyan-500">
+                    <span>Auto-reset learned skills &amp; refund skill points on job change</span>
+                </label>
+            </div>
+
             <!-- Deletion & Lock -->
             <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3">

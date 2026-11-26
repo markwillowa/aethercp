@@ -63,6 +63,13 @@ class CharacterManagementService
             'gender_cost' => (int) SiteSetting::get('char_svc_gender_cost', 1000),
             'gender_cooldown_hours' => (int) SiteSetting::get('char_svc_gender_cooldown_hours', 720),
 
+            'job_change_enabled' => filter_var(SiteSetting::get('char_svc_job_change_enabled', '1'), FILTER_VALIDATE_BOOLEAN),
+            'job_change_cost' => (int) SiteSetting::get('char_svc_job_change_cost', 1000),
+            'job_change_cooldown_hours' => (int) SiteSetting::get('char_svc_job_change_cooldown_hours', 168),
+            'job_change_min_level' => (int) SiteSetting::get('char_svc_job_change_min_level', 1),
+            'job_change_reset_skills' => filter_var(SiteSetting::get('char_svc_job_change_reset_skills', '1'), FILTER_VALIDATE_BOOLEAN),
+            'job_change_allowed_jobs' => (string) SiteSetting::get('char_svc_job_change_allowed_jobs', ''),
+
             'deletion_enabled' => filter_var(SiteSetting::get('char_svc_deletion_enabled', '1'), FILTER_VALIDATE_BOOLEAN),
             'deletion_wait_hours' => (int) SiteSetting::get('char_svc_deletion_wait_hours', 24),
             'deletion_allow_recovery' => filter_var(SiteSetting::get('char_svc_deletion_allow_recovery', '1'), FILTER_VALIDATE_BOOLEAN),
@@ -75,7 +82,8 @@ class CharacterManagementService
     {
         $booleanKeys = [
             'rename_enabled', 'appearance_enabled', 'stat_reset_enabled',
-            'skill_reset_enabled', 'gender_enabled', 'deletion_enabled',
+            'skill_reset_enabled', 'gender_enabled', 'job_change_enabled',
+            'job_change_reset_skills', 'deletion_enabled',
             'deletion_allow_recovery', 'lock_enabled',
         ];
 
@@ -249,6 +257,8 @@ class CharacterManagementService
             'settings' => $this->getSettings(),
             'cooldowns' => $this->getCooldownStatuses($charId),
             'privacy' => \App\Models\PlayerProfileSetting::forCharacter($charId, $accountId),
+            'hairColors' => app(CharacterCreationService::class)->getHairColorCatalog(),
+            'availableJobs' => $this->getAllowedJobsForChange($this->getSettings()),
             'supported_columns' => $this->tableColumns('char'),
         ];
     }
@@ -329,6 +339,7 @@ class CharacterManagementService
             'stat_reset' => $settings['stat_reset_cooldown_hours'],
             'skill_reset' => $settings['skill_reset_cooldown_hours'],
             'gender_change' => $settings['gender_cooldown_hours'],
+            'job_change' => $settings['job_change_cooldown_hours'],
         ];
 
         $statuses = [];
@@ -599,6 +610,91 @@ class CharacterManagementService
                         ->where('account_id', $accountId)
                         ->update(['sex' => $targetGender]);
                 }
+            },
+            $ip
+        );
+    }
+
+    public function getAllowedJobsForChange(array $settings): array
+    {
+        $allJobs = config('jobs', []);
+        $allowedRaw = trim((string) ($settings['job_change_allowed_jobs'] ?? ''));
+        $allowedIds = $allowedRaw !== ''
+            ? array_map('intval', array_filter(array_map('trim', explode(',', $allowedRaw)), 'is_numeric'))
+            : [];
+
+        $result = [];
+        foreach ($allJobs as $id => $name) {
+            if (!empty($allowedIds) && !in_array((int) $id, $allowedIds, true)) {
+                continue;
+            }
+            $result[] = [
+                'id' => (int) $id,
+                'name' => $name,
+                'sprite_url' => JobHelper::getSpriteUrl((int) $id),
+            ];
+        }
+
+        return $result;
+    }
+
+    public function changeJob(User $user, int $charId, int $targetClass, string $idempotencyKey, ?string $ip = null): CharacterServiceTransaction
+    {
+        if ($existing = CharacterServiceTransaction::where('idempotency_key', $idempotencyKey)->first()) {
+            return $existing;
+        }
+
+        $settings = $this->getSettings();
+        if (!$settings['job_change_enabled']) {
+            throw new RuntimeException('Job Change service is currently disabled.');
+        }
+
+        $allJobs = config('jobs', []);
+        if (!array_key_exists($targetClass, $allJobs)) {
+            throw new RuntimeException('Selected job class is not valid.');
+        }
+
+        $allowedJobs = collect($this->getAllowedJobsForChange($settings))->pluck('id')->all();
+        if (!in_array($targetClass, $allowedJobs, true)) {
+            throw new RuntimeException('Selected job class is not allowed for Job Change.');
+        }
+
+        $char = $this->getOwnedCharacterOrFail($user, $charId);
+        $this->guardPlayerService($char, 'job_change', $settings['job_change_cooldown_hours'], (int) $settings['job_change_min_level']);
+
+        if ((int) $char->class === $targetClass) {
+            throw new RuntimeException('Character is already that job class.');
+        }
+
+        $charTable = $this->emulator->getTableName('char');
+        $skillTable = $this->emulator->getTableName('skill');
+        $oldClass = (int) $char->class;
+
+        return $this->executePaidService(
+            $user,
+            $char,
+            'job_change',
+            (int) $settings['job_change_cost'],
+            $idempotencyKey,
+            ['class' => $oldClass, 'job_name' => JobHelper::getName($oldClass)],
+            ['class' => $targetClass, 'job_name' => JobHelper::getName($targetClass)],
+            function () use ($charTable, $skillTable, $charId, $targetClass, $char, $settings) {
+                $updates = ['class' => $targetClass];
+                if ($settings['job_change_reset_skills']) {
+                    $pts = (int) DB::connection('ragnarok')->table($skillTable)
+                        ->where('char_id', $charId)
+                        ->where('flag', 0)
+                        ->where('lv', '>', 0)
+                        ->sum('lv');
+                    DB::connection('ragnarok')->table($skillTable)
+                        ->where('char_id', $charId)
+                        ->where('flag', 0)
+                        ->delete();
+                    $updates['skill_point'] = (int) $char->skill_point + $pts;
+                }
+                DB::connection('ragnarok')->table($charTable)
+                    ->where('char_id', $charId)
+                    ->update($updates);
             },
             $ip
         );

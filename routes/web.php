@@ -220,8 +220,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/pincode', [AccountController::class, 'changePincode'])->name('pincode');
         Route::get('/characters', [AccountController::class, 'characters'])->name('characters');
         Route::get('/characters/create', [\App\Http\Controllers\Public\CharacterCreationController::class, 'create'])->middleware('module:character_creation')->name('characters.create');
-        Route::get('/characters/sprite-preview', [\App\Http\Controllers\Public\CharacterCreationController::class, 'spritePreview'])->middleware('module:character_creation')->name('characters.sprite-preview');
-        Route::get('/characters/hair-preview', [\App\Http\Controllers\Public\CharacterCreationController::class, 'hairPreview'])->middleware('module:character_creation')->name('characters.hair-preview');
+        Route::get('/characters/sprite-preview', [\App\Http\Controllers\Public\CharacterCreationController::class, 'spritePreview'])->name('characters.sprite-preview');
+        Route::get('/characters/hair-preview', [\App\Http\Controllers\Public\CharacterCreationController::class, 'hairPreview'])->name('characters.hair-preview');
         Route::post('/characters', [\App\Http\Controllers\Public\CharacterCreationController::class, 'store'])->middleware('module:character_creation')->name('characters.store');
         Route::get('/characters/{id}/manage', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'manage'])->name('characters.manage');
         Route::post('/characters/{id}/services/rename', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'rename'])->middleware('throttle:10,1')->name('characters.services.rename');
@@ -229,6 +229,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/characters/{id}/services/stat-reset', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'resetStats'])->middleware('throttle:10,1')->name('characters.services.stat-reset');
         Route::post('/characters/{id}/services/skill-reset', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'resetSkills'])->middleware('throttle:10,1')->name('characters.services.skill-reset');
         Route::post('/characters/{id}/services/gender', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'changeGender'])->middleware('throttle:5,1')->name('characters.services.gender');
+        Route::post('/characters/{id}/services/job', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'changeJob'])->middleware('throttle:5,1')->name('characters.services.job');
         Route::post('/characters/{id}/services/lock', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'toggleLock'])->name('characters.services.lock');
         Route::post('/characters/{id}/services/deletion/request', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'requestDeletion'])->name('characters.services.deletion.request');
         Route::post('/characters/{id}/services/deletion/cancel', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'cancelDeletion'])->name('characters.services.deletion.cancel');

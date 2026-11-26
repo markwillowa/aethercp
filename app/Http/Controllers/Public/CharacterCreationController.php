@@ -81,6 +81,7 @@ class CharacterCreationController extends Controller
         $rmsGender = $gender === 'F' ? 0 : 1;
         $hair = max(1, min(100, (int) $request->query('hair', 1)));
         $color = max(0, min(30, (int) $request->query('color', 0)));
+        $dye = max(0, min(20, (int) $request->query('dye', 0)));
         $dir = max(0, min(7, (int) $request->query('dir', 0)));
 
         $cacheDir = storage_path('app/ro-sprites');
@@ -88,7 +89,7 @@ class CharacterCreationController extends Controller
             File::makeDirectory($cacheDir, 0755, true);
         }
 
-        $cacheFile = $cacheDir . DIRECTORY_SEPARATOR . "sprite_{$rmsGender}_{$job}_{$hair}_{$color}_{$dir}.png";
+        $cacheFile = $cacheDir . DIRECTORY_SEPARATOR . "sprite_{$rmsGender}_{$job}_{$hair}_{$color}_{$dye}_{$dir}.png";
         if (File::exists($cacheFile) && (time() - File::lastModified($cacheFile)) < 86400 * 30) {
             return response(File::get($cacheFile), 200, [
                 'Content-Type' => 'image/png',
@@ -99,8 +100,8 @@ class CharacterCreationController extends Controller
         $settings = $this->creationService->getSettings();
         $template = $settings['chargen_url'] ?: 'https://ro-character-simulator.ratemyserver.net/charsim.php?gender={rms_gender}&job={job}&hair={hair}&viewid=0&location=0&direction={dir}&action=0&hdye={color}&dye=0&framenum=0&bg=0';
         $url = str_replace(
-            ['{rms_gender}', '{gender}', '{job}', '{hair}', '{color}', '{dir}'],
-            [(string) $rmsGender, $gender, (string) $job, (string) $hair, (string) $color, (string) $dir],
+            ['{rms_gender}', '{gender}', '{job}', '{hair}', '{color}', '{dye}', '{dir}', 'dye=0'],
+            [(string) $rmsGender, $gender, (string) $job, (string) $hair, (string) $color, (string) $dye, (string) $dir, 'dye=' . $dye],
             $template
         );
 

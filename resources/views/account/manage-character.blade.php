@@ -124,28 +124,265 @@
         @endif
 
         @if($settings['appearance_enabled'])
-            <form method="POST" action="{{ route('account.characters.services.appearance', $character->char_id) }}" class="bg-slate-900/70 border border-slate-800 rounded-2xl p-6 space-y-4">
+            @php
+                $charSex = strtoupper((string) ($account->sex ?? $character->sex ?? 'M')) === 'F' ? 'F' : 'M';
+                $maxHair = max(1, (int) $settings['appearance_max_hair']);
+                $maxHairColor = max(0, (int) $settings['appearance_max_hair_color']);
+                $maxClothesColor = max(0, (int) $settings['appearance_max_clothes_color']);
+            @endphp
+            <form method="POST" action="{{ route('account.characters.services.appearance', $character->char_id) }}"
+                  class="md:col-span-2 bg-slate-900/70 border border-slate-800 rounded-2xl p-6 space-y-5"
+                  x-data="{
+                      gender: @js($charSex),
+                      jobId: {{ (int) $character->class }},
+                      jobName: @js($character->job_name),
+                      hairStyle: {{ max(1, (int) $character->hair) }},
+                      hairColor: {{ (int) $character->hair_color }},
+                      clothesColor: {{ (int) $character->clothes_color }},
+                      direction: 0,
+                      hairColors: @js($hairColors),
+                      proxyBaseUrl: @js(route('account.characters.sprite-preview')),
+                      hairProxyBaseUrl: @js(route('account.characters.hair-preview')),
+                      previewSpriteSrc: '',
+                      previewFailed: false,
+                      _debounceTimer: null,
+                      init() {
+                          this.refreshPreview();
+                          this.$watch('hairStyle', () => this.schedulePreview());
+                          this.$watch('hairColor', () => this.schedulePreview());
+                          this.$watch('clothesColor', () => this.schedulePreview());
+                          this.$watch('direction', () => this.schedulePreview());
+                      },
+                      schedulePreview() {
+                          clearTimeout(this._debounceTimer);
+                          this._debounceTimer = setTimeout(() => this.refreshPreview(), 80);
+                      },
+                      refreshPreview() {
+                          this.previewFailed = false;
+                          this.previewSpriteSrc = `${this.proxyBaseUrl}?gender=${this.gender}&job=${this.jobId}&hair=${this.hairStyle}&color=${this.hairColor}&dye=${this.clothesColor}&dir=${this.direction}`;
+                      },
+                      hairIconUrl(style) {
+                          return `${this.hairProxyBaseUrl}?gender=${this.gender}&hair=${style}`;
+                      },
+                      get selectedHairColor() {
+                          return this.hairColors[this.hairColor] || { name: 'Color #' + this.hairColor, hex: '#94a3b8' };
+                      },
+                      rotateLeft() { this.direction = (this.direction + 7) % 8; },
+                      rotateRight() { this.direction = (this.direction + 1) % 8; }
+                  }">
                 @csrf
                 <input type="hidden" name="idempotency_key" value="{{ $idempotencyKey }}-appearance">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-sm font-bold text-white">Appearance Change</h3>
-                    <span class="px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 font-bold">{{ number_format($settings['appearance_cost']) }} CP</span>
+
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                    <div>
+                        <h3 class="text-base font-bold text-white">Appearance Change</h3>
+                        <p class="text-[11px] text-slate-400">Preview your character's actual job sprite, hairstyle, hair color, and clothes dye live.</p>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-cyan-500/15 text-cyan-300 font-bold self-start sm:self-auto">{{ number_format($settings['appearance_cost']) }} CP</span>
                 </div>
-                <div class="grid grid-cols-3 gap-2">
-                    <div>
-                        <label class="block text-slate-400 mb-1">Hair (0-{{ $settings['appearance_max_hair'] }})</label>
-                        <input type="number" name="hair" value="{{ $character->hair }}" min="0" max="{{ $settings['appearance_max_hair'] }}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left: Live Character Sprite Stage -->
+                    <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-5 space-y-4 h-fit">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Live Preview</span>
+                            <div class="flex items-center gap-1">
+                                <button type="button" @click="rotateLeft()" class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300 hover:text-white cursor-pointer" title="Rotate Left">↺</button>
+                                <button type="button" @click="rotateRight()" class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300 hover:text-white cursor-pointer" title="Rotate Right">↻</button>
+                            </div>
+                        </div>
+
+                        <div class="rounded-2xl bg-gradient-to-b from-slate-950 via-slate-900/90 to-slate-950 border border-slate-800 p-5 flex flex-col items-center justify-center text-center space-y-2">
+                            <div class="relative w-28 h-32 flex items-center justify-center">
+                                <img x-show="previewSpriteSrc && !previewFailed"
+                                     :src="previewSpriteSrc"
+                                     :alt="jobName"
+                                     class="max-w-full max-h-full object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.65)] scale-125"
+                                     x-on:error="previewFailed = true">
+                                <div x-show="!previewSpriteSrc || previewFailed" style="display: none;" class="flex flex-col items-center justify-center gap-1">
+                                    <div class="w-12 h-12 rounded-xl flex items-center justify-center border border-white/20 text-lg font-black text-white"
+                                         :style="`background: radial-gradient(circle at 35% 30%, ${selectedHairColor.hex}, #0f172a 95%);`"
+                                         x-text="gender === 'F' ? '♀' : '♂'"></div>
+                                    <span class="text-[10px] font-bold text-cyan-300" x-text="jobName"></span>
+                                </div>
+                            </div>
+                            <span class="px-2.5 py-0.5 rounded-full bg-slate-950 border border-slate-700/80 text-[11px] font-bold text-cyan-300" x-text="jobName"></span>
+                            <p class="text-sm font-black text-white">{{ $character->name }}</p>
+                        </div>
+
+                        <div class="space-y-1.5 text-[11px] bg-slate-900/60 p-3.5 rounded-xl border border-slate-800/80">
+                            <div class="flex justify-between"><span class="text-slate-400">Hair Style</span><span class="font-mono font-bold text-cyan-300" x-text="'#' + hairStyle"></span></div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-400">Hair Color</span>
+                                <span class="inline-flex items-center gap-1.5 font-semibold text-white">
+                                    <span class="w-3 h-3 rounded-full border border-white/40" :style="`background-color: ${selectedHairColor.hex};`"></span>
+                                    <span x-text="selectedHairColor.name"></span>
+                                </span>
+                            </div>
+                            <div class="flex justify-between"><span class="text-slate-400">Clothes Dye</span><span class="font-mono font-bold text-amber-300" x-text="'Palette #' + clothesColor"></span></div>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-slate-400 mb-1">Hair Color (0-{{ $settings['appearance_max_hair_color'] }})</label>
-                        <input type="number" name="hair_color" value="{{ $character->hair_color }}" min="0" max="{{ $settings['appearance_max_hair_color'] }}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                    </div>
-                    <div>
-                        <label class="block text-slate-400 mb-1">Clothes (0-{{ $settings['appearance_max_clothes_color'] }})</label>
-                        <input type="number" name="clothes_color" value="{{ $character->clothes_color }}" min="0" max="{{ $settings['appearance_max_clothes_color'] }}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+
+                    <!-- Right: Hair Style Grid, Hair Color Swatches, Clothes Color -->
+                    <div class="lg:col-span-2 space-y-5">
+                        <!-- Hair Style Grid -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-xs font-semibold text-slate-300">Hair Style ({{ $charSex === 'F' ? 'Female' : 'Male' }})</label>
+                                <span class="text-[11px] font-mono text-cyan-400" x-text="'Selected: #' + hairStyle"></span>
+                            </div>
+                            <div class="grid grid-cols-5 sm:grid-cols-7 gap-2 max-h-52 overflow-y-auto pr-1">
+                                @for($hStyle = 1; $hStyle <= $maxHair; $hStyle++)
+                                    <label @click="hairStyle = {{ $hStyle }}"
+                                           :class="Number(hairStyle) === {{ $hStyle }} ? 'bg-cyan-500/20 border-cyan-400 ring-2 ring-cyan-500/40 text-white' : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700'"
+                                           class="p-2 rounded-xl border flex flex-col items-center gap-1 cursor-pointer transition-all">
+                                        <input type="radio" name="hair" value="{{ $hStyle }}" x-model="hairStyle" class="hidden">
+                                        <div class="w-10 h-10 rounded-lg bg-slate-900/90 border border-slate-800 flex items-center justify-center overflow-hidden">
+                                            <img :src="hairIconUrl({{ $hStyle }})"
+                                                 loading="lazy"
+                                                 alt="Style #{{ $hStyle }}"
+                                                 class="w-9 h-9 object-contain"
+                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            <span style="display: none;" class="text-xs font-bold text-slate-300">{{ $charSex === 'F' ? '♀' : '♂' }}</span>
+                                        </div>
+                                        <span class="text-[10px] font-mono font-bold">#{{ $hStyle }}</span>
+                                    </label>
+                                @endfor
+                            </div>
+                        </div>
+
+                        <!-- Hair Color Palette -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-xs font-semibold text-slate-300">Hair Color</label>
+                                <span class="text-[11px] text-slate-400" x-text="selectedHairColor.name"></span>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                @for($hColor = 0; $hColor <= $maxHairColor; $hColor++)
+                                    @php $cInfo = $hairColors[$hColor] ?? ['name' => "Color #{$hColor}", 'hex' => '#94a3b8']; @endphp
+                                    <label @click.prevent="hairColor = {{ $hColor }}"
+                                           :class="Number(hairColor) === {{ $hColor }} ? 'border-cyan-400 bg-slate-800 ring-2 ring-cyan-500/40' : 'border-slate-800 bg-slate-950/60'"
+                                           class="px-3 py-1.5 rounded-xl border flex items-center gap-2 text-xs text-slate-200 cursor-pointer transition-all"
+                                           title="{{ $cInfo['name'] }}">
+                                        <input type="radio" name="hair_color" value="{{ $hColor }}" :checked="Number(hairColor) === {{ $hColor }}" class="hidden">
+                                        <span class="w-4 h-4 rounded-md border border-white/40 shrink-0" style="background-color: {{ $cInfo['hex'] }};"></span>
+                                        <span>{{ $cInfo['name'] }}</span>
+                                    </label>
+                                @endfor
+                            </div>
+                        </div>
+
+                        <!-- Clothes Color Palette -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-xs font-semibold text-slate-300">Clothes Color (Palette)</label>
+                                <span class="text-[11px] font-mono text-amber-300" x-text="'Palette #' + clothesColor"></span>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                @for($cDye = 0; $cDye <= $maxClothesColor; $cDye++)
+                                    <label @click.prevent="clothesColor = {{ $cDye }}"
+                                           :class="Number(clothesColor) === {{ $cDye }} ? 'border-amber-400 bg-amber-500/15 text-amber-200 ring-2 ring-amber-500/30' : 'border-slate-800 bg-slate-950/60 text-slate-300'"
+                                           class="px-3 py-1.5 rounded-xl border text-xs font-mono font-bold cursor-pointer transition-all">
+                                        <input type="radio" name="clothes_color" value="{{ $cDye }}" :checked="Number(clothesColor) === {{ $cDye }}" class="hidden">
+                                        <span>#{{ $cDye }}</span>
+                                    </label>
+                                @endfor
+                            </div>
+                        </div>
+
+                        <div class="pt-2 flex justify-end">
+                            <button type="submit" class="px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold transition-colors cursor-pointer">
+                                Apply Appearance Changes
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold cursor-pointer">Update Appearance</button>
+            </form>
+        @endif
+
+        @if($settings['job_change_enabled'])
+            @php
+                $jobSex = strtoupper((string) ($account->sex ?? $character->sex ?? 'M')) === 'F' ? 'F' : 'M';
+            @endphp
+            <form method="POST" action="{{ route('account.characters.services.job', $character->char_id) }}"
+                  class="md:col-span-2 bg-slate-900/70 border border-slate-800 rounded-2xl p-6 space-y-4"
+                  x-data="{
+                      gender: @js($jobSex),
+                      hairStyle: {{ max(1, (int) $character->hair) }},
+                      hairColor: {{ (int) $character->hair_color }},
+                      clothesColor: {{ (int) $character->clothes_color }},
+                      selectedClass: {{ (int) $character->class }},
+                      jobSearch: '',
+                      jobs: @js($availableJobs),
+                      proxyBaseUrl: @js(route('account.characters.sprite-preview')),
+                      previewFailed: false,
+                      get filteredJobs() {
+                          const q = (this.jobSearch || '').trim().toLowerCase();
+                          if (!q) return this.jobs;
+                          return this.jobs.filter(j => j.name.toLowerCase().includes(q) || String(j.id).includes(q));
+                      },
+                      get selectedJobObj() {
+                          return this.jobs.find(j => Number(j.id) === Number(this.selectedClass)) || { id: this.selectedClass, name: @js($character->job_name) };
+                      },
+                      get previewUrl() {
+                          return `${this.proxyBaseUrl}?gender=${this.gender}&job=${this.selectedClass}&hair=${this.hairStyle}&color=${this.hairColor}&dye=${this.clothesColor}&dir=0`;
+                      }
+                  }"
+                  x-effect="selectedClass; previewFailed = false;"
+                  onsubmit="return confirm('Change character job class?{{ $settings['job_change_reset_skills'] ? ' Learned skills will be reset and skill points refunded.' : '' }}');">
+                @csrf
+                <input type="hidden" name="idempotency_key" value="{{ $idempotencyKey }}-job">
+                <input type="hidden" name="target_class" :value="selectedClass">
+
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                    <div>
+                        <h3 class="text-base font-bold text-white">Job / Class Change</h3>
+                        <p class="text-[11px] text-slate-400">
+                            Preview and switch your character's job class.
+                            @if($settings['job_change_reset_skills'])
+                                Learned skills are automatically reset and skill points refunded.
+                            @endif
+                        </p>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-cyan-500/15 text-cyan-300 font-bold self-start sm:self-auto">{{ number_format($settings['job_change_cost']) }} CP</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-5 flex flex-col items-center text-center space-y-2">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Job Preview</span>
+                        <div class="w-28 h-32 flex items-center justify-center">
+                            <img x-show="!previewFailed" :src="previewUrl" :alt="selectedJobObj.name"
+                                 class="max-w-full max-h-full object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.65)] scale-125"
+                                 x-on:error="previewFailed = true">
+                            <span x-show="previewFailed" style="display: none;" class="text-xs font-bold text-cyan-300" x-text="selectedJobObj.name"></span>
+                        </div>
+                        <span class="px-2.5 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-[11px] font-bold text-cyan-300" x-text="selectedJobObj.name"></span>
+                        <span class="text-[11px] text-slate-400 font-mono" x-text="'Class ID #' + selectedClass"></span>
+                    </div>
+
+                    <div class="lg:col-span-2 space-y-3">
+                        <input type="text" x-model="jobSearch" placeholder="Search job name or ID (e.g. Rune Knight, 4054)..."
+                               class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:border-cyan-500 focus:outline-none">
+
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-56 overflow-y-auto pr-1">
+                            <template x-for="job in filteredJobs" :key="job.id">
+                                <button type="button" @click="selectedClass = job.id"
+                                        :class="Number(selectedClass) === Number(job.id) ? 'bg-cyan-500/20 border-cyan-400 text-white ring-1 ring-cyan-500/40' : 'bg-slate-950/60 border-slate-800 text-slate-300 hover:border-slate-700'"
+                                        class="p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between gap-2">
+                                    <span class="font-semibold truncate" x-text="job.name"></span>
+                                    <span class="text-[10px] font-mono text-slate-500 shrink-0" x-text="'#' + job.id"></span>
+                                </button>
+                            </template>
+                        </div>
+
+                        <div class="pt-2 flex justify-end">
+                            <button type="submit" :disabled="Number(selectedClass) === {{ (int) $character->class }}"
+                                    class="px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-slate-950 font-bold transition-colors cursor-pointer">
+                                Change Job Class
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </form>
         @endif
 

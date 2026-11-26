@@ -213,18 +213,24 @@ class AdminCharacterManagementController extends Controller
             'skill_reset_min_level' => 'required|integer|min:1',
             'gender_cost' => 'required|integer|min:0',
             'gender_cooldown_hours' => 'required|integer|min:0',
+            'job_change_cost' => 'required|integer|min:0',
+            'job_change_cooldown_hours' => 'required|integer|min:0',
+            'job_change_min_level' => 'required|integer|min:1',
+            'job_change_allowed_jobs' => 'nullable|string|max:1000',
             'deletion_wait_hours' => 'required|integer|min:1|max:720',
         ]);
 
         $booleans = [
             'rename_enabled', 'appearance_enabled', 'stat_reset_enabled',
-            'skill_reset_enabled', 'gender_enabled', 'deletion_enabled',
+            'skill_reset_enabled', 'gender_enabled', 'job_change_enabled',
+            'job_change_reset_skills', 'deletion_enabled',
             'deletion_allow_recovery', 'lock_enabled',
         ];
         foreach ($booleans as $key) {
             $validated[$key] = $request->boolean($key);
         }
         $validated['rename_blocked_words'] = $validated['rename_blocked_words'] ?? '';
+        $validated['job_change_allowed_jobs'] = $validated['job_change_allowed_jobs'] ?? '';
 
         $this->service->updateSettings($validated, Auth::user());
 

@@ -118,6 +118,27 @@ class PlayerCharacterServiceController extends Controller
         }
     }
 
+    public function changeJob(Request $request, int $charId)
+    {
+        $validated = $request->validate([
+            'target_class' => 'required|integer|min:0',
+            'idempotency_key' => 'nullable|string|max:120',
+        ]);
+
+        try {
+            $this->service->changeJob(
+                Auth::user(),
+                $charId,
+                (int) $validated['target_class'],
+                $validated['idempotency_key'] ?: (string) Str::uuid(),
+                $request->ip()
+            );
+            return back()->with('success', 'Character job class updated successfully.');
+        } catch (\Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
     public function toggleLock(Request $request, int $charId)
     {
         $validated = $request->validate([

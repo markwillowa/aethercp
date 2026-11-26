@@ -262,6 +262,9 @@ class CharacterManagementSystemTest extends TestCase
         $charAfterSkills = DB::connection('ragnarok')->table('char')->where('char_id', 150001)->first();
         $this->assertSame(19, (int) $charAfterSkills->skill_point);
         $this->assertSame(0, DB::connection('ragnarok')->table('skill')->where('char_id', 150001)->count());
+
+        $this->service->changeJob($this->player, 150001, 4008, 'idem-job-1');
+        $this->assertSame(4008, (int) DB::connection('ragnarok')->table('char')->where('char_id', 150001)->value('class'));
     }
 
     public function test_account_level_gender_change_requires_all_characters_offline_and_updates_account(): void

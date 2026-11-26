@@ -97,31 +97,31 @@
                         </div>
                     </div>
 
-                    <div class="pt-2 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
+                    <div class="pt-3 border-t border-slate-800/80 grid grid-cols-3 gap-2">
                         <a href="{{ route('account.characters.manage', $char->char_id) }}"
-                           class="px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 transition-colors flex items-center gap-1.5">
-                            <i data-lucide="settings-2" class="w-3.5 h-3.5"></i>
-                            <span>Manage &amp; Services</span>
+                           class="px-2.5 py-2 rounded-lg text-[11px] font-bold bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 transition-colors flex items-center justify-center gap-1 whitespace-nowrap">
+                            <i data-lucide="settings-2" class="w-3.5 h-3.5 shrink-0"></i>
+                            <span>Manage</span>
                         </a>
 
-                        <form method="POST" action="{{ route('account.unstuck', $char->char_id) }}">
+                        <form method="POST" action="{{ route('account.unstuck', $char->char_id) }}" class="w-full">
                             @csrf
                             <button type="submit" {{ $char->online > 0 ? 'disabled' : '' }}
-                                class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
+                                class="w-full px-2.5 py-2 rounded-lg text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1 whitespace-nowrap cursor-pointer"
                                 title="Move character to Prontera if stuck">
-                                <i data-lucide="compass" class="w-3.5 h-3.5 text-cyan-400"></i>
-                                <span>Reset Position</span>
+                                <i data-lucide="compass" class="w-3.5 h-3.5 text-cyan-400 shrink-0"></i>
+                                <span>Unstuck</span>
                             </button>
                         </form>
 
-                        <form method="POST" action="{{ route('account.characters.delete', $char->char_id) }}"
+                        <form method="POST" action="{{ route('account.characters.delete', $char->char_id) }}" class="w-full"
                               onsubmit="return confirm('Are you sure you want to permanently delete character {{ $char->name }}? This action cannot be undone.');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" {{ $char->online > 0 ? 'disabled' : '' }}
-                                class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-red-950/40 hover:bg-red-900/60 text-red-400 hover:text-red-300 border border-red-800/40 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+                                class="w-full px-2.5 py-2 rounded-lg text-[11px] font-semibold bg-red-950/40 hover:bg-red-900/60 text-red-400 hover:text-red-300 border border-red-800/40 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1 whitespace-nowrap cursor-pointer"
                                 title="Delete Character">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5 shrink-0"></i>
                                 <span>Delete</span>
                             </button>
                         </form>
