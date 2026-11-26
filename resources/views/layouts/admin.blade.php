@@ -269,7 +269,7 @@
         @php
             $modMgr = app(\App\Services\Module\ModuleManager::class);
         @endphp
-        <aside class="admin-sidebar w-64 border-r {{ $isChronicles ? 'border-[#4A3A5A] bg-[#160F1F] text-[#C8BDAA]' : (!empty($currentTheme['is_light']) ? 'border-[#8C6A2D] bg-[#22140B] text-[#E7D5BE]' : 'border-slate-800 bg-[#070a13] text-slate-400') }} p-4 space-y-6 hidden md:block shrink-0 overflow-y-auto max-h-[calc(100vh-4rem)]">
+        <aside class="admin-sidebar w-64 border-r {{ $isChronicles ? 'border-[#4A3A5A] bg-[#160F1F] text-[#C8BDAA]' : (!empty($currentTheme['is_light']) ? 'border-[#8C6A2D] bg-[#22140B] text-[#E7D5BE]' : 'border-slate-800 bg-[#070a13] text-slate-400') }} p-4 space-y-6 hidden md:block shrink-0 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto self-start">
             
             <!-- Category 1: Overview & Metrics -->
             <div>
