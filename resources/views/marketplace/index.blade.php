@@ -435,6 +435,7 @@
                                     $sId = is_array($sItem) ? ($sItem['nameid'] ?? 0) : ($sItem->nameid ?? 0);
                                     $sName = is_array($sItem) ? ($sItem['formatted_name'] ?? $sItem['name'] ?? "Item #{$sId}") : ($sItem->formatted_name ?? $sItem->name ?? "Item #{$sId}");
                                     $sAmount = is_array($sItem) ? ($sItem['amount'] ?? 0) : ($sItem->amount ?? 0);
+                                    $sRefine = is_array($sItem) ? ($sItem['refine'] ?? 0) : ($sItem->refine ?? 0);
                                     $sSlots = is_array($sItem) ? ($sItem['slots'] ?? 0) : ($sItem->slots ?? 0);
                                     $sCards = is_array($sItem) ? ($sItem['cards'] ?? []) : ($sItem->cards ?? []);
                                     $sTransferable = is_array($sItem) ? ($sItem['is_transferable'] ?? true) : ($sItem->is_transferable ?? true);
@@ -444,8 +445,11 @@
                                 <tr class="hover:bg-slate-800/40 transition-colors">
                                     <td class="py-3.5 px-4">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-9 h-9 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
-                                                <img src="{{ $sIcon }}" alt="Item" class="w-6 h-6 object-contain" onerror="this.src='/images/item-placeholder.png'">
+                                            <div class="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 relative">
+                                                <img src="{{ $sIcon }}" alt="Item" class="w-7 h-7 object-contain" onerror="this.src='/images/item-placeholder.png'">
+                                                @if($sRefine > 0)
+                                                    <span class="absolute -top-1 -right-1 px-1 rounded text-[9px] font-bold font-mono bg-cyan-600 text-white shadow">+{{ $sRefine }}</span>
+                                                @endif
                                             </div>
                                             <div>
                                                 <div class="flex items-center gap-1.5 flex-wrap">
@@ -456,13 +460,22 @@
                                                         </span>
                                                     @endif
                                                 </div>
-                                                @if(!empty($sCards))
-                                                    <div class="flex items-center gap-1 mt-0.5 flex-wrap">
-                                                        @foreach($sCards as $card)
-                                                            <span class="px-1.5 py-0.2 rounded text-[8px] bg-rose-950/60 border border-rose-500/40 text-rose-300">
-                                                                ◆ {{ $card['name'] }}
-                                                            </span>
-                                                        @endforeach
+                                                @if($sSlots > 0 || !empty($sCards))
+                                                    <div class="flex items-center gap-1 mt-1 flex-wrap">
+                                                        @if($sSlots > 0)
+                                                            @for($si = 0; $si < $sSlots; $si++)
+                                                                @php $cardSlot = $sCards[$si] ?? null; @endphp
+                                                                @if($cardSlot)
+                                                                    <span class="px-1.5 py-0.2 rounded text-[9px] bg-rose-950/60 border border-rose-500/40 text-rose-300">◆ {{ $cardSlot['name'] }}</span>
+                                                                @else
+                                                                    <span class="px-1.5 py-0.2 rounded text-[9px] font-mono text-slate-500 bg-slate-950 border border-dashed border-slate-700">Empty Slot</span>
+                                                                @endif
+                                                            @endfor
+                                                        @else
+                                                            @foreach($sCards as $card)
+                                                                <span class="px-1.5 py-0.2 rounded text-[9px] bg-rose-950/60 border border-rose-500/40 text-rose-300">◆ {{ $card['name'] }}</span>
+                                                            @endforeach
+                                                        @endif
                                                     </div>
                                                 @endif
                                                 <span class="text-[10px] text-slate-500 font-mono">ID #{{ $sId }}</span>
@@ -537,11 +550,26 @@
                                 <tr class="hover:bg-slate-800/40 transition-colors">
                                     <td class="py-3.5 px-4">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-9 h-9 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 overflow-hidden p-1 shadow-inner">
+                                            <div class="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0 relative p-1 shadow-inner">
                                                 <img src="{{ $cItem->icon_url ?? ('https://static.divine-pride.net/images/items/item/' . $cItem->nameid . '.png') }}" alt="{{ $cItem->formatted_name }}" class="w-6 h-6 object-contain" onerror="this.onerror=null; this.src='https://static.divine-pride.net/images/items/item/{{ $cItem->nameid }}.png';">
+                                                @if($cItem->refine > 0)
+                                                    <span class="absolute -top-1 -right-1 px-1 rounded text-[9px] font-bold font-mono bg-cyan-600 text-white shadow">+{{ $cItem->refine }}</span>
+                                                @endif
                                             </div>
                                             <div>
-                                                <h4 class="font-bold text-white text-xs">{{ $cItem->formatted_name }}</h4>
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <h4 class="font-bold text-white text-xs">{{ $cItem->formatted_name }}</h4>
+                                                    @if($cItem->slots > 0)
+                                                        <span class="px-1.5 py-0.5 rounded text-[9px] font-bold font-mono bg-slate-800 text-cyan-300 border border-cyan-500/30">{{ $cItem->slots }} {{ Str::plural('SLOT', $cItem->slots) }}</span>
+                                                    @endif
+                                                </div>
+                                                @if(!empty($cItem->cards))
+                                                    <div class="flex items-center gap-1 mt-0.5 flex-wrap">
+                                                        @foreach($cItem->cards as $card)
+                                                            <span class="px-1.5 py-0.2 rounded text-[9px] bg-rose-950/60 border border-rose-500/40 text-rose-300">◆ {{ $card['name'] }}</span>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
                                                 <span class="text-[10px] text-slate-500 font-mono">ID #{{ $cItem->nameid }}</span>
                                             </div>
                                         </div>
@@ -609,7 +637,22 @@
                             @forelse($myListings as $mList)
                                 <tr class="hover:bg-slate-800/40 transition-colors">
                                     <td class="py-3.5 px-4">
-                                        <h4 class="font-bold text-white text-xs">{{ $mList->item->formatted_name }}</h4>
+                                        <div class="flex items-center gap-1.5 flex-wrap">
+                                            <h4 class="font-bold text-white text-xs">{{ $mList->item->formatted_name }}</h4>
+                                            @if($mList->item->refine > 0)
+                                                <span class="px-1.5 py-0.2 rounded text-[9px] font-bold font-mono bg-cyan-600 text-white">+{{ $mList->item->refine }}</span>
+                                            @endif
+                                            @if($mList->item->slots > 0)
+                                                <span class="px-1.5 py-0.2 rounded text-[9px] font-bold font-mono bg-slate-800 text-cyan-300 border border-cyan-500/30">{{ $mList->item->slots }}S</span>
+                                            @endif
+                                        </div>
+                                        @if(!empty($mList->item->cards))
+                                            <div class="flex items-center gap-1 mt-0.5 flex-wrap">
+                                                @foreach($mList->item->cards as $card)
+                                                    <span class="px-1.5 py-0.2 rounded text-[9px] bg-rose-950/60 border border-rose-500/40 text-rose-300">◆ {{ $card['name'] }}</span>
+                                                @endforeach
+                                            </div>
+                                        @endif
                                         <span class="text-[10px] text-slate-500 font-mono">{{ $mList->listing_code }}</span>
                                     </td>
                                     <td class="py-3.5 px-4 text-center font-mono font-bold text-cyan-300">

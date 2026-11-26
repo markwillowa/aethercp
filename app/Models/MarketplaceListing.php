@@ -43,7 +43,13 @@ class MarketplaceListing extends Model
     protected $appends = [
         'amount',
         'stock',
+        'seller_name',
     ];
+
+    public function getSellerNameAttribute(): string
+    {
+        return $this->seller_char_name ?: ($this->sellerUser?->username ?? 'Adventurer');
+    }
 
     public function getAmountAttribute(): int
     {

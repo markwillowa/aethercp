@@ -103,14 +103,42 @@
                             <tr class="hover:bg-[#E7D8B5]/60">
                                 <td class="py-3 px-4">
                                     <div class="flex items-center gap-3">
-                                        <img src="{{ $listing->item->icon_url ?? ('https://static.divine-pride.net/images/items/item/' . $listing->item->nameid . '.png') }}" class="w-7 h-7 object-contain" alt="">
+                                        <div class="relative w-9 h-9 rounded bg-[#FFF8E8] border border-[#A88950] flex items-center justify-center shrink-0">
+                                            <img src="{{ $listing->item->icon_url ?? ('https://static.divine-pride.net/images/items/item/' . $listing->item->nameid . '.png') }}" class="w-7 h-7 object-contain" alt="">
+                                            @if($listing->item->refine > 0)
+                                                <span class="absolute -top-1 -right-1 px-1 rounded text-[9px] font-bold font-mono bg-[#263D2C] text-[#FFF8E8]">+{{ $listing->item->refine }}</span>
+                                            @endif
+                                        </div>
                                         <div>
-                                            <span class="font-bold text-[#35291F] block">{{ $listing->item->formatted_name }}</span>
+                                            <div class="flex items-center gap-1.5 flex-wrap">
+                                                <span class="font-bold text-[#35291F]">{{ $listing->item->formatted_name }}</span>
+                                                @if($listing->item->slots > 0)
+                                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-bold font-mono bg-[#E7D8B5] text-[#263D2C] border border-[#A88950]">{{ $listing->item->slots }} {{ Str::plural('SLOT', $listing->item->slots) }}</span>
+                                                @endif
+                                            </div>
+                                            @if($listing->item->slots > 0 || !empty($listing->item->cards))
+                                                <div class="flex items-center gap-1 mt-1 flex-wrap">
+                                                    @if($listing->item->slots > 0)
+                                                        @for($s = 0; $s < $listing->item->slots; $s++)
+                                                            @php $cardInSlot = $listing->item->cards[$s] ?? null; @endphp
+                                                            @if($cardInSlot)
+                                                                <span class="px-1.5 py-0.2 rounded text-[9px] font-medium bg-[#FEE2E2] border border-[#FCA5A5] text-[#991B1B]">◆ {{ $cardInSlot['name'] }}</span>
+                                                            @else
+                                                                <span class="px-1.5 py-0.2 rounded text-[9px] font-mono text-[#80633B] bg-[#FFF8E8] border border-dashed border-[#A88950]">Empty Slot</span>
+                                                            @endif
+                                                        @endfor
+                                                    @else
+                                                        @foreach($listing->item->cards as $cCard)
+                                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-medium bg-[#FEE2E2] border border-[#FCA5A5] text-[#991B1B]">◆ {{ $cCard['name'] }}</span>
+                                                        @endforeach
+                                                    @endif
+                                                </div>
+                                            @endif
                                             <span class="text-[10px] text-[#80633B] font-mono">ID #{{ $listing->item->nameid }}</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="py-3 px-4 text-[#493322]">{{ $listing->seller_name }}</td>
+                                <td class="py-3 px-4 font-semibold text-[#35291F]">{{ $listing->seller_name }}</td>
                                 <td class="py-3 px-4 text-center font-mono font-bold">{{ number_format($listing->remaining_quantity ?? $listing->quantity ?? $listing->amount ?? 1) }}</td>
                                 <td class="py-3 px-4 font-mono font-bold text-[#263D2C]">{{ number_format($listing->unit_price) }} {{ $listing->currency_type === 'zeny' ? 'Z' : 'CP' }}</td>
                                 <td class="py-3 px-4 text-right">
@@ -146,11 +174,51 @@
                                 $sId = is_array($sItem) ? ($sItem['nameid'] ?? 0) : ($sItem->nameid ?? 0);
                                 $sName = is_array($sItem) ? ($sItem['formatted_name'] ?? $sItem['name'] ?? "Item #{$sId}") : ($sItem->formatted_name ?? $sItem->name ?? "Item #{$sId}");
                                 $sAmount = is_array($sItem) ? ($sItem['amount'] ?? 0) : ($sItem->amount ?? 0);
+                                $sRefine = is_array($sItem) ? ($sItem['refine'] ?? 0) : ($sItem->refine ?? 0);
+                                $sSlots = is_array($sItem) ? ($sItem['slots'] ?? 0) : ($sItem->slots ?? 0);
+                                $sCards = is_array($sItem) ? ($sItem['cards'] ?? []) : ($sItem->cards ?? []);
+                                $sIcon = is_array($sItem) ? ($sItem['icon_url'] ?? "https://static.divine-pride.net/images/items/item/{$sId}.png") : ($sItem->icon_url ?? "https://static.divine-pride.net/images/items/item/{$sId}.png");
                                 $sTransferable = is_array($sItem) ? ($sItem['is_transferable'] ?? true) : ($sItem->is_transferable ?? true);
                                 $sReason = is_array($sItem) ? ($sItem['restriction_reason'] ?? null) : ($sItem->restriction_reason ?? null);
                             @endphp
                             <tr class="hover:bg-[#E7D8B5]/60">
-                                <td class="py-3 px-4 font-bold text-[#35291F]">{{ $sName }} <span class="text-[10px] text-[#80633B] font-mono">#{{ $sId }}</span></td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="relative w-9 h-9 rounded bg-[#FFF8E8] border border-[#A88950] flex items-center justify-center shrink-0">
+                                            <img src="{{ $sIcon }}" class="w-6 h-6 object-contain" alt="">
+                                            @if($sRefine > 0)
+                                                <span class="absolute -top-1 -right-1 px-1 rounded text-[9px] font-bold font-mono bg-[#263D2C] text-[#FFF8E8]">+{{ $sRefine }}</span>
+                                            @endif
+                                        </div>
+                                        <div>
+                                            <div class="flex items-center gap-1.5 flex-wrap">
+                                                <span class="font-bold text-[#35291F]">{{ $sName }}</span>
+                                                @if($sSlots > 0)
+                                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-bold font-mono bg-[#E7D8B5] text-[#263D2C] border border-[#A88950]">{{ $sSlots }} {{ Str::plural('SLOT', $sSlots) }}</span>
+                                                @endif
+                                            </div>
+                                            @if($sSlots > 0 || !empty($sCards))
+                                                <div class="flex items-center gap-1 mt-1 flex-wrap">
+                                                    @if($sSlots > 0)
+                                                        @for($si = 0; $si < $sSlots; $si++)
+                                                            @php $cSlot = $sCards[$si] ?? null; @endphp
+                                                            @if($cSlot)
+                                                                <span class="px-1.5 py-0.2 rounded text-[9px] font-medium bg-[#FEE2E2] border border-[#FCA5A5] text-[#991B1B]">◆ {{ $cSlot['name'] }}</span>
+                                                            @else
+                                                                <span class="px-1.5 py-0.2 rounded text-[9px] font-mono text-[#80633B] bg-[#FFF8E8] border border-dashed border-[#A88950]">Empty Slot</span>
+                                                            @endif
+                                                        @endfor
+                                                    @else
+                                                        @foreach($sCards as $card)
+                                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-medium bg-[#FEE2E2] border border-[#FCA5A5] text-[#991B1B]">◆ {{ $card['name'] }}</span>
+                                                        @endforeach
+                                                    @endif
+                                                </div>
+                                            @endif
+                                            <span class="text-[10px] text-[#80633B] font-mono">ID #{{ $sId }}</span>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td class="py-3 px-4 text-center font-mono font-bold">{{ number_format($sAmount) }}</td>
                                 <td class="py-3 px-4 text-right">
                                     @if($sTransferable)
@@ -179,7 +247,24 @@
                     <tbody class="divide-y divide-[#A88950]/30">
                         @forelse($custodyItems as $cItem)
                             <tr class="hover:bg-[#E7D8B5]/60">
-                                <td class="py-3 px-4 font-bold text-[#35291F]">{{ $cItem->formatted_name }}</td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <span class="font-bold text-[#35291F]">{{ $cItem->formatted_name }}</span>
+                                        @if($cItem->refine > 0)
+                                            <span class="px-1 rounded text-[9px] font-bold font-mono bg-[#263D2C] text-[#FFF8E8]">+{{ $cItem->refine }}</span>
+                                        @endif
+                                        @if($cItem->slots > 0)
+                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-bold font-mono bg-[#E7D8B5] text-[#263D2C] border border-[#A88950]">{{ $cItem->slots }}S</span>
+                                        @endif
+                                    </div>
+                                    @if(!empty($cItem->cards))
+                                        <div class="flex items-center gap-1 mt-0.5 flex-wrap">
+                                            @foreach($cItem->cards as $card)
+                                                <span class="px-1.5 py-0.2 rounded text-[9px] font-medium bg-[#FEE2E2] border border-[#FCA5A5] text-[#991B1B]">◆ {{ $card['name'] }}</span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </td>
                                 <td class="py-3 px-4 text-center font-mono font-bold">{{ number_format($cItem->amount) }}</td>
                                 <td class="py-3 px-4 text-right space-x-2">
                                     <button type="button" @click="openSellModal({{ json_encode($cItem) }})" class="payon-btn-forest py-1.5 px-3 text-xs">Post Consignment</button>
@@ -205,7 +290,24 @@
                     <tbody class="divide-y divide-[#A88950]/30">
                         @forelse($myListings as $mList)
                             <tr class="hover:bg-[#E7D8B5]/60">
-                                <td class="py-3 px-4 font-bold text-[#35291F]">{{ $mList->item->formatted_name }}</td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <span class="font-bold text-[#35291F]">{{ $mList->item->formatted_name }}</span>
+                                        @if($mList->item->refine > 0)
+                                            <span class="px-1 rounded text-[9px] font-bold font-mono bg-[#263D2C] text-[#FFF8E8]">+{{ $mList->item->refine }}</span>
+                                        @endif
+                                        @if($mList->item->slots > 0)
+                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-bold font-mono bg-[#E7D8B5] text-[#263D2C] border border-[#A88950]">{{ $mList->item->slots }}S</span>
+                                        @endif
+                                    </div>
+                                    @if(!empty($mList->item->cards))
+                                        <div class="flex items-center gap-1 mt-0.5 flex-wrap">
+                                            @foreach($mList->item->cards as $card)
+                                                <span class="px-1.5 py-0.2 rounded text-[9px] font-medium bg-[#FEE2E2] border border-[#FCA5A5] text-[#991B1B]">◆ {{ $card['name'] }}</span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </td>
                                 <td class="py-3 px-4 text-center font-mono">{{ number_format($mList->remaining_quantity ?? $mList->quantity ?? $mList->amount ?? 1) }}</td>
                                 <td class="py-3 px-4 font-mono font-bold text-[#263D2C]">{{ number_format($mList->unit_price) }} {{ $mList->currency_type === 'zeny' ? 'Z' : 'CP' }}</td>
                                 <td class="py-3 px-4 text-right">
