@@ -220,14 +220,25 @@
         @endif
 
         @foreach([
-            ['title' => 'Equipped Items', 'rows' => $equipped, 'container' => 'inventory'],
-            ['title' => 'Character Inventory', 'rows' => $inventory, 'container' => 'inventory'],
-            ['title' => 'Character Cart', 'rows' => $cart, 'container' => 'cart'],
-            ['title' => 'Account Storage', 'rows' => $storage, 'container' => 'storage'],
+            ['title' => 'Equipped Items', 'rows' => $equipped, 'container' => 'inventory', 'paginate' => false],
+            ['title' => 'Character Inventory', 'rows' => $inventory, 'container' => 'inventory', 'paginate' => true],
+            ['title' => 'Character Cart', 'rows' => $cart, 'container' => 'cart', 'paginate' => true],
+            ['title' => 'Account Storage', 'rows' => $storage, 'container' => 'storage', 'paginate' => true],
         ] as $section)
-            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden">
+            @php $totalRows = count($section['rows']); @endphp
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden"
+                 x-data="{ page: 1, perPage: 10, total: {{ $totalRows }}, get totalPages() { return Math.max(1, Math.ceil(this.total / this.perPage)); } }">
                 <div class="px-5 py-3.5 bg-slate-950/60 border-b border-slate-800 flex items-center justify-between">
-                    <h3 class="text-sm font-bold text-white">{{ $section['title'] }} ({{ count($section['rows']) }})</h3>
+                    <h3 class="text-sm font-bold text-white">{{ $section['title'] }} ({{ $totalRows }})</h3>
+                    @if($section['paginate'] && $totalRows > 10)
+                        <div class="flex items-center gap-2 text-[11px]">
+                            <button type="button" @click="if(page > 1) page--" :disabled="page <= 1"
+                                    class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-200 font-semibold cursor-pointer">Prev</button>
+                            <span class="font-mono text-slate-400">Page <strong class="text-cyan-300" x-text="page"></strong> / <span x-text="totalPages"></span></span>
+                            <button type="button" @click="if(page < totalPages) page++" :disabled="page >= totalPages"
+                                    class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-200 font-semibold cursor-pointer">Next</button>
+                        </div>
+                    @endif
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
@@ -241,22 +252,27 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-800/50">
-                            @forelse($section['rows'] as $row)
-                                <tr>
+                            @forelse($section['rows'] as $idx => $row)
+                                <tr @if($section['paginate']) x-show="{{ $idx }} >= (page - 1) * perPage && {{ $idx }} < page * perPage" @endif>
                                     <td class="px-4 py-2.5">
                                         <div class="flex items-center gap-2.5">
                                             <img src="{{ $row->icon_url }}" alt="" class="w-6 h-6 object-contain shrink-0" onerror="this.style.display='none'">
                                             <div>
-                                                <span class="font-bold text-white">{{ $row->item_name }}</span>
+                                                <span class="font-bold text-white">
+                                                    @if((int)($row->refine ?? 0) > 0)
+                                                        <span class="text-amber-300">+{{ $row->refine }}</span>
+                                                    @endif
+                                                    {{ $row->item_name }}
+                                                </span>
                                                 <span class="font-mono text-slate-500 ml-1">#{{ $row->nameid }}</span>
                                                 @if(!empty($row->cards))
-                                                    <div class="text-[10px] text-emerald-400 mt-0.5">{{ implode(', ', $row->cards) }}</div>
+                                                    <div class="text-[10px] text-emerald-400 mt-0.5">Cards: {{ implode(', ', $row->cards) }}</div>
                                                 @endif
                                             </div>
                                         </div>
                                     </td>
                                     <td class="px-4 py-2.5 font-mono text-slate-200">{{ $row->amount }}</td>
-                                    <td class="px-4 py-2.5 font-mono text-cyan-300">+{{ $row->refine }}</td>
+                                    <td class="px-4 py-2.5 font-mono {{ (int)($row->refine ?? 0) > 0 ? 'text-amber-300 font-bold' : 'text-slate-500' }}">+{{ $row->refine }}</td>
                                     <td class="px-4 py-2.5">
                                         @if($row->equip_slot_name)
                                             <span class="px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300 text-[10px]">{{ $row->equip_slot_name }}</span>
