@@ -22,6 +22,7 @@ html[data-theme="elysian"] body,
 body[data-theme="elysian"] {
     background-color: #060913 !important;
     color: #e2e8f0 !important;
+    overflow-x: clip;
 }
 
 html[data-theme="elysian"] ::selection {
@@ -361,4 +362,56 @@ html[data-theme="elysian"] .fixed.inset-0 button.bg-cyan-600:hover,
 html[data-theme="elysian"] [id*="modal"] button.bg-cyan-600:hover {
     background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
     box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45) !important;
+}
+
+/* ==========================================================================
+   Elysian Public & Admin Theme Bridge (Cyan/Blue -> Nordic Gold & Sapphire)
+   ========================================================================== */
+html[data-theme="elysian"] main .text-cyan-300,
+html[data-theme="elysian"] main .text-cyan-400,
+html[data-theme="elysian"] main .text-cyan-500,
+html[data-theme="elysian"] main .hover\:text-cyan-300:hover,
+html[data-theme="elysian"] main .hover\:text-cyan-400:hover {
+    color: #fbbf24 !important;
+}
+
+html[data-theme="elysian"] main .bg-cyan-500\/10,
+html[data-theme="elysian"] main .bg-cyan-500\/15,
+html[data-theme="elysian"] main .bg-cyan-500\/20,
+html[data-theme="elysian"] main .bg-cyan-500\/25,
+html[data-theme="elysian"] main .bg-cyan-950\/40,
+html[data-theme="elysian"] main .bg-cyan-950\/60,
+html[data-theme="elysian"] main .bg-cyan-950 {
+    background-color: rgba(245, 158, 11, 0.14) !important;
+    border-color: rgba(245, 158, 11, 0.35) !important;
+    color: #fbbf24 !important;
+}
+
+html[data-theme="elysian"] main .border-cyan-400,
+html[data-theme="elysian"] main .border-cyan-500,
+html[data-theme="elysian"] main .border-cyan-500\/30,
+html[data-theme="elysian"] main .border-cyan-500\/40,
+html[data-theme="elysian"] main .border-cyan-500\/50,
+html[data-theme="elysian"] main .focus\:border-cyan-500:focus {
+    border-color: rgba(245, 158, 11, 0.55) !important;
+}
+
+html[data-theme="elysian"] main .bg-cyan-400,
+html[data-theme="elysian"] main .bg-cyan-500,
+html[data-theme="elysian"] main .bg-cyan-600,
+html[data-theme="elysian"] main .from-cyan-500,
+html[data-theme="elysian"] main .from-cyan-600,
+html[data-theme="elysian"] input[type="file"]::file-selector-button,
+html[data-theme="elysian"] input[type="file"]::-webkit-file-upload-button {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 65%, #d97706 100%) !important;
+    color: #050811 !important;
+    border-color: rgba(251, 191, 36, 0.5) !important;
+    font-weight: 700 !important;
+}
+
+html[data-theme="elysian"] main .bg-cyan-500 *,
+html[data-theme="elysian"] main .bg-cyan-600 *,
+html[data-theme="elysian"] main .from-cyan-500 *,
+html[data-theme="elysian"] main .from-cyan-600 * {
+    color: #050811 !important;
 }

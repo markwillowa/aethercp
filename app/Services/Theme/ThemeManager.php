@@ -114,14 +114,14 @@ class ThemeManager
 
     public function themeExists(string $theme): bool
     {
-        return in_array($theme, ['aether-dark', 'aether-chronicles', 'aether-prestige'], true)
+        return in_array($theme, ['aether-dark', 'aether-chronicles', 'aether-prestige', 'elysian'], true)
             && ($theme === 'aether-dark' || File::isDirectory($this->themesPath . DIRECTORY_SEPARATOR . $theme));
     }
 
     public function getInstalledThemes(): array
     {
         $activeTheme = $this->getActiveTheme();
-        $allowedSlugs = ['aether-dark', 'aether-chronicles', 'aether-prestige'];
+        $allowedSlugs = ['aether-dark', 'aether-chronicles', 'aether-prestige', 'elysian'];
 
         $themes = [
             'aether-dark' => [

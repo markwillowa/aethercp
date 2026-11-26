@@ -331,8 +331,9 @@ class CharacterManagementSystemTest extends TestCase
     {
         $themeManager = app(\App\Services\Theme\ThemeManager::class);
         $installed = array_keys($themeManager->getInstalledThemes());
-        $this->assertEqualsCanonicalizing(['aether-dark', 'aether-chronicles', 'aether-prestige'], $installed);
-        $this->assertFalse($themeManager->themeExists('elysian'));
+        $this->assertEqualsCanonicalizing(['aether-dark', 'aether-chronicles', 'aether-prestige', 'elysian'], $installed);
+        $this->assertTrue($themeManager->themeExists('elysian'));
+        $this->assertFalse($themeManager->themeExists('ragnarok-classic'));
 
         $this->assertTrue($this->admin->hasCharMgmtPermission('edit_characters'));
         $this->assertFalse($this->player->hasCharMgmtPermission('edit_characters'));

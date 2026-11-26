@@ -19,6 +19,7 @@
     @php
         $isChronicles = ($currentTheme['slug'] ?? '') === 'aether-chronicles';
         $isPrestige = ($currentTheme['slug'] ?? '') === 'aether-prestige';
+        $isElysian = ($currentTheme['slug'] ?? '') === 'elysian';
     @endphp
 
     <!-- Dynamic Theme Styling & CSS Injection -->
@@ -336,6 +337,45 @@
             color: #101725 !important;
             border: 1px solid #E5CFA0 !important;
             font-weight: 700 !important;
+        }
+
+        /* =====================================================================
+           ELYSIAN MYTHIC: GLOBAL ADMIN PANEL THEME HARMONIZATION
+           Matches Celestial Sapphire (#050811 / #0c1322) & Nordic Gold (#f59e0b)
+           ===================================================================== */
+        html[data-theme="elysian"] body {
+            background-color: #050811 !important;
+            color: #e2e8f0 !important;
+        }
+        html[data-theme="elysian"] .bg-slate-900,
+        html[data-theme="elysian"] .bg-slate-900\/80,
+        html[data-theme="elysian"] .bg-slate-900\/70,
+        html[data-theme="elysian"] .bg-slate-900\/60,
+        html[data-theme="elysian"] .bg-slate-950,
+        html[data-theme="elysian"] .bg-slate-950\/80 {
+            background-color: #0c1322 !important;
+            border-color: rgba(245, 158, 11, 0.2) !important;
+        }
+        html[data-theme="elysian"] .text-cyan-300,
+        html[data-theme="elysian"] .text-cyan-400,
+        html[data-theme="elysian"] .text-cyan-500 {
+            color: #fbbf24 !important;
+        }
+        html[data-theme="elysian"] .bg-cyan-500\/10,
+        html[data-theme="elysian"] .bg-cyan-500\/15,
+        html[data-theme="elysian"] .bg-cyan-500\/20 {
+            background-color: rgba(245, 158, 11, 0.14) !important;
+            border-color: rgba(245, 158, 11, 0.35) !important;
+            color: #fbbf24 !important;
+        }
+        html[data-theme="elysian"] .bg-cyan-500,
+        html[data-theme="elysian"] .bg-cyan-600,
+        html[data-theme="elysian"] .from-cyan-500,
+        html[data-theme="elysian"] .from-cyan-600 {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+            color: #050811 !important;
+            font-weight: 700 !important;
+            border: 1px solid rgba(251, 191, 36, 0.5) !important;
         }
     </style>
 

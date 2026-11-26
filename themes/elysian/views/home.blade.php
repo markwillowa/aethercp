@@ -294,18 +294,27 @@
 
                 <div class="space-y-2">
                     @forelse($topPlayers as $idx => $player)
+                        @php
+                            $pCharId = data_get($player, 'char_id');
+                            $pName = data_get($player, 'name', 'Adventurer');
+                            $pLevel = data_get($player, 'base_level', 1);
+                        @endphp
                         <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950/50 hover:bg-slate-800/40 transition-colors text-xs">
                             <div class="flex items-center gap-2.5">
                                 <span class="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] {{ $idx === 0 ? 'bg-amber-400 text-slate-950' : ($idx === 1 ? 'bg-slate-300 text-slate-950' : ($idx === 2 ? 'bg-amber-700 text-white' : 'bg-slate-800 text-slate-400')) }}">
                                     {{ $idx + 1 }}
                                 </span>
                                 <div class="overflow-hidden">
-                                    <a href="{{ route('characters.show', $player->char_id) }}" class="font-bold text-white hover:text-amber-400 truncate block">
-                                        {{ $player->name }}
-                                    </a>
+                                    @if($pCharId)
+                                        <a href="{{ route('characters.show', $pCharId) }}" class="font-bold text-white hover:text-amber-400 truncate block">
+                                            {{ $pName }}
+                                        </a>
+                                    @else
+                                        <span class="font-bold text-white truncate block">{{ $pName }}</span>
+                                    @endif
                                 </div>
                             </div>
-                            <span class="text-amber-400 font-bold font-mono">Lv. {{ $player->base_level }}</span>
+                            <span class="text-amber-400 font-bold font-mono">Lv. {{ $pLevel }}</span>
                         </div>
                     @empty
                         <p class="text-xs text-slate-500 text-center py-2">No ranking data recorded.</p>
