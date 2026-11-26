@@ -1,5 +1,6 @@
 -- =====================================================================
 -- AetherCP Badges & Milestone Rewards Seeders
+-- Target Database: AetherCP Control Panel Web Database (`aethercp` / `aether_cp`)
 -- Compatible with MySQL 5.7+ / MariaDB / phpMyAdmin
 -- Non-destructive: Uses ON DUPLICATE KEY UPDATE to preserve existing data.
 -- =====================================================================
