@@ -223,17 +223,19 @@ Route::middleware('auth')->group(function () {
         Route::get('/characters/sprite-preview', [\App\Http\Controllers\Public\CharacterCreationController::class, 'spritePreview'])->name('characters.sprite-preview');
         Route::get('/characters/hair-preview', [\App\Http\Controllers\Public\CharacterCreationController::class, 'hairPreview'])->name('characters.hair-preview');
         Route::post('/characters', [\App\Http\Controllers\Public\CharacterCreationController::class, 'store'])->middleware('module:character_creation')->name('characters.store');
-        Route::get('/characters/{id}/manage', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'manage'])->name('characters.manage');
-        Route::post('/characters/{id}/services/rename', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'rename'])->middleware('throttle:10,1')->name('characters.services.rename');
-        Route::post('/characters/{id}/services/appearance', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'appearance'])->middleware('throttle:10,1')->name('characters.services.appearance');
-        Route::post('/characters/{id}/services/stat-reset', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'resetStats'])->middleware('throttle:10,1')->name('characters.services.stat-reset');
-        Route::post('/characters/{id}/services/skill-reset', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'resetSkills'])->middleware('throttle:10,1')->name('characters.services.skill-reset');
-        Route::post('/characters/{id}/services/gender', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'changeGender'])->middleware('throttle:5,1')->name('characters.services.gender');
-        Route::post('/characters/{id}/services/job', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'changeJob'])->middleware('throttle:5,1')->name('characters.services.job');
-        Route::post('/characters/{id}/services/lock', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'toggleLock'])->name('characters.services.lock');
-        Route::post('/characters/{id}/services/deletion/request', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'requestDeletion'])->name('characters.services.deletion.request');
-        Route::post('/characters/{id}/services/deletion/cancel', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'cancelDeletion'])->name('characters.services.deletion.cancel');
-        Route::post('/characters/{id}/services/recovery/request', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'requestRecovery'])->name('characters.services.recovery.request');
+        Route::middleware('module:character')->group(function () {
+            Route::get('/characters/{id}/manage', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'manage'])->name('characters.manage');
+            Route::post('/characters/{id}/services/rename', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'rename'])->middleware('throttle:10,1')->name('characters.services.rename');
+            Route::post('/characters/{id}/services/appearance', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'appearance'])->middleware('throttle:10,1')->name('characters.services.appearance');
+            Route::post('/characters/{id}/services/stat-reset', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'resetStats'])->middleware('throttle:10,1')->name('characters.services.stat-reset');
+            Route::post('/characters/{id}/services/skill-reset', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'resetSkills'])->middleware('throttle:10,1')->name('characters.services.skill-reset');
+            Route::post('/characters/{id}/services/gender', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'changeGender'])->middleware('throttle:5,1')->name('characters.services.gender');
+            Route::post('/characters/{id}/services/job', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'changeJob'])->middleware('throttle:5,1')->name('characters.services.job');
+            Route::post('/characters/{id}/services/lock', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'toggleLock'])->name('characters.services.lock');
+            Route::post('/characters/{id}/services/deletion/request', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'requestDeletion'])->name('characters.services.deletion.request');
+            Route::post('/characters/{id}/services/deletion/cancel', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'cancelDeletion'])->name('characters.services.deletion.cancel');
+            Route::post('/characters/{id}/services/recovery/request', [\App\Http\Controllers\Public\PlayerCharacterServiceController::class, 'requestRecovery'])->name('characters.services.recovery.request');
+        });
         Route::post('/characters/{id}/unstuck', [AccountController::class, 'unstuck'])->name('unstuck');
         Route::post('/characters/{id}/reset-position', [AccountController::class, 'unstuck'])->name('characters.reset-position');
         Route::delete('/characters/{id}', [AccountController::class, 'deleteCharacter'])->name('characters.delete');
@@ -277,16 +279,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     });
 
     // Character Management
-    Route::get('/characters', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'index'])->name('characters');
-    Route::get('/characters/settings', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'settings'])->name('characters.settings');
-    Route::post('/characters/settings', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'updateSettings'])->name('characters.settings.update');
-    Route::get('/characters/{charId}', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'show'])->whereNumber('charId')->name('characters.show');
-    Route::post('/characters/{charId}/update', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'update'])->whereNumber('charId')->name('characters.update');
-    Route::post('/characters/{charId}/moderate', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'moderate'])->whereNumber('charId')->name('characters.moderate');
-    Route::post('/characters/{charId}/give-item', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'giveItem'])->whereNumber('charId')->name('characters.give-item');
-    Route::post('/characters/{charId}/container/{container}/{rowId}', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'modifyContainerItem'])->whereNumber(['charId', 'rowId'])->name('characters.container-item');
-    Route::post('/characters/{charId}/refund/{transactionId}', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'refundTransaction'])->whereNumber(['charId', 'transactionId'])->name('characters.refund');
-    Route::post('/characters/{charId}/notes', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'addNote'])->whereNumber('charId')->name('characters.notes.store');
+    Route::middleware('module:character')->group(function () {
+        Route::get('/characters', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'index'])->name('characters');
+        Route::get('/characters/settings', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'settings'])->name('characters.settings');
+        Route::post('/characters/settings', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'updateSettings'])->name('characters.settings.update');
+        Route::get('/characters/{charId}', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'show'])->whereNumber('charId')->name('characters.show');
+        Route::post('/characters/{charId}/update', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'update'])->whereNumber('charId')->name('characters.update');
+        Route::post('/characters/{charId}/moderate', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'moderate'])->whereNumber('charId')->name('characters.moderate');
+        Route::post('/characters/{charId}/give-item', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'giveItem'])->whereNumber('charId')->name('characters.give-item');
+        Route::post('/characters/{charId}/container/{container}/{rowId}', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'modifyContainerItem'])->whereNumber(['charId', 'rowId'])->name('characters.container-item');
+        Route::post('/characters/{charId}/refund/{transactionId}', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'refundTransaction'])->whereNumber(['charId', 'transactionId'])->name('characters.refund');
+        Route::post('/characters/{charId}/notes', [\App\Http\Controllers\Admin\AdminCharacterManagementController::class, 'addNote'])->whereNumber('charId')->name('characters.notes.store');
+    });
     Route::get('/character-creation', [\App\Http\Controllers\Admin\AdminCharacterCreationController::class, 'index'])->name('character-creation.index');
     Route::post('/character-creation', [\App\Http\Controllers\Admin\AdminCharacterCreationController::class, 'update'])->name('character-creation.update');
     Route::post('/character-creation/preset', [\App\Http\Controllers\Admin\AdminCharacterCreationController::class, 'applyPreset'])->name('character-creation.preset');

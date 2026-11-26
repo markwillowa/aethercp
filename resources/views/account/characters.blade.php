@@ -97,12 +97,15 @@
                         </div>
                     </div>
 
-                    <div class="pt-3 border-t border-slate-800/80 grid grid-cols-3 gap-2">
-                        <a href="{{ route('account.characters.manage', $char->char_id) }}"
-                           class="px-2.5 py-2 rounded-lg text-[11px] font-bold bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 transition-colors flex items-center justify-center gap-1 whitespace-nowrap">
-                            <i data-lucide="settings-2" class="w-3.5 h-3.5 shrink-0"></i>
-                            <span>Manage</span>
-                        </a>
+                    @php $charModuleEnabled = app(\App\Services\Module\ModuleManager::class)->isEnabled('character'); @endphp
+                    <div class="pt-3 border-t border-slate-800/80 grid {{ $charModuleEnabled ? 'grid-cols-3' : 'grid-cols-2' }} gap-2">
+                        @if($charModuleEnabled)
+                            <a href="{{ route('account.characters.manage', $char->char_id) }}"
+                               class="px-2.5 py-2 rounded-lg text-[11px] font-bold bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 transition-colors flex items-center justify-center gap-1 whitespace-nowrap">
+                                <i data-lucide="settings-2" class="w-3.5 h-3.5 shrink-0"></i>
+                                <span>Manage</span>
+                            </a>
+                        @endif
 
                         <form method="POST" action="{{ route('account.unstuck', $char->char_id) }}" class="w-full">
                             @csrf

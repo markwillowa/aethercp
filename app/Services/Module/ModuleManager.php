@@ -167,8 +167,8 @@ class ModuleManager
                 ],
             ],
             'character' => [
-                'tables' => ['player_profile_settings', 'player_achievements'],
-                'migrations' => ['2026_11_25_000004_create_player_profiles_tables'],
+                'tables' => ['player_profile_settings', 'player_achievements', 'character_service_transactions', 'character_service_logs', 'character_locks', 'character_deletion_requests', 'character_admin_notes'],
+                'migrations' => ['2026_11_25_000004_create_player_profiles_tables', '2026_11_27_000002_create_character_management_tables'],
             ],
             'attendance' => [
                 'tables' => ['attendance_campaigns', 'attendance_campaign_days', 'attendance_campaign_items', 'player_inbox_items'],

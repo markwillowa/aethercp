@@ -17,7 +17,7 @@ return [
         ],
         'character' => [
             'name' => 'Character Profiles',
-            'description' => 'Character viewer, stats, equipment, and unstuck tools.',
+            'description' => 'Character viewer, management, self-services, equipment, and unstuck tools.',
             'version' => '1.0.0',
             'enabled' => true,
         ],
