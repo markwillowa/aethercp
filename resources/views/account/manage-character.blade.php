@@ -393,18 +393,8 @@
         <!-- Character Inventory Window -->
         <div class="bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col"
              x-data="{
-                 invTab: 'all',
                  items: @js($invJs),
-                 selectedItem: null,
-                 get filtered() {
-                     return this.items.filter(i => {
-                         if (this.invTab === 'all') return true;
-                         if (this.invTab === 'fav') return i.favorite;
-                         if (this.invTab === 'item') return ['healing','usable','delayconsume','cash'].includes(i.type);
-                         if (this.invTab === 'gear') return ['weapon','armor','shadowgear','petegg','petarmor','ammo'].includes(i.type);
-                         return !['healing','usable','delayconsume','cash','weapon','armor','shadowgear','petegg','petarmor','ammo'].includes(i.type);
-                     });
-                 }
+                 selectedItem: null
              }">
             <div class="px-5 py-3 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border-b border-slate-800 flex items-center justify-between">
                 <span class="font-bold text-white">Inventory ({{ count($invJs) }} items)</span>
@@ -412,21 +402,10 @@
             </div>
 
             <div class="flex flex-1 min-h-[340px]">
-                <!-- Vertical RO Tabs -->
-                <div class="w-12 bg-slate-950/90 border-r border-slate-800 flex flex-col py-2 gap-1 shrink-0">
-                    @foreach(['all' => 'All', 'item' => 'Item', 'gear' => 'Gear', 'etc' => 'Etc.', 'fav' => 'Fav'] as $tKey => $tLabel)
-                        <button type="button" @click="invTab = '{{ $tKey }}'"
-                                :class="invTab === '{{ $tKey }}' ? 'bg-cyan-500/20 text-cyan-300 border-r-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300'"
-                                class="py-3 text-[10px] font-bold uppercase tracking-wider text-center cursor-pointer transition-colors">
-                            {{ $tLabel }}
-                        </button>
-                    @endforeach
-                </div>
-
-                <!-- 7-Column RO Slot Grid -->
+                <!-- 7-Column RO Slot Grid (All Items) -->
                 <div class="flex-1 p-4 flex flex-col justify-between bg-slate-950/40">
                     <div class="grid grid-cols-5 sm:grid-cols-7 gap-2 max-h-72 overflow-y-auto pr-1">
-                        <template x-for="item in filtered" :key="item.id">
+                        <template x-for="item in items" :key="item.id">
                             <button type="button" @click="selectedItem = item"
                                     :class="selectedItem && selectedItem.id === item.id ? 'border-cyan-400 ring-1 ring-cyan-500/40 bg-slate-800' : 'border-slate-800 bg-slate-900/90 hover:border-slate-600'"
                                     class="relative aspect-square rounded-xl border flex items-center justify-center p-1.5 cursor-pointer transition-all"
@@ -436,8 +415,8 @@
                                 <span x-show="item.amount > 1" class="absolute bottom-0.5 right-1 text-[9px] font-mono font-bold text-white bg-slate-950/80 px-1 rounded" x-text="item.amount"></span>
                             </button>
                         </template>
-                        <template x-if="filtered.length === 0">
-                            <div class="col-span-7 py-16 text-center text-slate-500">No items in this category.</div>
+                        <template x-if="items.length === 0">
+                            <div class="col-span-7 py-16 text-center text-slate-500">Inventory is empty.</div>
                         </template>
                     </div>
 
