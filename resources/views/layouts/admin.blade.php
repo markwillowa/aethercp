@@ -377,6 +377,33 @@
             font-weight: 700 !important;
             border: 1px solid rgba(251, 191, 36, 0.5) !important;
         }
+
+        /* =====================================================================
+           RAGNAROK CLASSIC: ADMIN BUTTONS & TABS HARMONIZATION
+           ===================================================================== */
+        html[data-theme="ragnarok-classic"] .bg-amber-500,
+        html[data-theme="ragnarok-classic"] .from-amber-500,
+        html[data-theme="ragnarok-classic"] .hover\:from-amber-400:hover {
+            background: linear-gradient(180deg, #3D6A99 0%, #264A73 100%) !important;
+            background-image: linear-gradient(180deg, #3D6A99 0%, #264A73 100%) !important;
+            border-top: 2px solid #6392C2 !important;
+            border-left: 2px solid #6392C2 !important;
+            border-right: 2px solid #14273E !important;
+            border-bottom: 2px solid #14273E !important;
+            color: #FFFFFF !important;
+            text-shadow: 1px 1px 1px #112033 !important;
+        }
+        html[data-theme="ragnarok-classic"] .bg-cyan-500\/10,
+        html[data-theme="ragnarok-classic"] .bg-cyan-500\/15,
+        html[data-theme="ragnarok-classic"] .bg-cyan-500\/20 {
+            background-color: #EBDDBF !important;
+            border-color: #8C6A2D !important;
+            color: #3A2A1C !important;
+        }
+        html[data-theme="ragnarok-classic"] .text-cyan-300,
+        html[data-theme="ragnarok-classic"] .text-cyan-400 {
+            color: #315B88 !important;
+        }
     </style>
 
     @if(!empty($currentTheme['has_css']) && !empty($currentTheme['slug']))
