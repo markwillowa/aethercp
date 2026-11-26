@@ -5,59 +5,85 @@
 <header class="{{ $isHome ? 'prestige-header-transparent' : 'prestige-header-solid' }}">
     <div class="prestige-container">
         <div class="prestige-nav-wrapper">
-            <!-- Left: Brand Logo & Title (Matching reference image: 'M Y T H E R A') -->
-            <a href="{{ route('home') }}" class="prestige-nav-brand">
+            <!-- Left: Brand Logo & Title -->
+            <a href="{{ route('home') }}" class="prestige-nav-brand whitespace-nowrap shrink-0">
                 {{ config('aether.server_name', 'MYTHERA') }}
             </a>
 
-            <!-- Center: Navigation Links (Matching reference: HOME, WORLD, CHARACTERS, RANKINGS, DATABASE, MEDIA, DOWNLOADS) -->
-            <nav class="hidden lg:flex items-center space-x-8">
-                <a href="{{ route('home') }}" class="prestige-nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+            <!-- Center: Clean Grouped Navigation with Dropdowns -->
+            <nav class="hidden lg:flex items-center space-x-6">
+                <a href="{{ route('home') }}" class="prestige-nav-link whitespace-nowrap {{ request()->routeIs('home') ? 'active' : '' }}">
                     Home
                 </a>
-                <a href="{{ route('woe.index') }}" class="prestige-nav-link {{ request()->routeIs('woe.*') ? 'active' : '' }}">
-                    World
-                </a>
-                @if($modMgr->isEnabled('character'))
-                    <a href="{{ route('characters.online') }}" class="prestige-nav-link {{ request()->routeIs('characters.*') ? 'active' : '' }}">
-                        Characters
-                    </a>
-                @endif
-                @if($modMgr->isEnabled('rankings'))
-                    <a href="{{ route('rankings.index') }}" class="prestige-nav-link {{ request()->routeIs('rankings.*') ? 'active' : '' }}">
-                        Rankings
-                    </a>
-                @endif
-                @if($modMgr->isEnabled('database'))
-                    <a href="{{ route('itemdb.index') }}" class="prestige-nav-link {{ request()->routeIs('itemdb.*') || request()->routeIs('database.*') ? 'active' : '' }}">
-                        Database
-                    </a>
-                @endif
-                @if($modMgr->isEnabled('news'))
-                    <a href="{{ route('news.index') }}" class="prestige-nav-link {{ request()->routeIs('news.*') ? 'active' : '' }}">
-                        Media
-                    </a>
-                @endif
-                @if($modMgr->isEnabled('downloads'))
-                    <a href="{{ route('downloads.index') }}" class="prestige-nav-link {{ request()->routeIs('downloads.*') ? 'active' : '' }}">
-                        Downloads
-                    </a>
-                @endif
-                @if($modMgr->isEnabled('marketplace'))
-                    <a href="{{ route('marketplace.index') }}" class="prestige-nav-link {{ request()->routeIs('marketplace.*') ? 'active' : '' }}">
-                        Marketplace
-                    </a>
-                @endif
-                @if($modMgr->isEnabled('cash_shop'))
-                    <a href="{{ route('cash-shop.index') }}" class="prestige-nav-link {{ request()->routeIs('cash-shop.*') ? 'active' : '' }}">
-                        Cash Shop
-                    </a>
-                @endif
-                @if($modMgr->isEnabled('forum'))
-                    <a href="{{ route('forum.index') }}" class="prestige-nav-link {{ request()->routeIs('forum.*') ? 'active' : '' }}">
-                        Community
-                    </a>
-                @endif
+
+                <!-- World & Database Dropdown -->
+                <div class="relative" x-data="{ open: false }" @click.away="open = false" @keydown.escape.window="open = false">
+                    <button type="button" @click="open = !open" class="prestige-nav-link whitespace-nowrap inline-flex items-center gap-1 cursor-pointer {{ request()->routeIs('woe.*') || request()->routeIs('characters.*') || request()->routeIs('guilds.*') || request()->routeIs('rankings.*') || request()->routeIs('itemdb.*') || request()->routeIs('database.*') ? 'active' : '' }}">
+                        <span>World</span>
+                        <i data-lucide="chevron-down" class="w-3 h-3 text-[#C6A76A]" :class="open ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="open" x-cloak class="absolute left-0 mt-2 w-52 bg-[#151B26] border border-[#C6A76A]/30 rounded-xl shadow-2xl py-1.5 z-50 backdrop-blur-xl">
+                        <a href="{{ route('woe.index') }}" class="block px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432]">War of Emperium</a>
+                        @if($modMgr->isEnabled('character'))
+                            <a href="{{ route('characters.online') }}" class="block px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432]">Online Players</a>
+                        @endif
+                        @if($modMgr->isEnabled('guild'))
+                            <a href="{{ route('guilds.index') }}" class="block px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432]">Guild Directory</a>
+                        @endif
+                        @if($modMgr->isEnabled('rankings'))
+                            <a href="{{ route('rankings.index') }}" class="block px-4 py-2 text-xs text-[#D8BE8A] hover:text-white hover:bg-[#1B2432] font-semibold">Hall of Fame Rankings</a>
+                        @endif
+                        @if($modMgr->isEnabled('database'))
+                            <a href="{{ route('itemdb.index') }}" class="block px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432] border-t border-white/[0.06] mt-1 pt-2">Item Database</a>
+                            <a href="{{ route('database.monsters') }}" class="block px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432]">Monster Bestiary</a>
+                            <a href="{{ route('database.maps') }}" class="block px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432]">Maps &amp; Dungeons</a>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Economy Dropdown -->
+                <div class="relative" x-data="{ open: false }" @click.away="open = false" @keydown.escape.window="open = false">
+                    <button type="button" @click="open = !open" class="prestige-nav-link whitespace-nowrap inline-flex items-center gap-1 cursor-pointer {{ request()->routeIs('cash-shop.*') || request()->routeIs('marketplace.*') || request()->routeIs('donations.*') ? 'active' : '' }}">
+                        <span>Treasury</span>
+                        <i data-lucide="chevron-down" class="w-3 h-3 text-[#C6A76A]" :class="open ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="open" x-cloak class="absolute left-0 mt-2 w-48 bg-[#151B26] border border-[#C6A76A]/30 rounded-xl shadow-2xl py-1.5 z-50 backdrop-blur-xl">
+                        @if($modMgr->isEnabled('cash_shop'))
+                            <a href="{{ route('cash-shop.index') }}" class="block px-4 py-2 text-xs text-[#D8BE8A] hover:text-white hover:bg-[#1B2432] font-semibold">Cash Shop</a>
+                        @endif
+                        @if($modMgr->isEnabled('marketplace'))
+                            <a href="{{ route('marketplace.index') }}" class="block px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432]">Player Marketplace</a>
+                        @endif
+                        @if($modMgr->isEnabled('donations'))
+                            <a href="{{ route('donations.index') }}" class="block px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432]">Donations &amp; Top-up</a>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Community & Info Dropdown -->
+                <div class="relative" x-data="{ open: false }" @click.away="open = false" @keydown.escape.window="open = false">
+                    <button type="button" @click="open = !open" class="prestige-nav-link whitespace-nowrap inline-flex items-center gap-1 cursor-pointer {{ request()->routeIs('forum.*') || request()->routeIs('news.*') || request()->routeIs('downloads.*') || request()->routeIs('support.*') || request()->routeIs('faq.*') ? 'active' : '' }}">
+                        <span>Community</span>
+                        <i data-lucide="chevron-down" class="w-3 h-3 text-[#C6A76A]" :class="open ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="open" x-cloak class="absolute left-0 mt-2 w-48 bg-[#151B26] border border-[#C6A76A]/30 rounded-xl shadow-2xl py-1.5 z-50 backdrop-blur-xl">
+                        @if($modMgr->isEnabled('forum'))
+                            <a href="{{ route('forum.index') }}" class="block px-4 py-2 text-xs text-[#D8BE8A] hover:text-white hover:bg-[#1B2432] font-semibold">Forum &amp; Discussions</a>
+                        @endif
+                        @if($modMgr->isEnabled('news'))
+                            <a href="{{ route('news.index') }}" class="block px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432]">News &amp; Media</a>
+                        @endif
+                        @if($modMgr->isEnabled('downloads'))
+                            <a href="{{ route('downloads.index') }}" class="block px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432]">Downloads</a>
+                        @endif
+                        @if($modMgr->isEnabled('support'))
+                            <a href="{{ route('support.index') }}" class="block px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432]">Support Center</a>
+                        @endif
+                        @if($modMgr->isEnabled('faq'))
+                            <a href="{{ route('faq.index') }}" class="block px-4 py-2 text-xs text-[#AAB3C1] hover:text-white hover:bg-[#1B2432]">FAQ &amp; Guides</a>
+                        @endif
+                    </div>
+                </div>
             </nav>
 
             <!-- Right: User Account Profile (Matching reference: 'FERDI' with square avatar box) -->

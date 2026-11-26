@@ -18,6 +18,7 @@
 
     @php
         $isChronicles = ($currentTheme['slug'] ?? '') === 'aether-chronicles';
+        $isPrestige = ($currentTheme['slug'] ?? '') === 'aether-prestige';
     @endphp
 
     <!-- Dynamic Theme Styling & CSS Injection -->
@@ -218,6 +219,97 @@
         }
         html[data-theme="aether-chronicles"] .text-slate-500 {
             color: #9A8E80 !important;
+        }
+
+        /* =====================================================================
+           AETHER PRESTIGE: GLOBAL ADMIN PANEL THEME HARMONIZATION
+           Matches Midnight Navy (#0C111C / #151B26) & Champagne Gold (#C6A76A)
+           ===================================================================== */
+        html[data-theme="aether-prestige"] body {
+            background-color: #0C111C !important;
+            color: #D9DEE7 !important;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        html[data-theme="aether-prestige"] .admin-header {
+            background-color: #0E1522 !important;
+            border-bottom: 1px solid rgba(198, 167, 106, 0.25) !important;
+        }
+        html[data-theme="aether-prestige"] .admin-sidebar {
+            background-color: #0D131F !important;
+            border-right: 1px solid rgba(198, 167, 106, 0.18) !important;
+            color: #AAB3C1 !important;
+        }
+        html[data-theme="aether-prestige"] h1,
+        html[data-theme="aether-prestige"] h2,
+        html[data-theme="aether-prestige"] h3 {
+            font-family: 'Cinzel', Georgia, serif;
+            color: #F4F5F7 !important;
+            letter-spacing: 0.04em;
+        }
+        html[data-theme="aether-prestige"] .bg-slate-900,
+        html[data-theme="aether-prestige"] .bg-slate-900\/80,
+        html[data-theme="aether-prestige"] .bg-slate-900\/70,
+        html[data-theme="aether-prestige"] .bg-slate-900\/60,
+        html[data-theme="aether-prestige"] .bg-slate-900\/40,
+        html[data-theme="aether-prestige"] .bg-slate-950,
+        html[data-theme="aether-prestige"] .bg-slate-950\/80,
+        html[data-theme="aether-prestige"] .bg-slate-950\/60 {
+            background-color: #151B26 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        html[data-theme="aether-prestige"] .border-slate-800,
+        html[data-theme="aether-prestige"] .border-slate-700 {
+            border-color: rgba(255, 255, 255, 0.09) !important;
+        }
+        html[data-theme="aether-prestige"] .text-cyan-300,
+        html[data-theme="aether-prestige"] .text-cyan-400,
+        html[data-theme="aether-prestige"] .text-cyan-500 {
+            color: #D8BE8A !important;
+        }
+        html[data-theme="aether-prestige"] .bg-cyan-500\/10,
+        html[data-theme="aether-prestige"] .bg-cyan-500\/15,
+        html[data-theme="aether-prestige"] .bg-cyan-500\/20 {
+            background-color: rgba(198, 167, 106, 0.16) !important;
+            border-color: rgba(198, 167, 106, 0.4) !important;
+            color: #D8BE8A !important;
+        }
+        html[data-theme="aether-prestige"] .bg-cyan-500,
+        html[data-theme="aether-prestige"] .bg-cyan-600,
+        html[data-theme="aether-prestige"] .from-cyan-500,
+        html[data-theme="aether-prestige"] .from-cyan-600 {
+            background: linear-gradient(135deg, #D8BE8A 0%, #C6A76A 100%) !important;
+            background-image: linear-gradient(135deg, #D8BE8A 0%, #C6A76A 100%) !important;
+            color: #101725 !important;
+            font-weight: 700 !important;
+            border: 1px solid #E5CFA0 !important;
+        }
+        html[data-theme="aether-prestige"] input,
+        html[data-theme="aether-prestige"] select,
+        html[data-theme="aether-prestige"] textarea {
+            background-color: #101725 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #F4F5F7 !important;
+        }
+        html[data-theme="aether-prestige"] input:focus,
+        html[data-theme="aether-prestige"] select:focus,
+        html[data-theme="aether-prestige"] textarea:focus {
+            border-color: #C6A76A !important;
+            outline: none !important;
+        }
+        html[data-theme="aether-prestige"] th {
+            background-color: #101725 !important;
+            color: #D8BE8A !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            font-family: 'Cinzel', serif !important;
+        }
+        html[data-theme="aether-prestige"] td {
+            border-color: rgba(255, 255, 255, 0.06) !important;
+            color: #D9DEE7 !important;
+        }
+        html[data-theme="aether-prestige"] .bg-slate-800 {
+            background-color: #1B2432 !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            color: #D9DEE7 !important;
         }
     </style>
 
