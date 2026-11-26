@@ -148,6 +148,39 @@ Route::middleware('module:attendance')->group(function () {
     Route::post('/attendance/{campaign}/claim', [\App\Http\Controllers\Public\AttendanceController::class, 'claim'])->middleware('auth')->name('attendance.claim');
 });
 
+// Community Forum, Character Identity & Reputation System (Gated by 'forum' module)
+Route::middleware('module:forum')->prefix('forum')->name('forum.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Public\ForumController::class, 'index'])->name('index');
+    Route::get('/board/{slug}', [\App\Http\Controllers\Public\ForumController::class, 'board'])->name('board');
+    Route::get('/topic/{slug}', [\App\Http\Controllers\Public\ForumController::class, 'showTopic'])->name('topic.show');
+    Route::get('/members/{username}', [\App\Http\Controllers\Public\ForumProfileController::class, 'show'])->name('profile.show');
+    Route::get('/leaderboard', [\App\Http\Controllers\Public\ForumProfileController::class, 'leaderboard'])->name('leaderboard');
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/create', [\App\Http\Controllers\Public\ForumController::class, 'createTopic'])->name('topic.create');
+        Route::post('/topics', [\App\Http\Controllers\Public\ForumController::class, 'storeTopic'])->middleware('throttle:10,1')->name('topic.store');
+        Route::post('/topic/{slug}/reply', [\App\Http\Controllers\Public\ForumController::class, 'storeReply'])->middleware('throttle:20,1')->name('topic.reply');
+        Route::get('/posts/{post}/edit', [\App\Http\Controllers\Public\ForumController::class, 'editPost'])->name('post.edit');
+        Route::put('/posts/{post}', [\App\Http\Controllers\Public\ForumController::class, 'updatePost'])->name('post.update');
+        Route::delete('/posts/{post}', [\App\Http\Controllers\Public\ForumController::class, 'deletePost'])->name('post.delete');
+        Route::post('/posts/{post}/react', [\App\Http\Controllers\Public\ForumController::class, 'toggleReaction'])->middleware('throttle:30,1')->name('post.react');
+        Route::post('/topic/{topic}/accept/{post}', [\App\Http\Controllers\Public\ForumController::class, 'acceptAnswer'])->name('topic.accept');
+        Route::post('/topic/{topic}/subscribe', [\App\Http\Controllers\Public\ForumController::class, 'toggleSubscription'])->name('topic.subscribe');
+        Route::post('/report', [\App\Http\Controllers\Public\ForumController::class, 'report'])->middleware('throttle:10,1')->name('report');
+        Route::get('/attachments/{attachment}', [\App\Http\Controllers\Public\ForumController::class, 'downloadAttachment'])->name('attachment.download');
+
+        // Moderation actions
+        Route::post('/topic/{topic}/pin', [\App\Http\Controllers\Public\ForumController::class, 'togglePin'])->name('topic.pin');
+        Route::post('/topic/{topic}/lock', [\App\Http\Controllers\Public\ForumController::class, 'toggleLock'])->name('topic.lock');
+        Route::post('/topic/{topic}/approve-guide', [\App\Http\Controllers\Public\ForumController::class, 'approveGuide'])->name('topic.approve-guide');
+        Route::post('/posts/{post}/recognize', [\App\Http\Controllers\Public\ForumController::class, 'recognizePost'])->name('post.recognize');
+
+        // Character Identity Settings
+        Route::get('/settings/identity', [\App\Http\Controllers\Public\ForumProfileController::class, 'settings'])->name('identity.settings');
+        Route::post('/settings/identity', [\App\Http\Controllers\Public\ForumProfileController::class, 'updateSettings'])->name('identity.update');
+    });
+});
+
 // Escrow Inbox (Central clearinghouse for Daily Rewards, Marketplace, Rankings, Donations)
 Route::middleware('auth')->group(function () {
     Route::get('/escrow', [\App\Http\Controllers\Public\EscrowInboxController::class, 'index'])->name('escrow.index');
@@ -355,6 +388,20 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/attendance-deliveries', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'deliveries'])->name('attendance.deliveries');
         Route::post('/attendance-deliveries/{deliveryId}/retry', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'retryDelivery'])->name('attendance.deliveries.retry');
         Route::get('/attendance-reports', [\App\Http\Controllers\Admin\AdminAttendanceController::class, 'reports'])->name('attendance.reports');
+    });
+
+    // Forum & Reputation Administration (Gated by 'forum' module)
+    Route::middleware('module:forum')->prefix('forum')->name('forum.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\AdminForumController::class, 'index'])->name('index');
+        Route::post('/categories', [\App\Http\Controllers\Admin\AdminForumController::class, 'storeCategory'])->name('categories.store');
+        Route::post('/boards', [\App\Http\Controllers\Admin\AdminForumController::class, 'storeBoard'])->name('boards.store');
+        Route::post('/boards/{board}/toggle-lock', [\App\Http\Controllers\Admin\AdminForumController::class, 'toggleBoardLock'])->name('boards.toggle-lock');
+        Route::post('/reports/{report}/resolve', [\App\Http\Controllers\Admin\AdminForumController::class, 'resolveReport'])->name('reports.resolve');
+        Route::get('/reputation', [\App\Http\Controllers\Admin\AdminForumController::class, 'reputationSettings'])->name('reputation.settings');
+        Route::post('/reputation', [\App\Http\Controllers\Admin\AdminForumController::class, 'updateReputationSettings'])->name('reputation.settings.update');
+        Route::post('/reputation/levels', [\App\Http\Controllers\Admin\AdminForumController::class, 'updateReputationLevels'])->name('reputation.levels.update');
+        Route::get('/reputation/history', [\App\Http\Controllers\Admin\AdminForumController::class, 'reputationHistory'])->name('reputation.history');
+        Route::post('/reputation/adjust', [\App\Http\Controllers\Admin\AdminForumController::class, 'manualAdjust'])->name('reputation.adjust');
     });
 });
 

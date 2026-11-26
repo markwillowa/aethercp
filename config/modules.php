@@ -99,6 +99,12 @@ return [
             'version' => '1.0.0',
             'enabled' => true,
         ],
+        'forum' => [
+            'name' => 'Community Forum & Reputation',
+            'description' => 'Discussion boards, topics, reactions, optional Ragnarok character identity, and reputation system.',
+            'version' => '1.0.0',
+            'enabled' => true,
+        ],
     ],
 ];
 

@@ -31,10 +31,10 @@
                         <span>Client Downloads</span>
                     </a>
                 @endif
-                @if($cModMgr->isEnabled('faq'))
-                    <a href="{{ route('faq.index') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
-                        <i data-lucide="help-circle" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
-                        <span>Knowledge Base &amp; FAQ</span>
+                @if($cModMgr->isEnabled('forum'))
+                    <a href="{{ route('forum.index') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
+                        <i data-lucide="messages-square" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                        <span>Community</span>
                     </a>
                 @endif
                 @if($cModMgr->isEnabled('support'))

@@ -47,8 +47,15 @@ AetherCP is an independent, modern, high-performance web-based control panel eng
 
 ### 7. Dual Installation Modes (Automated CLI or phpMyAdmin)
 - **Interactive Web Installation Wizard**: 6-step guided setup (`/install`) with pre-flight environment diagnostics, real-time database connection testing, and game server network rates configuration.
-- **cPanel & Shared Hosting Plug & Play**: Pre-generated SQL dumps (`aether_schema.sql` and `aether_seeders.sql`) allow manual import via phpMyAdmin for hosts that restrict PHP process execution or command-line access.
+- **cPanel & Shared Hosting Plug & Play**: Pre-generated SQL dumps (`aether_schema.sql`, `aether_seeders.sql`, `community_seeders.sql`, `rewards_badges_seeders.sql`, `cash_shop_seeders.sql`) plus **non-destructive per-migration SQL files** in `database/sql/migrations/` allow safe incremental phpMyAdmin imports without affecting existing data.
 - **Protected Session Handling**: Built-in `file` session driver default prevents the notorious `Table 'sessions' doesn't exist` error on uninstalled shared hosting environments.
+
+### 8. Community Forum, Character Identity & Reputation System
+- **Modern Gaming Forum**: Categorized discussion boards, server-side pagination, sorting (`Latest Activity`, `Newest`, `Most Replies`, `Most Viewed`), filtering (`All`, `Unanswered`, `Solved`, `Pinned`), topic subscriptions, content reporting, and staff moderation (`Pin`, `Lock`, `Approve Guide`, `Moderator Recognition`).
+- **Rich Discussion Experience**: Safe XSS-protected post formatting with quote insertion, `@username` mentions, live preview, character counter, duplicate-submission protection, and validated file attachments.
+- **Optional Ragnarok Character Identity**: Players can switch between **Aether Username Only** or **Display Selected Ragnarok Character** (sprite, name, job class, base/job levels) with strict server-side ownership verification against the emulator database.
+- **Public Member Profiles**: Tabbed member profiles (`Overview`, `Discussions`, `Replies`, `Reputation History`, `Achievements`) with strict privacy controls (never exposing emails, passwords, or private account data).
+- **Reputation Ledger, Levels & Leaderboard**: Transactional reputation ledger (`reputation_transactions`) with anti-farming protections, reaction reversal, configurable levels & badge appearances (`Newcomer` through `Community Legend`), period-filtered Community Leaderboard (`All Time`, `This Month`, `This Week`), and full Admin Reputation Settings & audited manual adjustments.
 
 ---
 
@@ -75,8 +82,9 @@ AetherCP is an independent, modern, high-performance web-based control panel eng
 >    - **Single Source of Truth**: The web control panel authenticates directly against the emulator `login` table. Any account in `login` (such as `s1`, `admin`, or newly registered players) can immediately log in on the website.
 > 
 > 2. **AetherCP Web Database (e.g. `aether_cp`)**:
->    - Contains web-specific tables (`news`, `downloads`, `donations`, `donation_packages`, `site_settings`, `activity_logs`, `player_inbox_items`, `attendance_campaigns`, `badge_definitions`, `users`).
+>    - Contains web-specific tables (`news`, `downloads`, `donations`, `donation_packages`, `site_settings`, `activity_logs`, `player_inbox_items`, `attendance_campaigns`, `badge_definitions`, `forum_categories`, `forum_boards`, `forum_topics`, `forum_posts`, `reputation_levels`, `reputation_transactions`, `users`).
 >    - Laravel migrations apply **only** to this separate web database.
+>    - For manual phpMyAdmin updates on live servers, use the matching per-migration SQL files in `database/sql/migrations/` (1 migration = 1 `.sql` file) and the non-destructive SQL seeders (`community_seeders.sql`, `rewards_badges_seeders.sql`, `cash_shop_seeders.sql`)—or run `php artisan db:seed --class=CommunityRewardsBadgesSeeder`.
 
 ---
 
@@ -357,6 +365,7 @@ Automated tests validate:
 - Escrow Inbox transfers to Kafra Storage and Character Inventory with offline checks
 - Attendance campaign claim validation, consecutive streak rules, and multi-day packages
 - Categorized badge assignment and leaderboards isolation
+- Community Forum, topic/reply permissions, XSS & upload validation, optional Ragnarok character ownership verification, transactional reputation ledger, and audited admin adjustments (`ForumAndReputationTest`)
 - Dynamic theme switching (Aether Dark, Aether Chronicles, Aether Prestige, Elysian Mythic, and Ragnarok Classic)
 - Installation wizard pre-flight validation, SQL downloads, and lock gating
 

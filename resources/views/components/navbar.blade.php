@@ -65,9 +65,9 @@
                         Donations
                     </a>
                 @endif
-                @if($modMgr->isEnabled('faq'))
-                    <a href="{{ route('faq.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('faq.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
-                        FAQ
+                @if($modMgr->isEnabled('forum'))
+                    <a href="{{ route('forum.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('forum.*') ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-800/60' }}">
+                        Community
                     </a>
                 @endif
             </div>
@@ -134,6 +134,16 @@
                                 <a href="{{ route('support.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
                                     <i data-lucide="life-buoy" class="w-4 h-4 text-cyan-400"></i>
                                     <span>Support Center</span>
+                                </a>
+                            @endif
+                            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('forum'))
+                                <a href="{{ route('forum.profile.show', auth()->user()->username) }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                                    <i data-lucide="messages-square" class="w-4 h-4 text-cyan-400"></i>
+                                    <span>Forum Profile</span>
+                                </a>
+                                <a href="{{ route('forum.identity.settings') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                                    <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                                    <span>Forum Identity</span>
                                 </a>
                             @endif
 
@@ -204,8 +214,8 @@
         @if($modMgr->isEnabled('donations'))
             <a href="{{ route('donations.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Donations</a>
         @endif
-        @if($modMgr->isEnabled('faq'))
-            <a href="{{ route('faq.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">FAQ</a>
+        @if($modMgr->isEnabled('forum'))
+            <a href="{{ route('forum.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Community</a>
         @endif
         @if($modMgr->isEnabled('support'))
             <a href="{{ route('support.index') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-200 hover:bg-slate-800">Support</a>

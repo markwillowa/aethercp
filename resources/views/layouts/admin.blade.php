@@ -397,6 +397,16 @@
                             <span>FAQ &amp; Knowledge Base</span>
                         </a>
                     @endif
+                    @if($modMgr->isEnabled('forum'))
+                        <a href="{{ route('admin.forum.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.forum.index') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="messages-square" class="w-4 h-4"></i>
+                            <span>Forum &amp; Boards</span>
+                        </a>
+                        <a href="{{ route('admin.forum.reputation.settings') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.forum.reputation*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="award" class="w-4 h-4"></i>
+                            <span>Forum Reputation</span>
+                        </a>
+                    @endif
                 </div>
             </div>
             @endif

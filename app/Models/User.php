@@ -146,4 +146,24 @@ class User extends Authenticatable
             \Illuminate\Support\Facades\Log::warning("Failed to sync user '{$this->username}' to ragnarok.login: " . $e->getMessage());
         }
     }
+
+    public function forumProfile(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(ForumUserProfile::class, 'user_id');
+    }
+
+    public function forumTopics(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ForumTopic::class, 'user_id');
+    }
+
+    public function forumPosts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ForumPost::class, 'user_id');
+    }
+
+    public function reputationTransactions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ReputationTransaction::class, 'recipient_user_id');
+    }
 }
