@@ -29,27 +29,27 @@
 
                     @if(empty($mod['protected']))
                         <div class="flex items-center gap-2">
-                            @if($key === 'marketplace')
+                            @if($key === 'marketplace' && $mod['enabled'])
                                 <a href="{{ route('admin.marketplace.index') }}" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1 transition-colors">
                                     <i data-lucide="settings" class="w-3.5 h-3.5"></i>
                                     Configure
                                 </a>
-                            @elseif($key === 'support')
+                            @elseif($key === 'support' && $mod['enabled'])
                                 <a href="{{ route('admin.support.settings') }}" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center gap-1 transition-colors">
                                     <i data-lucide="settings" class="w-3.5 h-3.5"></i>
                                     Settings
                                 </a>
-                            @elseif($key === 'faq')
+                            @elseif($key === 'faq' && $mod['enabled'])
                                 <a href="{{ route('admin.faq.index') }}" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center gap-1 transition-colors">
                                     <i data-lucide="settings" class="w-3.5 h-3.5"></i>
                                     Manage
                                 </a>
-                            @elseif($key === 'gallery')
+                            @elseif($key === 'gallery' && $mod['enabled'])
                                 <a href="{{ route('admin.gallery.index') }}" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center gap-1 transition-colors">
                                     <i data-lucide="settings" class="w-3.5 h-3.5"></i>
                                     Manage
                                 </a>
-                            @elseif($key === 'database' || $key === 'itemdb')
+                            @elseif(($key === 'database' || $key === 'itemdb') && $mod['enabled'])
                                 <a href="{{ route('admin.importer') }}" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center gap-1 transition-colors">
                                     <i data-lucide="database" class="w-3.5 h-3.5"></i>
                                     Importer

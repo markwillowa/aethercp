@@ -72,4 +72,14 @@ class EscrowAndModuleMigrationTest extends TestCase
         $this->assertTrue(Schema::hasTable('forum_categories'));
         $this->assertTrue(Schema::hasTable('reputation_levels'));
     }
+
+    public function test_site_setting_and_module_manager_do_not_crash_when_table_is_missing(): void
+    {
+        Schema::dropIfExists('site_settings');
+
+        $this->assertSame('fallback', \App\Models\SiteSetting::get('nonexistent_key', 'fallback'));
+        $modules = app(ModuleManager::class)->getModules();
+        $this->assertArrayHasKey('account', $modules);
+        $this->assertTrue($modules['account']['enabled']);
+    }
 }

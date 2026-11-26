@@ -361,7 +361,7 @@
 
             <!-- Category 5: Content & Support -->
             @php
-                $hasContent = $modMgr->isEnabled('news') || $modMgr->isEnabled('downloads') || $modMgr->isEnabled('gallery') || $modMgr->isEnabled('support') || $modMgr->isEnabled('faq');
+                $hasContent = $modMgr->isEnabled('news') || $modMgr->isEnabled('downloads') || $modMgr->isEnabled('gallery') || $modMgr->isEnabled('support') || $modMgr->isEnabled('faq') || $modMgr->isEnabled('forum');
             @endphp
             @if($hasContent)
             <div>
@@ -427,10 +427,12 @@
                         <i data-lucide="palette" class="w-4 h-4"></i>
                         <span>Theme Manager</span>
                     </a>
-                    <a href="{{ route('admin.importer') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.importer*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
-                        <i data-lucide="database" class="w-4 h-4"></i>
-                        <span>Database &amp; YAML Importer</span>
-                    </a>
+                    @if($modMgr->isEnabled('database'))
+                        <a href="{{ route('admin.importer') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-colors {{ request()->routeIs('admin.importer*') ? ($isChronicles ? 'bg-[#D4AF37]/20 text-[#FCE69B] border border-[#D4AF37]/40' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20') : ($isChronicles ? 'text-[#C8BDAA] hover:text-white hover:bg-[#251A33]' : 'text-slate-400 hover:text-white hover:bg-slate-900') }}">
+                            <i data-lucide="database" class="w-4 h-4"></i>
+                            <span>Database &amp; YAML Importer</span>
+                        </a>
+                    @endif
 
                     <!-- Developer Donation Button -->
                     <button type="button" @click="devDonationOpen = true" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-semibold transition-all mt-4 group {{ $isChronicles ? 'bg-gradient-to-r from-[#D4AF37]/20 via-[#3A2410]/40 to-[#D4AF37]/10 text-[#FCE69B] border border-[#D4AF37]/50 hover:border-[#FFD700]' : 'bg-gradient-to-r from-amber-500/15 via-rose-500/10 to-indigo-500/15 text-amber-300 border border-amber-500/30 hover:border-amber-400 hover:text-white' }} shadow-sm">

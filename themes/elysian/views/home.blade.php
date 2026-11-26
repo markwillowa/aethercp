@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@php
+    $eModMgr = app(\App\Services\Module\ModuleManager::class);
+@endphp
+
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
     <!-- Elysian Mythic Hero Banner -->
@@ -23,10 +27,12 @@
                     <i data-lucide="sparkles" class="w-4 h-4"></i>
                     <span>Begin Your Odyssey</span>
                 </a>
+                @if($eModMgr->isEnabled('downloads'))
                 <a href="{{ route('downloads.index') }}" class="elysian-btn-secondary px-7 py-3.5 rounded-xl font-semibold flex items-center gap-2 transition-all">
                     <i data-lucide="download" class="w-4 h-4 text-amber-400"></i>
                     <span>Download Game Client</span>
                 </a>
+                @endif
             </div>
         </div>
 
@@ -79,6 +85,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Left 2 Columns -->
         <div class="lg:col-span-2 space-y-8">
+            @if($eModMgr->isEnabled('news'))
             <!-- Latest Chronicles & Announcements -->
             <div class="space-y-5">
                 <div class="flex items-center justify-between border-b border-amber-500/20 pb-4">
@@ -139,9 +146,11 @@
                     @endforelse
                 </div>
             </div>
+            @endif
 
             <!-- Quick Portals Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                @if($eModMgr->isEnabled('rankings'))
                 <a href="{{ route('rankings.index') }}" class="group bg-slate-900/80 border border-amber-500/20 hover:border-amber-500/50 rounded-2xl p-5 backdrop-blur-sm transition-all shadow-xl hover:-translate-y-1 block">
                     <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-3 text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all">
                         <i data-lucide="trending-up" class="w-5 h-5"></i>
@@ -149,6 +158,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">Hall of Fame</h3>
                     <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Formidable adventurers, guilds &amp; MVP ladder.</p>
                 </a>
+                @endif
 
                 <a href="{{ route('woe.index') }}" class="group bg-slate-900/80 border border-amber-500/20 hover:border-amber-500/50 rounded-2xl p-5 backdrop-blur-sm transition-all shadow-xl hover:-translate-y-1 block">
                     <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center mb-3 text-sky-400 group-hover:bg-sky-500 group-hover:text-slate-950 transition-all">
@@ -158,6 +168,7 @@
                     <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Castle ownership, siege timetables &amp; battle honors.</p>
                 </a>
 
+                @if($eModMgr->isEnabled('database'))
                 <a href="{{ route('itemdb.index') }}" class="group bg-slate-900/80 border border-amber-500/20 hover:border-amber-500/50 rounded-2xl p-5 backdrop-blur-sm transition-all shadow-xl hover:-translate-y-1 block">
                     <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-3 text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all">
                         <i data-lucide="database" class="w-5 h-5"></i>
@@ -165,6 +176,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">Compendium</h3>
                     <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Equipment stats, cards, drops &amp; craftable recipes.</p>
                 </a>
+                @endif
             </div>
         </div>
 
@@ -197,6 +209,7 @@
                                 </span>
                                 <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500"></i>
                             </a>
+                            @if($eModMgr->isEnabled('character'))
                             <a href="{{ route('account.characters') }}" class="flex items-center justify-between p-2 rounded-xl bg-slate-950/50 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 transition-colors">
                                 <span class="flex items-center gap-2">
                                     <i data-lucide="users" class="w-3.5 h-3.5 text-sky-400"></i>
@@ -204,6 +217,7 @@
                                 </span>
                                 <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500"></i>
                             </a>
+                            @endif
                             @if(auth()->user()->isAdmin())
                                 <a href="{{ route('admin.dashboard') }}" class="flex items-center justify-between p-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 transition-colors">
                                     <span class="flex items-center gap-2">
@@ -232,6 +246,7 @@
                 @endauth
             </div>
 
+            @if($eModMgr->isEnabled('server_info'))
             <!-- Live Cluster Status -->
             <div class="bg-slate-900/80 border border-amber-500/20 rounded-2xl p-5 space-y-4 backdrop-blur-sm">
                 <div class="flex items-center justify-between border-b border-amber-500/20 pb-3">
@@ -264,7 +279,9 @@
                     @endforeach
                 </div>
             </div>
+            @endif
 
+            @if($eModMgr->isEnabled('rankings'))
             <!-- Top Adventurers (Hall of Fame) -->
             <div class="bg-slate-900/80 border border-amber-500/20 rounded-2xl p-5 space-y-4 backdrop-blur-sm">
                 <div class="flex items-center justify-between border-b border-amber-500/20 pb-3">
@@ -295,6 +312,7 @@
                     @endforelse
                 </div>
             </div>
+            @endif
 
             <!-- Official Discord Banner -->
             @if(config('aether.community.discord'))

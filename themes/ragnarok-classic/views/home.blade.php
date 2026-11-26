@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@php
+    $rcModMgr = app(\App\Services\Module\ModuleManager::class);
+@endphp
+
 @section('content')
 <div class="ro-layout-3col">
     <!-- ======================================================================
@@ -212,10 +216,12 @@
                         <i data-lucide="sparkles" class="w-4 h-4"></i>
                         <span>Begin Your Adventure</span>
                     </a>
+                    @if($rcModMgr->isEnabled('downloads'))
                     <a href="{{ route('downloads.index') }}" class="ro-btn-primary text-xs sm:text-sm py-2 px-5">
                         <i data-lucide="download" class="w-4 h-4 text-[#FFDA89]"></i>
                         <span>Download Game Client</span>
                     </a>
+                    @endif
                 </div>
             </div>
 
@@ -241,6 +247,7 @@
         </div>
 
         <!-- 2. News and Announcements -->
+        @if($rcModMgr->isEnabled('news'))
         <div class="ro-panel">
             <div class="ro-panel-header justify-between">
                 <div class="flex items-center gap-2">
@@ -288,9 +295,11 @@
                 @endforelse
             </div>
         </div>
+        @endif
 
         <!-- 3. Featured MMORPG Portals -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            @if($rcModMgr->isEnabled('database'))
             <a href="{{ route('itemdb.index') }}" class="ro-panel p-4 hover:shadow-lg transition-all group block">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded bg-[#493322] border border-[#8C6A2D] flex items-center justify-center text-[#FFDA89] group-hover:scale-105 transition-transform">
@@ -302,6 +311,7 @@
                     </div>
                 </div>
             </a>
+            @endif
 
             <a href="{{ route('woe.index') }}" class="ro-panel p-4 hover:shadow-lg transition-all group block">
                 <div class="flex items-center gap-3">
@@ -325,6 +335,7 @@
          ====================================================================== -->
     <aside class="ro-col-right">
         <!-- 1. Top Adventurers (Hall of Fame) -->
+        @if($rcModMgr->isEnabled('rankings'))
         <div class="ro-panel">
             <div class="ro-panel-header justify-between">
                 <div class="flex items-center gap-2">
@@ -376,6 +387,7 @@
                 </a>
             </div>
         </div>
+        @endif
 
         <!-- 2. Community & Discord Box -->
         <div class="ro-panel">
@@ -394,19 +406,24 @@
                     </a>
                 @endif
                 <div class="grid grid-cols-2 gap-2 pt-1">
+                    @if($rcModMgr->isEnabled('donations'))
                     <a href="{{ route('donations.index') }}" class="ro-btn-gold text-center py-1.5 text-xs">
                         <i data-lucide="heart" class="w-3 h-3 text-[#B71C1C]"></i>
                         <span>Support Server</span>
                     </a>
+                    @endif
+                    @if($rcModMgr->isEnabled('downloads'))
                     <a href="{{ route('downloads.index') }}" class="ro-btn-wood text-center py-1.5 text-xs">
                         <i data-lucide="download" class="w-3 h-3 text-[#FFDA89]"></i>
                         <span>Full Client</span>
                     </a>
+                    @endif
                 </div>
             </div>
         </div>
 
         <!-- 3. Guild Roster Shortcut -->
+        @if($rcModMgr->isEnabled('guild'))
         <div class="ro-panel">
             <div class="ro-panel-header justify-between">
                 <div class="flex items-center gap-2">
@@ -427,6 +444,7 @@
                 </a>
             </div>
         </div>
+        @endif
     </aside>
 </div>
 @endsection

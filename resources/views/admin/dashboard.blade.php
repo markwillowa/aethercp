@@ -1,6 +1,9 @@
 @extends('layouts.admin')
 
 @section('admin_content')
+@php
+    $dashModMgr = app(\App\Services\Module\ModuleManager::class);
+@endphp
 <div class="space-y-8">
     <div class="border-b border-slate-800 pb-4">
         <h1 class="text-2xl font-bold text-white">Administration Dashboard</h1>
@@ -30,6 +33,7 @@
             <p class="text-[11px] text-slate-500 mt-1">Web CP accounts</p>
         </div>
 
+        @if($dashModMgr->isEnabled('donations'))
         <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm">
             <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
                 <span>Pending Donations</span>
@@ -38,7 +42,9 @@
             <p class="text-3xl font-extrabold text-white">{{ $pendingDonations }}</p>
             <p class="text-[11px] text-amber-400 mt-1">Requires review</p>
         </div>
+        @endif
 
+        @if($dashModMgr->isEnabled('news'))
         <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm">
             <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
                 <span>News & Articles</span>
@@ -47,6 +53,7 @@
             <p class="text-3xl font-extrabold text-white">{{ $totalNews }}</p>
             <p class="text-[11px] text-slate-500 mt-1">Published posts</p>
         </div>
+        @endif
     </div>
 
     <!-- 2 Col: Recent Logs & Recent Registrations -->
