@@ -64,19 +64,20 @@ class CharacterViewController extends Controller
             $inventory = $this->characters->getInventory($char->char_id);
             $rawEquipped = array_filter($inventory, fn($i) => !empty($i->equip));
 
+            $charMgmt = app(\App\Services\Character\CharacterManagementService::class);
             foreach ($rawEquipped as $item) {
-                $itemDb = $this->items->findById((int) $item->nameid);
-                $itemName = $itemDb ? ($itemDb->name_english ?? $itemDb->name_aegis ?? "Item #{$item->nameid}") : "Item #{$item->nameid}";
-                $slots = $itemDb ? (int) ($itemDb->slots ?? 0) : 0;
+                $meta = $charMgmt->resolveItemMeta((int) $item->nameid);
+                $itemName = $meta['name'];
+                $slots = (int) $meta['slots'];
 
                 $cards = [];
                 foreach (['card0', 'card1', 'card2', 'card3'] as $cardCol) {
                     $cid = (int) ($item->{$cardCol} ?? 0);
-                    if ($cid > 0 && $cid < 65000) {
-                        $cDb = $this->items->findById($cid);
+                    if ($cid > 0 && $cid !== 254 && $cid !== 255 && $cid < 65000) {
+                        $cMeta = $charMgmt->resolveItemMeta($cid);
                         $cards[] = [
                             'id' => $cid,
-                            'name' => $cDb ? ($cDb->name_english ?? $cDb->name_aegis ?? "Card #{$cid}") : "Card #{$cid}",
+                            'name' => $cMeta['name'],
                         ];
                     }
                 }

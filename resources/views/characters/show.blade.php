@@ -242,7 +242,10 @@
                                 <div class="min-w-0 flex-1">
                                     <span class="text-[10px] font-mono uppercase tracking-wider text-cyan-400 block">{{ $eq['slot_label'] }}</span>
                                     <a href="{{ route('itemdb.show', $eq['nameid']) }}" class="text-xs font-bold text-white hover:text-cyan-300 truncate block">
-                                        {{ $eq['refine'] > 0 ? '+' . $eq['refine'] . ' ' : '' }}{{ $eq['name'] }}{{ $eq['slots'] > 0 ? ' [' . $eq['slots'] . ']' : '' }}
+                                        @if($eq['refine'] > 0)
+                                            <span class="text-amber-300">+{{ $eq['refine'] }}</span>
+                                        @endif
+                                        {{ $eq['name'] }}{{ $eq['slots'] > 0 ? ' [' . $eq['slots'] . ']' : '' }}
                                     </a>
                                     @if(!empty($eq['cards']))
                                         <div class="flex flex-wrap gap-1 mt-1">

@@ -1277,7 +1277,7 @@ class CharacterManagementService
             ->all();
     }
 
-    private function resolveItemMeta(int $itemId): array
+    public function resolveItemMeta(int $itemId): array
     {
         $item = $this->itemRepository->findById($itemId);
         if ($item) {
