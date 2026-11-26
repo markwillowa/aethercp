@@ -1139,6 +1139,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (15, '2026_11_25_00
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (16, '2026_11_25_000004_create_player_profiles_tables', 9);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (17, '2026_11_25_000005_add_profile_customization_fields', 10);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (18, '2026_11_25_000006_create_attendance_and_daily_rewards_tables', 11);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (19, '2026_11_26_000001_create_cash_shop_tables', 12);
 
 COMMIT;
 SET FOREIGN_KEY_CHECKS=1;
@@ -1215,14 +1216,16 @@ CREATE TABLE IF NOT EXISTS `cash_shop_purchases` (
   `item_quantity` int(10) UNSIGNED NOT NULL DEFAULT 1,
   `cash_points_spent` int(10) UNSIGNED NOT NULL,
   `escrow_item_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `status` enum('completed','refunded','cancelled') NOT NULL DEFAULT 'completed',
+  `status` enum('completed','failed','refunded') NOT NULL DEFAULT 'completed',
   `ip_address` varchar(45) DEFAULT NULL,
+  `metadata` json DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cash_shop_purchases_purchase_code_unique` (`purchase_code`),
   KEY `cash_shop_purchases_account_id_index` (`account_id`),
   KEY `cash_shop_purchases_escrow_item_id_index` (`escrow_item_id`),
+  KEY `cash_shop_purchases_status_index` (`status`),
   KEY `cash_shop_purchases_user_id_foreign` (`user_id`),
   KEY `cash_shop_purchases_product_id_foreign` (`product_id`),
   CONSTRAINT `cash_shop_purchases_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
