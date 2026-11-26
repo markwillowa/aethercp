@@ -649,12 +649,13 @@ class RankingEngineService
             $ids = array_values(array_filter(array_column($items, $idKey)));
 
             $catFilter = match ($category) {
-                'base' => ['level', 'base'],
-                'job' => ['job'],
-                'pvp' => ['pvp'],
-                'mvp' => ['mvp'],
-                'guild' => ['guild'],
-                default => [$category],
+                'lvl', 'base' => ['level', 'base', 'lvl', 'event', 'special', 'custom', 'manual'],
+                'job' => ['job', 'event', 'special', 'custom', 'manual'],
+                'pvp' => ['pvp', 'event', 'special', 'custom', 'manual'],
+                'mvp' => ['mvp', 'event', 'special', 'custom', 'manual'],
+                'zeny' => ['level', 'base', 'job', 'pvp', 'mvp', 'zeny', 'event', 'special', 'custom', 'manual'],
+                'guild' => ['guild', 'event', 'special', 'custom', 'manual'],
+                default => [$category, 'event', 'special', 'custom', 'manual'],
             };
 
             if (!empty($ids)) {

@@ -339,6 +339,7 @@ class BadgeService
         }
 
         $this->evaluateGuildBadges();
+        $this->rankingEngine->invalidateCache();
 
         return [
             'characters_checked' => count($charIds),

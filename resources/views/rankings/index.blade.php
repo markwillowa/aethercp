@@ -134,7 +134,16 @@
                                 <td class="py-3.5 px-4 text-center text-slate-300">{{ $row['members_count'] }} / {{ $row['max_member'] }}</td>
                                 <td class="py-3.5 px-4 text-center font-bold text-amber-400">{{ $row['castles_count'] }}</td>
                                 <td class="py-3.5 px-4 text-right">
-                                    @if(!empty($row['badge_label']))
+                                    @if(!empty($row['badges']))
+                                        <div class="inline-flex flex-wrap justify-end gap-1 mr-2">
+                                            @foreach(array_slice($row['badges'], 0, 2) as $badge)
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-sans font-bold border"
+                                                      style="color: {{ $badge['color'] }}; border-color: {{ $badge['color'] }}66; background-color: {{ $badge['color'] }}1f;">
+                                                    {{ $badge['label'] }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    @elseif(!empty($row['badge_label']))
                                         <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 mr-2">{{ $row['badge_label'] }}</span>
                                     @endif
                                     <span class="font-mono text-slate-400 text-xs">{{ number_format($row['score']) }} pts</span>
