@@ -84,37 +84,37 @@
 
                             @if($type === 'guild')
                                 <td class="font-bold">
-                                    <a href="{{ route('guilds.show', $row->guild_id) }}" class="text-[#315B88] hover:underline flex items-center gap-1.5">
+                                    <a href="{{ route('guilds.show', data_get($row, 'guild_id')) }}" class="text-[#315B88] hover:underline flex items-center gap-1.5">
                                         <i data-lucide="shield" class="w-3.5 h-3.5 text-[#8C6A2D]"></i>
-                                        <span>{{ $row->name }}</span>
+                                        <span>{{ data_get($row, 'name') }}</span>
                                     </a>
                                 </td>
-                                <td class="text-[#5C4632]">{{ $row->master }}</td>
-                                <td class="text-center font-bold text-[#8C5E1E]">Lv. {{ $row->guild_lv }}</td>
-                                <td class="text-center font-mono">{{ $row->connect_member }} / {{ $row->max_member }}</td>
-                                <td class="text-right font-mono font-bold text-[#3A2A1C]">{{ number_format($row->exp) }}</td>
+                                <td class="text-[#5C4632]">{{ data_get($row, 'master') }}</td>
+                                <td class="text-center font-bold text-[#8C5E1E]">Lv. {{ data_get($row, 'guild_lv') }}</td>
+                                <td class="text-center font-mono">{{ data_get($row, 'connect_member') }} / {{ data_get($row, 'max_member') }}</td>
+                                <td class="text-right font-mono font-bold text-[#3A2A1C]">{{ number_format((int) data_get($row, 'exp')) }}</td>
                             @else
                                 <td class="font-bold">
-                                    <a href="{{ route('characters.show', $row->name) }}" class="text-[#315B88] hover:underline flex items-center gap-1.5">
+                                    <a href="{{ route('characters.show', data_get($row, 'name')) }}" class="text-[#315B88] hover:underline flex items-center gap-1.5">
                                         <i data-lucide="user" class="w-3.5 h-3.5 text-[#8C6A2D]"></i>
-                                        <span>{{ $row->name }}</span>
+                                        <span>{{ data_get($row, 'name') }}</span>
                                     </a>
                                 </td>
                                 <td class="text-center">
                                     <span class="px-2 py-0.5 rounded text-[11px] font-bold uppercase bg-[#EBDDBF] border border-[#DECBB1] text-[#3A2A1C]">
-                                        {{ \App\Services\Emulator\JobHelper::getName($row->class) }}
+                                        {{ \App\Services\Emulator\JobHelper::getName(data_get($row, 'class', 0)) }}
                                     </span>
                                 </td>
-                                <td class="text-center font-bold text-[#315B88]">{{ $row->base_level }}</td>
+                                <td class="text-center font-bold text-[#315B88]">{{ data_get($row, 'base_level') }}</td>
                                 @if($type === 'job')
-                                    <td class="text-center font-bold text-[#8C5E1E]">{{ $row->job_level }}</td>
+                                    <td class="text-center font-bold text-[#8C5E1E]">{{ data_get($row, 'job_level') }}</td>
                                 @endif
                                 @if($type === 'zeny')
-                                    <td class="text-right font-mono font-bold text-[#B88926]">{{ number_format($row->zeny) }} Z</td>
+                                    <td class="text-right font-mono font-bold text-[#B88926]">{{ number_format((int) data_get($row, 'zeny')) }} Z</td>
                                 @elseif($type === 'mvp')
-                                    <td class="text-right font-mono font-bold text-[#7E22CE]">{{ number_format($row->fame) }} pts</td>
+                                    <td class="text-right font-mono font-bold text-[#7E22CE]">{{ number_format((int) data_get($row, 'fame')) }} pts</td>
                                 @else
-                                    <td class="text-right font-mono text-[#5C4632]">{{ number_format($row->base_exp) }}</td>
+                                    <td class="text-right font-mono text-[#5C4632]">{{ number_format((int) data_get($row, 'base_exp')) }}</td>
                                 @endif
                             @endif
                         </tr>

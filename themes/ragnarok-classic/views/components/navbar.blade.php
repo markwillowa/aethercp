@@ -48,6 +48,24 @@
                                     <span>My Characters</span>
                                 </a>
                                 @endif
+                                @if($modMgr->isEnabled('character_creation') && Route::has('account.characters.create'))
+                                <a href="{{ route('account.characters.create') }}" class="flex items-center gap-2 px-3 py-1.5 text-xs text-[#3A2A1C] hover:bg-[#EBD6B3] rounded transition-colors">
+                                    <i data-lucide="user-plus" class="w-3.5 h-3.5 text-[#315B88]"></i>
+                                    <span>Create Character</span>
+                                </a>
+                                @endif
+                                @if($modMgr->isEnabled('redeem_codes') && Route::has('account.redeem'))
+                                <a href="{{ route('account.redeem') }}" class="flex items-center gap-2 px-3 py-1.5 text-xs text-[#3A2A1C] hover:bg-[#EBD6B3] rounded transition-colors">
+                                    <i data-lucide="ticket" class="w-3.5 h-3.5 text-[#8C5E1E]"></i>
+                                    <span>Redeem Code</span>
+                                </a>
+                                @endif
+                                @if(Route::has('escrow.index'))
+                                <a href="{{ route('escrow.index') }}" class="flex items-center gap-2 px-3 py-1.5 text-xs text-[#3A2A1C] hover:bg-[#EBD6B3] rounded transition-colors">
+                                    <i data-lucide="inbox" class="w-3.5 h-3.5 text-[#315B88]"></i>
+                                    <span>Escrow Inbox</span>
+                                </a>
+                                @endif
                                 @if(auth()->user()->isAdmin())
                                     <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-3 py-1.5 text-xs text-[#8C5E1E] font-bold hover:bg-[#EBD6B3] rounded transition-colors">
                                         <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-[#8C5E1E]"></i>
@@ -140,10 +158,34 @@
                     <span>Cash Shop</span>
                 </a>
                 @endif
+                @if($modMgr->isEnabled('marketplace'))
+                <a href="{{ route('marketplace.index') }}" class="ro-nav-item {{ request()->routeIs('marketplace.*') ? 'active' : '' }}">
+                    <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
+                    <span>Marketplace</span>
+                </a>
+                @endif
                 @if($modMgr->isEnabled('donations'))
                 <a href="{{ route('donations.index') }}" class="ro-nav-item {{ request()->routeIs('donations.*') ? 'active' : '' }}">
                     <i data-lucide="heart-handshake" class="w-3.5 h-3.5"></i>
                     <span>Donations</span>
+                </a>
+                @endif
+                @if($modMgr->isEnabled('forum') && Route::has('forum.index'))
+                <a href="{{ route('forum.index') }}" class="ro-nav-item {{ request()->routeIs('forum.*') ? 'active' : '' }}">
+                    <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+                    <span>Forum</span>
+                </a>
+                @endif
+                @if($modMgr->isEnabled('faq') && Route::has('faq.index'))
+                <a href="{{ route('faq.index') }}" class="ro-nav-item {{ request()->routeIs('faq.*') ? 'active' : '' }}">
+                    <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
+                    <span>FAQ</span>
+                </a>
+                @endif
+                @if($modMgr->isEnabled('support') && Route::has('support.index'))
+                <a href="{{ route('support.index') }}" class="ro-nav-item {{ request()->routeIs('support.*') ? 'active' : '' }}">
+                    <i data-lucide="life-buoy" class="w-3.5 h-3.5"></i>
+                    <span>Support</span>
                 </a>
                 @endif
             </div>

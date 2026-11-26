@@ -349,6 +349,13 @@
 
             <div class="p-2 space-y-1.5">
                 @forelse($topPlayers as $idx => $player)
+                    @php
+                        $pCharId = data_get($player, 'char_id');
+                        $pName = data_get($player, 'name', 'Adventurer');
+                        $pBaseLv = data_get($player, 'base_level', 1);
+                        $pJobLv = data_get($player, 'job_level', 1);
+                        $pClassName = data_get($player, 'class_name') ?? (\App\Services\Emulator\JobHelper::getName(data_get($player, 'class', 0)) ?: 'Novice');
+                    @endphp
                     <div class="flex items-center justify-between p-2 rounded bg-[#FCF7ED] border border-[#DECBB1] text-xs">
                         <div class="flex items-center gap-2.5">
                             @if($idx === 0)
@@ -361,16 +368,20 @@
                                 <span class="ro-rank-badge ro-rank-other">{{ $idx + 1 }}</span>
                             @endif
                             <div class="overflow-hidden">
-                                <a href="{{ route('characters.show', $player->char_id) }}" class="font-bold text-[#2D1D13] hover:text-[#315B88] truncate block">
-                                    {{ $player->name }}
-                                </a>
+                                @if($pCharId)
+                                    <a href="{{ route('characters.show', $pCharId) }}" class="font-bold text-[#2D1D13] hover:text-[#315B88] truncate block">
+                                        {{ $pName }}
+                                    </a>
+                                @else
+                                    <span class="font-bold text-[#2D1D13] truncate block">{{ $pName }}</span>
+                                @endif
                                 <span class="text-[10px] text-[#77644E] block">
-                                    Lv. {{ $player->base_level }} / {{ $player->job_level }}
+                                    Lv. {{ $pBaseLv }} / {{ $pJobLv }}
                                 </span>
                             </div>
                         </div>
                         <span class="text-[10px] font-bold text-[#315B88] uppercase tracking-wider">
-                            {{ $player->class_name ?? 'Novice' }}
+                            {{ $pClassName }}
                         </span>
                     </div>
                 @empty
