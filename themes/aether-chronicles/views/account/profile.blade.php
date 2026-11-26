@@ -31,12 +31,28 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex flex-wrap items-center gap-2.5">
             <a href="{{ route('account.characters') }}" class="chronicles-btn-wood text-xs py-2 px-4 w-auto">
                 <i data-lucide="users" class="w-4 h-4 text-[#FFD700]"></i>
                 <span>Adventurer Roster ({{ $charCount }})</span>
             </a>
-            @if($user->isAdmin())
+            <a href="{{ route('escrow.index') }}" class="chronicles-btn-wood text-xs py-2 px-4 w-auto">
+                <i data-lucide="inbox" class="w-4 h-4 text-[#FFD700]"></i>
+                <span>Escrow Inbox</span>
+            </a>
+            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('redeem_codes'))
+                <a href="{{ route('account.redeem.index') }}" class="chronicles-btn-wood text-xs py-2 px-4 w-auto">
+                    <i data-lucide="ticket" class="w-4 h-4 text-[#FFD700]"></i>
+                    <span>Redeem Code</span>
+                </a>
+            @endif
+            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('attendance'))
+                <a href="{{ route('attendance.index') }}" class="chronicles-btn-wood text-xs py-2 px-4 w-auto">
+                    <i data-lucide="calendar-check" class="w-4 h-4 text-[#FFD700]"></i>
+                    <span>Daily Rewards</span>
+                </a>
+            @endif
+            @if($user->isStaff())
                 <a href="{{ route('admin.dashboard') }}" class="chronicles-btn-red text-xs py-2 px-4">
                     <i data-lucide="shield-alert" class="w-4 h-4"></i>
                     <span>Admin Panel</span>

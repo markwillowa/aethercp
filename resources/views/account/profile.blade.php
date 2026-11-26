@@ -26,12 +26,28 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex flex-wrap items-center gap-2.5">
             <a href="{{ route('account.characters') }}" class="px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 font-semibold text-xs flex items-center gap-2 transition-colors">
                 <i data-lucide="users" class="w-4 h-4"></i>
                 <span>View Characters ({{ $charCount }})</span>
             </a>
-            @if($user->isAdmin())
+            <a href="{{ route('escrow.index') }}" class="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center gap-2 transition-colors">
+                <i data-lucide="inbox" class="w-4 h-4 text-cyan-400"></i>
+                <span>Escrow Inbox</span>
+            </a>
+            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('redeem_codes'))
+                <a href="{{ route('account.redeem.index') }}" class="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center gap-2 transition-colors">
+                    <i data-lucide="ticket" class="w-4 h-4 text-cyan-400"></i>
+                    <span>Redeem Code</span>
+                </a>
+            @endif
+            @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('attendance'))
+                <a href="{{ route('attendance.index') }}" class="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center gap-2 transition-colors">
+                    <i data-lucide="calendar-check" class="w-4 h-4 text-amber-400"></i>
+                    <span>Daily Rewards</span>
+                </a>
+            @endif
+            @if($user->isStaff())
                 <a href="{{ route('admin.dashboard') }}" class="px-4 py-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold text-xs flex items-center gap-2 transition-colors">
                     <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                     <span>Admin Control Panel</span>

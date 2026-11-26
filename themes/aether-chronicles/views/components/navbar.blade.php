@@ -61,6 +61,22 @@
                         <span>Server Chronicles</span>
                     </a>
                 @endif
+                @if($cModMgr->isEnabled('rankings'))
+                    <a href="{{ route('rankings.index') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
+                        <i data-lucide="trophy" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                        <span>Hall of Fame</span>
+                    </a>
+                @endif
+                <a href="{{ route('woe.index') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
+                    <i data-lucide="swords" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                    <span>War of Emperium</span>
+                </a>
+                @if($cModMgr->isEnabled('faq'))
+                    <a href="{{ route('faq.index') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
+                        <i data-lucide="help-circle" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                        <span>FAQ &amp; Guides</span>
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -132,6 +148,70 @@
                 <span>DONATE</span>
             </a>
         @endif
+
+        <!-- ACCOUNT & SERVICES DROPDOWN -->
+        @auth
+        <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false" @click.away="open = false" style="position: relative; z-index: 150;">
+            <button type="button" @click="open = !open" class="chronicles-nav-item flex items-center gap-1 cursor-pointer {{ request()->routeIs('account.*') || request()->routeIs('escrow.*') || request()->routeIs('attendance.*') ? 'active' : '' }}" :class="open ? 'active' : ''">
+                <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
+                <span>ACCOUNT</span>
+                <i data-lucide="chevron-down" class="w-3 h-3 text-[#A88B57] transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+            </button>
+            <div x-show="open"
+                 class="absolute top-full right-0 mt-1.5 w-56 bg-[#1B1322] border-2 border-[#D4AF37]/60 rounded-lg shadow-2xl p-1.5"
+                 style="z-index: 99999; box-shadow: 0 10px 25px rgba(0,0,0,0.9); display: none;">
+                <a href="{{ route('account.profile') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
+                    <i data-lucide="user" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                    <span>My Account</span>
+                </a>
+                <a href="{{ route('account.characters') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
+                    <i data-lucide="sword" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                    <span>My Characters</span>
+                </a>
+                @if($cModMgr->isEnabled('character_creation'))
+                    <a href="{{ route('account.characters.create') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
+                        <i data-lucide="user-plus" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                        <span>Create Character</span>
+                    </a>
+                @endif
+                @if($cModMgr->isEnabled('attendance'))
+                    <a href="{{ route('attendance.index') }}" class="block px-3 py-2 text-xs text-[#FFD700] font-bold font-cinzel hover:bg-[#352643] rounded transition-colors flex items-center gap-2">
+                        <i data-lucide="calendar-check" class="w-3.5 h-3.5 text-[#FFD700]"></i>
+                        <span>Daily Rewards</span>
+                    </a>
+                @endif
+                <a href="{{ route('escrow.index') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
+                    <i data-lucide="inbox" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                    <span>Escrow Inbox</span>
+                </a>
+                @if($cModMgr->isEnabled('redeem_codes'))
+                    <a href="{{ route('account.redeem.index') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
+                        <i data-lucide="ticket" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                        <span>Redeem Code</span>
+                    </a>
+                @endif
+                @if($cModMgr->isEnabled('cash_shop'))
+                    <a href="{{ route('cash-shop.history') }}" class="block px-3 py-2 text-xs text-[#E2D9EB] font-bold font-cinzel hover:bg-[#352643] hover:text-[#FFD700] rounded transition-colors flex items-center gap-2">
+                        <i data-lucide="receipt" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                        <span>Cash Shop History</span>
+                    </a>
+                @endif
+                @if(auth()->user()->isStaff())
+                    <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 text-xs text-[#FF8A80] font-bold font-cinzel hover:bg-[#352643] rounded transition-colors flex items-center gap-2 border-t border-[#3E324A] mt-1 pt-2">
+                        <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+                        <span>Admin Panel</span>
+                    </a>
+                @endif
+                <form method="POST" action="{{ route('logout') }}" class="border-t border-[#3E324A] mt-1 pt-1">
+                    @csrf
+                    <button type="submit" class="w-full text-left px-3 py-2 text-xs text-[#C8BDAA] hover:text-white font-bold font-cinzel hover:bg-[#352643] rounded transition-colors flex items-center gap-2 cursor-pointer">
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+        @endauth
     </div>
 
     <!-- Far Right: Prominent Ornate Gold "Play Now" CTA Button -->

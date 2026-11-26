@@ -488,10 +488,10 @@
                                 <div class="flex items-center gap-1.5 min-w-0">
                                     <span class="text-xs {{ $crownColor }} w-4 text-center shrink-0">{{ $crownIcon }}</span>
                                     <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB] truncate">
-                                        {{ $p->name }}
+                                        {{ data_get($p, 'name') }}
                                     </span>
                                 </div>
-                                <span class="font-mono text-[#FFD700] font-bold text-xs shrink-0">Lv. {{ $p->base_level }}</span>
+                                <span class="font-mono text-[#FFD700] font-bold text-xs shrink-0">Lv. {{ data_get($p, 'base_level') }}</span>
                             </div>
                         @empty
                             <div class="p-6 text-center text-xs text-[#8C7F99] font-cinzel">
@@ -511,10 +511,10 @@
                                 <div class="flex items-center gap-1.5 min-w-0">
                                     <span class="text-xs {{ $crownColor }} w-4 text-center shrink-0">{{ $crownIcon }}</span>
                                     <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB] truncate">
-                                        {{ $p->name }}
+                                        {{ data_get($p, 'name') }}
                                     </span>
                                 </div>
-                                <span class="font-mono text-[#CD7F32] font-bold text-xs shrink-0">Job {{ $p->job_level }}</span>
+                                <span class="font-mono text-[#CD7F32] font-bold text-xs shrink-0">Job {{ data_get($p, 'job_level') }}</span>
                             </div>
                         @empty
                             <div class="p-6 text-center text-xs text-[#8C7F99] font-cinzel">
@@ -534,10 +534,10 @@
                                 <div class="flex items-center gap-1.5 min-w-0">
                                     <span class="text-xs {{ $crownColor }} w-4 text-center shrink-0">{{ $crownIcon }}</span>
                                     <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB] truncate">
-                                        {{ $p->name }}
+                                        {{ data_get($p, 'name') }}
                                     </span>
                                 </div>
-                                <span class="font-mono text-[#E53935] font-bold text-xs shrink-0">{{ $p->fame ?? 0 }} Fame</span>
+                                <span class="font-mono text-[#E53935] font-bold text-xs shrink-0">{{ data_get($p, 'mvp_kills', data_get($p, 'fame', 0)) }} MVP</span>
                             </div>
                         @empty
                             <div class="p-6 text-center text-xs text-[#8C7F99] font-cinzel">
@@ -557,10 +557,10 @@
                                 <div class="flex items-center gap-1.5 min-w-0">
                                     <span class="text-xs {{ $crownColor }} w-4 text-center shrink-0">{{ $crownIcon }}</span>
                                     <span class="font-cinzel font-bold text-[11px] text-[#F3E5AB] truncate">
-                                        {{ $g->name }}
+                                        {{ data_get($g, 'name') }}
                                     </span>
                                 </div>
-                                <span class="font-mono text-[#D4AF37] font-bold text-xs shrink-0">G.Lv {{ $g->guild_lv }}</span>
+                                <span class="font-mono text-[#D4AF37] font-bold text-xs shrink-0">G.Lv {{ data_get($g, 'guild_lv') }}</span>
                             </div>
                         @empty
                             <div class="p-6 text-center text-xs text-[#8C7F99] font-cinzel">
