@@ -222,6 +222,28 @@
                             <span>My Characters</span>
                         </a>
                         @endif
+                        @if($cModMgr->isEnabled('character_creation'))
+                        <a href="{{ route('account.characters.create') }}" class="chronicles-menu-link">
+                            <i data-lucide="user-plus"></i>
+                            <span>Create Character</span>
+                        </a>
+                        @endif
+                        <a href="{{ route('escrow.index') }}" class="chronicles-menu-link">
+                            <i data-lucide="inbox"></i>
+                            <span>Escrow Inbox</span>
+                        </a>
+                        @if($cModMgr->isEnabled('redeem_codes'))
+                        <a href="{{ route('account.redeem.index') }}" class="chronicles-menu-link">
+                            <i data-lucide="ticket"></i>
+                            <span>Redeem Code</span>
+                        </a>
+                        @endif
+                        @if($cModMgr->isEnabled('attendance'))
+                        <a href="{{ route('attendance.index') }}" class="chronicles-menu-link">
+                            <i data-lucide="calendar-check"></i>
+                            <span>Daily Rewards</span>
+                        </a>
+                        @endif
                         @if(app(\App\Services\Module\ModuleManager::class)->isEnabled('marketplace'))
                             <a href="{{ route('marketplace.index') }}" class="chronicles-menu-link">
                                 <i data-lucide="scale"></i>
@@ -232,7 +254,7 @@
                             <i data-lucide="lock"></i>
                             <span>Change Password</span>
                         </a>
-                        @if(auth()->user()->is_admin ?? false)
+                        @if(auth()->user()->isStaff())
                             <a href="{{ route('admin.dashboard') }}" class="chronicles-menu-link text-[#FFD700]">
                                 <i data-lucide="shield-alert" class="text-[#FFD700]"></i>
                                 <span>Admin Panel</span>

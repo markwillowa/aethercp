@@ -933,9 +933,9 @@ body.chronicles-theme {
    Create Character, etc.) automatically inherit Chronicles Obsidian & Gold
    instead of Aether Dark's slate/cyan palette.
    ========================================================================== */
-body.chronicles-theme main {
-    padding-top: 1.5rem;
-    padding-bottom: 2.5rem;
+body.chronicles-theme main.chronicles-right-main {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 body.chronicles-theme main .bg-slate-900\/80,
