@@ -56,6 +56,7 @@
         'name' => (string) $i->item_name,
         'amount' => (int) $i->amount,
         'refine' => (int) ($i->refine ?? 0),
+        'cards' => $i->cards ?? [],
         'type' => (string) ($i->item_type ?? 'etc'),
         'favorite' => (int) ($i->favorite ?? 0) > 0,
         'icon' => (string) $i->icon_url,
@@ -67,6 +68,7 @@
         'name' => (string) $s->item_name,
         'amount' => (int) $s->amount,
         'refine' => (int) ($s->refine ?? 0),
+        'cards' => $s->cards ?? [],
         'type' => (string) ($s->item_type ?? 'etc'),
         'icon' => (string) $s->icon_url,
     ])->values()->all();
@@ -439,21 +441,12 @@
         <!-- Account Kafra Storage Window -->
         <div class="bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col"
              x-data="{
-                 stTab: 'all',
                  search: '',
                  sortAsc: true,
                  items: @js($storageJs),
                  get filtered() {
                      const q = (this.search || '').trim().toLowerCase();
-                     let list = this.items.filter(i => {
-                         if (q && !i.name.toLowerCase().includes(q) && !String(i.nameid).includes(q)) return false;
-                         if (this.stTab === 'all') return true;
-                         if (this.stTab === 'item') return ['healing','usable','delayconsume','cash'].includes(i.type);
-                         if (this.stTab === 'armor') return ['armor','shadowgear'].includes(i.type);
-                         if (this.stTab === 'arms') return ['weapon','ammo'].includes(i.type);
-                         if (this.stTab === 'card') return i.type === 'card';
-                         return !['healing','usable','delayconsume','cash','armor','shadowgear','weapon','ammo','card'].includes(i.type);
-                     });
+                     let list = this.items.filter(i => !q || i.name.toLowerCase().includes(q) || String(i.nameid).includes(q));
                      return list.sort((a, b) => this.sortAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
                  }
              }">
@@ -463,17 +456,6 @@
             </div>
 
             <div class="flex flex-1 min-h-[340px]">
-                <!-- Vertical Storage Tabs -->
-                <div class="w-14 bg-slate-950/90 border-r border-slate-800 flex flex-col py-2 gap-1 shrink-0">
-                    @foreach(['all' => 'All', 'item' => 'Item', 'armor' => 'Armor', 'arms' => 'Arms', 'card' => 'Card', 'etc' => 'Etc.'] as $sKey => $sLabel)
-                        <button type="button" @click="stTab = '{{ $sKey }}'"
-                                :class="stTab === '{{ $sKey }}' ? 'bg-cyan-500/20 text-cyan-300 border-r-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300'"
-                                class="py-2.5 text-[10px] font-bold uppercase tracking-wider text-center cursor-pointer transition-colors">
-                            {{ $sLabel }}
-                        </button>
-                    @endforeach
-                </div>
-
                 <!-- Storage Item List + Search/Sort Footer -->
                 <div class="flex-1 p-4 flex flex-col justify-between bg-slate-950/40">
                     <div class="space-y-1.5 max-h-64 overflow-y-auto pr-1">

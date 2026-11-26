@@ -244,8 +244,16 @@
                             @forelse($section['rows'] as $row)
                                 <tr>
                                     <td class="px-4 py-2.5">
-                                        <span class="font-bold text-white">{{ $row->item_name }}</span>
-                                        <span class="font-mono text-slate-500 ml-1">#{{ $row->nameid }}</span>
+                                        <div class="flex items-center gap-2.5">
+                                            <img src="{{ $row->icon_url }}" alt="" class="w-6 h-6 object-contain shrink-0" onerror="this.style.display='none'">
+                                            <div>
+                                                <span class="font-bold text-white">{{ $row->item_name }}</span>
+                                                <span class="font-mono text-slate-500 ml-1">#{{ $row->nameid }}</span>
+                                                @if(!empty($row->cards))
+                                                    <div class="text-[10px] text-emerald-400 mt-0.5">{{ implode(', ', $row->cards) }}</div>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </td>
                                     <td class="px-4 py-2.5 font-mono text-slate-200">{{ $row->amount }}</td>
                                     <td class="px-4 py-2.5 font-mono text-cyan-300">+{{ $row->refine }}</td>

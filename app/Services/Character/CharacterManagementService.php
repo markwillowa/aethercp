@@ -1277,13 +1277,107 @@ class CharacterManagementService
             ->all();
     }
 
+    private function resolveItemMeta(int $itemId): array
+    {
+        $item = $this->itemRepository->findById($itemId);
+        if ($item) {
+            $name = $item->name_english ?? $item->name_japanese ?? $item->name_aegis ?? null;
+            $slots = (int) ($item->slots ?? 0);
+            if ($name) {
+                return [
+                    'name' => $name,
+                    'slots' => $slots,
+                    'type' => strtolower((string) ($item->type ?? 'etc')),
+                ];
+            }
+        }
+
+        $known = [
+            501 => ['Red Potion', 0, 'healing'],
+            502 => ['Orange Potion', 0, 'healing'],
+            503 => ['Yellow Potion', 0, 'healing'],
+            504 => ['White Potion', 0, 'healing'],
+            505 => ['Blue Potion', 0, 'healing'],
+            522 => ['Mastela Fruit', 0, 'healing'],
+            601 => ['Fly Wing', 0, 'usable'],
+            602 => ['Butterfly Wing', 0, 'usable'],
+            607 => ['Yggdrasil Berry', 0, 'healing'],
+            608 => ['Yggdrasil Seed', 0, 'healing'],
+            1107 => ['Blade', 4, 'weapon'],
+            1161 => ['Balmung', 0, 'weapon'],
+            1220 => ['Ice Pick', 1, 'weapon'],
+            2101 => ['Guard', 1, 'armor'],
+            2115 => ["Valkyrja's Shield", 1, 'armor'],
+            2357 => ['Valkyrian Armor', 1, 'armor'],
+            2421 => ['Valkyrian Shoes', 1, 'armor'],
+            2524 => ['Valkyrian Manteau', 1, 'armor'],
+            2620 => ['Ring of Flame Lord', 0, 'armor'],
+            4001 => ['Poring Card', 0, 'card'],
+            4058 => ['Thara Frog Card', 0, 'card'],
+            4064 => ['Zerom Card', 0, 'card'],
+            4121 => ['Phreeoni Card', 0, 'card'],
+            4128 => ['Golden Thief Bug Card', 0, 'card'],
+            4131 => ['Moonlight Flower Card', 0, 'card'],
+            4133 => ['Raydric Card', 0, 'card'],
+            4140 => ['Abysmal Knight Card', 0, 'card'],
+            5013 => ["Lord Kaho's Horn", 0, 'armor'],
+            5123 => ["Ulle's Cap", 1, 'armor'],
+        ];
+
+        if (isset($known[$itemId])) {
+            return [
+                'name' => $known[$itemId][0],
+                'slots' => $known[$itemId][1],
+                'type' => $known[$itemId][2],
+            ];
+        }
+
+        return \Illuminate\Support\Facades\Cache::remember("ro_item_meta_{$itemId}", 86400 * 30, function () use ($itemId) {
+            try {
+                $res = \Illuminate\Support\Facades\Http::timeout(2)
+                    ->withHeaders(['User-Agent' => 'Mozilla/5.0'])
+                    ->get("https://www.divine-pride.net/database/item/{$itemId}");
+                if ($res->successful() && preg_match('/<title>(.*?)\s*(?:-|—|\|)\s*Divine Pride/i', $res->body(), $m)) {
+                    $title = html_entity_decode(trim($m[1]), ENT_QUOTES, 'UTF-8');
+                    $slots = 0;
+                    if (preg_match('/\[(\d+)\]$/', $title, $sm)) {
+                        $slots = (int) $sm[1];
+                        $title = trim(preg_replace('/\s*\[\d+\]$/', '', $title));
+                    }
+                    if ($title !== '') {
+                        return ['name' => $title, 'slots' => $slots, 'type' => 'etc'];
+                    }
+                }
+            } catch (\Throwable) {
+            }
+
+            return ['name' => "Item #{$itemId}", 'slots' => 0, 'type' => 'etc'];
+        });
+    }
+
     private function enrichItems(array $rows): array
     {
         foreach ($rows as $row) {
-            $item = $this->itemRepository->findById((int) $row->nameid);
-            $row->item_name = $item->name_english ?? $item->name_aegis ?? "Item #{$row->nameid}";
-            $row->item_type = strtolower((string) ($item->type ?? 'etc'));
-            $row->icon_url = $item->icon_url ?? "https://static.divine-pride.net/images/items/item/{$row->nameid}.png";
+            $meta = $this->resolveItemMeta((int) $row->nameid);
+            $displayName = $meta['name'];
+            if ($meta['slots'] > 0 && !str_contains($displayName, '[')) {
+                $displayName .= " [{$meta['slots']}]";
+            }
+
+            $cards = [];
+            foreach (['card0', 'card1', 'card2', 'card3'] as $cCol) {
+                $cid = (int) ($row->{$cCol} ?? 0);
+                if ($cid > 0 && $cid !== 254 && $cid !== 255) {
+                    $cMeta = $this->resolveItemMeta($cid);
+                    $cards[] = $cMeta['name'];
+                }
+            }
+
+            $row->item_name = $displayName;
+            $row->item_slots = $meta['slots'];
+            $row->cards = $cards;
+            $row->item_type = $meta['type'];
+            $row->icon_url = "https://static.divine-pride.net/images/items/item/{$row->nameid}.png";
             $row->equip_slot_name = (int) ($row->equip ?? 0) > 0 ? JobHelper::getEquipSlotName((int) $row->equip) : null;
         }
         return $rows;
