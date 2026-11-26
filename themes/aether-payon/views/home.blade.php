@@ -62,35 +62,39 @@
 <!-- ======================================================================
      B. WOODEN PLAQUE SERVER INFORMATION STRIP
      ====================================================================== -->
-<section class="bg-[#E7D8B5] border-b border-[#A88950]">
-    <div class="payon-container py-5">
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+<section class="bg-[#E7D8B5] border-b-2 border-[#A88950]">
+    <div class="payon-container py-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
             @foreach(['login' => 'Login Gate', 'char' => 'Char Gate', 'map' => 'Map Realm'] as $sKey => $sLabel)
-                @php $st = data_get($serverStatus ?? [], $sKey, ['online' => false, 'latency_ms' => 0]); @endphp
-                <div class="payon-parchment-panel px-3.5 py-2.5 flex items-center justify-between gap-2">
+                @php
+                    $st = data_get($serverStatus ?? [], $sKey, ['online' => false, 'latency_ms' => 0]);
+                    $isOnline = !empty($st['online']);
+                @endphp
+                <div class="payon-parchment-panel border-t-2 border-t-[#493322] px-4 py-3 flex items-center justify-between gap-2">
                     <div>
-                        <span class="text-[10px] uppercase font-bold text-[#80633B] block">{{ $sLabel }}</span>
-                        <span class="text-xs font-mono font-bold {{ !empty($st['online']) ? 'text-[#263D2C]' : 'text-[#8C2D2D]' }}">
-                            {{ !empty($st['online']) ? 'ONLINE' : 'OFFLINE' }}
+                        <span class="text-[10px] uppercase tracking-wider font-bold text-[#80633B] block">{{ $sLabel }}</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-mono font-extrabold mt-0.5 {{ $isOnline ? 'text-[#263D2C]' : 'text-[#8C2D2D]' }}">
+                            <span class="w-2 h-2 rounded-full {{ $isOnline ? 'bg-[#526D3A]' : 'bg-[#8C2D2D]' }}"></span>
+                            <span>{{ $isOnline ? 'ONLINE' : 'OFFLINE' }}</span>
                         </span>
                     </div>
-                    <span class="text-[10px] font-mono text-[#80633B]">{{ $st['latency_ms'] ?? 0 }}ms</span>
+                    <span class="text-[10px] font-mono font-semibold text-[#80633B] self-end">{{ $st['latency_ms'] ?? 0 }}ms</span>
                 </div>
             @endforeach
 
-            <div class="payon-parchment-panel px-3.5 py-2.5">
-                <span class="text-[10px] uppercase font-bold text-[#80633B] block">Online Players</span>
-                <span class="text-sm font-mono font-extrabold text-[#263D2C]">{{ number_format($onlineCount) }}</span>
+            <div class="payon-parchment-panel border-t-2 border-t-[#526D3A] px-4 py-3">
+                <span class="text-[10px] uppercase tracking-wider font-bold text-[#80633B] block">Online Players</span>
+                <span class="text-sm font-mono font-extrabold text-[#263D2C] mt-0.5 block">{{ number_format($onlineCount) }}</span>
             </div>
 
-            <div class="payon-parchment-panel px-3.5 py-2.5">
-                <span class="text-[10px] uppercase font-bold text-[#80633B] block">EXP Rates (B / J)</span>
-                <span class="text-sm font-mono font-extrabold text-[#35291F]">{{ config('aether.rates.base') }} / {{ config('aether.rates.job') }}</span>
+            <div class="payon-parchment-panel border-t-2 border-t-[#A88950] px-4 py-3">
+                <span class="text-[10px] uppercase tracking-wider font-bold text-[#80633B] block">EXP Rates (B / J)</span>
+                <span class="text-sm font-mono font-extrabold text-[#35291F] mt-0.5 block">{{ config('aether.rates.base') }} / {{ config('aether.rates.job') }}</span>
             </div>
 
-            <div class="payon-parchment-panel px-3.5 py-2.5">
-                <span class="text-[10px] uppercase font-bold text-[#80633B] block">Drop / Mode</span>
-                <span class="text-sm font-mono font-extrabold text-[#35291F]">{{ config('aether.rates.drop') }} &bull; {{ config('emulator.renewal') ? 'RE' : 'Pre-RE' }}</span>
+            <div class="payon-parchment-panel border-t-2 border-t-[#A88950] px-4 py-3">
+                <span class="text-[10px] uppercase tracking-wider font-bold text-[#80633B] block">Drop / Mode</span>
+                <span class="text-sm font-mono font-extrabold text-[#35291F] mt-0.5 block">{{ config('aether.rates.drop') }} &bull; {{ config('emulator.renewal') ? 'RE' : 'Pre-RE' }}</span>
             </div>
         </div>
     </div>
