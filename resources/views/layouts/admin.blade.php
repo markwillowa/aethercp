@@ -291,12 +291,16 @@
         html[data-theme="aether-prestige"] .bg-cyan-500,
         html[data-theme="aether-prestige"] .bg-cyan-600,
         html[data-theme="aether-prestige"] .from-cyan-500,
-        html[data-theme="aether-prestige"] .from-cyan-600 {
+        html[data-theme="aether-prestige"] .from-cyan-600,
+        html[data-theme="aether-prestige"] .bg-amber-500,
+        html[data-theme="aether-prestige"] .from-amber-500,
+        html[data-theme="aether-prestige"] .hover\:from-amber-400:hover {
             background: linear-gradient(135deg, #D8BE8A 0%, #C6A76A 100%) !important;
             background-image: linear-gradient(135deg, #D8BE8A 0%, #C6A76A 100%) !important;
             color: #101725 !important;
             font-weight: 700 !important;
             border: 1px solid #E5CFA0 !important;
+            box-shadow: 0 4px 15px rgba(198, 167, 106, 0.25) !important;
         }
         html[data-theme="aether-prestige"] input,
         html[data-theme="aether-prestige"] select,
