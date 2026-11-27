@@ -40,6 +40,10 @@
                 </h2>
                 <div class="text-xs text-slate-400 mt-1 flex items-center gap-2 flex-wrap">
                     <span>Item ID: <strong class="font-mono text-cyan-400">#{{ $item->id }}</strong></span>
+                    @if(!empty($item->category))
+                        <span>•</span>
+                        <span>Category: <strong class="text-indigo-300">{{ $item->category }}</strong></span>
+                    @endif
                     <span>•</span>
                     <span>Type: <strong class="text-slate-200">{{ $item->type ?? 'Item' }}</strong></span>
                     @if(!empty($item->slots) && $item->slots > 0)

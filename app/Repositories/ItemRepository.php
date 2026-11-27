@@ -18,39 +18,156 @@ class ItemRepository implements ItemRepositoryInterface
         return $this->emulator->getTableName('item_db');
     }
 
+    /**
+     * All candidate item_db tables, including split equip/usable/etc SQL tables.
+     */
+    protected function getAvailableItemTables(): array
+    {
+        return Cache::remember('aether_available_item_db_tables', 60, function () {
+            $candidates = array_unique(array_filter([
+                $this->getTable(),
+                'item_db',
+                'item_db_re',
+                'item_db2',
+                'item_db2_re',
+                'item_db_equip',
+                'item_db_re_equip',
+                'item_db2_equip',
+                'item_db2_re_equip',
+                'item_db_usable',
+                'item_db_re_usable',
+                'item_db2_usable',
+                'item_db2_re_usable',
+                'item_db_etc',
+                'item_db_re_etc',
+                'item_db2_etc',
+                'item_db2_re_etc',
+            ]));
+
+            $available = [];
+            $schema = \Illuminate\Support\Facades\Schema::connection('ragnarok');
+            foreach ($candidates as $table) {
+                try {
+                    if ($schema->hasTable($table)) {
+                        $available[] = $table;
+                    }
+                } catch (\Throwable) {
+                }
+            }
+
+            return !empty($available) ? $available : [$this->getTable()];
+        });
+    }
+
+    /**
+     * Determine top-level category ('Equip', 'Usable', or 'Etc') from a split table name.
+     */
+    protected function getTableCategory(string $table): ?string
+    {
+        if (str_ends_with($table, '_equip')) {
+            return 'Equip';
+        }
+        if (str_ends_with($table, '_usable')) {
+            return 'Usable';
+        }
+        if (str_ends_with($table, '_etc')) {
+            return 'Etc';
+        }
+
+        return null;
+    }
+
+    /**
+     * Categorize an item into one of the 3 SQL categories: Equip, Usable, or Etc.
+     */
+    public function resolveCategory(object $item, ?string $sourceTable = null): string
+    {
+        if ($sourceTable) {
+            $tableCat = $this->getTableCategory($sourceTable);
+            if ($tableCat !== null) {
+                return $tableCat;
+            }
+        }
+
+        $rawType = strtolower(trim((string) ($item->type ?? '')));
+        if (in_array($rawType, ['weapon', 'armor', 'shadowarmor', 'petarmor', 'equip', '4', '5', '8', '12'], true)) {
+            return 'Equip';
+        }
+        if (in_array($rawType, ['healing', 'usable', 'delayconsume', 'cash', '0', '2', '11', '18'], true)) {
+            return 'Usable';
+        }
+
+        return 'Etc';
+    }
+
+    /**
+     * Map legacy numeric rAthena/Hercules item types to canonical string names.
+     */
+    protected function normalizeItemTypeName(mixed $rawType, string $fallbackCategory): string
+    {
+        $numericMap = [
+            '0' => 'Healing',
+            '2' => 'Usable',
+            '3' => 'Etc',
+            '4' => 'Weapon',
+            '5' => 'Armor',
+            '6' => 'Card',
+            '7' => 'PetEgg',
+            '8' => 'PetArmor',
+            '10' => 'Ammo',
+            '11' => 'DelayConsume',
+            '12' => 'ShadowArmor',
+            '18' => 'Cash',
+        ];
+
+        $str = trim((string) ($rawType ?? ''));
+        if ($str === '') {
+            return $fallbackCategory;
+        }
+
+        return $numericMap[$str] ?? $str;
+    }
+
+    protected function normalizeItemRow(object $row, ?string $sourceTable = null): object
+    {
+        $category = $this->resolveCategory($row, $sourceTable);
+        $row->category = $category;
+        $row->source_table = $sourceTable;
+        $row->type = $this->normalizeItemTypeName($row->type ?? null, $category);
+
+        if (empty($row->name_english)) {
+            $row->name_english = $row->name_japanese ?? $row->name ?? $row->name_aegis ?? "Item #{$row->id}";
+        }
+
+        return $row;
+    }
+
     public function findById(int $itemId): ?object
     {
         if ($itemId <= 0) {
             return null;
         }
 
-        try {
-            $row = DB::connection('ragnarok')
-                ->table($this->getTable())
-                ->where('id', $itemId)
-                ->first();
+        foreach ($this->getAvailableItemTables() as $table) {
+            try {
+                $row = DB::connection('ragnarok')
+                    ->table($table)
+                    ->where('id', $itemId)
+                    ->first();
 
-            if (!$row && $this->getTable() !== 'item_db2') {
-                $hasDb2 = \Illuminate\Support\Facades\Schema::connection('ragnarok')->hasTable('item_db2');
-                if ($hasDb2) {
-                    $row = DB::connection('ragnarok')
-                        ->table('item_db2')
-                        ->where('id', $itemId)
-                        ->first();
+                if ($row) {
+                    return $this->normalizeItemRow($row, $table);
                 }
+            } catch (\Throwable) {
             }
-
-            if ($row) {
-                if (empty($row->name_english)) {
-                    $row->name_english = $row->name_japanese ?? $row->name ?? $row->name_aegis ?? null;
-                }
-                return $row;
-            }
-        } catch (\Throwable $e) {
-            // Fall through to fallback item resolver
         }
 
-        return $this->resolveFallbackItem($itemId);
+        $fallback = $this->resolveFallbackItem($itemId);
+        if ($fallback) {
+            return $this->normalizeItemRow($fallback, null);
+        }
+
+        return null;
     }
 
     /**
@@ -180,15 +297,16 @@ class ItemRepository implements ItemRepositoryInterface
         });
     }
 
-    protected function getSearchableNameColumns(): array
+    protected function getSearchableNameColumns(?string $table = null): array
     {
-        return Cache::remember('aether_item_db_name_cols_' . $this->getTable(), 3600, function () {
+        $table = $table ?: $this->getTable();
+        return Cache::remember('aether_item_db_name_cols_' . $table, 3600, function () use ($table) {
             try {
                 $cols = DB::connection('ragnarok')
                     ->getSchemaBuilder()
-                    ->getColumnListing($this->getTable());
+                    ->getColumnListing($table);
 
-                $candidates = ['name_english', 'name_aegis', 'name_japanese'];
+                $candidates = ['name_english', 'name_aegis', 'name_japanese', 'name'];
                 $matched = array_values(array_intersect($candidates, $cols));
 
                 return !empty($matched) ? $matched : ['name_english'];
@@ -198,35 +316,105 @@ class ItemRepository implements ItemRepositoryInterface
         });
     }
 
+    /**
+     * Map a category or sub-type filter to matching DB type values (string + numeric).
+     */
+    protected function getTypeFilterValues(string $type): array
+    {
+        return match (strtolower($type)) {
+            'equip' => ['Weapon', 'Armor', 'ShadowArmor', 'PetArmor', 'Equip', '4', '5', '8', '12'],
+            'usable' => ['Healing', 'Usable', 'DelayConsume', 'Cash', '0', '2', '11', '18'],
+            'etc' => ['Etc', 'Card', 'Ammo', 'PetEgg', 'Taming', '3', '6', '7', '10'],
+            'healing' => ['Healing', '0'],
+            'usable_only' => ['Usable', '2'],
+            'etc_only' => ['Etc', '3'],
+            'weapon' => ['Weapon', '4'],
+            'armor' => ['Armor', '5'],
+            'card' => ['Card', '6'],
+            'petegg' => ['PetEgg', '7'],
+            'petarmor' => ['PetArmor', '8'],
+            'ammo' => ['Ammo', '10'],
+            'delayconsume' => ['DelayConsume', '11'],
+            'shadowarmor' => ['ShadowArmor', '12'],
+            'cash' => ['Cash', '18'],
+            default => [$type],
+        };
+    }
+
+    /**
+     * Determine which main SQL category a sub-type belongs to, if any.
+     */
+    protected function getParentCategoryForType(string $type): ?string
+    {
+        return match (strtolower($type)) {
+            'equip', 'weapon', 'armor', 'shadowarmor', 'petarmor' => 'Equip',
+            'usable', 'healing', 'delayconsume', 'cash' => 'Usable',
+            'etc', 'card', 'ammo', 'petegg', 'taming' => 'Etc',
+            default => null,
+        };
+    }
+
     public function search(string $keyword, ?string $type = null, int $limit = 25, int $page = 1): array
     {
         try {
             $offset = ($page - 1) * $limit;
+            $type = $type ? trim($type) : null;
+            $parentCat = $type ? $this->getParentCategoryForType($type) : null;
+            $isTopCategory = $type && in_array(strtolower($type), ['equip', 'usable', 'etc'], true);
 
-            $query = DB::connection('ragnarok')
-                ->table($this->getTable());
+            $collected = [];
 
-            if (is_numeric($keyword)) {
-                $query->where('id', (int) $keyword);
-            } else {
-                $nameCols = $this->getSearchableNameColumns();
-                $query->where(function ($q) use ($keyword, $nameCols) {
-                    foreach ($nameCols as $i => $col) {
-                        if ($i === 0) {
-                            $q->where($col, 'like', "%{$keyword}%");
+            foreach ($this->getAvailableItemTables() as $table) {
+                $tableCat = $this->getTableCategory($table);
+
+                // Skip split tables that don't belong to the requested category/type
+                if ($tableCat !== null && $parentCat !== null && $tableCat !== $parentCat) {
+                    continue;
+                }
+
+                try {
+                    $query = DB::connection('ragnarok')->table($table);
+
+                    if ($keyword !== '') {
+                        if (is_numeric($keyword)) {
+                            $query->where('id', (int) $keyword);
                         } else {
-                            $q->orWhere($col, 'like', "%{$keyword}%");
+                            $nameCols = $this->getSearchableNameColumns($table);
+                            $query->where(function ($q) use ($keyword, $nameCols) {
+                                foreach ($nameCols as $i => $col) {
+                                    if ($i === 0) {
+                                        $q->where($col, 'like', "%{$keyword}%");
+                                    } else {
+                                        $q->orWhere($col, 'like', "%{$keyword}%");
+                                    }
+                                }
+                            });
                         }
                     }
-                });
+
+                    // Apply type filter on unified tables (or when filtering by sub-type on a split table)
+                    if ($type && !($isTopCategory && $tableCat === $parentCat)) {
+                        $filterValues = $this->getTypeFilterValues($type);
+                        $query->whereIn('type', $filterValues);
+                    }
+
+                    $rows = $query->get();
+                    foreach ($rows as $row) {
+                        $normalized = $this->normalizeItemRow($row, $table);
+                        $id = (int) $normalized->id;
+                        if (!isset($collected[$id])) {
+                            $collected[$id] = $normalized;
+                        }
+                    }
+                } catch (\Throwable $tableErr) {
+                    \Illuminate\Support\Facades\Log::warning("Item search error on table {$table}: " . $tableErr->getMessage());
+                }
             }
 
-            if ($type) {
-                $query->where('type', $type);
-            }
-
-            $total = (clone $query)->count();
-            $items = $query->offset($offset)->limit($limit)->get()->toArray();
+            ksort($collected);
+            $allItems = array_values($collected);
+            $total = count($allItems);
+            $items = array_slice($allItems, $offset, $limit);
 
             return [
                 'total' => $total,
@@ -248,7 +436,18 @@ class ItemRepository implements ItemRepositoryInterface
     public function getItemTypes(): array
     {
         return [
-            'Healing', 'Usable', 'Armor', 'Weapon', 'Card', 'PetEgg', 'PetArmor', 'Ammo', 'DelayConsume', 'ShadowArmor'
+            'Equip',
+            'Usable',
+            'Etc',
+            'Weapon',
+            'Armor',
+            'Healing',
+            'Card',
+            'Ammo',
+            'DelayConsume',
+            'ShadowArmor',
+            'PetEgg',
+            'PetArmor',
         ];
     }
 }

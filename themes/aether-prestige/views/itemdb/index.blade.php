@@ -32,9 +32,16 @@
             <div>
                 <select name="type" class="prestige-input">
                     <option value="">All Item Categories</option>
-                    @foreach($itemTypes as $t)
-                        <option value="{{ $t }}" {{ $type === $t ? 'selected' : '' }}>{{ $t }}</option>
-                    @endforeach
+                    <optgroup label="Main Categories (SQL)">
+                        @foreach(['Equip', 'Usable', 'Etc'] as $mainCat)
+                            <option value="{{ $mainCat }}" {{ $type === $mainCat ? 'selected' : '' }}>{{ $mainCat }}</option>
+                        @endforeach
+                    </optgroup>
+                    <optgroup label="Specific Item Types">
+                        @foreach(array_diff($itemTypes, ['Equip', 'Usable', 'Etc']) as $t)
+                            <option value="{{ $t }}" {{ $type === $t ? 'selected' : '' }}>{{ $t }}</option>
+                        @endforeach
+                    </optgroup>
                 </select>
             </div>
 
@@ -45,6 +52,16 @@
                 </button>
             </div>
         </form>
+
+        <div class="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-white/[0.06] text-xs">
+            <span class="text-[#788394] font-semibold uppercase tracking-wider text-[10px] mr-1">SQL Categories:</span>
+            @foreach(['Equip', 'Usable', 'Etc'] as $mainCat)
+                <a href="{{ route('itemdb.index', array_filter(['q' => $keyword, 'type' => $mainCat])) }}"
+                   class="px-3 py-1 rounded-lg font-semibold border transition-colors {{ $type === $mainCat ? 'bg-[#C6A76A]/20 text-[#D8BE8A] border-[#C6A76A]/50' : 'bg-[#101725] text-[#AAB3C1] border-white/10 hover:border-[#C6A76A]/40' }}">
+                    {{ $mainCat }}
+                </a>
+            @endforeach
+        </div>
     </div>
 
     <!-- Search Results -->
@@ -72,6 +89,9 @@
                             <p class="text-xs text-[#788394] mt-0.5 truncate">{{ $item->name_aegis ?? $item->type ?? 'Item' }}</p>
 
                             <div class="flex items-center gap-4 text-[11px] text-[#AAB3C1] mt-2 pt-2 border-t border-white/[0.04]">
+                                @if(!empty($item->category))
+                                    <span>Category: <strong class="text-[#C6A76A]">{{ $item->category }}</strong></span>
+                                @endif
                                 <span>Type: <strong class="text-white">{{ $item->type ?? 'Normal' }}</strong></span>
                                 <span>Slots: <strong class="text-[#D8BE8A]">{{ $item->slots ?? 0 }}</strong></span>
                                 <span>Weight: <strong class="text-white">{{ $item->weight ?? 0 }}</strong></span>

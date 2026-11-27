@@ -50,10 +50,17 @@
 
             <div>
                 <select name="type" class="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl text-xs sm:text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-cyan-500 cursor-pointer">
-                    <option value="">All Item Types</option>
-                    @foreach($itemTypes as $t)
-                        <option value="{{ $t }}" {{ $type === $t ? 'selected' : '' }}>{{ $t }}</option>
-                    @endforeach
+                    <option value="">All Item Categories</option>
+                    <optgroup label="Main Categories (SQL)">
+                        @foreach(['Equip', 'Usable', 'Etc'] as $mainCat)
+                            <option value="{{ $mainCat }}" {{ $type === $mainCat ? 'selected' : '' }}>{{ $mainCat }}</option>
+                        @endforeach
+                    </optgroup>
+                    <optgroup label="Specific Item Types">
+                        @foreach(array_diff($itemTypes, ['Equip', 'Usable', 'Etc']) as $t)
+                            <option value="{{ $t }}" {{ $type === $t ? 'selected' : '' }}>{{ $t }}</option>
+                        @endforeach
+                    </optgroup>
                 </select>
             </div>
 
@@ -64,6 +71,18 @@
                 </button>
             </div>
         </form>
+
+        <!-- Quick Category Pills -->
+        <div class="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-slate-800/80 text-xs">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] mr-1">Browse Category:</span>
+            @foreach(['' => 'All', 'Equip' => 'Equip', 'Usable' => 'Usable', 'Etc' => 'Etc'] as $catVal => $catLabel)
+                @php $isCatActive = (string)$type === (string)$catVal && ($catVal !== '' || $keyword !== ''); @endphp
+                <a href="{{ route('itemdb.index', array_filter(['q' => $keyword, 'type' => $catVal])) }}"
+                   class="px-3 py-1 rounded-lg font-semibold border transition-colors {{ $type === $catVal && $catVal !== '' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700' }}">
+                    {{ $catLabel }}
+                </a>
+            @endforeach
+        </div>
     </div>
 
     <!-- Search Results -->
@@ -85,6 +104,11 @@
                                     @if(!empty($item->slots) && $item->slots > 0)
                                         <span class="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-cyan-950/60 text-cyan-400 border border-cyan-500/30">
                                             [{{ $item->slots }} {{ Str::plural('Slot', $item->slots) }}]
+                                        </span>
+                                    @endif
+                                    @if(!empty($item->category))
+                                        <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-indigo-950/70 text-indigo-300 border border-indigo-500/30">
+                                            {{ $item->category }}
                                         </span>
                                     @endif
                                     <span class="px-1.5 py-0.5 rounded text-[9px] font-medium bg-slate-800 text-slate-300">

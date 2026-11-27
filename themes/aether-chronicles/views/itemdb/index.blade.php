@@ -51,9 +51,16 @@
             <div>
                 <select name="type" class="w-full px-3 py-2 bg-[#17121D] border border-[#5A4A68] rounded text-xs text-[#E8DCC9] focus:outline-none focus:border-[#D4AF37]">
                     <option value="">All Categories</option>
-                    @foreach($itemTypes as $t)
-                        <option value="{{ $t }}" {{ $type === $t ? 'selected' : '' }}>{{ $t }}</option>
-                    @endforeach
+                    <optgroup label="Main Categories (SQL)">
+                        @foreach(['Equip', 'Usable', 'Etc'] as $mainCat)
+                            <option value="{{ $mainCat }}" {{ $type === $mainCat ? 'selected' : '' }}>{{ $mainCat }}</option>
+                        @endforeach
+                    </optgroup>
+                    <optgroup label="Specific Item Types">
+                        @foreach(array_diff($itemTypes, ['Equip', 'Usable', 'Etc']) as $t)
+                            <option value="{{ $t }}" {{ $type === $t ? 'selected' : '' }}>{{ $t }}</option>
+                        @endforeach
+                    </optgroup>
                 </select>
             </div>
 
@@ -64,6 +71,16 @@
                 </button>
             </div>
         </form>
+
+        <div class="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-[#4A3E56] text-xs">
+            <span class="text-[#A396AD] font-semibold uppercase tracking-wider text-[10px] mr-1">SQL Categories:</span>
+            @foreach(['Equip', 'Usable', 'Etc'] as $mainCat)
+                <a href="{{ route('itemdb.index', array_filter(['q' => $keyword, 'type' => $mainCat])) }}"
+                   class="px-3 py-1 rounded font-semibold border transition-colors {{ $type === $mainCat ? 'bg-[#D4AF37]/20 text-[#FFD700] border-[#D4AF37]' : 'bg-[#17121D] text-[#E8DCC9] border-[#5A4A68] hover:border-[#D4AF37]' }}">
+                    {{ $mainCat }}
+                </a>
+            @endforeach
+        </div>
     </div>
 
     <!-- Results Display -->
@@ -104,9 +121,16 @@
                                     @endif
                                 </td>
                                 <td class="py-2 px-3 text-center">
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#2B2135] text-[#D2C7BC] border border-[#5A4A68]">
-                                        {{ $item->type ?? 'Item' }}
-                                    </span>
+                                    <div class="inline-flex items-center gap-1">
+                                        @if(!empty($item->category))
+                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#382B19] text-[#FFD700] border border-[#8C5E09]">
+                                                {{ $item->category }}
+                                            </span>
+                                        @endif
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#2B2135] text-[#D2C7BC] border border-[#5A4A68]">
+                                            {{ $item->type ?? 'Item' }}
+                                        </span>
+                                    </div>
                                 </td>
                                 <td class="py-2 px-3 text-center font-mono font-bold text-[#E5A823]">
                                     {{ $item->slots ?? 0 }}

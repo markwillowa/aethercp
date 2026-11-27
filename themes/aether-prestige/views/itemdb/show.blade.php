@@ -25,7 +25,7 @@
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
             <div class="bg-[#101725] p-3.5 rounded-xl border border-white/[0.06]">
-                <span class="text-[#788394] block mb-0.5 uppercase tracking-wider text-[10px]">Type</span>
+                <span class="text-[#788394] block mb-0.5 uppercase tracking-wider text-[10px]">Type @if(!empty($item->category))({{ $item->category }})@endif</span>
                 <strong class="text-white font-semibold">{{ $item->type ?? 'Normal' }}</strong>
             </div>
             <div class="bg-[#101725] p-3.5 rounded-xl border border-white/[0.06]">

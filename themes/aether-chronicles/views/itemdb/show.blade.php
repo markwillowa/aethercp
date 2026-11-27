@@ -40,6 +40,9 @@
                     </h2>
                     <div class="text-xs text-[#A396AD] mt-0.5">
                         Item ID: <strong class="font-mono text-[#FFD700]">#{{ $item->id }}</strong> | 
+                        @if(!empty($item->category))
+                            Category: <strong class="text-[#FFD700]">{{ $item->category }}</strong> | 
+                        @endif
                         Type: <strong class="text-[#E8DCC9]">{{ $item->type ?? 'Item' }}</strong>
                         @if(!empty($item->slots))
                             | Slots: <strong class="font-mono text-[#FFD700]">[{{ $item->slots }}]</strong>
