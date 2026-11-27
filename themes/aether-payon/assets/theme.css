@@ -453,14 +453,29 @@ html[data-theme="aether-payon"] main input[type="number"],
 html[data-theme="aether-payon"] main select,
 html[data-theme="aether-payon"] main textarea {
     background-color: #FFF8E8 !important;
-    border: 1px solid #80633B !important;
+    border: 1px solid #A88950 !important;
     color: #35291F !important;
+}
+
+html[data-theme="aether-payon"] main input:-webkit-autofill,
+html[data-theme="aether-payon"] main input:-webkit-autofill:hover,
+html[data-theme="aether-payon"] main input:-webkit-autofill:focus,
+html[data-theme="aether-payon"] main input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #FFF8E8 inset !important;
+    -webkit-text-fill-color: #35291F !important;
+    caret-color: #35291F !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+html[data-theme="aether-payon"] main input[type="checkbox"] {
+    accent-color: #263D2C;
 }
 
 html[data-theme="aether-payon"] main input:focus,
 html[data-theme="aether-payon"] main select:focus,
 html[data-theme="aether-payon"] main textarea:focus {
     border-color: #263D2C !important;
+    box-shadow: 0 0 0 2px rgba(38, 61, 44, 0.16) !important;
     outline: none !important;
 }
 
