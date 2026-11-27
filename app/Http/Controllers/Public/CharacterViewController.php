@@ -31,6 +31,9 @@ class CharacterViewController extends Controller
     public function show(string $name)
     {
         $char = $this->characters->findByName($name);
+        if (!$char && is_numeric($name)) {
+            $char = $this->characters->findById((int) $name);
+        }
         if (!$char) {
             abort(404, 'Character not found.');
         }

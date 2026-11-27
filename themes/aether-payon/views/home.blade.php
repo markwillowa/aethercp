@@ -236,8 +236,8 @@
                                     #{{ $idx + 1 }}
                                 </span>
                                 <div class="min-w-0">
-                                    @if($pCharId)
-                                        <a href="{{ route('characters.show', $pCharId) }}" class="font-cinzel font-bold text-sm text-[#35291F] hover:text-[#526D3A] truncate block">{{ $pName }}</a>
+                                    @if(!empty($pName) && $pName !== 'Adventurer')
+                                        <a href="{{ route('characters.show', $pName) }}" class="font-cinzel font-bold text-sm text-[#35291F] hover:text-[#526D3A] truncate block">{{ $pName }}</a>
                                     @else
                                         <span class="font-cinzel font-bold text-sm text-[#35291F] truncate block">{{ $pName }}</span>
                                     @endif
@@ -252,8 +252,13 @@
                 @if($topList->count() > 3)
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                         @foreach($topList->slice(3) as $idx => $player)
+                            @php $subName = data_get($player, 'name', 'Adventurer'); @endphp
                             <div class="payon-parchment-panel px-4 py-2.5 flex items-center justify-between text-xs">
-                                <span class="font-bold text-[#35291F]">#{{ $idx + 1 }} &bull; {{ data_get($player, 'name', 'Adventurer') }}</span>
+                                @if(!empty($subName) && $subName !== 'Adventurer')
+                                    <a href="{{ route('characters.show', $subName) }}" class="font-bold text-[#35291F] hover:text-[#526D3A]">#{{ $idx + 1 }} &bull; {{ $subName }}</a>
+                                @else
+                                    <span class="font-bold text-[#35291F]">#{{ $idx + 1 }} &bull; {{ $subName }}</span>
+                                @endif
                                 <span class="font-mono text-[#526D3A] font-bold">Lv. {{ data_get($player, 'base_level', 1) }}</span>
                             </div>
                         @endforeach
